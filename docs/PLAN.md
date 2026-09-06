@@ -21,14 +21,14 @@
 - [x] short `jmhSmoke` override
 - [x] smoke operations: `getHit`, `getMiss`, `putExisting`
 - [x] static Java compilation check with dependency stubs
-- [ ] real Gradle unit-test run on Java 21
-- [ ] real `jmhSmoke` run against Caffeine + Chronicle Map
+- [x] real Gradle unit-test run on Java 21
+- [x] real `jmhSmoke` run against Caffeine + Chronicle Map
 
 ## Milestone 1 - trustworthy harness
 
-- [ ] generate standard Gradle wrapper on a networked development machine
-- [ ] run unit tests on Java 21
-- [ ] run `jmhSmoke` on Java 21
+- [ ] align the committed Gradle wrapper with the project-pinned Gradle version
+- [x] run unit tests on Java 21
+- [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
 - [ ] add reportable JMH profile(s) only after smoke passes
 
