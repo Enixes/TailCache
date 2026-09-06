@@ -67,7 +67,7 @@ Dependency versions are pinned so benchmark runs remain reproducible.
 Generate the Gradle wrapper once if it is not present:
 
 ```bash
-gradle wrapper --gradle-version 9.7.1
+gradle wrapper --gradle-version 9.7.0
 ```
 
 Then run the tests:
