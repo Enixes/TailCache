@@ -33,11 +33,23 @@ The dependency versions are pinned intentionally. Upgrade only as an explicit ex
 ## Repository layout
 
 ```text
-src/main/java/   cache abstraction, adapters, deterministic workload model
+src/main/java/   cache abstraction, adapters, deterministic workload + synthetic key/value model
 src/test/java/   contract and determinism tests
-src/jmh/java/    JMH benchmarks
+src/jmh/java/    JMH shared state and benchmark methods
 docs/            scope, methodology and time budget
 ```
+
+## TailCache 02 benchmark model
+
+The initial harness uses a deliberately small shared matrix:
+
+- backend: `CAFFEINE`, `CHRONICLE_MAP`;
+- payload size: `BYTES_256` (256 B), `KIB_4` (4 KiB);
+- logical key space: 2,048 resident entries;
+- configured cache capacity: 4,096 entries;
+- pre-generated deterministic trace: 100,000 logical key selections.
+
+`SyntheticKeyValueGenerator` creates keys and payload bytes during JMH setup. `CacheBenchmarkState` owns the populated cache, the hit/miss key sets, the deterministic trace and the reusable overwrite payload. Benchmark methods therefore do not generate random numbers or allocate payloads in the measured path.
 
 ## Build
 
@@ -48,13 +60,15 @@ gradle wrapper --gradle-version 9.7.1
 ./gradlew test
 ```
 
-Chronicle on Java 21 requires module export/open flags. The Gradle `test`, `jmh`, and `jmhSmoke` tasks provide the required flags. If you run tests or main classes directly from an IDE, copy the flags from `build.gradle.kts` into the IDE run configuration.
+Chronicle on Java 21 requires module export/open flags. The Gradle `test`, `jmh`, and `jmhSmoke` tasks provide the required flags. JMH child forks also receive the flags through `@Fork`. If you run tests or main classes directly from an IDE, copy the flags from `build.gradle.kts` into the IDE run configuration.
 
 ## Smoke benchmark
 
 ```bash
 ./gradlew jmhSmoke
 ```
+
+The benchmark class declares a conservative default of 5 warmup iterations, 5 measurement iterations and 3 fresh JVM forks. The `jmhSmoke` Gradle task overrides that to **1 warmup / 1 measurement / 1 fork at 300 ms each** so it can quickly catch harness/configuration failures across both backends and both payload sizes.
 
 Or run the JMH suite/filter explicitly:
 
