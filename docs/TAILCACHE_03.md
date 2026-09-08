@@ -4,6 +4,8 @@
 
 Establish a Caffeine baseline whose measured path is understood well enough to trust before expanding the benchmark matrix or interpreting latency differences.
 
+**Status: COMPLETE**
+
 ## Measured-path decisions
 
 - Benchmark keys are pre-boxed as `Long` objects during trial setup. The cache-operation timer therefore does not include synthetic `long` -> `Long` boxing allocation.
@@ -63,15 +65,15 @@ The Caffeine-only allocation smoke completed successfully on JDK 21.0.12.1. Norm
 
 This is consistent with the measured path not performing one fresh boxed-key or payload allocation per cache operation. These values are smoke diagnostics, not reportable performance results.
 
-Occasional single GC events occurred in some 4 KiB smoke trials, but normalized allocation remained sub-byte/op. Do not attribute those collections to Caffeine's per-operation access path without profiler evidence.
+Occasional single GC events occurred in some 4 KiB smoke trials, but normalized allocation remained sub-byte/op. The JFR inspection below did not show GC activity in the representative foreground-hit recording.
 
-### JFR smoke - RECORDING PASS / REPRESENTATIVE INSPECTION MOSTLY CLEAN
+### JFR smoke - PASS
 
 `jmhCaffeineJfrSmoke` completed successfully on JDK 21.0.12.1 and generated a separate `profile.jfr` under `build/reports/jmh/jfr/` for each Caffeine operation/payload combination.
 
 The JFR profiler materially perturbs the smoke latency numbers, so those timings must not be compared to the non-profiled allocation smoke or used as research results. The recording is diagnostic only.
 
-A representative 256 B `getHit` recording was inspected with `jfr summary` plus explicit event printing. The recording contained:
+A representative 256 B `getHit` recording was inspected with `jfr summary` and targeted event printing. It contained:
 
 - 0 recorded `jdk.JavaMonitorEnter` events;
 - 0 recorded `jdk.ClassLoad` events;
@@ -80,23 +82,39 @@ A representative 256 B `getHit` recording was inspected with `jfr summary` plus 
 - 0 recorded garbage-collection events;
 - 2 `jdk.Compilation` events, both C2 compiling `java.util.concurrent.ForkJoinPool.scan` on a compiler thread rather than the TailCache/Caffeine measured path.
 
-This representative check does not show an obvious cache-path locking, class-loading, compilation or GC confound.
+The sampled allocation and park events were also classified:
 
-The same recording also contains 9 `jdk.ObjectAllocationSample` events. Those sampled allocation events should be inspected once before closing TailCache 03 so their stack traces can be classified as benchmark/JFR/background activity or cache-path activity.
+- JFR internal string-pool allocation occurred on the Attach Listener;
+- JMH `InputStreamDrainer`, result aggregation and worker-data capture produced framework allocations;
+- process-reaper allocation/parking belonged to JVM process management;
+- JMH result aggregation allocated `Double` objects after sampling;
+- one small Caffeine-related allocation sample occurred on `ForkJoinPool.commonPool-worker-2` while draining Caffeine's read buffer (`BoundedLocalCache.drainReadBuffer` / `Node.inMainProbation`), not on the JMH benchmark worker executing the foreground lookup;
+- `ThreadPark` events came from ForkJoinPool idle workers, JMH/main-thread coordination and the process reaper, not from the measured cache access path.
 
-Useful final inspection command:
+The Caffeine maintenance sample is worth retaining as part of the backend model: foreground reads can trigger or feed asynchronous maintenance work even when the measured lookup itself is essentially allocation-free. That background work is not a benchmark-plumbing confound, but it may matter later if TailCache studies whole-process CPU/allocation effects in addition to operation latency.
 
-```bash
-jfr print \
-  --events jdk.ObjectAllocationSample \
-  build/reports/jmh/jfr/io.github.enixes.tailcache.benchmark.CacheSmokeBenchmark.getHit-SampleTime-backend-CAFFEINE-payloadSize-BYTES_256/profile.jfr
-```
+Together with the GC-profiler result, the representative recording provides no evidence of per-operation boxed-key allocation, payload copying, monitor contention, class-loading leakage or benchmark-path compilation in the Caffeine foreground `getHit` path.
 
-Event counts alone are not a universal zero-allocation guarantee; the separate JMH GC-profiler result remains the quantitative allocation smoke check.
+This is not a universal zero-allocation guarantee; it is a validation that the current benchmark plumbing is not obviously injecting the allocations or synchronization artifacts TailCache 03 was designed to eliminate.
 
-### Unit tests
+### Unit tests - PASS
 
-A fresh `./gradlew test` result for this branch should be retained with the validation record if it has not already been run after the TailCache 03 changes.
+A fresh `./gradlew test` completed successfully after the TailCache 03 changes.
+
+## TailCache 03 conclusion
+
+The Caffeine baseline is now sufficiently understood for the next phase:
+
+- adapter semantics are tested;
+- measured results are consumed correctly;
+- benchmark keys are pre-boxed;
+- backend configuration is logged;
+- the JMH runner/forks are pinned to Java 21;
+- foreground operations show sub-byte normalized allocation in the smoke profiler;
+- representative JFR inspection found no obvious foreground allocation, locking, class-loading, GC or benchmark-path compilation confound;
+- asynchronous Caffeine maintenance activity has been identified and documented rather than silently ignored.
+
+TailCache 03 is complete. The next backend-validation slice should apply the same measured-path scrutiny to Chronicle Map before reportable Caffeine-vs-Chronicle comparisons begin.
 
 ## Interpretation guardrail
 
