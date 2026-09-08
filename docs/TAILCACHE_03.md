@@ -108,13 +108,13 @@ The JFR profiler also perturbs latency, so JFR smoke timings must not be compare
 
 ### Unit tests - PASS on pre-review executable revision
 
-A forced `./gradlew test --rerun-tasks` completed successfully before the final review cleanup. A final-head rerun is required because the configuration-summary assertion and JMH fork configuration changed during review.
+A forced `./gradlew test --rerun-tasks` completed successfully before the final review cleanup. A final-head rerun is required because the configuration-summary assertion, Gradle JMH runner configuration and JMH fork configuration changed during review.
 
 ## Review corrections
 
 The review pass made the following corrections before merge:
 
-- removed duplicate Chronicle/JDK module flags from `@Fork`; the Gradle JMH runner is now the single source and JMH inherits those arguments into forks;
+- removed duplicate Chronicle/JDK module flags from `@Fork` and centralized JMH runner configuration in Gradle; JMH now inherits those arguments into forks;
 - added Caffeine's default `ForkJoinPool.commonPool()` executor to configuration logging;
 - corrected JFR interpretation so disabled or thresholded event types are not treated as proof of absence;
 - aligned the README and delivery plan with the committed Gradle 9.7.1 wrapper;
