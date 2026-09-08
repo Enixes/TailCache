@@ -93,6 +93,17 @@ Its purpose is to verify that the benchmark harness works end to end.
 
 **Smoke numbers are not intended as benchmark results.**
 
+## Caffeine validation smoke checks
+
+TailCache 03 adds two Caffeine-only diagnostics:
+
+```bash
+./gradlew jmhCaffeineAllocSmoke
+./gradlew jmhCaffeineJfrSmoke
+```
+
+The allocation smoke uses JMH's GC profiler. The JFR smoke is for diagnostic stack/context inspection; its timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` for interpretation limits.
+
 ## Run JMH directly
 
 Run the benchmark suite:
