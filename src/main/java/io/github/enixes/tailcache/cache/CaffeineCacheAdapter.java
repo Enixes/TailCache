@@ -25,7 +25,7 @@ public final class CaffeineCacheAdapter implements CacheAdapter {
 
     @Override
     public String configurationSummary() {
-        return "maximumSize=" + maximumEntries;
+        return "maximumSize=" + maximumEntries + ",executor=ForkJoinPool.commonPool(default)";
     }
 
     @Override
