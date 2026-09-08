@@ -33,6 +33,7 @@
 - [x] run allocation smoke with JMH `-prof gc`
 - [x] generate and inspect a representative JFR recording
 - [x] document the distinction between foreground lookup cost and asynchronous Caffeine maintenance
+- [x] review and fact-check JFR / JMH interpretation
 - [ ] refresh validation after review fixes on the final PR head
 
 ## Milestone 1 - trustworthy harness
