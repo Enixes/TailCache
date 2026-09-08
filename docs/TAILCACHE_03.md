@@ -65,30 +65,34 @@ This is consistent with the measured path not performing one fresh boxed-key or 
 
 Occasional single GC events occurred in some 4 KiB smoke trials, but normalized allocation remained sub-byte/op. Do not attribute those collections to Caffeine's per-operation access path without profiler evidence.
 
-### JFR smoke - RECORDING PASS / CONTENT INSPECTION PENDING
+### JFR smoke - RECORDING PASS / REPRESENTATIVE INSPECTION MOSTLY CLEAN
 
 `jmhCaffeineJfrSmoke` completed successfully on JDK 21.0.12.1 and generated a separate `profile.jfr` under `build/reports/jmh/jfr/` for each Caffeine operation/payload combination.
 
 The JFR profiler materially perturbs the smoke latency numbers, so those timings must not be compared to the non-profiled allocation smoke or used as research results. The recording is diagnostic only.
 
-Before TailCache 03 is considered complete, inspect the recordings for:
+A representative 256 B `getHit` recording was inspected with `jfr summary` plus explicit event printing. The recording contained:
 
-- allocations in the measured cache access path;
-- unexpected locking/contention;
-- class loading or compilation leaking into the measurement window;
-- surprising runtime activity that would make the smoke result hard to interpret.
+- 0 recorded `jdk.JavaMonitorEnter` events;
+- 0 recorded `jdk.ClassLoad` events;
+- 0 recorded `jdk.ObjectAllocationInNewTLAB` events;
+- 0 recorded `jdk.ObjectAllocationOutsideTLAB` events;
+- 0 recorded garbage-collection events;
+- 2 `jdk.Compilation` events, both C2 compiling `java.util.concurrent.ForkJoinPool.scan` on a compiler thread rather than the TailCache/Caffeine measured path.
 
-Useful command-line inspection on JDK 21:
+This representative check does not show an obvious cache-path locking, class-loading, compilation or GC confound.
+
+The same recording also contains 9 `jdk.ObjectAllocationSample` events. Those sampled allocation events should be inspected once before closing TailCache 03 so their stack traces can be classified as benchmark/JFR/background activity or cache-path activity.
+
+Useful final inspection command:
 
 ```bash
-jfr summary build/reports/jmh/jfr/<trial>/profile.jfr
-
 jfr print \
-  --events jdk.ObjectAllocationInNewTLAB,jdk.ObjectAllocationOutsideTLAB,jdk.JavaMonitorEnter,jdk.ClassLoad,jdk.Compilation \
-  build/reports/jmh/jfr/<trial>/profile.jfr
+  --events jdk.ObjectAllocationSample \
+  build/reports/jmh/jfr/io.github.enixes.tailcache.benchmark.CacheSmokeBenchmark.getHit-SampleTime-backend-CAFFEINE-payloadSize-BYTES_256/profile.jfr
 ```
 
-If the event output is large, start with one representative `getHit` recording and inspect the relevant stacks rather than treating event counts alone as conclusions.
+Event counts alone are not a universal zero-allocation guarantee; the separate JMH GC-profiler result remains the quantitative allocation smoke check.
 
 ### Unit tests
 
