@@ -7,6 +7,7 @@ import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,19 +42,17 @@ import java.util.concurrent.TimeUnit;
 public class CacheSmokeBenchmark {
 
     @Benchmark
-    public byte[] getHit(CacheBenchmarkState state) {
-        return state.cache().get(state.nextHitKey());
+    public void getHit(CacheBenchmarkState state, Blackhole blackhole) {
+        blackhole.consume(state.cache().get(state.nextHitKey()));
     }
 
     @Benchmark
-    public byte[] getMiss(CacheBenchmarkState state) {
-        return state.cache().get(state.nextMissKey());
+    public void getMiss(CacheBenchmarkState state, Blackhole blackhole) {
+        blackhole.consume(state.cache().get(state.nextMissKey()));
     }
 
     @Benchmark
-    public byte[] putExisting(CacheBenchmarkState state) {
-        byte[] value = state.overwriteValue();
-        state.cache().put(state.nextHitKey(), value);
-        return value;
+    public void putExisting(CacheBenchmarkState state) {
+        state.cache().put(state.nextHitKey(), state.overwriteValue());
     }
 }
