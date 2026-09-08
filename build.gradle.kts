@@ -16,6 +16,10 @@ java {
     }
 }
 
+val java21Launcher = javaToolchains.launcherFor {
+    languageVersion = JavaLanguageVersion.of(21)
+}
+
 repositories {
     mavenCentral()
 }
@@ -69,6 +73,7 @@ tasks.register<JavaExec>("jmh") {
     dependsOn(jmh.classesTaskName)
     classpath = jmh.runtimeClasspath
     mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
     jvmArgs(chronicleJvmArgs)
 
     val include = providers.gradleProperty("jmhInclude").orElse(".*")
@@ -81,6 +86,7 @@ tasks.register<JavaExec>("jmhSmoke") {
     dependsOn(jmh.classesTaskName)
     classpath = jmh.runtimeClasspath
     mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
     jvmArgs(chronicleJvmArgs)
     args(
         ".*CacheSmokeBenchmark.*",
@@ -89,5 +95,47 @@ tasks.register<JavaExec>("jmhSmoke") {
         "-f", "1",
         "-w", "300ms",
         "-r", "300ms"
+    )
+}
+
+tasks.register<JavaExec>("jmhCaffeineAllocSmoke") {
+    group = "benchmark"
+    description = "Runs a short Caffeine-only JMH allocation smoke check with the built-in GC profiler."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
+    args(
+        ".*CacheSmokeBenchmark.*",
+        "-p", "backend=CAFFEINE",
+        "-wi", "1",
+        "-i", "1",
+        "-f", "1",
+        "-w", "300ms",
+        "-r", "300ms",
+        "-prof", "gc"
+    )
+}
+
+tasks.register<JavaExec>("jmhCaffeineJfrSmoke") {
+    group = "benchmark"
+    description = "Runs a short Caffeine-only JMH smoke check with Java Flight Recorder enabled."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
+
+    val jfrOutputDir = layout.buildDirectory.dir("reports/jmh/jfr").get().asFile.absolutePath
+    args(
+        ".*CacheSmokeBenchmark.*",
+        "-p", "backend=CAFFEINE",
+        "-wi", "1",
+        "-i", "1",
+        "-f", "1",
+        "-w", "300ms",
+        "-r", "300ms",
+        "-prof", "jfr:dir=$jfrOutputDir"
     )
 }
