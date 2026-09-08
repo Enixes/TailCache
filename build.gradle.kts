@@ -67,22 +67,14 @@ dependencies {
     add(jmh.annotationProcessorConfigurationName, "org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
 }
 
-fun JavaExec.configureJmhRunner() {
+tasks.register<JavaExec>("jmh") {
+    group = "benchmark"
+    description = "Runs TailCache JMH benchmarks. Pass -PjmhInclude=<regex> to filter."
     dependsOn(jmh.classesTaskName)
     classpath = jmh.runtimeClasspath
     mainClass.set("org.openjdk.jmh.Main")
     javaLauncher.set(java21Launcher)
-
-    // Chronicle Map needs these on Java 21. JMH inherits the runner's input
-    // arguments into forked benchmark VMs when benchmark-specific JVM args
-    // are absent, so this is the single source of the module flags.
     jvmArgs(chronicleJvmArgs)
-}
-
-tasks.register<JavaExec>("jmh") {
-    group = "benchmark"
-    description = "Runs TailCache JMH benchmarks. Pass -PjmhInclude=<regex> to filter."
-    configureJmhRunner()
 
     val include = providers.gradleProperty("jmhInclude").orElse(".*")
     args(include.get())
@@ -91,7 +83,11 @@ tasks.register<JavaExec>("jmh") {
 tasks.register<JavaExec>("jmhSmoke") {
     group = "benchmark"
     description = "Runs a deliberately short JMH smoke test; results are not reportable research results."
-    configureJmhRunner()
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
     args(
         ".*CacheSmokeBenchmark.*",
         "-wi", "1",
@@ -105,7 +101,11 @@ tasks.register<JavaExec>("jmhSmoke") {
 tasks.register<JavaExec>("jmhCaffeineAllocSmoke") {
     group = "benchmark"
     description = "Runs a short Caffeine-only JMH allocation smoke check with the built-in GC profiler."
-    configureJmhRunner()
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
     args(
         ".*CacheSmokeBenchmark.*",
         "-p", "backend=CAFFEINE",
@@ -121,7 +121,11 @@ tasks.register<JavaExec>("jmhCaffeineAllocSmoke") {
 tasks.register<JavaExec>("jmhCaffeineJfrSmoke") {
     group = "benchmark"
     description = "Runs a short Caffeine-only JMH smoke check with Java Flight Recorder enabled."
-    configureJmhRunner()
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
 
     val jfrOutputDir = layout.buildDirectory.dir("reports/jmh/jfr").get().asFile.absolutePath
     args(
