@@ -14,7 +14,7 @@ Establish a Caffeine baseline whose measured path is understood well enough to t
 - `getHit` and `getMiss` explicitly feed their results to JMH `Blackhole` so returned values remain observable to the benchmark harness.
 - `putExisting` remains a `void` benchmark because the cache mutation itself is observable state; adding a validation `get` inside that benchmark would measure a different operation.
 - Trial setup performs hit/miss sanity checks before measurement starts.
-- Chronicle-required module flags are configured once on the Gradle JMH runner. With no benchmark-specific JVM arguments, JMH inherits the runner's input arguments into forked benchmark VMs, avoiding the duplicate flags that appeared in the first smoke runs.
+- Chronicle-required module flags come from the shared Gradle `chronicleJvmArgs` list on the JMH runner tasks. With no benchmark-specific JVM arguments, JMH inherits the runner's input arguments into forked benchmark VMs, avoiding the duplicate flags that appeared when the same flags were also appended by `@Fork`.
 
 ## Configuration logging
 
@@ -108,13 +108,13 @@ The JFR profiler also perturbs latency, so JFR smoke timings must not be compare
 
 ### Unit tests - PASS on pre-review executable revision
 
-A forced `./gradlew test --rerun-tasks` completed successfully before the final review cleanup. A final-head rerun is required because the configuration-summary assertion, Gradle JMH runner configuration and JMH fork configuration changed during review.
+A forced `./gradlew test --rerun-tasks` completed successfully before the final review cleanup. A final-head rerun is required because the configuration-summary assertion and JMH fork arguments changed during review.
 
 ## Review corrections
 
 The review pass made the following corrections before merge:
 
-- removed duplicate Chronicle/JDK module flags from `@Fork` and centralized JMH runner configuration in Gradle; JMH now inherits those arguments into forks;
+- removed duplicate Chronicle/JDK module flags from `@Fork`; the shared Gradle `chronicleJvmArgs` list remains the source for JMH runner arguments and JMH inherits them into forks;
 - added Caffeine's default `ForkJoinPool.commonPool()` executor to configuration logging;
 - corrected JFR interpretation so disabled or thresholded event types are not treated as proof of absence;
 - aligned the README and delivery plan with the committed Gradle 9.7.1 wrapper;
