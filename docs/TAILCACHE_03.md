@@ -4,7 +4,7 @@
 
 Establish a Caffeine baseline whose measured path is understood well enough to trust before expanding the benchmark matrix or interpreting latency differences.
 
-**Status: REVIEW FIXES APPLIED - FINAL VALIDATION REFRESH PENDING**
+**Status: COMPLETE**
 
 ## Measured-path decisions
 
@@ -55,27 +55,33 @@ The reference-return assertion is methodologically useful: normal Caffeine `getI
 
 All benchmark JavaExec tasks use the Java 21 toolchain. The JMH fork inherits the runner JVM arguments when benchmark-specific JVM arguments are absent.
 
-## Validation history
+## Final validation - PASS
 
-The measurements below were collected before the review cleanup that removed duplicate JMH module flags and expanded configuration logging. The executable cache-access logic is unchanged, so the results remain useful diagnostic context, but TailCache 03 will not be marked final until the three validation commands above pass on the final PR head.
+The final post-review validation completed successfully on JDK 21.0.12.1.
 
-### Allocation smoke - PASS on pre-review executable revision
+### Unit tests
 
-The Caffeine-only allocation smoke completed successfully on JDK 21.0.12.1. Normalized allocation remained sub-byte per operation across the smoke matrix:
+`./gradlew test --rerun-tasks` completed successfully with all test tasks actually executed.
+
+### Allocation smoke
+
+The final Caffeine-only allocation smoke completed successfully on Java 21. Normalized allocation remained sub-byte per operation across the matrix:
 
 | Operation | 256 B | 4 KiB |
 |---|---:|---:|
-| `getHit` | 0.438 B/op | 0.509 B/op |
-| `getMiss` | 0.075 B/op | 0.075 B/op |
-| `putExisting` | 0.326 B/op | 0.368 B/op |
+| `getHit` | 0.336 B/op | 0.308 B/op |
+| `getMiss` | 0.084 B/op | 0.088 B/op |
+| `putExisting` | 0.279 B/op | 0.303 B/op |
 
 This is the primary allocation evidence from TailCache 03. It is consistent with the measured path not performing one fresh boxed-key or payload allocation per cache operation. These values are smoke diagnostics, not reportable performance results.
 
-Occasional single GC events occurred in some 4 KiB smoke trials, but normalized allocation remained sub-byte/op.
+Single GC events still occurred in some 4 KiB smoke trials, but normalized allocation remained sub-byte/op. The short smoke duration is not suitable for interpreting those isolated collections as steady-state behaviour.
 
-### JFR smoke - PASS as a diagnostic recording
+The final JMH fork output showed each required Chronicle/JDK module flag once rather than duplicated, and the trial configuration line included `maximumSize=4096,executor=ForkJoinPool.commonPool(default)` as intended.
 
-`jmhCaffeineJfrSmoke` completed successfully on JDK 21.0.12.1 and generated a separate `profile.jfr` under `build/reports/jmh/jfr/` for each Caffeine operation/payload combination.
+### JFR smoke
+
+`jmhCaffeineJfrSmoke` completed successfully on Java 21 and generated a separate `profile.jfr` under `build/reports/jmh/jfr/` for all six Caffeine operation/payload combinations.
 
 JMH 1.37's JFR profiler defaults to the JDK `profile` recording configuration unless another `configName` is supplied. That configuration is deliberately sampled and thresholded, so zero event counts must be interpreted in terms of what the profile actually enables:
 
@@ -84,9 +90,9 @@ JMH 1.37's JFR profiler defaults to the JDK `profile` recording configuration un
 - `jdk.JavaMonitorEnter` is thresholded at 10 ms in the profile configuration, so a zero count means no recorded monitor-enter blocking at or above that threshold, not "no contention" in general;
 - `jdk.Compilation` is also thresholded in the profile configuration, so absence of a TailCache/Caffeine compilation event only applies to compilations that met the recording threshold.
 
-A representative 256 B `getHit` recording did show:
+A representative 256 B `getHit` recording inspected during validation showed:
 
-- no recorded garbage-collection events during the recording window;
+- no recorded garbage-collection events during that recording window;
 - no `jdk.JavaMonitorEnter` events crossing the profile threshold;
 - two recorded C2 compilation events, both compiling `java.util.concurrent.ForkJoinPool.scan` on a compiler thread rather than TailCache or the foreground Caffeine lookup path;
 - sampled allocation and park events that could be classified by thread and stack.
@@ -106,13 +112,9 @@ Taken together, the GC-profiler result and sampled JFR stacks provide no evidenc
 
 The JFR profiler also perturbs latency, so JFR smoke timings must not be compared with non-profiled latency results or used as research results.
 
-### Unit tests - PASS on pre-review executable revision
-
-A forced `./gradlew test --rerun-tasks` completed successfully before the final review cleanup. A final-head rerun is required because the configuration-summary assertion and JMH fork arguments changed during review.
-
 ## Review corrections
 
-The review pass made the following corrections before merge:
+The review pass made the following corrections before completion:
 
 - removed duplicate Chronicle/JDK module flags from `@Fork`; the shared Gradle `chronicleJvmArgs` list remains the source for JMH runner arguments and JMH inherits them into forks;
 - added Caffeine's default `ForkJoinPool.commonPool()` executor to configuration logging;
@@ -120,17 +122,21 @@ The review pass made the following corrections before merge:
 - aligned the README and delivery plan with the committed Gradle 9.7.1 wrapper;
 - removed the stale public issue-specific sizing/upstream plan while retaining general sizing-sensitivity work as a secondary experiment.
 
-## TailCache 03 completion criteria
+## TailCache 03 conclusion
 
-After the review fixes, TailCache 03 is complete when the final PR head satisfies all of the following:
+The Caffeine measured path is sufficiently understood for the next phase:
 
-- `./gradlew test --rerun-tasks` passes;
-- `./gradlew jmhCaffeineAllocSmoke` passes on Java 21;
-- `./gradlew jmhCaffeineJfrSmoke` generates the expected recordings on Java 21;
-- JMH fork output shows the required module flags once rather than duplicated;
-- Caffeine configuration logging includes `maximumSize` and the default common-pool executor.
+- adapter semantics are tested;
+- measured reads are consumed explicitly;
+- benchmark keys are pre-boxed;
+- backend configuration is logged;
+- runner and forks use Java 21;
+- module flags are no longer duplicated;
+- foreground operations remain sub-byte/op in the GC-profiler smoke;
+- JFR recordings are generated successfully and interpreted with the correct configuration limitations;
+- asynchronous Caffeine maintenance is identified as backend behaviour rather than hidden as benchmark noise.
 
-The next backend-validation slice should apply the same measured-path scrutiny to Chronicle Map before reportable Caffeine-vs-Chronicle comparisons begin.
+TailCache 03 is complete. The next backend-validation slice should apply the same measured-path scrutiny to Chronicle Map before reportable Caffeine-vs-Chronicle comparisons begin.
 
 ## Interpretation guardrail
 
