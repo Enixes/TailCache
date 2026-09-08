@@ -18,8 +18,10 @@ A second semantic difference must remain visible in the analysis: Caffeine retur
 - Java version is pinned to 21 for the study.
 - Dependency versions are pinned in `build.gradle.kts`.
 - Workloads are generated from explicit fixed seeds.
+- Synthetic keys and payload bytes are generated during benchmark setup, not inside measured operations.
 - Benchmark setup generates the trace before measurement; random-number generation is not part of measured cache-operation latency.
-- Warmup and measurement iterations must be recorded with raw JMH output.
+- The iteration cursor is reset at the start of every JMH iteration so each iteration starts from the same logical trace position.
+- Warmup, measurement and fork counts must be recorded with raw JMH output.
 - Machine, OS, JVM, CPU topology, heap settings and relevant JVM flags must accompany reportable results.
 - A benchmark campaign should use the same machine in as quiet a state as practical.
 - Do not compare numbers collected under materially different thermal/power modes as if they were one experiment.
@@ -43,14 +45,18 @@ Start small. Candidate controlled factors for the main campaign:
 - backend: Caffeine / Chronicle Map;
 - access distribution: uniform / hotspot;
 - read ratio: read-only baseline, then one mixed ratio if time permits;
-- value size: small and medium payloads first;
+- value size: **256 B** and **4 KiB** initial payloads;
 - occupancy/working-set ratio: safely below capacity, with a small number of levels.
+
+The TailCache 02 smoke state uses 2,048 resident entries against a configured 4,096-entry capacity. This is intentionally capacity-safe so the smoke suite validates harness behaviour rather than eviction or sizing limits.
 
 Do not create a combinatorial grid. Each added factor must answer a specific hypothesis.
 
-## 5. Smoke suite warning
+## 5. JMH scaffold and smoke warning
 
-`CacheSmokeBenchmark` is a harness check. Its iteration lengths are deliberately too short for publication. Smoke numbers must never appear as research results.
+`CacheSmokeBenchmark` is a harness check. The class declares 5 warmup iterations, 5 measurement iterations and 3 JVM forks as a conservative direct-run default. The Gradle `jmhSmoke` task deliberately overrides those settings to 1 warmup iteration, 1 measurement iteration and 1 fork, with 300 ms warmup/measurement windows.
+
+The smoke matrix covers both backends and both payload sizes. Its purpose is to prove that setup, teardown, parameter expansion, Chronicle JVM flags and basic cache operations all work. **Smoke numbers must never appear as research results.**
 
 ## 6. Chronicle Map sizing / issue #533 track
 

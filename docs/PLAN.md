@@ -1,20 +1,34 @@
 # Delivery plan
 
-## Milestone 0 - scaffold (now)
+## Milestone 0 - scaffold
 
 - [x] Java 21 / Gradle Kotlin DSL structure
 - [x] common cache interface
 - [x] Caffeine adapter
 - [x] Chronicle Map adapter
 - [x] deterministic uniform/hotspot workload model
-- [x] initial JMH smoke suite
 - [x] methodology and scope guard
+
+### TailCache 02 - JMH harness and shared benchmark model
+
+- [x] dedicated `src/jmh` source set
+- [x] deterministic synthetic key/value generator
+- [x] named 256 B and 4 KiB payload sizes
+- [x] shared JMH cache state
+- [x] trial setup / iteration reset / trial teardown lifecycle
+- [x] pre-generated hit and guaranteed-miss key sets
+- [x] default warmup / measurement / fork policy
+- [x] short `jmhSmoke` override
+- [x] smoke operations: `getHit`, `getMiss`, `putExisting`
+- [x] static Java compilation check with dependency stubs
+- [x] real Gradle unit-test run on Java 21
+- [x] real `jmhSmoke` run against Caffeine + Chronicle Map
 
 ## Milestone 1 - trustworthy harness
 
-- [ ] generate standard Gradle wrapper on a networked development machine
-- [ ] run unit tests on Java 21
-- [ ] run `jmhSmoke` on Java 21
+- [ ] align the committed Gradle wrapper with the project-pinned Gradle version
+- [x] run unit tests on Java 21
+- [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
 - [ ] add reportable JMH profile(s) only after smoke passes
 
