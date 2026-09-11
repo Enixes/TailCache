@@ -12,7 +12,7 @@ class CacheConfigTest {
     }
 
     @Test
-    void rejectsNonPositiveAverageValueSize() {
+    void rejectsNonPositiveValueSize() {
         assertThrows(IllegalArgumentException.class, () -> new CacheConfig(100, 0));
     }
 }
