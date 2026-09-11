@@ -36,6 +36,17 @@
 - [x] review and fact-check JFR / JMH interpretation
 - [x] refresh validation after review fixes on the final PR head
 
+### TailCache 04 - Chronicle Map measured-path validation
+
+- [x] make Chronicle entry/value sizing and no-bloat policy explicit
+- [x] configure `putReturnsNull(true)` to match TailCache's void `put` contract
+- [x] use Chronicle `longSize()` for adapter size parity
+- [x] document clear-vs-close lifecycle semantics for on/off-heap backends
+- [x] extend Chronicle tests for hit / miss / overwrite / clear / close parity
+- [x] add Chronicle allocation and JFR smoke tasks
+- [ ] run final Java 21 unit-test and cross-backend smoke validation
+- [ ] inspect Chronicle allocation profile and representative JFR recording
+
 ## Milestone 1 - trustworthy harness
 
 - [x] commit and pin the Gradle 9.7.1 wrapper
