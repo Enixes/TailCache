@@ -5,21 +5,33 @@ import net.openhft.chronicle.map.ChronicleMapBuilder;
 
 import java.util.Objects;
 
+/**
+ * Chronicle Map adapter used for TailCache's off-heap backend.
+ *
+ * <p>The Java map object itself is an on-heap view, while Chronicle Map stores entry data in its
+ * off-heap data store. The adapter owns that map instance and therefore must close it at the end
+ * of each benchmark trial.</p>
+ */
 public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
+    private static final double MAX_BLOAT_FACTOR = 1.0d;
+    private static final boolean PUT_RETURNS_NULL = true;
+
     private final ChronicleMap<Long, byte[]> map;
-    private final long maximumEntries;
+    private final long configuredEntries;
     private final int averageValueSizeBytes;
 
     public ChronicleMapCacheAdapter(CacheConfig config) {
         Objects.requireNonNull(config, "config");
-        this.maximumEntries = config.maximumEntries();
+        this.configuredEntries = config.maximumEntries();
         this.averageValueSizeBytes = config.averageValueSizeBytes();
         this.map = ChronicleMapBuilder
                 .of(Long.class, byte[].class)
                 .name("tailcache")
-                .entries(maximumEntries)
+                .entries(configuredEntries)
                 .averageValueSize(averageValueSizeBytes)
+                .maxBloatFactor(MAX_BLOAT_FACTOR)
+                .putReturnsNull(PUT_RETURNS_NULL)
                 .create();
     }
 
@@ -30,7 +42,11 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     @Override
     public String configurationSummary() {
-        return "entries=" + maximumEntries + ",averageValueSizeBytes=" + averageValueSizeBytes;
+        return "entries=" + configuredEntries
+                + ",averageValueSizeBytes=" + averageValueSizeBytes
+                + ",maxBloatFactor=" + MAX_BLOAT_FACTOR
+                + ",putReturnsNull=" + PUT_RETURNS_NULL
+                + ",storage=off-heap";
     }
 
     @Override
@@ -45,7 +61,7 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     @Override
     public long size() {
-        return map.size();
+        return map.longSize();
     }
 
     @Override
