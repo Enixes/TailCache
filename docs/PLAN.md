@@ -49,8 +49,8 @@
 - [x] deep-review Chronicle sizing semantics against the actual fixed-size workload
 - [x] replace `averageValueSize(...)` with `constantValueSizeBySample(...)`
 - [x] align config naming, tests, logging and docs with exact fixed-size payloads
-- [ ] rerun Java 21 unit-test and cross-backend smoke validation on the corrected layout
-- [ ] rerun Chronicle allocation/JFR diagnostics on the corrected layout and confirm the measured-path conclusions still hold
+- [x] rerun unit-test and cross-backend smoke validation on the corrected layout
+- [x] rerun Chronicle allocation/JFR diagnostics on the corrected layout and confirm the measured-path conclusions still hold
 
 ## Milestone 1 - trustworthy harness
 
