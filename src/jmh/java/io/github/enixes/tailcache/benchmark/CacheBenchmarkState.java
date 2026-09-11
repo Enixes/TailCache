@@ -15,6 +15,8 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
+import java.util.Arrays;
+
 /**
  * Shared state for cache microbenchmarks.
  *
@@ -38,22 +40,23 @@ public class CacheBenchmarkState {
 
     private CacheAdapter cache;
     private WorkloadTrace trace;
-    private long[] hitKeys;
-    private long[] missKeys;
+    private Long[] hitKeys;
+    private Long[] missKeys;
     private byte[] overwriteValue;
     private int cursor;
 
     @Setup(Level.Trial)
     public void setupTrial() {
         SyntheticKeyValueGenerator dataGenerator = new SyntheticKeyValueGenerator();
+        CacheConfig cacheConfig = new CacheConfig(CAPACITY, payloadSize.bytes());
 
-        cache = backend.create(new CacheConfig(CAPACITY, payloadSize.bytes()));
-        hitKeys = new long[KEY_SPACE];
-        missKeys = new long[KEY_SPACE];
+        cache = backend.create(cacheConfig);
+        hitKeys = new Long[KEY_SPACE];
+        missKeys = new Long[KEY_SPACE];
 
         for (int index = 0; index < KEY_SPACE; index++) {
-            long hitKey = dataGenerator.keyForIndex(index);
-            long missKey = dataGenerator.keyForIndex(KEY_SPACE + index);
+            Long hitKey = dataGenerator.keyForIndex(index);
+            Long missKey = dataGenerator.keyForIndex(KEY_SPACE + index);
 
             hitKeys[index] = hitKey;
             missKeys[index] = missKey;
@@ -64,7 +67,7 @@ public class CacheBenchmarkState {
                 WorkloadSpec.uniform(TRACE_SIZE, KEY_SPACE, 1.0, WORKLOAD_SEED)
         );
 
-        long overwriteKey = dataGenerator.keyForIndex(KEY_SPACE * 2);
+        Long overwriteKey = dataGenerator.keyForIndex(KEY_SPACE * 2);
         overwriteValue = dataGenerator.valueFor(overwriteKey, payloadSize);
 
         if (cache.size() != KEY_SPACE) {
@@ -72,6 +75,26 @@ public class CacheBenchmarkState {
                     "Expected " + KEY_SPACE + " entries after setup, found " + cache.size()
             );
         }
+
+        byte[] expectedFirstHit = dataGenerator.valueFor(hitKeys[0], payloadSize);
+        if (!Arrays.equals(expectedFirstHit, cache.get(hitKeys[0]))) {
+            throw new IllegalStateException("Cache hit sanity check failed during trial setup");
+        }
+        if (cache.get(missKeys[0]) != null) {
+            throw new IllegalStateException("Cache miss sanity check failed during trial setup");
+        }
+
+        System.out.printf(
+                "[TailCache][config] backend=%s adapter=%s backendConfig={%s} capacity=%d populatedEntries=%d payloadBytes=%d traceSize=%d workloadSeed=0x%X keyRepresentation=preboxed-Long%n",
+                backend,
+                cache.name(),
+                cache.configurationSummary(),
+                CAPACITY,
+                KEY_SPACE,
+                payloadSize.bytes(),
+                TRACE_SIZE,
+                WORKLOAD_SEED
+        );
     }
 
     @Setup(Level.Iteration)
@@ -90,11 +113,11 @@ public class CacheBenchmarkState {
         return cache;
     }
 
-    public long nextHitKey() {
+    public Long nextHitKey() {
         return hitKeys[nextLogicalIndex()];
     }
 
-    public long nextMissKey() {
+    public Long nextMissKey() {
         return missKeys[nextLogicalIndex()];
     }
 

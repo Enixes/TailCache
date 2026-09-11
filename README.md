@@ -54,29 +54,25 @@ docs/            methodology and experiment notes
 ## Toolchain
 
 - Java 21
+- Gradle Wrapper 9.7.1
 - Gradle Kotlin DSL
 - Caffeine 3.2.4
 - Chronicle Map 2026.1
 - JMH 1.37
 - JUnit Jupiter 6.1.3
 
-Dependency versions are pinned so benchmark runs remain reproducible.
+Dependency and wrapper versions are pinned so benchmark runs remain reproducible.
 
 ## Build
 
-Generate the Gradle wrapper once if it is not present:
+Use the committed Gradle wrapper rather than a system Gradle installation:
 
 ```bash
-gradle wrapper --gradle-version 9.7.0
-```
-
-Then run the tests:
-
-```bash
+./gradlew --version
 ./gradlew clean test
 ```
 
-Chronicle Map on Java 21 requires module export/open flags. The Gradle test and benchmark tasks provide the required JVM arguments.
+Chronicle Map on Java 21 requires module export/open flags. The Gradle test and benchmark runners provide the required JVM arguments; JMH then inherits those arguments into its forked benchmark VMs.
 
 ## Smoke benchmark
 
@@ -96,6 +92,17 @@ The smoke suite runs all current backend/payload combinations with a deliberatel
 Its purpose is to verify that the benchmark harness works end to end.
 
 **Smoke numbers are not intended as benchmark results.**
+
+## Caffeine validation smoke checks
+
+TailCache 03 adds two Caffeine-only diagnostics:
+
+```bash
+./gradlew jmhCaffeineAllocSmoke
+./gradlew jmhCaffeineJfrSmoke
+```
+
+The allocation smoke uses JMH's GC profiler. The JFR smoke is for diagnostic stack/context inspection; its timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` for interpretation limits.
 
 ## Run JMH directly
 

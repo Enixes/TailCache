@@ -8,11 +8,13 @@ import java.util.Objects;
 public final class CaffeineCacheAdapter implements CacheAdapter {
 
     private final Cache<Long, byte[]> cache;
+    private final long maximumEntries;
 
     public CaffeineCacheAdapter(CacheConfig config) {
         Objects.requireNonNull(config, "config");
+        this.maximumEntries = config.maximumEntries();
         this.cache = Caffeine.newBuilder()
-                .maximumSize(config.maximumEntries())
+                .maximumSize(maximumEntries)
                 .build();
     }
 
@@ -22,12 +24,17 @@ public final class CaffeineCacheAdapter implements CacheAdapter {
     }
 
     @Override
-    public byte[] get(long key) {
+    public String configurationSummary() {
+        return "maximumSize=" + maximumEntries + ",executor=ForkJoinPool.commonPool(default)";
+    }
+
+    @Override
+    public byte[] get(Long key) {
         return cache.getIfPresent(key);
     }
 
     @Override
-    public void put(long key, byte[] value) {
+    public void put(Long key, byte[] value) {
         cache.put(key, Objects.requireNonNull(value, "value"));
     }
 

@@ -24,29 +24,42 @@
 - [x] real Gradle unit-test run on Java 21
 - [x] real `jmhSmoke` run against Caffeine + Chronicle Map
 
+### TailCache 03 - Caffeine measured-path validation
+
+- [x] pre-box benchmark keys so cache calls do not include synthetic `Long` boxing
+- [x] validate Caffeine hit / miss / overwrite / clear / capacity semantics
+- [x] consume read results explicitly with JMH `Blackhole`
+- [x] log backend configuration, including Caffeine's effective default executor
+- [x] run allocation smoke with JMH `-prof gc`
+- [x] generate and inspect a representative JFR recording
+- [x] document the distinction between foreground lookup cost and asynchronous Caffeine maintenance
+- [x] review and fact-check JFR / JMH interpretation
+- [x] refresh validation after review fixes on the final PR head
+
 ## Milestone 1 - trustworthy harness
 
-- [ ] align the committed Gradle wrapper with the project-pinned Gradle version
+- [x] commit and pin the Gradle 9.7.1 wrapper
 - [x] run unit tests on Java 21
 - [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
-- [ ] add reportable JMH profile(s) only after smoke passes
+- [ ] quantify benchmark key-selection / harness floor before reportable latency comparisons
+- [ ] add reportable JMH profile(s) only after smoke and backend validation pass
 
 ## Milestone 2 - primary study
 
 - [ ] write 2-4 concrete hypotheses before running the main matrix
 - [ ] freeze experiment factors and seeds
+- [ ] define single-thread and any shared-cache concurrency experiments explicitly
 - [ ] run Caffeine vs Chronicle Map campaign
 - [ ] retain raw outputs
 - [ ] perform robustness reruns for surprising results
 
-## Milestone 3 - Chronicle Map sizing / #533
+## Milestone 3 - sizing and robustness sensitivity
 
-- [ ] create minimal sizing reproducer independent of primary JMH suite
-- [ ] vary estimate error systematically
-- [ ] determine failure boundary/repeatability
-- [ ] inspect upstream implementation only after reproducer is stable
-- [ ] prepare useful upstream contribution
+- [ ] vary Chronicle Map sizing assumptions systematically
+- [ ] test capacity headroom and average-value-size sensitivity separately from the primary latency campaign
+- [ ] distinguish serialization/materialization costs from sizing effects
+- [ ] retain this as a secondary experiment so it cannot distort the primary comparison
 
 ## Milestone 4 - analysis and write-up
 
@@ -57,4 +70,4 @@
 
 ## Cut line
 
-If schedule slips, cut eviction simulation first. Do not cut reproducibility, raw-result retention, sizing/#533 work, or honest reporting.
+If schedule slips, cut eviction simulation first, then reduce secondary sensitivity work. Do not cut reproducibility, raw-result retention, primary-methodology controls, or honest reporting.

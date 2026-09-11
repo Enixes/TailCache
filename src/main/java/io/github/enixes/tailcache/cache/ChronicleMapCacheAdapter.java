@@ -8,14 +8,18 @@ import java.util.Objects;
 public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     private final ChronicleMap<Long, byte[]> map;
+    private final long maximumEntries;
+    private final int averageValueSizeBytes;
 
     public ChronicleMapCacheAdapter(CacheConfig config) {
         Objects.requireNonNull(config, "config");
+        this.maximumEntries = config.maximumEntries();
+        this.averageValueSizeBytes = config.averageValueSizeBytes();
         this.map = ChronicleMapBuilder
                 .of(Long.class, byte[].class)
                 .name("tailcache")
-                .entries(config.maximumEntries())
-                .averageValueSize(config.averageValueSizeBytes())
+                .entries(maximumEntries)
+                .averageValueSize(averageValueSizeBytes)
                 .create();
     }
 
@@ -25,12 +29,17 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
     }
 
     @Override
-    public byte[] get(long key) {
+    public String configurationSummary() {
+        return "entries=" + maximumEntries + ",averageValueSizeBytes=" + averageValueSizeBytes;
+    }
+
+    @Override
+    public byte[] get(Long key) {
         return map.get(key);
     }
 
     @Override
-    public void put(long key, byte[] value) {
+    public void put(Long key, byte[] value) {
         map.put(key, Objects.requireNonNull(value, "value"));
     }
 

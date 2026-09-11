@@ -7,6 +7,7 @@ import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 import java.util.concurrent.TimeUnit;
 
@@ -17,43 +18,30 @@ import java.util.concurrent.TimeUnit;
  * 1/1/1 run. The annotations below provide a more realistic default when the
  * benchmark is launched directly, but results are still not reportable until
  * the experiment protocol is frozen.
+ *
+ * JVM module flags are configured on the Gradle JavaExec runner. JMH inherits
+ * the runner's input arguments for forked VMs when benchmark-specific JVM args
+ * are not supplied, avoiding duplicate --add-opens/--add-exports flags.
  */
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
-@Fork(
-        value = 3,
-        jvmArgsAppend = {
-                "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
-                "--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED",
-                "--add-exports=java.base/jdk.internal.util=ALL-UNNAMED",
-                "--add-exports=java.base/sun.nio.ch=ALL-UNNAMED",
-                "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
-                "--add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED",
-                "--add-opens=java.base/java.io=ALL-UNNAMED",
-                "--add-opens=java.base/java.lang=ALL-UNNAMED",
-                "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
-                "--add-opens=java.base/java.util=ALL-UNNAMED",
-                "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED"
-        }
-)
+@Fork(3)
 public class CacheSmokeBenchmark {
 
     @Benchmark
-    public byte[] getHit(CacheBenchmarkState state) {
-        return state.cache().get(state.nextHitKey());
+    public void getHit(CacheBenchmarkState state, Blackhole blackhole) {
+        blackhole.consume(state.cache().get(state.nextHitKey()));
     }
 
     @Benchmark
-    public byte[] getMiss(CacheBenchmarkState state) {
-        return state.cache().get(state.nextMissKey());
+    public void getMiss(CacheBenchmarkState state, Blackhole blackhole) {
+        blackhole.consume(state.cache().get(state.nextMissKey()));
     }
 
     @Benchmark
-    public byte[] putExisting(CacheBenchmarkState state) {
-        byte[] value = state.overwriteValue();
-        state.cache().put(state.nextHitKey(), value);
-        return value;
+    public void putExisting(CacheBenchmarkState state) {
+        state.cache().put(state.nextHitKey(), state.overwriteValue());
     }
 }
