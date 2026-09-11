@@ -4,7 +4,7 @@
 
 Validate the Chronicle Map backend with the same discipline used for the Caffeine baseline before any reportable backend comparison is attempted.
 
-**Status: IMPLEMENTED - RUNTIME VALIDATION PENDING**
+**Status: COMPLETE**
 
 ## Fact-checked backend semantics
 
@@ -38,13 +38,13 @@ TailCache keeps the same shared operations for both backends:
 - `getMiss`
 - `putExisting`
 
-For Chronicle Map, ordinary `get` remains the primary path. It may deserialize/materialize a `byte[]` from the off-heap representation. That API boundary is intentionally part of the end-to-end comparison.
+For Chronicle Map, ordinary `get` remains the primary path. It deserializes/materializes a Java `byte[]` from the off-heap representation on a hit. That API boundary is intentionally part of the end-to-end comparison.
 
 `getUsing` is **not** substituted into the primary benchmark because object reuse changes the API contract and would no longer be the same operation as the shared `CacheAdapter.get`. A reuse-oriented Chronicle experiment can be added later as a clearly separate secondary comparison.
 
 ## Lifecycle and correctness tests
 
-The Chronicle adapter tests now cover:
+The Chronicle adapter tests cover:
 
 - backend name and complete configuration summary;
 - miss before insertion;
@@ -57,9 +57,9 @@ The Chronicle adapter tests now cover:
 
 Benchmark trial teardown already calls `CacheAdapter.close()`, so every Chronicle Map created by JMH trial setup has an explicit lifecycle endpoint.
 
-## Validation commands
+## Runtime validation
 
-Run on the TailCache 04 branch:
+The final TailCache 04 branch was validated on JDK 21.0.12.1 with:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -68,38 +68,88 @@ Run on the TailCache 04 branch:
 ./gradlew jmhChronicleJfrSmoke
 ```
 
-The two Chronicle-only profiler tasks use the same 1 warmup / 1 measurement / 1 fork / 300 ms smoke policy as the Caffeine validation tasks and run through the Java 21 toolchain.
+All four commands completed successfully. `jmhSmoke` exercised both Caffeine and Chronicle Map after the adapter changes, and Chronicle trial logging showed the expected configuration for both payload sizes:
 
-## Allocation-smoke interpretation
+```text
+entries=4096
+averageValueSizeBytes=256 | 4096
+maxBloatFactor=1.0
+putReturnsNull=true
+storage=off-heap
+```
 
-The Chronicle allocation smoke is **not** expected to match Caffeine's near-zero foreground allocation profile.
+The profiler tasks used the Java 21 toolchain and the same 1 warmup / 1 measurement / 1 fork / 300 ms diagnostic policy as the Caffeine validation tasks.
+
+## Allocation-smoke results
+
+The Chronicle allocation smoke produced the following normalized allocation:
+
+| Operation | 256 B payload | 4 KiB payload |
+|---|---:|---:|
+| `getHit` | 272.169 B/op | 4117.053 B/op |
+| `getMiss` | 0.199 B/op | 0.076 B/op |
+| `putExisting` | 192.657 B/op | 198.420 B/op |
+
+These results have a useful internal-control pattern:
+
+- `getHit` allocation scales almost one-for-one with payload size;
+- `getMiss` is effectively allocation-free at the operation level;
+- `putExisting` remains roughly payload-size independent after `putReturnsNull(true)`.
+
+That pattern is consistent with successful ordinary `get` calls materializing a Java `byte[]`, while misses do not materialize a payload and `putExisting` does not materialize the replaced value merely to satisfy `Map.put` return semantics.
+
+The absolute allocation values are diagnostic smoke results, not reportable performance measurements.
+
+## JFR classification
+
+A representative 4 KiB `getHit` JFR recording confirms the allocation source directly. Repeated sampled allocations on the JMH worker are `byte[]` objects with stacks through:
+
+```text
+ByteArraySizedReader.read
+VanillaChronicleMap.searchValue
+VanillaChronicleMap.tieredValue
+VanillaChronicleMap.optimizedGet
+```
+
+This provides direct sampled-stack evidence that ordinary Chronicle Map `get` materializes the returned Java `byte[]` from the off-heap representation. The recording also contained multiple young-GC events, which is consistent with the high allocation rate of the 4 KiB hit path.
+
+The representative 4 KiB `putExisting` recording shows a different allocation shape. Sampled worker-thread allocations are dominated by Chronicle Bytes/reference-counting objects such as `HeapBytesStore`, `VanillaReferenceCounted`, `ReferenceChangeListenerManager`, and related support objects. The stacks flow through:
+
+```text
+ByteArrayDataAccess.getData
+BytesStore.wrap
+HeapBytesStore.wrap
+VanillaChronicleMap.put
+```
+
+No sampled `byte[]` allocation or `ByteArraySizedReader` materialization stack appeared in that put recording. Together with the payload-size-independent ~193-198 B/op GC-profiler result, this provides no evidence that `putExisting` is materializing the replaced 256 B/4 KiB value after `putReturnsNull(true)`. It does **not** claim universal zero old-value allocation; JFR allocation events are sampled.
+
+The put recording also captured a C2 compilation of `MapMethods.put` during the short diagnostic run. This is another reason the 300 ms smoke latency distributions are not steady-state research results and motivates an explicit warmup/compilation-stability check before the reportable campaign.
+
+Thread-park samples in the inspected recordings were JMH/main-thread coordination or process-reaper activity rather than the benchmark worker. The default JFR profile remains sampled and thresholded, so zero counts for disabled or thresholded event types are not interpreted as proof of universal absence.
+
+## Interpretation guardrails
+
+The allocation and JFR diagnostics validate measured-path semantics; they do not establish the final latency comparison.
 
 In particular:
 
-- a `getHit` may allocate when the off-heap value is materialized as a Java `byte[]`;
-- a `getMiss` should not need to materialize a payload;
-- `putExisting` should not allocate merely to return the replaced value because `putReturnsNull(true)` is configured;
-- any remaining allocation must be classified rather than automatically treated as a failure.
-
-The goal is to identify which allocation is intrinsic to the API boundary and which would be accidental benchmark plumbing.
-
-## JFR interpretation
-
-The same guardrails from TailCache 03 apply. JMH 1.37's default JFR `profile` configuration is sampled and thresholded; disabled or thresholded zero-count events are not proof of universal absence.
-
-Use JFR to inspect representative stacks, GC/runtime activity and unexpected synchronization. Do not use JFR-profiled latency values as research results.
+- JFR-profiled latency values are profiler-perturbed and must not be compared with non-profiled runs;
+- the 1/1/1, 300 ms smoke distributions are too short for tail-latency conclusions;
+- observed GC events in the Chronicle hit path are expected consequences of normal `get` materialization, but their steady-state effect must be measured in the reportable experiment rather than inferred from these smoke runs;
+- Chronicle's normal `get` and a future `getUsing`/reuse path answer different API-level questions and must remain separate experiments.
 
 ## Completion criteria
 
-TailCache 04 is complete when the final branch head satisfies all of the following:
+TailCache 04 completion checks are all satisfied:
 
-- `./gradlew test --rerun-tasks` passes on Java 21;
-- lifecycle tests confirm close/repeated-close behavior;
-- `jmhSmoke` succeeds for both backends after the Chronicle changes;
-- Chronicle trial logs show explicit `entries`, `averageValueSizeBytes`, `maxBloatFactor`, `putReturnsNull` and off-heap storage metadata;
-- `jmhChronicleAllocSmoke` completes and its per-operation allocation profile is reviewed;
-- `jmhChronicleJfrSmoke` generates recordings for all Chronicle operation/payload combinations;
-- at least one representative Chronicle hit recording is inspected for allocation/runtime behavior;
-- no smoke latency number is promoted to a research conclusion.
+- [x] `./gradlew test --rerun-tasks` passes on Java 21;
+- [x] lifecycle tests confirm close/repeated-close behavior;
+- [x] `jmhSmoke` succeeds for both backends after the Chronicle changes;
+- [x] Chronicle trial logs show explicit `entries`, `averageValueSizeBytes`, `maxBloatFactor`, `putReturnsNull` and off-heap storage metadata;
+- [x] `jmhChronicleAllocSmoke` completes and its per-operation allocation profile is reviewed;
+- [x] `jmhChronicleJfrSmoke` generates recordings for all Chronicle operation/payload combinations;
+- [x] representative Chronicle hit and put recordings are inspected for allocation/runtime behavior;
+- [x] no smoke latency number is promoted to a research conclusion.
 
-After this milestone, the next trustworthy-harness work is to quantify the benchmark harness floor and freeze the reportable experiment protocol before running the Caffeine-vs-Chronicle campaign.
+The next trustworthy-harness work is to quantify the benchmark harness floor, capture environment metadata, verify warmup/compilation stability, and freeze the reportable experiment protocol before running the Caffeine-vs-Chronicle campaign.
