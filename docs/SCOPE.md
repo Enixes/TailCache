@@ -11,8 +11,8 @@ Total engineering/research budget: **35-40 hours**
 - Chronicle Map adapter.
 - Deterministic synthetic workload generator with fixed seeds.
 - JMH latency harness capable of reporting percentiles.
-- Capacity-safe Caffeine vs Chronicle Map experiments.
-- Chronicle Map sizing/estimation reproduction related to issue #533.
+- A frozen primary Caffeine vs Chronicle Map protocol with explicit backend-specific occupancy semantics.
+- Chronicle Map sizing/robustness sensitivity kept separate from the primary latency campaign.
 - Raw result retention plus enough environment metadata to reproduce runs.
 - Written analysis that includes null, negative, failed and inconvenient results.
 
@@ -20,7 +20,7 @@ Total engineering/research budget: **35-40 hours**
 
 - Eviction-policy simulation.
 
-It is allowed only after the primary comparison and #533 contribution are complete and only if at least ~5 hours remain in the budget. It must not delay the October 20 target.
+It is allowed only after the primary comparison and essential sizing/robustness checks are complete and only if at least ~5 hours remain in the budget. It must not delay the October 20 target.
 
 ## Explicitly out of scope
 
@@ -35,7 +35,7 @@ It is allowed only after the primary comparison and #533 contribution are comple
 
 ## Scope-creep rule
 
-Any task expected to consume more than **2 hours** that is not directly required for the primary comparison, reproducibility, or issue #533 must be explicitly justified before implementation. Default answer: cut it.
+Any task expected to consume more than **2 hours** that is not directly required for the primary comparison, reproducibility, or a clearly defined sizing/robustness question must be explicitly justified before implementation. Default answer: cut it.
 
 ## Suggested 38-hour allocation
 
@@ -45,9 +45,9 @@ Any task expected to consume more than **2 hours** that is not directly required
 | Workload design + correctness checks | 5 h |
 | Benchmark protocol + environment capture | 4 h |
 | Main Caffeine vs Chronicle runs | 8 h |
-| Chronicle sizing/#533 reproduction | 7 h |
+| Chronicle sizing/robustness sensitivity | 7 h |
 | Analysis, plots/tables, robustness reruns | 5 h |
-| Write-up + cleanup + upstream PR/issue material | 4 h |
+| Write-up + cleanup | 4 h |
 | **Total** | **38 h** |
 
 The budget is a constraint, not a target to exhaust.
