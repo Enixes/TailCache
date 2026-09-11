@@ -44,8 +44,10 @@
 - [x] document clear-vs-close lifecycle semantics for on/off-heap backends
 - [x] extend Chronicle tests for hit / miss / overwrite / clear / close parity
 - [x] add Chronicle allocation and JFR smoke tasks
-- [ ] run final Java 21 unit-test and cross-backend smoke validation
-- [ ] inspect Chronicle allocation profile and representative JFR recording
+- [x] run final Java 21 unit-test and cross-backend smoke validation
+- [x] inspect Chronicle allocation profile and representative hit/put JFR recordings
+- [x] confirm ordinary `get` materializes payload-sized `byte[]` values
+- [x] confirm `putExisting` allocation does not scale with replaced payload size after `putReturnsNull(true)`
 
 ## Milestone 1 - trustworthy harness
 
@@ -54,6 +56,7 @@
 - [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
 - [ ] quantify benchmark key-selection / harness floor before reportable latency comparisons
+- [ ] verify reportable warmup is sufficient for measured-path compilation stability
 - [ ] add reportable JMH profile(s) only after smoke and backend validation pass
 
 ## Milestone 2 - primary study
