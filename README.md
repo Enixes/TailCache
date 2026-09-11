@@ -93,16 +93,20 @@ Its purpose is to verify that the benchmark harness works end to end.
 
 **Smoke numbers are not intended as benchmark results.**
 
-## Caffeine validation smoke checks
+## Backend validation smoke checks
 
-TailCache 03 adds two Caffeine-only diagnostics:
+TailCache has backend-specific allocation and JFR diagnostics:
 
 ```bash
 ./gradlew jmhCaffeineAllocSmoke
 ./gradlew jmhCaffeineJfrSmoke
+./gradlew jmhChronicleAllocSmoke
+./gradlew jmhChronicleJfrSmoke
 ```
 
-The allocation smoke uses JMH's GC profiler. The JFR smoke is for diagnostic stack/context inspection; its timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` for interpretation limits.
+The allocation smokes use JMH's GC profiler. The JFR smokes are for diagnostic stack/context inspection; their timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` and `docs/TAILCACHE_04.md` for backend-specific interpretation limits.
+
+Chronicle Map's primary adapter uses ordinary `get`, explicit entry/value sizing, `maxBloatFactor(1.0)`, and `putReturnsNull(true)`. Ordinary Chronicle `get` may materialize a Java value from off-heap storage; object-reuse alternatives such as `getUsing` are intentionally kept out of the primary parity path.
 
 ## Run JMH directly
 
