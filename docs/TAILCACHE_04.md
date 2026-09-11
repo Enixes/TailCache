@@ -4,7 +4,7 @@
 
 Validate the Chronicle Map backend with the same discipline used for the Caffeine baseline before any reportable backend comparison is attempted.
 
-**Status: DEEP-REVIEW FIX APPLIED - FINAL REVALIDATION PENDING**
+**Status: COMPLETE**
 
 ## Fact-checked backend semantics
 
@@ -24,18 +24,16 @@ The adapter intentionally does **not** configure `actualChunkSize`. Chronicle Ma
 
 ## Deep-review correction: fixed-size versus average-size configuration
 
-The first TailCache 04 implementation used `averageValueSize(...)`. A deeper review against Chronicle Map's builder documentation found that this was not the best description of the workload: within each TailCache trial, every value is exactly 256 B or exactly 4 KiB.
+The first TailCache 04 implementation used `averageValueSize(...)`. A deeper review against Chronicle Map's builder documentation found that this did not accurately describe the workload: within each TailCache trial, every value is exactly 256 B or exactly 4 KiB.
 
-Chronicle explicitly recommends `constantValueSizeBySample(...)` when values are constant-sized. That choice is not just terminology; it can change Chronicle's derived entry/chunk layout. Therefore the earlier average-sized runtime diagnostics remain useful historical evidence about ordinary `get`/`put` semantics, but they are **not the final validation of the corrected branch layout**.
+Chronicle recommends `constantValueSizeBySample(...)` when values are constant-sized. That choice can change Chronicle's derived entry/chunk layout, so the earlier average-size diagnostics were retained only as historical evidence and the full validation was repeated after correcting the layout.
 
-The configuration and tests were corrected as follows:
+The correction was:
 
 - `CacheConfig.averageValueSizeBytes` -> `CacheConfig.valueSizeBytes`;
 - Chronicle builder `averageValueSize(...)` -> `constantValueSizeBySample(...)`;
 - Chronicle tests now insert values whose length exactly matches the configured fixed payload size;
-- backend logging now reports `valueSizeBytes`, `valueSizing=constant`, `entryStorage=off-heap`, and `persisted=false`.
-
-Final Java 21 smoke/allocation/JFR validation must be rerun after this correction before TailCache 04 is considered complete.
+- backend logging reports `valueSizeBytes`, `valueSizing=constant`, `entryStorage=off-heap`, and `persisted=false`.
 
 ## Entry-count and occupancy semantics
 
@@ -80,9 +78,9 @@ The Chronicle adapter tests cover:
 
 Benchmark trial teardown calls `CacheAdapter.close()`, so every Chronicle Map created by JMH trial setup has an explicit lifecycle endpoint.
 
-## Historical pre-correction runtime diagnostics
+## Final corrected-layout validation
 
-Before the fixed-size layout correction, the average-size implementation was validated on JDK 21.0.12.1 with:
+The corrected executable branch head `8dc42012e91608a2e1d605ece7393243c3a24d8b` was validated with:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -91,25 +89,41 @@ Before the fixed-size layout correction, the average-size implementation was val
 ./gradlew jmhChronicleJfrSmoke
 ```
 
-All four commands completed successfully. These results are retained because they established important API-path behavior, but they are now considered **historical diagnostics**, not final corrected-layout validation.
+All four commands completed successfully. The validation working tree had only unrelated untracked local JFR log files, so no modified tracked source or build file was involved in the run.
 
-### Allocation profile from the historical run
+The host shell and Gradle launcher were running JDK 26, while the benchmark JavaExec/JMH VMs were explicitly launched with JDK 21.0.12.1 via the project toolchain. The benchmark runtime therefore remained the pinned Java 21 runtime.
+
+Chronicle trial logs showed the expected corrected configuration for both payload sizes:
+
+```text
+entries=4096
+valueSizeBytes=256 | 4096
+valueSizing=constant
+maxBloatFactor=1.0
+putReturnsNull=true
+entryStorage=off-heap
+persisted=false
+```
+
+### Corrected-layout allocation profile
 
 | Operation | 256 B payload | 4 KiB payload |
 |---|---:|---:|
-| `getHit` | 272.169 B/op | 4117.053 B/op |
-| `getMiss` | 0.199 B/op | 0.076 B/op |
-| `putExisting` | 192.657 B/op | 198.420 B/op |
+| `getHit` | 272.367 B/op | 4116.698 B/op |
+| `getMiss` | 0.088 B/op | 0.201 B/op |
+| `putExisting` | 195.121 B/op | 194.414 B/op |
 
-The pattern was internally coherent:
+The corrected layout preserves the same qualitative pattern as the historical average-size run:
 
-- `getHit` allocation scaled almost one-for-one with payload size;
-- `getMiss` was effectively allocation-free at the operation level;
-- `putExisting` remained roughly payload-size independent after `putReturnsNull(true)`.
+- `getHit` allocation scales almost one-for-one with payload size;
+- `getMiss` remains effectively allocation-free at the operation level;
+- `putExisting` remains roughly payload-size independent after `putReturnsNull(true)`.
 
-### JFR classification from the historical run
+The tiny differences from the earlier diagnostic values are not treated as performance changes; these are short smoke/profiler runs. What matters here is that the measured-path allocation semantics survived the layout correction.
 
-A representative 4 KiB `getHit` recording showed repeated sampled `byte[]` allocations on the JMH worker through:
+### Corrected-layout JFR classification
+
+The representative corrected 4 KiB `getHit` recording again shows repeated `byte[]` allocation samples on the JMH worker through:
 
 ```text
 ByteArraySizedReader.read
@@ -118,9 +132,9 @@ VanillaChronicleMap.tieredValue
 VanillaChronicleMap.optimizedGet
 ```
 
-That provided direct sampled-stack evidence that ordinary Chronicle Map `get` materializes the returned Java `byte[]` from off-heap storage.
+This directly confirms, under the final constant-size layout, that ordinary Chronicle Map `get` materializes the returned Java `byte[]` from off-heap entry storage. The recording contains five young G1 collections during the short profiled run, consistent with the high payload-sized allocation rate.
 
-The representative 4 KiB `putExisting` recording showed Chronicle Bytes/reference-counting allocations through:
+The representative corrected 4 KiB `putExisting` recording shows Chronicle Bytes/reference-counting allocations on the worker through paths including:
 
 ```text
 ByteArrayDataAccess.getData
@@ -129,9 +143,23 @@ HeapBytesStore.wrap
 VanillaChronicleMap.put
 ```
 
-No sampled `byte[]` allocation or `ByteArraySizedReader` old-value materialization stack appeared in that put recording. Combined with the payload-size-independent allocation profile, there was no evidence that `putExisting` materialized the replaced payload after `putReturnsNull(true)`. This remains sampled evidence, not a universal zero-allocation claim.
+No `ByteArraySizedReader` old-value materialization stack appears in the inspected put recording. A sampled worker-thread `byte[]` allocation does appear during JMH/warmdown support code (`Class.getPackageName`/string processing), so the conclusion is deliberately narrow: there is no sampled evidence of Chronicle old-value materialization on the put path, and the GC-profiler allocation remains payload-size independent at about 194-195 B/op.
 
-The put recording also captured C2 compilation of `MapMethods.put` during the short diagnostic window. That is why TailCache now has an explicit warmup/compilation-stability task before any reportable campaign.
+The corrected get-hit recording contains two long compilation events, but they are `InnerClassLambdaMetafactory.generateInnerClass()` and `ByteArrayOutputStream.ensureCapacity(int)`, not the Chronicle measured-path method previously observed in the historical put run. There are no recorded `jdk.Compilation` events in the inspected corrected put JFR. This does not remove the need for a reportable warmup/compilation-stability check.
+
+Thread-park events in the representative corrected recordings belong to the JMH/main thread or process reaper rather than the benchmark worker.
+
+## Historical pre-correction diagnostics
+
+The superseded average-size layout produced:
+
+| Operation | 256 B payload | 4 KiB payload |
+|---|---:|---:|
+| `getHit` | 272.169 B/op | 4117.053 B/op |
+| `getMiss` | 0.199 B/op | 0.076 B/op |
+| `putExisting` | 192.657 B/op | 198.420 B/op |
+
+Those results remain useful as provenance for why the measured-path semantics were investigated, but they are not mixed into the final constant-size-layout experiment as if they were one dataset.
 
 ## Interpretation guardrails
 
@@ -142,21 +170,21 @@ In particular:
 - JFR-profiled latency values are profiler-perturbed and must not be compared with non-profiled runs;
 - the 1/1/1, 300 ms smoke distributions are too short for tail-latency conclusions;
 - historical average-size results must not be mixed with corrected constant-size results as if they came from the same Chronicle layout;
-- observed GC activity in a Chronicle hit path must be evaluated again on the corrected layout before final conclusions;
+- observed GC activity in the Chronicle hit path is expected from ordinary `get` materialization, but its steady-state tail effect must be measured in the reportable experiment;
 - Chronicle's normal `get` and a future `getUsing`/reuse path answer different API-level questions and must remain separate experiments;
-- JFR zero counts for disabled or thresholded event types are not proof of universal absence.
+- JFR allocation events are sampled and zero counts for disabled or thresholded event types are not proof of universal absence.
 
 ## Completion criteria
 
-TailCache 04 is complete when the **corrected constant-size branch head** satisfies all of the following:
+TailCache 04 completion checks are satisfied on the corrected constant-size layout:
 
-- [ ] `./gradlew test --rerun-tasks` passes on Java 21;
+- [x] `./gradlew test --rerun-tasks` passes after the correction;
 - [x] lifecycle tests cover close/repeated-close behavior;
-- [ ] `jmhSmoke` succeeds for both backends after the fixed-size layout correction;
-- [ ] Chronicle trial logs show `entries`, `valueSizeBytes`, `valueSizing=constant`, `maxBloatFactor`, `putReturnsNull`, off-heap entry storage and non-persisted mode;
-- [ ] `jmhChronicleAllocSmoke` completes on the corrected layout and its per-operation allocation profile is reviewed;
-- [ ] `jmhChronicleJfrSmoke` generates recordings for all Chronicle operation/payload combinations on the corrected layout;
-- [ ] representative corrected-layout Chronicle hit and put recordings are inspected;
+- [x] `jmhSmoke` succeeds for both backends after the correction;
+- [x] Chronicle trial logs show `entries`, `valueSizeBytes`, `valueSizing=constant`, `maxBloatFactor`, `putReturnsNull`, off-heap entry storage and non-persisted mode;
+- [x] `jmhChronicleAllocSmoke` completes and its corrected-layout per-operation allocation profile is reviewed;
+- [x] `jmhChronicleJfrSmoke` generates recordings for all Chronicle operation/payload combinations;
+- [x] representative corrected-layout Chronicle hit and put recordings are inspected;
 - [x] no smoke latency number is promoted to a research conclusion.
 
-After that, the next trustworthy-harness work is to quantify the benchmark harness floor, capture environment metadata, verify warmup/compilation stability, freeze backend-specific occupancy semantics, and then freeze the reportable experiment protocol before running the Caffeine-vs-Chronicle campaign.
+TailCache 04 is therefore complete. The next trustworthy-harness work is to quantify the benchmark harness floor, capture environment metadata, verify warmup/compilation stability, freeze backend-specific occupancy semantics, capture useful resolved Chronicle layout metadata where possible, and then freeze the reportable experiment protocol before running the Caffeine-vs-Chronicle campaign.
