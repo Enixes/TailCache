@@ -19,17 +19,19 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     private final ChronicleMap<Long, byte[]> map;
     private final long configuredEntries;
-    private final int averageValueSizeBytes;
+    private final int valueSizeBytes;
 
     public ChronicleMapCacheAdapter(CacheConfig config) {
         Objects.requireNonNull(config, "config");
         this.configuredEntries = config.maximumEntries();
-        this.averageValueSizeBytes = config.averageValueSizeBytes();
+        this.valueSizeBytes = config.valueSizeBytes();
+
+        byte[] valueSizeSample = new byte[valueSizeBytes];
         this.map = ChronicleMapBuilder
                 .of(Long.class, byte[].class)
                 .name("tailcache")
                 .entries(configuredEntries)
-                .averageValueSize(averageValueSizeBytes)
+                .constantValueSizeBySample(valueSizeSample)
                 .maxBloatFactor(MAX_BLOAT_FACTOR)
                 .putReturnsNull(PUT_RETURNS_NULL)
                 .create();
@@ -43,10 +45,12 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
     @Override
     public String configurationSummary() {
         return "entries=" + configuredEntries
-                + ",averageValueSizeBytes=" + averageValueSizeBytes
+                + ",valueSizeBytes=" + valueSizeBytes
+                + ",valueSizing=constant"
                 + ",maxBloatFactor=" + MAX_BLOAT_FACTOR
                 + ",putReturnsNull=" + PUT_RETURNS_NULL
-                + ",storage=off-heap";
+                + ",entryStorage=off-heap"
+                + ",persisted=false";
     }
 
     @Override
