@@ -19,7 +19,7 @@ class ChronicleMapCacheAdapterTest {
         try (CacheAdapter cache = new ChronicleMapCacheAdapter(new CacheConfig(100, VALUE_SIZE))) {
             assertEquals("chronicle-map", cache.name());
             assertEquals(
-                    "entries=100,valueSizeBytes=32,valueSizing=constant,maxBloatFactor=1.0,putReturnsNull=true,entryStorage=off-heap,persisted=false",
+                    "entries=100,valueSizeBytes=32,valueSizing=constant,maxBloatFactor=1.0,allowSegmentTiering=true,putReturnsNull=true,entryStorage=off-heap,persisted=false",
                     cache.configurationSummary()
             );
             assertNull(cache.get(1L));
@@ -41,6 +41,13 @@ class ChronicleMapCacheAdapterTest {
             cache.clear();
             assertNull(cache.get(1L));
             assertEquals(0, cache.size());
+        }
+    }
+
+    @Test
+    void rejectsValueWhoseSizeDoesNotMatchConfiguredConstantSize() {
+        try (CacheAdapter cache = new ChronicleMapCacheAdapter(new CacheConfig(16, VALUE_SIZE))) {
+            assertThrows(IllegalArgumentException.class, () -> cache.put(1L, new byte[VALUE_SIZE - 1]));
         }
     }
 
