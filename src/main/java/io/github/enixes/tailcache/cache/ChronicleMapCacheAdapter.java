@@ -15,6 +15,7 @@ import java.util.Objects;
 public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     private static final double MAX_BLOAT_FACTOR = 1.0d;
+    private static final boolean ALLOW_SEGMENT_TIERING = true;
     private static final boolean PUT_RETURNS_NULL = true;
 
     private final ChronicleMap<Long, byte[]> map;
@@ -33,6 +34,7 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
                 .entries(configuredEntries)
                 .constantValueSizeBySample(valueSizeSample)
                 .maxBloatFactor(MAX_BLOAT_FACTOR)
+                .allowSegmentTiering(ALLOW_SEGMENT_TIERING)
                 .putReturnsNull(PUT_RETURNS_NULL)
                 .create();
     }
@@ -48,6 +50,7 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
                 + ",valueSizeBytes=" + valueSizeBytes
                 + ",valueSizing=constant"
                 + ",maxBloatFactor=" + MAX_BLOAT_FACTOR
+                + ",allowSegmentTiering=" + ALLOW_SEGMENT_TIERING
                 + ",putReturnsNull=" + PUT_RETURNS_NULL
                 + ",entryStorage=off-heap"
                 + ",persisted=false";
