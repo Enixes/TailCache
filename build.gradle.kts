@@ -35,7 +35,8 @@ val chronicleJvmArgs = listOf(
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
     "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
     "--add-opens=java.base/java.util=ALL-UNNAMED",
-    "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED"
+    "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED",
+    "-Dchronicle.analytics.disable=true"
 )
 
 dependencies {
@@ -179,5 +180,55 @@ tasks.register<JavaExec>("jmhChronicleJfrSmoke") {
         "-w", "300ms",
         "-r", "300ms",
         "-prof", "jfr:dir=$jfrOutputDir"
+    )
+}
+
+tasks.register<JavaExec>("jmhWorkloadSmoke") {
+    group = "benchmark"
+    description = "Runs the TailCache 05 mixed-workload matrix with one shared-cache worker; diagnostic only."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
+
+    val resultDir = layout.buildDirectory.dir("reports/jmh").get().asFile
+    val resultFile = resultDir.resolve("workload-smoke-1t.json")
+    doFirst { resultDir.mkdirs() }
+    args(
+        ".*CacheWorkloadBenchmark.*",
+        "-t", "1",
+        "-wi", "1",
+        "-i", "1",
+        "-f", "1",
+        "-w", "300ms",
+        "-r", "300ms",
+        "-rf", "json",
+        "-rff", resultFile.absolutePath
+    )
+}
+
+tasks.register<JavaExec>("jmhWorkloadShared16Smoke") {
+    group = "benchmark"
+    description = "Runs the TailCache 05 matrix with 16 workers sharing one cache instance; diagnostic only."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs)
+
+    val resultDir = layout.buildDirectory.dir("reports/jmh").get().asFile
+    val resultFile = resultDir.resolve("workload-smoke-16t.json")
+    doFirst { resultDir.mkdirs() }
+    args(
+        ".*CacheWorkloadBenchmark.*",
+        "-t", "16",
+        "-wi", "1",
+        "-i", "1",
+        "-f", "1",
+        "-w", "300ms",
+        "-r", "300ms",
+        "-rf", "json",
+        "-rff", resultFile.absolutePath
     )
 }

@@ -38,7 +38,7 @@
 
 ### TailCache 04 - Chronicle Map measured-path validation
 
-- [x] make Chronicle entry/value sizing and no-bloat policy explicit
+- [x] make Chronicle entry/value sizing explicit
 - [x] configure `putReturnsNull(true)` to match TailCache's void `put` contract
 - [x] use Chronicle `longSize()` for adapter size parity
 - [x] document clear-vs-close lifecycle semantics for on/off-heap backends
@@ -52,25 +52,61 @@
 - [x] rerun unit-test and cross-backend smoke validation on the corrected layout
 - [x] rerun Chronicle allocation/JFR diagnostics on the corrected layout and confirm the measured-path conclusions still hold
 
+#### TailCache 04 peer-review follow-up carried into TailCache 05
+
+- [x] disable Chronicle analytics in all test/benchmark JVMs
+- [x] explicitly configure and log `allowSegmentTiering=true`
+- [x] correct wording so `maxBloatFactor(1.0)` is not described as disabling tiering
+- [x] add a wrong-value-size negative test for the constant-size Chronicle contract
+- [x] describe backend configuration output as experiment-relevant rather than exhaustive
+- [ ] rerun TailCache 04 test/smoke/allocation/JFR validation on the peer-review-hardened head
+
+### TailCache 05 - workload distributions, persistence and concurrency matrix
+
+- [x] add Chronicle storage modes `IN_MEMORY` and `PERSISTED`
+- [x] implement persisted Chronicle creation with `createPersistedTo(...)`
+- [x] create persisted benchmark files during trial setup and close/delete them during trial teardown
+- [x] prepopulate all primary modes outside measurement
+- [x] define primary modes: Caffeine / Chronicle in-memory / Chronicle persisted-warm
+- [x] add deterministic Zipfian access with initial exponent 0.99
+- [x] preserve uniform access and legacy hotspot support
+- [x] add exact 95/5 and 70/30 read/update mixes
+- [x] separate key-selection and operation-mix random streams so changing the mix does not change the key sequence
+- [x] preallocate one replacement payload per logical key so mixed writes allocate nothing and do not collapse Caffeine's resident values onto one shared object
+- [x] introduce `Scope.Benchmark` shared-cache state for the mixed workload
+- [x] keep per-worker trace cursors in `Scope.Thread` with deterministic staggered offsets
+- [x] add one-worker and 16-worker shared-cache smoke tasks
+- [x] export mixed-workload smoke results as JMH JSON
+- [x] keep two-JVM persisted sharing separate from the primary same-JVM matrix
+- [ ] run unit tests after the workload/persistence changes
+- [ ] run `jmhWorkloadSmoke` and verify all 24 primary parameter combinations expand successfully
+- [ ] run `jmhWorkloadShared16Smoke` and verify one shared cache is used by all 16 workers
+- [ ] verify persisted map files are removed after successful trial teardown
+- [ ] verify Chronicle analytics remains disabled in all workload benchmark forks
+- [ ] review persisted warm-state assumptions before promoting any persisted latency number
+
 ## Milestone 1 - trustworthy harness
 
 - [x] commit and pin the Gradle 9.7.1 wrapper
 - [x] run unit tests on Java 21
 - [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
-- [ ] quantify benchmark key-selection / harness floor before reportable latency comparisons
+- [ ] quantify benchmark trace-selection / harness floor before reportable latency comparisons
 - [ ] verify reportable warmup is sufficient for measured-path compilation stability
 - [ ] freeze backend-specific entry-count / occupancy semantics before reportable comparisons
 - [ ] capture resolved Chronicle layout metadata when it can be obtained reliably
+- [ ] capture filesystem, mount and storage-device metadata for persisted runs
+- [ ] verify warm persisted trials are not dominated by first-touch page faults or setup writeback
 - [ ] add reportable JMH profile(s) only after smoke and backend validation pass
 
 ## Milestone 2 - primary study
 
 - [ ] write 2-4 concrete hypotheses before running the main matrix
 - [ ] freeze experiment factors and seeds
-- [ ] define single-thread and any shared-cache concurrency experiments explicitly
-- [ ] run Caffeine vs Chronicle Map campaign
-- [ ] retain raw outputs
+- [x] define one-thread and same-JVM shared-cache state ownership explicitly
+- [ ] decide which concurrency levels survive the pilot into the reportable matrix
+- [ ] run Caffeine vs Chronicle in-memory vs Chronicle persisted-warm campaign
+- [ ] retain raw outputs and configuration exports
 - [ ] perform robustness reruns for surprising results
 
 ## Milestone 3 - sizing and robustness sensitivity
@@ -79,7 +115,10 @@
 - [ ] test `entries` target / resident-set headroom separately from the primary latency campaign
 - [ ] test fixed-size layout assumptions and any deliberately perturbed sizing configuration as secondary sensitivity checks
 - [ ] distinguish serialization/materialization costs from sizing effects
-- [ ] retain this as a secondary experiment so it cannot distort the primary comparison
+- [ ] keep `getUsing` / object reuse as a separate API-level experiment
+- [ ] keep persisted cold/open behaviour separate from warm steady-state results
+- [ ] run two-JVM persisted sharing only as a distinct secondary experiment
+- [ ] retain this as secondary work so it cannot distort the primary comparison
 
 ## Milestone 4 - analysis and write-up
 
@@ -90,4 +129,4 @@
 
 ## Cut line
 
-If schedule slips, cut eviction simulation first, then reduce secondary sensitivity work. Do not cut reproducibility, raw-result retention, primary-methodology controls, or honest reporting.
+If schedule slips, cut eviction simulation first, then reduce secondary sensitivity work. Two-JVM sharing and cold/open persistence behaviour are secondary. Do not cut reproducibility, raw-result retention, primary-methodology controls, or honest reporting.
