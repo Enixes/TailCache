@@ -9,6 +9,11 @@ package io.github.enixes.tailcache.cache;
  *
  * <p>Keys are {@link Long} rather than primitive {@code long} so benchmark state can pre-box keys
  * during setup. This avoids measuring synthetic boxing allocations in the cache access path.</p>
+ *
+ * <p>{@link #clear()} is operation-level parity: it empties a live backend. {@link #close()} is the
+ * lifecycle boundary used by benchmark teardown. An on-heap backend may only need to release Java
+ * references, while an off-heap backend must release its native/off-heap resources. Callers should
+ * therefore always close an adapter after a trial rather than treating {@code clear()} as cleanup.</p>
  */
 public interface CacheAdapter extends AutoCloseable {
 

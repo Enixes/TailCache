@@ -5,21 +5,35 @@ import net.openhft.chronicle.map.ChronicleMapBuilder;
 
 import java.util.Objects;
 
+/**
+ * Chronicle Map adapter used for TailCache's off-heap backend.
+ *
+ * <p>The Java map object itself is an on-heap view, while Chronicle Map stores entry data in its
+ * off-heap data store. The adapter owns that map instance and therefore must close it at the end
+ * of each benchmark trial.</p>
+ */
 public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
+    private static final double MAX_BLOAT_FACTOR = 1.0d;
+    private static final boolean PUT_RETURNS_NULL = true;
+
     private final ChronicleMap<Long, byte[]> map;
-    private final long maximumEntries;
-    private final int averageValueSizeBytes;
+    private final long configuredEntries;
+    private final int valueSizeBytes;
 
     public ChronicleMapCacheAdapter(CacheConfig config) {
         Objects.requireNonNull(config, "config");
-        this.maximumEntries = config.maximumEntries();
-        this.averageValueSizeBytes = config.averageValueSizeBytes();
+        this.configuredEntries = config.maximumEntries();
+        this.valueSizeBytes = config.valueSizeBytes();
+
+        byte[] valueSizeSample = new byte[valueSizeBytes];
         this.map = ChronicleMapBuilder
                 .of(Long.class, byte[].class)
                 .name("tailcache")
-                .entries(maximumEntries)
-                .averageValueSize(averageValueSizeBytes)
+                .entries(configuredEntries)
+                .constantValueSizeBySample(valueSizeSample)
+                .maxBloatFactor(MAX_BLOAT_FACTOR)
+                .putReturnsNull(PUT_RETURNS_NULL)
                 .create();
     }
 
@@ -30,7 +44,13 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     @Override
     public String configurationSummary() {
-        return "entries=" + maximumEntries + ",averageValueSizeBytes=" + averageValueSizeBytes;
+        return "entries=" + configuredEntries
+                + ",valueSizeBytes=" + valueSizeBytes
+                + ",valueSizing=constant"
+                + ",maxBloatFactor=" + MAX_BLOAT_FACTOR
+                + ",putReturnsNull=" + PUT_RETURNS_NULL
+                + ",entryStorage=off-heap"
+                + ",persisted=false";
     }
 
     @Override
@@ -45,7 +65,7 @@ public final class ChronicleMapCacheAdapter implements CacheAdapter {
 
     @Override
     public long size() {
-        return map.size();
+        return map.longSize();
     }
 
     @Override

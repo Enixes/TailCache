@@ -22,7 +22,7 @@ TailCache is designed to answer questions such as:
 - How stable are p50, p95, p99 and p99.9 latencies across repeated runs?
 - What trade-offs appear between direct on-heap access and off-heap value materialization?
 
-The benchmark model keeps the working set below configured capacity so the initial measurements focus on steady-state cache access rather than eviction or capacity exhaustion.
+The smoke harness keeps the working set below the configured entry setting so validation runs avoid eviction/capacity exhaustion. The reportable experiment will freeze backend-specific occupancy semantics explicitly before comparing latency distributions, because Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent controls.
 
 ## Current benchmark model
 
@@ -33,11 +33,11 @@ The initial harness covers:
 | Backend | `CAFFEINE`, `CHRONICLE_MAP` |
 | Payload size | `BYTES_256` (256 B), `KIB_4` (4 KiB) |
 | Resident entries | 2,048 |
-| Configured capacity | 4,096 entries |
+| Configured entry setting | 4,096 (`maximumSize` for Caffeine; `entries` target for Chronicle Map) |
 | Deterministic trace | 100,000 logical key selections |
 | Operations | `getHit`, `getMiss`, `putExisting` |
 
-Keys, values and access traces are generated before measurement. Benchmark methods therefore avoid random-number generation and payload allocation in the measured path.
+Keys, values and access traces are generated before measurement. Benchmark methods therefore avoid random-number generation and payload construction in the measured path. Within a trial, every `byte[]` payload has the exact configured size.
 
 ## Project structure
 
@@ -93,16 +93,20 @@ Its purpose is to verify that the benchmark harness works end to end.
 
 **Smoke numbers are not intended as benchmark results.**
 
-## Caffeine validation smoke checks
+## Backend validation smoke checks
 
-TailCache 03 adds two Caffeine-only diagnostics:
+TailCache has backend-specific allocation and JFR diagnostics:
 
 ```bash
 ./gradlew jmhCaffeineAllocSmoke
 ./gradlew jmhCaffeineJfrSmoke
+./gradlew jmhChronicleAllocSmoke
+./gradlew jmhChronicleJfrSmoke
 ```
 
-The allocation smoke uses JMH's GC profiler. The JFR smoke is for diagnostic stack/context inspection; its timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` for interpretation limits.
+The allocation smokes use JMH's GC profiler. The JFR smokes are for diagnostic stack/context inspection; their timings are profiler-perturbed and are not research results. See `docs/TAILCACHE_03.md` and `docs/TAILCACHE_04.md` for backend-specific interpretation limits.
+
+Chronicle Map's primary adapter uses ordinary `get`, fixed-size value configuration via `constantValueSizeBySample`, explicit `entries`, `maxBloatFactor(1.0)`, and `putReturnsNull(true)`. Ordinary Chronicle `get` materializes a Java value from off-heap entry storage; object-reuse alternatives such as `getUsing` are intentionally kept out of the primary parity path.
 
 ## Run JMH directly
 
@@ -125,4 +129,4 @@ The benchmark class currently declares:
 - 3 fresh JVM forks
 - sample-time measurements in nanoseconds
 
-These settings establish a reusable baseline for the larger experiment matrix that will follow.
+These settings establish a reusable baseline for the larger experiment matrix that will follow. They are not considered reportable until the harness floor, warmup stability, environment capture, and experiment protocol are frozen.

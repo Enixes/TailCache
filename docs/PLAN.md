@@ -36,6 +36,22 @@
 - [x] review and fact-check JFR / JMH interpretation
 - [x] refresh validation after review fixes on the final PR head
 
+### TailCache 04 - Chronicle Map measured-path validation
+
+- [x] make Chronicle entry/value sizing and no-bloat policy explicit
+- [x] configure `putReturnsNull(true)` to match TailCache's void `put` contract
+- [x] use Chronicle `longSize()` for adapter size parity
+- [x] document clear-vs-close lifecycle semantics for on/off-heap backends
+- [x] extend Chronicle tests for hit / miss / overwrite / clear / close parity
+- [x] add Chronicle allocation and JFR smoke tasks
+- [x] run initial Java 21 unit-test, cross-backend smoke, allocation and JFR diagnostics
+- [x] inspect representative hit/put JFR recordings
+- [x] deep-review Chronicle sizing semantics against the actual fixed-size workload
+- [x] replace `averageValueSize(...)` with `constantValueSizeBySample(...)`
+- [x] align config naming, tests, logging and docs with exact fixed-size payloads
+- [x] rerun unit-test and cross-backend smoke validation on the corrected layout
+- [x] rerun Chronicle allocation/JFR diagnostics on the corrected layout and confirm the measured-path conclusions still hold
+
 ## Milestone 1 - trustworthy harness
 
 - [x] commit and pin the Gradle 9.7.1 wrapper
@@ -43,6 +59,9 @@
 - [x] run `jmhSmoke` on Java 21
 - [ ] capture benchmark environment metadata
 - [ ] quantify benchmark key-selection / harness floor before reportable latency comparisons
+- [ ] verify reportable warmup is sufficient for measured-path compilation stability
+- [ ] freeze backend-specific entry-count / occupancy semantics before reportable comparisons
+- [ ] capture resolved Chronicle layout metadata when it can be obtained reliably
 - [ ] add reportable JMH profile(s) only after smoke and backend validation pass
 
 ## Milestone 2 - primary study
@@ -57,7 +76,8 @@
 ## Milestone 3 - sizing and robustness sensitivity
 
 - [ ] vary Chronicle Map sizing assumptions systematically
-- [ ] test capacity headroom and average-value-size sensitivity separately from the primary latency campaign
+- [ ] test `entries` target / resident-set headroom separately from the primary latency campaign
+- [ ] test fixed-size layout assumptions and any deliberately perturbed sizing configuration as secondary sensitivity checks
 - [ ] distinguish serialization/materialization costs from sizing effects
 - [ ] retain this as a secondary experiment so it cannot distort the primary comparison
 
