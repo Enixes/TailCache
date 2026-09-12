@@ -35,7 +35,8 @@ val chronicleJvmArgs = listOf(
     "--add-opens=java.base/java.lang=ALL-UNNAMED",
     "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
     "--add-opens=java.base/java.util=ALL-UNNAMED",
-    "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED"
+    "--add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED",
+    "-Dchronicle.analytics.disable=true"
 )
 
 dependencies {
