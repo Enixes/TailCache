@@ -8,16 +8,16 @@ import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
-import org.openjdk.jmh.infra.ThreadParams;
 
 import java.util.concurrent.TimeUnit;
 
 /**
- * Mixed read/update workload benchmark for the primary TailCache matrix.
+ * Mixed read/existing-key-put workload benchmark for the primary TailCache matrix.
  *
  * <p>The cache itself is {@code Scope.Benchmark}, so runs with {@code -t > 1} are genuine
  * same-JVM shared-cache contention. The workload trace and replacement values are pre-generated;
- * measured work is limited to trace selection, one branch, and the selected cache operation.</p>
+ * per-worker cursor offsets are initialized outside measurement. Measured work is limited to
+ * advancing/wrapping the cursor, trace/key lookup, one branch, and the selected cache operation.</p>
  */
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -30,10 +30,9 @@ public class CacheWorkloadBenchmark {
     public void mixedWorkload(
             CacheWorkloadState state,
             WorkloadCursorState cursor,
-            ThreadParams threadParams,
             Blackhole blackhole
     ) {
-        int traceIndex = cursor.nextTraceIndex(state.traceSize(), threadParams.getThreadIndex());
+        int traceIndex = cursor.nextTraceIndex();
         Long key = state.keyAt(traceIndex);
 
         if (state.isReadAt(traceIndex)) {
