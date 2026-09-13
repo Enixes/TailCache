@@ -4,7 +4,7 @@
 
 Expand TailCache from operation-level adapter smoke tests into a controlled mixed-workload harness without turning the smoke matrix into reportable results prematurely.
 
-**Status: IMPLEMENTED - BASE VALIDATION PASSED; MEASURED-PATH HARDENING RERUN PENDING**
+**Status: VALIDATED - MERGE-READY**
 
 TailCache 05 adds three primary backend/storage modes:
 
@@ -179,11 +179,11 @@ That run established:
 
 The validation preserved the Chronicle operation-level allocation classification: ordinary hit allocation scaled with returned payload size, misses remained effectively allocation-free, and `putExisting` allocation stayed far below payload-size scaling. Representative JFR stacks again attributed hit allocation to `ByteArraySizedReader` materialization and put allocation to Chronicle Bytes/reference-counting machinery.
 
-### Narrow rerun required after measured-path hardening
+### Post-review measured-path hardening rerun
 
-After that bundle, peer review moved JMH thread-index/trace-size cursor initialization from the measured mixed-workload invocation into `@Setup(Level.Iteration)`. This changes only the mixed benchmark plumbing, not the Chronicle adapter or operation-level smoke benchmark.
+Peer review then moved JMH thread-index/trace-size cursor initialization from the measured mixed-workload invocation into `@Setup(Level.Iteration)`. This changes only the mixed benchmark plumbing, not the Chronicle adapter or operation-level smoke benchmark.
 
-Before merge, rerun:
+The required narrow rerun passed on revision `a547f5d1bc735c6d47afff171c96feec10ea025a`:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -191,14 +191,15 @@ Before merge, rerun:
 ./gradlew jmhWorkloadShared16Smoke
 ```
 
-Required checks:
+Confirmed:
 
-- [ ] tests compile and pass with JMH state dependency injection in cursor setup;
-- [ ] 1-thread workload smoke still expands all 24 combinations and writes its JSON result;
-- [ ] 16-thread workload smoke still reports 16 workers against `stateScope=Benchmark(shared-cache)`, expands all 24 combinations, and writes its JSON result;
-- [ ] persisted trial temp directories are still absent after successful teardown.
+- [x] tests compiled and passed with JMH state dependency injection in cursor setup;
+- [x] one-thread workload smoke completed successfully and wrote 24 JSON benchmark records;
+- [x] 16-thread workload smoke completed successfully, reported 16 workers against `stateScope=Benchmark(shared-cache)`, and wrote 24 JSON benchmark records;
+- [x] persisted trial temp directories were absent after successful teardown;
+- [x] actual workload benchmark forks remained on JDK 21.0.12.1 with Chronicle analytics disabled.
 
-A new Chronicle allocation/JFR run is not required for this cursor-only change unless the adapter or `CacheSmokeBenchmark` is modified again.
+A new Chronicle allocation/JFR run was not needed because the hardening did not modify the Chronicle adapter or `CacheSmokeBenchmark`.
 
 ## Before the reportable campaign
 
