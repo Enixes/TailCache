@@ -59,7 +59,7 @@
 - [x] correct wording so `maxBloatFactor(1.0)` is not described as disabling tiering
 - [x] add a wrong-value-size negative test for the constant-size Chronicle contract
 - [x] describe backend configuration output as experiment-relevant rather than exhaustive
-- [ ] rerun TailCache 04 test/smoke/allocation/JFR validation on the peer-review-hardened head
+- [x] rerun TailCache 04 test/smoke/allocation/JFR validation on the peer-review-hardened head
 
 ### TailCache 05 - workload distributions, persistence and concurrency matrix
 
@@ -70,20 +70,22 @@
 - [x] define primary modes: Caffeine / Chronicle in-memory / Chronicle persisted-warm
 - [x] add deterministic Zipfian access with initial exponent 0.99
 - [x] preserve uniform access and legacy hotspot support
-- [x] add exact 95/5 and 70/30 read/update mixes
+- [x] add exact complete-trace 95/5 and 70/30 read/existing-key-put mixes
 - [x] separate key-selection and operation-mix random streams so changing the mix does not change the key sequence
-- [x] preallocate one replacement payload per logical key so mixed writes allocate nothing and do not collapse Caffeine's resident values onto one shared object
+- [x] preallocate one replacement payload per logical key so mixed puts allocate nothing and do not collapse Caffeine's resident values onto one shared object
+- [x] document that the replacement bank excludes heap-footprint/GC conclusions from this mixed matrix
 - [x] introduce `Scope.Benchmark` shared-cache state for the mixed workload
-- [x] keep per-worker trace cursors in `Scope.Thread` with deterministic staggered offsets
+- [x] keep per-worker trace cursors in `Scope.Thread` with deterministic staggered offsets over one cyclic trace
+- [x] move thread-index/trace-size/initial-offset work into `@Setup(Level.Iteration)` outside the measured path
 - [x] add one-worker and 16-worker shared-cache smoke tasks
 - [x] export mixed-workload smoke results as JMH JSON
 - [x] keep two-JVM persisted sharing separate from the primary same-JVM matrix
-- [ ] run unit tests after the workload/persistence changes
-- [ ] run `jmhWorkloadSmoke` and verify all 24 primary parameter combinations expand successfully
-- [ ] run `jmhWorkloadShared16Smoke` and verify one shared cache is used by all 16 workers
-- [ ] verify persisted map files are removed after successful trial teardown
-- [ ] verify Chronicle analytics remains disabled in all workload benchmark forks
-- [ ] review persisted warm-state assumptions before promoting any persisted latency number
+- [x] run unit tests after the workload/persistence changes and after measured-path hardening
+- [x] run `jmhWorkloadSmoke` and verify all 24 primary parameter combinations expand successfully
+- [x] run `jmhWorkloadShared16Smoke` and verify one shared cache is used by all 16 workers
+- [x] verify persisted map files are removed after successful trial teardown
+- [x] verify Chronicle analytics remains disabled in workload benchmark forks
+- [x] document persisted warm-state assumptions and keep persisted latency non-reportable until filesystem/page-fault controls are frozen
 
 ## Milestone 1 - trustworthy harness
 
