@@ -4,23 +4,25 @@
 
 Validate the Chronicle Map backend with the same discipline used for the Caffeine baseline before any reportable backend comparison is attempted.
 
-**Status: IMPLEMENTATION COMPLETE - PEER-REVIEW REVALIDATION PENDING**
+**Status: MERGED - POST-MERGE PEER-REVIEW HARDENING VALIDATED IN TAILCACHE 05**
+
+TailCache 04 itself was merged in PR #3. TailCache 05 subsequently carried a small post-merge hardening pass: Chronicle analytics is disabled, segment-tiering behavior is frozen/logged explicitly, the constant-size contract has a negative test, and configuration wording is tightened. That hardened adapter was revalidated successfully on TailCache 05 revision `d98be0f34202d7bb3421d6d2c692741db6fc6501`.
 
 ## Fact-checked backend semantics
 
 Chronicle Map is not simply an on-heap `Map` with a different implementation. The Java `ChronicleMap` object is an on-heap view over a data store whose entries are held off-heap. That makes lifecycle and sizing part of the experimental configuration rather than incidental implementation details.
 
-TailCache 04 makes the following choices explicit:
+TailCache makes the following Chronicle choices explicit:
 
 - `entries(config.maximumEntries())` configures Chronicle Map's target entry count;
 - `maxBloatFactor(1.0)` is set explicitly rather than relying on the current library default;
-- `allowSegmentTiering(true)` is also frozen explicitly. Chronicle documents that `maxBloatFactor(1.0)` does **not** guarantee that individual segments never tier because normal hash-distribution variance can overflow a segment; tiering therefore remains enabled rather than converting natural segment skew into an exception;
+- `allowSegmentTiering(true)` is frozen explicitly. `maxBloatFactor(1.0)` does **not** guarantee that individual segments never tier because hash-distribution variance can overflow a segment; tiering therefore remains enabled rather than turning natural segment skew into an exception;
 - `constantValueSizeBySample(new byte[config.valueSizeBytes()])` describes the actual benchmark workload: every `byte[]` value in a trial has the same exact payload length;
 - no key-size setting is supplied because boxed primitive `Long` key size is statically known to Chronicle Map;
 - `putReturnsNull(true)` is enabled because TailCache's shared `put` operation is `void` and must not pay to materialize a replaced value that the benchmark discards;
 - `size()` delegates to Chronicle Map's `longSize()` so TailCache's `long`-valued adapter API does not inherit `Map.size()`'s `Integer.MAX_VALUE` saturation;
 - `clear()` empties a live map for operation parity, while `close()` is the lifecycle boundary that releases the Chronicle Map instance and its off-heap resources;
-- Chronicle analytics is disabled in test and benchmark JVMs with `-Dchronicle.analytics.disable=true` so vendor telemetry cannot add unrelated threads, networking, allocation, scheduling or cache disturbance to latency measurements.
+- Chronicle analytics is disabled in test and benchmark JVMs with `-Dchronicle.analytics.disable=true` so vendor telemetry cannot add unrelated threads, networking, allocation, scheduling, or cache disturbance to latency measurements.
 
 The adapter intentionally does **not** configure `actualChunkSize`. Chronicle Map treats this as a lower-level tuning control. For constant-size keys and values, Chronicle derives a fixed entry layout from the configured serializers and sample; manually forcing chunk size would add a backend-specific tuning variable before the primary comparison is frozen.
 
@@ -36,7 +38,7 @@ The correction was:
 - Chronicle builder `averageValueSize(...)` -> `constantValueSizeBySample(...)`;
 - Chronicle tests insert values whose length exactly matches the configured fixed payload size;
 - a negative test verifies that Chronicle rejects a value whose serialized size does not match the configured constant size;
-- backend logging reports the experiment-relevant configuration, including `valueSizeBytes`, `valueSizing=constant`, `maxBloatFactor`, `allowSegmentTiering`, `putReturnsNull`, off-heap entry storage and persistence mode.
+- backend logging reports the experiment-relevant configuration, including `valueSizeBytes`, `valueSizing=constant`, `maxBloatFactor`, `allowSegmentTiering`, `putReturnsNull`, off-heap entry storage, checksum mode, and persistence mode.
 
 ## Entry-count and occupancy semantics
 
@@ -44,7 +46,7 @@ Chronicle Map's `entries(n)` is a target entry count, not a Java `HashMap`-style
 
 Caffeine `maximumSize(n)` has different semantics: it is an eviction bound. TailCache therefore must not pretend the shared integer means the same thing for both backends.
 
-The current smoke harness uses:
+The smoke harness uses:
 
 ```text
 resident entries = 2048
@@ -78,13 +80,14 @@ The Chronicle adapter tests cover:
 - clear semantics;
 - lifecycle close;
 - rejection of access after close;
-- repeated close safety.
+- repeated close safety;
+- persisted close/reopen behavior in TailCache 05.
 
 Benchmark trial teardown calls `CacheAdapter.close()`, so every Chronicle Map created by JMH trial setup has an explicit lifecycle endpoint.
 
 ## Corrected-layout diagnostic evidence
 
-Before the final peer-review hardening above, executable revision `8dc42012e91608a2e1d605ece7393243c3a24d8b` was validated with:
+Executable revision `8dc42012e91608a2e1d605ece7393243c3a24d8b` first validated the corrected constant-size layout with:
 
 ```bash
 ./gradlew test --rerun-tasks
@@ -93,9 +96,7 @@ Before the final peer-review hardening above, executable revision `8dc42012e9160
 ./gradlew jmhChronicleJfrSmoke
 ```
 
-All four commands completed successfully. The actual JMH VMs ran on JDK 21.0.12.1 via the project toolchain even though the host shell/Gradle launcher used JDK 26.
-
-That run used the corrected constant-size layout and produced:
+That run produced:
 
 | Operation | 256 B payload | 4 KiB payload |
 |---|---:|---:|
@@ -107,7 +108,7 @@ The qualitative interpretation was:
 
 - `getHit` allocation scales almost one-for-one with payload size;
 - `getMiss` is effectively allocation-free at the operation level;
-- `putExisting` remains roughly payload-size independent after `putReturnsNull(true)`.
+- `putExisting` remains far below payload-size scaling after `putReturnsNull(true)`.
 
 The representative corrected 4 KiB `getHit` JFR showed repeated worker-thread `byte[]` allocation samples through:
 
@@ -127,9 +128,31 @@ HeapBytesStore.wrap
 VanillaChronicleMap.put
 ```
 
-No `ByteArraySizedReader` old-value materialization stack appeared in the inspected put recording. The conclusion is deliberately narrow: there was no sampled evidence of Chronicle old-value materialization on that put path, and normalized put allocation was payload-size independent at roughly 194-195 B/op.
+No `ByteArraySizedReader` old-value materialization stack appeared in the inspected put recording. The conclusion is deliberately narrow: there was no sampled evidence of Chronicle old-value materialization on that put path, and normalized put allocation did not scale with the payload size.
 
-These numbers remain diagnostic provenance, not reportable latency results. The newest peer-review hardening explicitly disables Chronicle analytics and freezes segment-tiering behavior, so the validation bundle must be rerun before TailCache 04 receives final merge sign-off.
+## Post-merge peer-review hardening revalidation
+
+TailCache 05 revision `d98be0f34202d7bb3421d6d2c692741db6fc6501` reran the hardened Chronicle adapter with analytics disabled and explicit segment-tiering/checksum configuration. All required operation-level commands completed successfully on JMH forks using JDK 21.0.12.1.
+
+Normalized allocation was:
+
+| Operation | 256 B payload | 4 KiB payload |
+|---|---:|---:|
+| `getHit` | 272.442 B/op | 4118.994 B/op |
+| `getMiss` | 0.245 B/op | 0.200 B/op |
+| `putExisting` | 197.520 B/op | 221.093 B/op |
+
+The classification therefore survived the hardening:
+
+- hit allocation still tracks returned payload size;
+- misses remain effectively allocation-free;
+- `putExisting` remains around a few hundred bytes per operation rather than scaling by the 4 KiB payload;
+- JFR again attributes hit materialization to `ByteArraySizedReader` and write-side allocation to Chronicle Bytes/reference-counting machinery;
+- the inspected long `ThreadPark` events belong to JMH/main coordination or process-reaper threads, not the benchmark worker.
+
+The modest 256 B -> 4 KiB put increase in this short diagnostic is not interpreted as payload materialization: the increase is tens of bytes, not approximately 4 KiB, and the run is intentionally too short for stable performance conclusions.
+
+The later TailCache 05 cursor hardening does not modify the Chronicle adapter or `CacheSmokeBenchmark`, so another Chronicle allocation/JFR cycle is not required solely for that change.
 
 ## Historical pre-correction diagnostics
 
@@ -141,7 +164,7 @@ The superseded average-size layout produced:
 | `getMiss` | 0.199 B/op | 0.076 B/op |
 | `putExisting` | 192.657 B/op | 198.420 B/op |
 
-Those results remain useful as provenance for why the measured-path semantics were investigated, but they are not mixed into the final constant-size-layout experiment as if they were one dataset.
+Those results remain useful as provenance for why the measured-path semantics were investigated, but they are not mixed into the final constant-size-layout experiment as if they came from the same Chronicle layout.
 
 ## Interpretation guardrails
 
@@ -156,25 +179,16 @@ In particular:
 - Chronicle's normal `get` and a future `getUsing`/reuse path answer different API-level questions and must remain separate experiments;
 - JFR allocation events are sampled and zero counts for disabled or thresholded event types are not proof of universal absence.
 
-## Peer-review revalidation criteria
+## Post-merge hardening sign-off
 
-The latest implementation must be rerun with:
+The hardened Chronicle adapter has passed the intended TailCache 04 revalidation criteria:
 
-```bash
-./gradlew test --rerun-tasks
-./gradlew jmhSmoke
-./gradlew jmhChronicleAllocSmoke
-./gradlew jmhChronicleJfrSmoke
-```
+- [x] unit tests passed, including the wrong-value-size negative test;
+- [x] JMH VM arguments contained `-Dchronicle.analytics.disable=true` exactly once per fork;
+- [x] Chronicle trial logs included `allowSegmentTiering=true` and experiment-relevant configuration;
+- [x] cross-backend smoke succeeded;
+- [x] Chronicle allocation smoke preserved the expected measured-path classification;
+- [x] Chronicle JFR recordings were generated with explainable worker-thread allocation stacks;
+- [x] no smoke latency number is promoted to a research conclusion.
 
-Final TailCache 04 sign-off requires:
-
-- [ ] unit tests pass, including the wrong-value-size negative test;
-- [ ] JMH VM arguments contain `-Dchronicle.analytics.disable=true` exactly once;
-- [ ] Chronicle trial logs include `allowSegmentTiering=true` and the experiment-relevant configuration;
-- [ ] cross-backend smoke succeeds;
-- [ ] Chronicle allocation smoke preserves the expected measured-path classification or any change is investigated;
-- [ ] Chronicle JFR recordings are generated and contain no unexplained benchmark-worker interference;
-- [ ] no smoke latency number is promoted to a research conclusion.
-
-After that, TailCache 04 is merge-ready. The next phase adds controlled workload distributions, read/write mixes and persisted Chronicle mode while keeping multi-JVM sharing separate.
+TailCache 04 is therefore historically complete. TailCache 05 continues with workload distributions, persisted Chronicle mode, and same-JVM shared-cache contention while keeping two-JVM sharing separate.
