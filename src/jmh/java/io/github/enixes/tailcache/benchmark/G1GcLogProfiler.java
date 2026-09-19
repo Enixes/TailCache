@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 /**
  * Retains one raw HotSpot G1 log per JMH fork and derives stop-the-world pause metrics.
  *
- * <p>Only completed {@code Pause ... <duration>} records whose uptime timestamps fall inside one of
+ * <p>Only completed {@code Pause ... <duration>} records whose System.nanoTime timestamps fall inside one of
  * the exact measurement-iteration windows recorded by {@link GcMeasurementWindowProfiler} are
  * counted. Concurrent G1 cycle lines are therefore retained in the raw log but excluded from pause
  * totals.</p>
@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public final class G1GcLogProfiler implements ExternalProfiler {
 
     private static final Pattern LOG_LINE = Pattern.compile(
-            "^\\[([0-9]+(?:[\\.,][0-9]+)?)ms\\]\\[info\\]\\[gc\\s*\\]\\s+(.*)$"
+            "^\\[([0-9]+)ns\\]\\[info\\]\\[gc\\s*\\]\\s+(.*)$"
     );
     private static final Pattern PAUSE_LINE = Pattern.compile(
             "^GC\\(\\d+\\)\\s+Pause\\b.*\\s([0-9]+(?:[\\.,][0-9]+)?)(ns|us|ms|s)$"
@@ -68,7 +68,7 @@ public final class G1GcLogProfiler implements ExternalProfiler {
     public Collection<String> addJVMOptions(BenchmarkParams params) {
         Path logPath = GcProfileFiles.gcLogTemplate(outputDirectory, params);
         return List.of(
-                "-Xlog:gc=info:file=" + logPath + ":uptimemillis,level,tags:filecount=0"
+                "-Xlog:gc=info:file=" + logPath + ":timenanos,level,tags:filecount=0"
         );
     }
 
@@ -88,7 +88,7 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         Path logPath = GcProfileFiles.gcLog(outputDirectory, params, pid);
         Path windowsPath = GcProfileFiles.measurementWindows(outputDirectory, params, pid);
 
-        List<MeasurementWindow> windows = readMeasurementWindows(windowsPath);
+        List<MeasurementWindow> windows = readMeasurementWindows(\n                windowsPath,\n                params.getMeasurement().getCount()\n        );
         PauseSummary summary = parsePauses(logPath, windows);
 
         return List.of(
@@ -123,7 +123,7 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         return true;
     }
 
-    private static List<MeasurementWindow> readMeasurementWindows(Path path) {
+    private static List<MeasurementWindow> readMeasurementWindows(Path path, int expectedCount) {
         if (!Files.isRegularFile(path)) {
             throw new IllegalStateException("Expected GC measurement windows were not created: " + path);
         }
@@ -146,33 +146,21 @@ public final class G1GcLogProfiler implements ExternalProfiler {
                 if (endMs < startMs) {
                     throw new IllegalStateException("GC measurement window ends before it starts: " + line);
                 }
-                windows.add(new MeasurementWindow(startMs, endMs));
+                windows.add(new MeasurementWindow(startNanoTime, endNanoTime));
             }
         } catch (IOException exception) {
             throw new IllegalStateException("Unable to read GC measurement windows " + path, exception);
         }
 
-        int expected = benchmarkMeasurementIterations(path, windows);
-        if (windows.size() != expected) {
+        if (windows.size() != expectedCount) {
             throw new IllegalStateException(
-                    "Expected " + expected + " measurement windows, found " + windows.size()
+                    "Expected " + expectedCount + " measurement windows, found " + windows.size()
                             + " in " + path
             );
         }
         return windows;
     }
 
-    /**
-     * The expected iteration count is encoded into the filename's sibling metadata only at the JMH
-     * layer, so this method currently returns the observed count after requiring at least one window.
-     * The caller separately validates the JMH JSON measurementIterations field in the result pipeline.
-     */
-    private static int benchmarkMeasurementIterations(Path path, List<MeasurementWindow> windows) {
-        if (windows.isEmpty()) {
-            throw new IllegalStateException("No GC measurement windows recorded in " + path);
-        }
-        return windows.size();
-    }
 
     private static PauseSummary parsePauses(Path logPath, List<MeasurementWindow> windows) {
         if (!Files.isRegularFile(logPath)) {
@@ -192,13 +180,13 @@ public final class G1GcLogProfiler implements ExternalProfiler {
                     continue;
                 }
 
-                double uptimeMs = parseDecimal(logMatcher.group(1));
+                long eventNanoTime = Long.parseLong(logMatcher.group(1));
                 String message = logMatcher.group(2);
                 if (message.contains("Using G1")) {
                     g1Confirmed = true;
                 }
 
-                if (!insideAnyMeasurementWindow(uptimeMs, windows)) {
+                if (!insideAnyMeasurementWindow(eventNanoTime, windows)) {
                     continue;
                 }
 
@@ -229,11 +217,11 @@ public final class G1GcLogProfiler implements ExternalProfiler {
     }
 
     private static boolean insideAnyMeasurementWindow(
-            double uptimeMs,
+            long eventNanoTime,
             List<MeasurementWindow> windows
     ) {
         for (MeasurementWindow window : windows) {
-            if (uptimeMs >= window.startMs() && uptimeMs <= window.endMs()) {
+            if (eventNanoTime >= window.startNanoTime() && eventNanoTime <= window.endNanoTime()) {
                 return true;
             }
         }
@@ -271,7 +259,7 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         };
     }
 
-    private record MeasurementWindow(long startMs, long endMs) {
+    private record MeasurementWindow(long startNanoTime, long endNanoTime) {
     }
 
     private record PauseSummary(long count, double totalMs, double maxMs) {
