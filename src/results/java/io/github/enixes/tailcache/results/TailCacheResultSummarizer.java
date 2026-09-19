@@ -290,8 +290,8 @@ public final class TailCacheResultSummarizer {
     }
 
     private static String csv(String value) {
-        String escaped = value.replace(""", """");
-        return """ + escaped + """;
+        String escaped = value.replace("\"", "\"\"");
+        return "\"" + escaped + "\"";
     }
 
     private record RunKey(String benchmark, int threads, Map<String, String> params) {
