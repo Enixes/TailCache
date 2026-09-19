@@ -18,17 +18,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Retains one raw HotSpot G1 log per JMH fork and derives stop-the-world pause metrics.
  *
- * <p>Only completed {@code Pause ... <duration>} records whose System.nanoTime timestamps fall inside one of
- * the exact measurement-iteration windows recorded by {@link GcMeasurementWindowProfiler} are
- * counted. Concurrent G1 cycle lines are therefore retained in the raw log but excluded from pause
- * totals.</p>
+ * <p>HotSpot's {@code timenanos} decorator is documented as the same clock value produced by
+ * {@link System#nanoTime()}. Only completed {@code Pause ... <duration>} records whose timestamps
+ * fall inside one of the exact measurement-iteration windows recorded by
+ * {@link GcMeasurementWindowProfiler} are counted. Concurrent G1 cycle lines remain in the raw log
+ * but are excluded from pause totals.</p>
  */
 public final class G1GcLogProfiler implements ExternalProfiler {
 
@@ -50,7 +50,10 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         try {
             Files.createDirectories(outputDirectory);
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to create GC log directory " + outputDirectory, exception);
+            throw new IllegalStateException(
+                    "Unable to create GC log directory " + outputDirectory,
+                    exception
+            );
         }
     }
 
@@ -88,7 +91,10 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         Path logPath = GcProfileFiles.gcLog(outputDirectory, params, pid);
         Path windowsPath = GcProfileFiles.measurementWindows(outputDirectory, params, pid);
 
-        List<MeasurementWindow> windows = readMeasurementWindows(\n                windowsPath,\n                params.getMeasurement().getCount()\n        );
+        List<MeasurementWindow> windows = readMeasurementWindows(
+                windowsPath,
+                params.getMeasurement().getCount()
+        );
         PauseSummary summary = parsePauses(logPath, windows);
 
         return List.of(
@@ -123,9 +129,14 @@ public final class G1GcLogProfiler implements ExternalProfiler {
         return true;
     }
 
-    private static List<MeasurementWindow> readMeasurementWindows(Path path, int expectedCount) {
+    private static List<MeasurementWindow> readMeasurementWindows(
+            Path path,
+            int expectedCount
+    ) {
         if (!Files.isRegularFile(path)) {
-            throw new IllegalStateException("Expected GC measurement windows were not created: " + path);
+            throw new IllegalStateException(
+                    "Expected GC measurement windows were not created: " + path
+            );
         }
 
         List<MeasurementWindow> windows = new ArrayList<>();
@@ -139,32 +150,44 @@ public final class G1GcLogProfiler implements ExternalProfiler {
 
                 String[] parts = trimmed.split(",", -1);
                 if (parts.length != 2) {
-                    throw new IllegalStateException("Malformed GC measurement window: " + line);
+                    throw new IllegalStateException(
+                            "Malformed GC measurement window: " + line
+                    );
                 }
-                long startMs = Long.parseLong(parts[0]);
-                long endMs = Long.parseLong(parts[1]);
-                if (endMs < startMs) {
-                    throw new IllegalStateException("GC measurement window ends before it starts: " + line);
+
+                long startNanoTime = Long.parseLong(parts[0]);
+                long endNanoTime = Long.parseLong(parts[1]);
+                if (endNanoTime < startNanoTime) {
+                    throw new IllegalStateException(
+                            "GC measurement window ends before it starts: " + line
+                    );
                 }
                 windows.add(new MeasurementWindow(startNanoTime, endNanoTime));
             }
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to read GC measurement windows " + path, exception);
+            throw new IllegalStateException(
+                    "Unable to read GC measurement windows " + path,
+                    exception
+            );
         }
 
         if (windows.size() != expectedCount) {
             throw new IllegalStateException(
-                    "Expected " + expectedCount + " measurement windows, found " + windows.size()
-                            + " in " + path
+                    "Expected " + expectedCount + " measurement windows, found "
+                            + windows.size() + " in " + path
             );
         }
         return windows;
     }
 
-
-    private static PauseSummary parsePauses(Path logPath, List<MeasurementWindow> windows) {
+    private static PauseSummary parsePauses(
+            Path logPath,
+            List<MeasurementWindow> windows
+    ) {
         if (!Files.isRegularFile(logPath)) {
-            throw new IllegalStateException("Expected raw G1 log was not created: " + logPath);
+            throw new IllegalStateException(
+                    "Expected raw G1 log was not created: " + logPath
+            );
         }
 
         boolean g1Confirmed = false;
@@ -204,7 +227,10 @@ public final class G1GcLogProfiler implements ExternalProfiler {
                 maxMs = Math.max(maxMs, pauseMs);
             }
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to parse raw G1 log " + logPath, exception);
+            throw new IllegalStateException(
+                    "Unable to parse raw G1 log " + logPath,
+                    exception
+            );
         }
 
         if (!g1Confirmed) {
@@ -221,7 +247,8 @@ public final class G1GcLogProfiler implements ExternalProfiler {
             List<MeasurementWindow> windows
     ) {
         for (MeasurementWindow window : windows) {
-            if (eventNanoTime >= window.startNanoTime() && eventNanoTime <= window.endNanoTime()) {
+            if (eventNanoTime >= window.startNanoTime()
+                    && eventNanoTime <= window.endNanoTime()) {
                 return true;
             }
         }
@@ -237,12 +264,17 @@ public final class G1GcLogProfiler implements ExternalProfiler {
             if (option.startsWith("dir=")) {
                 String value = option.substring("dir=".length());
                 if (value.isBlank()) {
-                    throw new IllegalArgumentException("G1GcLogProfiler dir must not be blank");
+                    throw new IllegalArgumentException(
+                            "G1GcLogProfiler dir must not be blank"
+                    );
                 }
                 return Path.of(value);
             }
         }
-        throw new IllegalArgumentException("Unsupported G1GcLogProfiler options: " + initLine);
+
+        throw new IllegalArgumentException(
+                "Unsupported G1GcLogProfiler options: " + initLine
+        );
     }
 
     private static double parseDecimal(String value) {
@@ -255,7 +287,9 @@ public final class G1GcLogProfiler implements ExternalProfiler {
             case "us" -> value / 1_000.0;
             case "ms" -> value;
             case "s" -> value * 1_000.0;
-            default -> throw new IllegalArgumentException("Unknown duration unit: " + unit);
+            default -> throw new IllegalArgumentException(
+                    "Unknown duration unit: " + unit
+            );
         };
     }
 
