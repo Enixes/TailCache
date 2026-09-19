@@ -1,7 +1,3 @@
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-
 plugins {
     java
 }
@@ -249,11 +245,7 @@ val tailCache06Modes = providers.gradleProperty("tailcacheModes")
 val tailCache06Threads = providers.gradleProperty("tailcacheThreads").orElse("1")
 
 val tailCache06SmokeDir = layout.buildDirectory.dir("reports/tailcache06/smoke").get().asFile
-val tailCache06RunId = providers.gradleProperty("tailcacheRunId").orElse(
-    DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")
-        .withZone(ZoneOffset.UTC)
-        .format(Instant.now())
-)
+val tailCache06RunId = providers.gradleProperty("tailcacheRunId").orElse("candidate")
 val tailCache06RunDir = layout.buildDirectory
     .dir("reports/tailcache06/runs/${tailCache06RunId.get()}")
     .get().asFile
@@ -322,63 +314,36 @@ fun registerTailCache06JmhTask(
     }
 }
 
-fun commandOutput(vararg command: String): String {
-    return try {
-        val process = ProcessBuilder(*command)
-            .directory(rootDir)
-            .redirectErrorStream(true)
-            .start()
-        val output = process.inputStream.bufferedReader().use { it.readText() }.trim()
-        val exit = process.waitFor()
-        if (exit == 0) output else "<command failed: ${command.joinToString(" ")}>"
-    } catch (exception: Exception) {
-        "<unavailable: ${exception.javaClass.simpleName}>"
-    }
-}
+fun registerTailCache06MetadataTask(
+    taskName: String,
+    resultDir: File,
+    runKind: String
+) = tasks.register<JavaExec>(taskName) {
+    group = "benchmark"
+    description = "Writes TailCache 06 raw-result provenance metadata for the $runKind run."
+    dependsOn(resultTools.classesTaskName)
+    classpath = resultTools.runtimeClasspath
+    mainClass.set("io.github.enixes.tailcache.results.TailCacheRunMetadataWriter")
+    javaLauncher.set(java21Launcher)
 
-fun registerTailCache06MetadataTask(taskName: String, resultDir: File, runKind: String) =
-    tasks.register(taskName) {
-        group = "benchmark"
-        description = "Writes TailCache 06 raw-result provenance metadata for the $runKind run."
-        doLast {
-            resultDir.mkdirs()
-            val javaExecutable = java21Launcher.get().executablePath.asFile.absolutePath
-            val gitStatus = commandOutput("git", "status", "--porcelain")
-            val metadata = linkedMapOf<String, Any>(
-                "schemaVersion" to "tailcache-run-metadata-v1",
-                "generatedAtUtc" to Instant.now().toString(),
-                "runKind" to runKind,
-                "runId" to if (runKind == "smoke") "smoke" else tailCache06RunId.get(),
-                "gitCommit" to commandOutput("git", "rev-parse", "HEAD"),
-                "gitDirty" to gitStatus.isNotBlank(),
-                "gitStatusPorcelain" to gitStatus,
-                "benchmarkJavaExecutable" to javaExecutable,
-                "benchmarkJavaVersion" to commandOutput(javaExecutable, "-version"),
-                "gradleVersion" to gradle.gradleVersion,
-                "jmhVersion" to jmhVersion,
-                "caffeineVersion" to caffeineVersion,
-                "chronicleMapVersion" to chronicleMapVersion,
-                "jacksonResultToolVersion" to jacksonVersion,
-                "modes" to tailCache06Modes.get(),
-                "threads" to tailCache06Threads.get(),
-                "collector" to "G1",
-                "metricSources" to linkedMapOf(
-                    "latency" to "unprofiled JMH SampleTime",
-                    "throughput" to "unprofiled JMH Throughput",
-                    "allocationAndCollection" to "JMH gc profiler via MXBeans",
-                    "gcPauses" to "TailCache exact JMH measurement windows + G1 -Xlog:gc=info Pause records"
-                ),
-                "rawFiles" to listOf(
-                    "latency.json", "latency.txt",
-                    "throughput.json", "throughput.txt",
-                    "gc-profile.json", "gc-profile.txt",
-                    "gc/*.log"
-                )
-            )
-            val json = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(metadata))
-            resultDir.resolve("run-metadata.json").writeText(json + "\n")
-        }
-    }
+    val javaExecutable = java21Launcher.get().executablePath.asFile.absolutePath
+    val runId = if (runKind == "smoke") "smoke" else tailCache06RunId.get()
+
+    args(
+        "--out", resultDir.resolve("run-metadata.json").absolutePath,
+        "--root", rootDir.absolutePath,
+        "--run-kind", runKind,
+        "--run-id", runId,
+        "--benchmark-java", javaExecutable,
+        "--gradle-version", gradle.gradleVersion,
+        "--jmh-version", jmhVersion,
+        "--caffeine-version", caffeineVersion,
+        "--chronicle-version", chronicleMapVersion,
+        "--jackson-version", jacksonVersion,
+        "--modes", tailCache06Modes.get(),
+        "--threads", tailCache06Threads.get()
+    )
+}
 
 fun registerTailCache06SummaryTask(
     taskName: String,
@@ -386,7 +351,7 @@ fun registerTailCache06SummaryTask(
     latencyTask: TaskProvider<JavaExec>,
     throughputTask: TaskProvider<JavaExec>,
     gcTask: TaskProvider<JavaExec>,
-    metadataTask: TaskProvider<Task>
+    metadataTask: TaskProvider<JavaExec>
 ) = tasks.register<JavaExec>(taskName) {
     group = "benchmark"
     description = "Joins TailCache 06 latency, throughput, allocation and GC results."
