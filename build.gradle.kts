@@ -312,7 +312,8 @@ fun registerTailCache06JmhTask(
     if (profiled) {
         args(
             "-prof", "gc",
-            "-prof", "io.github.enixes.tailcache.benchmark.GcPauseProfiler:dir=${gcDir.absolutePath}"
+            "-prof", "io.github.enixes.tailcache.benchmark.GcMeasurementWindowProfiler:dir=${gcDir.absolutePath}",
+            "-prof", "io.github.enixes.tailcache.benchmark.G1GcLogProfiler:dir=${gcDir.absolutePath}"
         )
     }
 }
@@ -361,7 +362,7 @@ fun registerTailCache06MetadataTask(taskName: String, resultDir: File, runKind: 
                     "latency" to "unprofiled JMH SampleTime",
                     "throughput" to "unprofiled JMH Throughput",
                     "allocationAndCollection" to "JMH gc profiler via MXBeans",
-                    "gcPauses" to "TailCache GcPauseProfiler parsing measurement-window -Xlog:gc=info Pause records"
+                    "gcPauses" to "TailCache exact JMH measurement windows + G1 -Xlog:gc=info Pause records"
                 ),
                 "rawFiles" to listOf(
                     "latency.json", "latency.txt",
