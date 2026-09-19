@@ -25,7 +25,8 @@ For the same benchmark parameters TailCache 06 runs three JMH trials:
 
 3. **Allocation / GC** - `Mode.Throughput` with:
    - JMH built-in `gc` profiler for `gc.alloc.rate`, `gc.alloc.rate.norm`, `gc.count` and `gc.time`;
-   - TailCache `GcPauseProfiler` for G1 stop-the-world pause count, total and max.
+   - TailCache `GcMeasurementWindowProfiler` to record exact JMH measurement-iteration `System.nanoTime()` windows;
+   - TailCache `G1GcLogProfiler` to retain raw G1 logs and derive stop-the-world pause count, total and max only from those windows.
 
 The result summarizer joins the three records by benchmark name, thread count and JMH parameters.
 
@@ -36,16 +37,16 @@ JMH's built-in GC profiler obtains collection count/time from `GarbageCollectorM
 TailCache additionally enables JDK 21 unified logging for the profiled fork:
 
 ```text
--Xlog:gc=info:file=<raw-log>:uptimemillis,level,tags:filecount=0
+-Xlog:gc=info:file=<raw-log>:timenanos,level,tags:filecount=0
 ```
 
-`GcPauseProfiler` parses only completed G1 `Pause ... <duration>` records whose uptime timestamps fall inside JMH's measurement window. It exports:
+HotSpot's `timenanos` decorator is correlated with the `System.nanoTime()` start/end sidecar recorded for each JMH measurement iteration. `G1GcLogProfiler` parses only completed G1 `Pause ... <duration>` records inside those exact windows. It exports:
 
 - `gc.pause.count`
 - `gc.pause.time`
 - `gc.pause.max`
 
-Concurrent G1 phases are deliberately not counted as stop-the-world pauses. Raw GC logs are retained for auditability.
+Concurrent G1 phases are deliberately not counted as stop-the-world pauses. Raw GC logs **and the measurement-window sidecars** are retained for auditability.
 
 The parser is intentionally G1-specific. TailCache 06 pins `-XX:+UseG1GC`; a future ZGC sensitivity study must use collector-appropriate instrumentation rather than silently reusing the G1 parser.
 
@@ -97,6 +98,7 @@ build/reports/tailcache06/smoke/
   gc-profile.txt
   gc/
     gc-<benchmark-and-params>-<pid>.log
+    gc-<benchmark-and-params>-<pid>.windows.csv
   run-metadata.json
   summary.json
   summary.csv
@@ -105,8 +107,16 @@ build/reports/tailcache06/smoke/
 Candidate runs use the same structure under:
 
 ```text
-build/reports/tailcache06/run/
+build/reports/tailcache06/runs/<run-id>/
 ```
+
+Pass a deliberate run id when retaining candidate data, for example:
+
+```bash
+./gradlew tailCache06 -PtailcacheRunId=20260920-pilot01
+```
+
+If no run id is supplied, the non-reportable default directory is `runs/candidate/`.
 
 ## Summary schema
 
