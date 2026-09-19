@@ -1,3 +1,7 @@
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 plugins {
     java
 }
@@ -54,14 +58,14 @@ tasks.test {
     jvmArgs(chronicleJvmArgs)
 }
 
-val jmh by sourceSets.creating {
+val jmh = sourceSets.create("jmh") {
     java.srcDir("src/jmh/java")
     resources.srcDir("src/jmh/resources")
     compileClasspath += sourceSets.main.get().output
     runtimeClasspath += sourceSets.main.get().output
 }
 
-val resultTools by sourceSets.creating {
+val resultTools = sourceSets.create("resultTools") {
     java.srcDir("src/results/java")
 }
 
@@ -246,9 +250,9 @@ val tailCache06Threads = providers.gradleProperty("tailcacheThreads").orElse("1"
 
 val tailCache06SmokeDir = layout.buildDirectory.dir("reports/tailcache06/smoke").get().asFile
 val tailCache06RunId = providers.gradleProperty("tailcacheRunId").orElse(
-    java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")
-        .withZone(java.time.ZoneOffset.UTC)
-        .format(java.time.Instant.now())
+    DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")
+        .withZone(ZoneOffset.UTC)
+        .format(Instant.now())
 )
 val tailCache06RunDir = layout.buildDirectory
     .dir("reports/tailcache06/runs/${tailCache06RunId.get()}")
@@ -342,7 +346,7 @@ fun registerTailCache06MetadataTask(taskName: String, resultDir: File, runKind: 
             val gitStatus = commandOutput("git", "status", "--porcelain")
             val metadata = linkedMapOf<String, Any>(
                 "schemaVersion" to "tailcache-run-metadata-v1",
-                "generatedAtUtc" to java.time.Instant.now().toString(),
+                "generatedAtUtc" to Instant.now().toString(),
                 "runKind" to runKind,
                 "runId" to if (runKind == "smoke") "smoke" else tailCache06RunId.get(),
                 "gitCommit" to commandOutput("git", "rev-parse", "HEAD"),
