@@ -9,8 +9,14 @@ public record WorkloadSpec(
         AccessPattern accessPattern,
         long seed,
         double hotSetFraction,
-        double hotSetAccessProbability
+        double hotSetAccessProbability,
+        double zipfExponent
 ) {
+
+    /**
+     * Initial Zipfian skew used by TailCache. This matches YCSB's long-standing default theta.
+     */
+    public static final double DEFAULT_ZIPF_EXPONENT = 0.99d;
 
     public WorkloadSpec {
         if (operationCount <= 0) {
@@ -25,11 +31,44 @@ public record WorkloadSpec(
             throw new IllegalArgumentException("hotSetFraction must be in (0, 1]");
         }
         requireProbability(hotSetAccessProbability, "hotSetAccessProbability");
+        if (!(zipfExponent > 0.0) || !Double.isFinite(zipfExponent)) {
+            throw new IllegalArgumentException("zipfExponent must be finite and > 0");
+        }
     }
 
     public static WorkloadSpec uniform(int operationCount, int keySpace, double readRatio, long seed) {
         return new WorkloadSpec(
-                operationCount, keySpace, readRatio, AccessPattern.UNIFORM, seed, 0.2, 0.8
+                operationCount,
+                keySpace,
+                readRatio,
+                AccessPattern.UNIFORM,
+                seed,
+                0.2,
+                0.8,
+                DEFAULT_ZIPF_EXPONENT
+        );
+    }
+
+    public static WorkloadSpec zipfian(int operationCount, int keySpace, double readRatio, long seed) {
+        return zipfian(operationCount, keySpace, readRatio, seed, DEFAULT_ZIPF_EXPONENT);
+    }
+
+    public static WorkloadSpec zipfian(
+            int operationCount,
+            int keySpace,
+            double readRatio,
+            long seed,
+            double zipfExponent
+    ) {
+        return new WorkloadSpec(
+                operationCount,
+                keySpace,
+                readRatio,
+                AccessPattern.ZIPFIAN,
+                seed,
+                0.2,
+                0.8,
+                zipfExponent
         );
     }
 
@@ -42,8 +81,14 @@ public record WorkloadSpec(
             double hotSetAccessProbability
     ) {
         return new WorkloadSpec(
-                operationCount, keySpace, readRatio, AccessPattern.HOTSPOT, seed,
-                hotSetFraction, hotSetAccessProbability
+                operationCount,
+                keySpace,
+                readRatio,
+                AccessPattern.HOTSPOT,
+                seed,
+                hotSetFraction,
+                hotSetAccessProbability,
+                DEFAULT_ZIPF_EXPONENT
         );
     }
 
