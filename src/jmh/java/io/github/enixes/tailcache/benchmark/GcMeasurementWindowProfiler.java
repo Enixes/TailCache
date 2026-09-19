@@ -1,0 +1,128 @@
+package io.github.enixes.tailcache.benchmark;
+
+import org.openjdk.jmh.infra.BenchmarkParams;
+import org.openjdk.jmh.infra.IterationParams;
+import org.openjdk.jmh.profile.InternalProfiler;
+import org.openjdk.jmh.results.IterationResult;
+import org.openjdk.jmh.results.Result;
+import org.openjdk.jmh.runner.IterationType;
+
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Collection;
+import java.util.Collections;
+
+/**
+ * Records the exact JMH measurement-iteration uptime windows used to select G1 pause log lines.
+ *
+ * <p>The profiler writes only after a measured iteration has ended. It emits no benchmark metric;
+ * {@link G1GcLogProfiler} reads the sidecar after the fork exits and derives pause metrics from the
+ * retained HotSpot GC log. Warmup windows are deliberately not recorded.</p>
+ */
+public final class GcMeasurementWindowProfiler implements InternalProfiler {
+
+    private final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+    private final Path outputDirectory;
+    private final long pid = ProcessHandle.current().pid();
+
+    private long iterationStartUptimeMs;
+    private boolean measurementFileInitialized;
+
+    public GcMeasurementWindowProfiler() {
+        this("");
+    }
+
+    public GcMeasurementWindowProfiler(String initLine) {
+        this.outputDirectory = parseOutputDirectory(initLine);
+        try {
+            Files.createDirectories(outputDirectory);
+        } catch (IOException exception) {
+            throw new IllegalStateException(
+                    "Unable to create GC measurement-window directory " + outputDirectory,
+                    exception
+            );
+        }
+    }
+
+    @Override
+    public String getDescription() {
+        return "TailCache JMH measurement-window recorder for G1 pause attribution";
+    }
+
+    @Override
+    public void beforeIteration(BenchmarkParams benchmarkParams, IterationParams iterationParams) {
+        if (iterationParams.getType() != IterationType.MEASUREMENT) {
+            return;
+        }
+
+        Path windows = GcProfileFiles.measurementWindows(outputDirectory, benchmarkParams, pid);
+        if (!measurementFileInitialized) {
+            try {
+                Files.deleteIfExists(windows);
+            } catch (IOException exception) {
+                throw new IllegalStateException("Unable to reset GC measurement windows " + windows, exception);
+            }
+            measurementFileInitialized = true;
+        }
+
+        // Capture as the final action before returning to JMH's measured iteration.
+        iterationStartUptimeMs = runtime.getUptime();
+    }
+
+    @Override
+    public Collection<? extends Result> afterIteration(
+            BenchmarkParams benchmarkParams,
+            IterationParams iterationParams,
+            IterationResult result
+    ) {
+        if (iterationParams.getType() != IterationType.MEASUREMENT) {
+            return Collections.emptyList();
+        }
+
+        // Capture immediately on entry, before the sidecar write itself can perturb the next gap.
+        long iterationEndUptimeMs = runtime.getUptime();
+        Path windows = GcProfileFiles.measurementWindows(outputDirectory, benchmarkParams, pid);
+        String line = iterationStartUptimeMs + "," + iterationEndUptimeMs + System.lineSeparator();
+
+        try {
+            Files.writeString(
+                    windows,
+                    line,
+                    StandardCharsets.UTF_8,
+                    StandardOpenOption.CREATE,
+                    StandardOpenOption.APPEND
+            );
+        } catch (IOException exception) {
+            throw new IllegalStateException("Unable to write GC measurement window " + windows, exception);
+        }
+
+        return Collections.emptyList();
+    }
+
+    private static Path parseOutputDirectory(String initLine) {
+        if (initLine == null || initLine.isBlank()) {
+            return Path.of("build", "reports", "tailcache06", "gc");
+        }
+
+        for (String option : initLine.split(";")) {
+            if (option.startsWith("dir=")) {
+                String value = option.substring("dir=".length());
+                if (value.isBlank()) {
+                    throw new IllegalArgumentException(
+                            "GcMeasurementWindowProfiler dir must not be blank"
+                    );
+                }
+                return Path.of(value);
+            }
+        }
+
+        throw new IllegalArgumentException(
+                "Unsupported GcMeasurementWindowProfiler options: " + initLine
+        );
+    }
+}
