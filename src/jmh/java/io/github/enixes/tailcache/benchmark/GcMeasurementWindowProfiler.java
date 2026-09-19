@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Records the exact JMH measurement-iteration uptime windows used to select G1 pause log lines.
+ * Records the exact JMH measurement-iteration nanotime windows used to select G1 pause log lines.
  *
  * <p>The profiler writes only after a measured iteration has ended. It emits no benchmark metric;
  * {@link G1GcLogProfiler} reads the sidecar after the fork exits and derives pause metrics from the
@@ -30,7 +30,7 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
     private final Path outputDirectory;
     private final long pid = ProcessHandle.current().pid();
 
-    private long iterationStartUptimeMs;
+    private long iterationStartNanoTime;
     private boolean measurementFileInitialized;
 
     public GcMeasurementWindowProfiler() {
@@ -71,7 +71,7 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
         }
 
         // Capture as the final action before returning to JMH's measured iteration.
-        iterationStartUptimeMs = runtime.getUptime();
+        iterationStartNanoTime = System.nanoTime();
     }
 
     @Override
@@ -85,9 +85,9 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
         }
 
         // Capture immediately on entry, before the sidecar write itself can perturb the next gap.
-        long iterationEndUptimeMs = runtime.getUptime();
+        long iterationEndNanoTime = System.nanoTime();
         Path windows = GcProfileFiles.measurementWindows(outputDirectory, benchmarkParams, pid);
-        String line = iterationStartUptimeMs + "," + iterationEndUptimeMs + System.lineSeparator();
+        String line = iterationStartNanoTime + "," + iterationEndNanoTime + System.lineSeparator();
 
         try {
             Files.writeString(
