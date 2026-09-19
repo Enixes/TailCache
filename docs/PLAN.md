@@ -123,7 +123,31 @@ TailCache 05 is **supporting infrastructure**, not the final scientific experime
 - [x] verify persisted map files are removed after successful trial teardown
 - [x] verify Chronicle analytics remains disabled in workload benchmark forks
 - [x] document persisted warm-state assumptions and keep persisted latency non-reportable until filesystem/page-fault controls are frozen
-- [ ] close the final TailCache 05 research-review measured-path cleanup before merge
+- [x] close the final TailCache 05 research-review measured-path cleanup by resolving each mixed-workload trace key once per operation (post-merge hardening in TailCache 06)
+
+
+### TailCache 06 - latency, allocation and GC result pipeline
+
+TailCache 06 provides the measurement/provenance pipeline required to explain a future heap-pressure crossover. It does **not** itself define the final pressure levels or make the current TailCache 05 mixed workload suitable for heap-savings claims.
+
+- [x] keep latency measurement unprofiled and separate from profiler runs
+- [x] capture JMH SampleTime p50 / p95 / p99 / p99.9 plus retained sample count
+- [x] capture throughput in a separate unprofiled Throughput run
+- [x] capture allocation MB/s and B/op with JMH's built-in GC profiler
+- [x] retain JMH MXBean collection count/time without mislabelling collection time as pause time
+- [x] add a G1-specific measurement-window GC pause profiler backed by retained unified GC logs
+- [x] capture G1 pause count / total / max while excluding concurrent phases
+- [x] retain raw JMH JSON, human-readable JMH output, per-fork GC logs and run metadata
+- [x] join matching latency / throughput / GC records into analysis-ready JSON and CSV
+- [x] record Git SHA, dirty state, Java/Gradle/JMH/backend versions and metric provenance
+- [x] default the pipeline to Caffeine vs Chronicle in-memory so persistence stays secondary
+- [x] pin G1 for TailCache 06 runs; keep other collectors as later sensitivities
+- [ ] compile and run the short TailCache 06 pipeline on Java 21
+- [ ] verify summary rows match all requested parameter combinations
+- [ ] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
+- [ ] verify allocation and collection fields agree with JMH `gc` secondary metrics
+- [ ] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines in the measurement window
+- [ ] verify raw-result metadata records the exact tested Git head and a clean/dirty-tree flag
 
 ## Milestone 1 - trustworthy crossover harness
 
