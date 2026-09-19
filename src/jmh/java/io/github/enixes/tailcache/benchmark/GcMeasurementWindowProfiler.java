@@ -8,8 +8,6 @@ import org.openjdk.jmh.results.Result;
 import org.openjdk.jmh.runner.IterationType;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,7 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Records the exact JMH measurement-iteration nanotime windows used to select G1 pause log lines.
+ * Records exact JMH measurement-iteration {@link System#nanoTime()} windows for GC attribution.
  *
  * <p>The profiler writes only after a measured iteration has ended. It emits no benchmark metric;
  * {@link G1GcLogProfiler} reads the sidecar after the fork exits and derives pause metrics from the
@@ -26,7 +24,6 @@ import java.util.Collections;
  */
 public final class GcMeasurementWindowProfiler implements InternalProfiler {
 
-    private final RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
     private final Path outputDirectory;
     private final long pid = ProcessHandle.current().pid();
 
@@ -65,7 +62,10 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
             try {
                 Files.deleteIfExists(windows);
             } catch (IOException exception) {
-                throw new IllegalStateException("Unable to reset GC measurement windows " + windows, exception);
+                throw new IllegalStateException(
+                        "Unable to reset GC measurement windows " + windows,
+                        exception
+                );
             }
             measurementFileInitialized = true;
         }
@@ -98,7 +98,10 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
                     StandardOpenOption.APPEND
             );
         } catch (IOException exception) {
-            throw new IllegalStateException("Unable to write GC measurement window " + windows, exception);
+            throw new IllegalStateException(
+                    "Unable to write GC measurement window " + windows,
+                    exception
+            );
         }
 
         return Collections.emptyList();
