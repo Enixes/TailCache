@@ -139,7 +139,7 @@ public final class GcPauseProfiler implements ExternalProfiler {
 
         try {
             for (String line : Files.readAllLines(logPath, StandardCharsets.UTF_8)) {
-                Matcher logMatcher = LOG_LINE.matcher(line);
+                Matcher logMatcher = LOG_LINE.matcher(line.trim());
                 if (!logMatcher.matches()) {
                     continue;
                 }
