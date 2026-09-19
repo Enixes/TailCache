@@ -245,7 +245,14 @@ val tailCache06Modes = providers.gradleProperty("tailcacheModes")
 val tailCache06Threads = providers.gradleProperty("tailcacheThreads").orElse("1")
 
 val tailCache06SmokeDir = layout.buildDirectory.dir("reports/tailcache06/smoke").get().asFile
-val tailCache06RunDir = layout.buildDirectory.dir("reports/tailcache06/run").get().asFile
+val tailCache06RunId = providers.gradleProperty("tailcacheRunId").orElse(
+    java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")
+        .withZone(java.time.ZoneOffset.UTC)
+        .format(java.time.Instant.now())
+)
+val tailCache06RunDir = layout.buildDirectory
+    .dir("reports/tailcache06/runs/${tailCache06RunId.get()}")
+    .get().asFile
 
 fun registerTailCache06JmhTask(
     taskName: String,
@@ -336,6 +343,7 @@ fun registerTailCache06MetadataTask(taskName: String, resultDir: File, runKind: 
                 "schemaVersion" to "tailcache-run-metadata-v1",
                 "generatedAtUtc" to java.time.Instant.now().toString(),
                 "runKind" to runKind,
+                "runId" to if (runKind == "smoke") "smoke" else tailCache06RunId.get(),
                 "gitCommit" to commandOutput("git", "rev-parse", "HEAD"),
                 "gitDirty" to gitStatus.isNotBlank(),
                 "gitStatusPorcelain" to gitStatus,
