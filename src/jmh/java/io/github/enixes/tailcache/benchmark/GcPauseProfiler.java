@@ -73,7 +73,6 @@ public final class GcPauseProfiler implements ExternalProfiler {
     public Collection<String> addJVMOptions(BenchmarkParams params) {
         Path logPath = outputDirectory.resolve(trialStem(params) + "-%p.log").toAbsolutePath();
         return List.of(
-                "-XX:+UseG1GC",
                 "-Xlog:gc=info:file=" + logPath + ":uptimemillis,level,tags:filecount=0"
         );
     }
