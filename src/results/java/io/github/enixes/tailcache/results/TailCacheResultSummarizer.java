@@ -1,6 +1,5 @@
 package io.github.enixes.tailcache.results;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -30,8 +29,7 @@ import java.util.TreeMap;
 public final class TailCacheResultSummarizer {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .enable(JsonGenerator.Feature.IGNORE_UNKNOWN);
+            .enable(SerializationFeature.INDENT_OUTPUT);
 
     private TailCacheResultSummarizer() {
     }
