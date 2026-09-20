@@ -135,7 +135,7 @@ TailCache 06 provides the measurement/provenance pipeline required to explain a 
 - [x] capture throughput in a separate unprofiled Throughput run
 - [x] capture allocation MB/s and B/op with JMH's built-in GC profiler
 - [x] retain JMH MXBean collection count/time without mislabelling collection time as pause time
-- [x] add a G1-specific measurement-window GC pause profiler backed by retained unified GC logs
+- [x] add a G1-specific measurement-iteration profiler-envelope pause pipeline backed by retained unified GC logs
 - [x] capture G1 pause count / total / max while excluding concurrent phases
 - [x] retain raw JMH JSON, human-readable JMH output, per-fork GC logs and run metadata
 - [x] join matching latency / throughput / GC records into analysis-ready JSON and CSV
@@ -146,7 +146,7 @@ TailCache 06 provides the measurement/provenance pipeline required to explain a 
 - [ ] verify summary rows match all requested parameter combinations
 - [ ] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
 - [ ] verify allocation and collection fields agree with JMH `gc` secondary metrics
-- [ ] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines in the measurement window
+- [ ] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines inside the recorded measurement-iteration profiler envelopes
 - [ ] verify raw-result metadata records the exact tested Git head and a clean/dirty-tree flag
 
 ## Milestone 1 - trustworthy crossover harness
