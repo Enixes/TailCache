@@ -16,11 +16,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 /**
- * Records exact JMH measurement-iteration {@link System#nanoTime()} windows for GC attribution.
+ * Records JMH internal-profiler envelopes for measurement iterations using
+ * {@link System#nanoTime()}.
  *
- * <p>The profiler writes only after a measured iteration has ended. It emits no benchmark metric;
- * {@link G1GcLogProfiler} reads the sidecar after the fork exits and derives pause metrics from the
- * retained HotSpot GC log. Warmup windows are deliberately not recorded.</p>
+ * <p>JMH starts internal profilers before worker submission and stops them after workers finish,
+ * so these envelopes are intentionally a little wider than the configured timed workload interval.
+ * They are used to attribute G1 pause log lines to the profiled measurement iteration, not to claim
+ * exact per-operation timing boundaries. Warmup envelopes are deliberately not recorded.</p>
  */
 public final class GcMeasurementWindowProfiler implements InternalProfiler {
 
@@ -48,7 +50,7 @@ public final class GcMeasurementWindowProfiler implements InternalProfiler {
 
     @Override
     public String getDescription() {
-        return "TailCache JMH measurement-window recorder for G1 pause attribution";
+        return "TailCache JMH measurement-iteration profiler-envelope recorder for G1 pause attribution";
     }
 
     @Override
