@@ -1,6 +1,6 @@
 # TailCache 06 - latency, allocation and GC result pipeline
 
-**Status: IMPLEMENTED - INITIAL SMOKE PASSED AT 51ae404; POST-REVIEW RERUN + RAW RECONCILIATION PENDING**
+**Status: VALIDATED - FINAL SMOKE + RAW RECONCILIATION PASSED AT `374cb697`**
 
 ## Purpose
 
@@ -154,6 +154,28 @@ Initial end-to-end smoke validation passed at tested Git head `51ae404449166e5a9
 That validation predates a post-review profiler-ordering fix which places the measurement-window profiler outside JMH's built-in GC profiler. Because that change affects allocation/collection attribution, the current head requires one final smoke rerun before TailCache 06 can be marked validated.
 
 The retained raw JSON / GC artifact bundle is also required for the final manual reconciliation of percentiles, allocation/collection metrics and pause totals.
+
+## Final validation provenance
+
+Final post-review smoke validation passed at exact tested Git head `374cb697fe9738acf458944e8743797a99ac5b33` on 2026-09-20 with a clean working tree.
+
+The retained artifact bundle was reconciled manually against the generated summary:
+
+- all three JMH sources contained exactly 16 matching conditions: 2 backends x 2 payloads x 2 access distributions x 2 read/existing-key-put mixes;
+- the summary's p50 / p95 / p99 / p99.9 values matched the raw JMH SampleTime JSON exactly for every condition;
+- retained SampleTime histogram counts matched the summary for every condition (6,246 to 11,347 samples in this short smoke);
+- throughput values matched the separate unprofiled Throughput JSON exactly;
+- allocation MB/s and B/op plus JMH `gc.count` / `gc.time` matched the profiled JMH JSON exactly;
+- 16 raw G1 logs and 16 measurement-envelope sidecars were retained, one pair per profiled condition;
+- G1 pause count / total / max in the summary matched an independent re-parse of every raw log against its recorded `System.nanoTime()` envelope exactly;
+- the smoke exercised both zero-pause and non-zero-pause paths: Caffeine had no G1 collections in the profiled 300 ms windows, while Chronicle conditions recorded 5-9 pauses;
+- the recorded profiler envelopes were about 303-312 ms around the configured 300 ms measurement, which is consistent with JMH's documented internal-profiler placement outside the worker timing boundary;
+- the Java 21 benchmark JVM was explicitly pinned to G1 and Chronicle analytics remained disabled;
+- metadata recorded the exact tested Git head, `gitDirty=false`, JMH 1.37, Caffeine 3.2.4 and Chronicle Map 2026.1.
+
+As an additional mechanism sanity check, Chronicle's mixed-workload allocation rates were consistent with the earlier operation-level allocation measurements: approximately 268 B/op for the 256 B 95/5 cases and 3.92 KiB/op for the 4 KiB 95/5 cases, with the 70/30 mixes dropping as expected because existing-key puts allocate far less than ordinary Chronicle reads.
+
+This validation establishes that the **result pipeline** is internally consistent. It does not make the smoke latency values reportable research results.
 
 ## Interpretation guardrails
 
