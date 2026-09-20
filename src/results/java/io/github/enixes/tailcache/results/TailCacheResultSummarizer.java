@@ -73,7 +73,7 @@ public final class TailCacheResultSummarizer {
         notes.add("Latency percentiles are from an unprofiled JMH SampleTime run.");
         notes.add("Throughput is from a separate unprofiled JMH Throughput run.");
         notes.add("Allocation and collector metrics are from a separate profiled Throughput run.");
-        notes.add("gc.time is MXBean-reported collection time; gc.pause.time is summed G1 Pause log duration inside exact JMH measurement-iteration windows.");
+        notes.add("gc.time is MXBean-reported collection time; gc.pause.time is summed G1 Pause log duration inside JMH measurement-iteration internal-profiler envelopes.");
         notes.add("The three runs share parameterization but are not event-by-event correlated.");
 
         ArrayNode rows = root.putArray("rows");
@@ -108,7 +108,7 @@ public final class TailCacheResultSummarizer {
         row.put("threads", latencyRun.path("threads").asInt());
 
         ObjectNode params = row.putObject("params");
-        latencyRun.path("params").fields().forEachRemaining(entry ->
+        latencyRun.path("params").properties().forEach(entry ->
                 params.put(entry.getKey(), entry.getValue().asText())
         );
 
@@ -498,7 +498,7 @@ public final class TailCacheResultSummarizer {
             }
 
             Map<String, String> params = new TreeMap<>();
-            node.path("params").fields().forEachRemaining(entry ->
+            node.path("params").properties().forEach(entry ->
                     params.put(entry.getKey(), entry.getValue().asText())
             );
             return new RunKey(
