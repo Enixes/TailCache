@@ -142,13 +142,13 @@ TailCache 06 provides the measurement/provenance pipeline required to explain a 
 - [x] record Git SHA, dirty state, Java/Gradle/JMH/backend versions and metric provenance
 - [x] default the pipeline to Caffeine vs Chronicle in-memory so persistence stays secondary
 - [x] pin G1 for TailCache 06 runs; keep other collectors as later sensitivities
-- [ ] compile and run the short TailCache 06 pipeline on Java 21
-  - Initial smoke validation at `51ae404` passed compilation, tests, 16-row expansion and metadata capture; current post-review head still requires rerun.
-- [ ] verify summary rows match all requested parameter combinations
-- [ ] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
-- [ ] verify allocation and collection fields agree with JMH `gc` secondary metrics
-- [ ] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines inside the recorded measurement-iteration profiler envelopes
-- [ ] verify raw-result metadata records the exact tested Git head and a clean/dirty-tree flag
+- [x] compile and run the short TailCache 06 pipeline on Java 21
+  - Final post-review smoke at `374cb697` completed successfully on the Java 21 benchmark toolchain with a clean tested tree.
+- [x] verify summary rows match all requested parameter combinations
+- [x] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
+- [x] verify allocation and collection fields agree with JMH `gc` secondary metrics
+- [x] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines inside the recorded measurement-iteration profiler envelopes
+- [x] verify raw-result metadata records the exact tested Git head and a clean/dirty-tree flag
 
 ## Milestone 1 - trustworthy crossover harness
 
@@ -166,6 +166,8 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] pin `-Xms == -Xmx` for crossover experiments so heap resizing is not another variable
 - [ ] use G1 as the initial primary collector unless pilot evidence justifies another baseline; keep ZGC or other collectors as sensitivity experiments
 - [ ] define pressure levels using measured live-set / old-gen occupancy rather than payload bytes alone
+- [ ] add a backend-neutral application-allocation/churn driver for the crossover experiment so GC is triggered under controlled, identical non-cache allocation pressure; a large retained cache live set by itself does not guarantee collections
+- [ ] treat retained live-set pressure and application allocation/churn rate as separate experimental controls; do not let Chronicle's ordinary-get materialization be the only source of garbage in the primary crossover study
 - [ ] choose a small pilot set spanning low, moderate, high and severe heap pressure without relying on arbitrary percentage labels
 - [ ] capture allocation rate, GC count, GC pause time, concurrent-GC activity and post-GC/live-heap occupancy alongside latency
 - [ ] decide how workload seeds are replicated: one frozen primary seed plus robustness seeds, or multiple seeds in the main design
@@ -210,6 +212,7 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] retain GC/allocation/live-set evidence needed to explain any latency crossover
 - [ ] retain raw outputs, environment metadata, trace fingerprints and configuration exports
 - [ ] repeat key findings across workload seeds / fresh forks
+- [ ] randomize or counterbalance condition order across reportable runs so backend/pressure comparisons are not confounded by temporal machine drift
 - [ ] perform robustness reruns for surprising or threshold-sensitive results
 - [ ] report **no crossover** as a valid result if Chronicle never recovers its access tax in the tested pressure range
 
