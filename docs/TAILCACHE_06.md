@@ -1,6 +1,6 @@
 # TailCache 06 - latency, allocation and GC result pipeline
 
-**Status: IMPLEMENTED - INITIAL SMOKE PASSED AT 51ae404; POST-REVIEW RERUN PENDING**
+**Status: IMPLEMENTED - INITIAL SMOKE PASSED AT 51ae404; POST-REVIEW RERUN + RAW RECONCILIATION PENDING**
 
 ## Purpose
 
@@ -139,6 +139,21 @@ Each joined row contains:
 - collector;
 - selected TailCache modes/threads;
 - metric provenance and expected raw files.
+
+## Validation provenance
+
+Initial end-to-end smoke validation passed at tested Git head `51ae404449166e5a9d2cedc12aaa478d5a115133` on 2026-09-20:
+
+- Java/Gradle compilation and unit tests passed;
+- the smoke pipeline completed successfully with configuration cache stored;
+- the default scope expanded to 16 joined rows: 2 backends x 2 payloads x 2 access distributions x 2 read/existing-key-put mixes;
+- one G1 raw log and one measurement-window sidecar were retained per profiled condition;
+- run metadata recorded a clean tested tree and the Java 21 benchmark executable;
+- the summary schema and row count were produced successfully.
+
+That validation predates a post-review profiler-ordering fix which places the measurement-window profiler outside JMH's built-in GC profiler. Because that change affects allocation/collection attribution, the current head requires one final smoke rerun before TailCache 06 can be marked validated.
+
+The retained raw JSON / GC artifact bundle is also required for the final manual reconciliation of percentiles, allocation/collection metrics and pause totals.
 
 ## Interpretation guardrails
 
