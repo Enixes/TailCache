@@ -64,7 +64,7 @@ public final class TailCacheRunMetadataWriter {
         metricSources.put("allocationAndCollection", "JMH gc profiler via MXBeans");
         metricSources.put(
                 "gcPauses",
-                "exact JMH System.nanoTime windows + G1 -Xlog:gc=info timenanos Pause records"
+                "JMH measurement-iteration internal-profiler envelopes + G1 -Xlog:gc=info timenanos Pause records"
         );
         metadata.put("metricSources", metricSources);
 
