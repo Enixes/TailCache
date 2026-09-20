@@ -307,8 +307,11 @@ fun registerTailCache06JmhTask(
 
     if (profiled) {
         args(
-            "-prof", "gc",
+            // JMH starts internal profilers in declaration order and stops them in reverse.
+            // Put the window recorder outside the built-in GC profiler so its sidecar file
+            // write is not included in gc.alloc.rate / gc.count / gc.time.
             "-prof", "io.github.enixes.tailcache.benchmark.GcMeasurementWindowProfiler:dir=${gcDir.absolutePath}",
+            "-prof", "gc",
             "-prof", "io.github.enixes.tailcache.benchmark.G1GcLogProfiler:dir=${gcDir.absolutePath}"
         )
     }
