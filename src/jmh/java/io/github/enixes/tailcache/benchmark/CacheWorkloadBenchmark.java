@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>The cache itself is {@code Scope.Benchmark}, so runs with {@code -t > 1} are genuine
  * same-JVM shared-cache contention. The workload trace and replacement values are pre-generated;
- * per-worker cursor offsets are initialized outside measurement. Measured work is limited to
- * advancing/wrapping the cursor, trace/key lookup, one branch, and the selected cache operation.</p>
+ * per-worker cursor offsets are initialized outside measurement. The measured path resolves each
+ * trace entry once, then performs the read/put branch and selected cache operation.</p>
  */
 @BenchmarkMode(Mode.SampleTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
@@ -33,12 +33,13 @@ public class CacheWorkloadBenchmark {
             Blackhole blackhole
     ) {
         int traceIndex = cursor.nextTraceIndex();
-        Long key = state.keyAt(traceIndex);
+        int logicalIndex = state.logicalIndexAt(traceIndex);
+        Long key = state.keyForLogicalIndex(logicalIndex);
 
         if (state.isReadAt(traceIndex)) {
             blackhole.consume(state.cache().get(key));
         } else {
-            state.cache().put(key, state.replacementValueAt(traceIndex));
+            state.cache().put(key, state.replacementValueForLogicalIndex(logicalIndex));
         }
     }
 }

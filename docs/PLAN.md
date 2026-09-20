@@ -123,7 +123,32 @@ TailCache 05 is **supporting infrastructure**, not the final scientific experime
 - [x] verify persisted map files are removed after successful trial teardown
 - [x] verify Chronicle analytics remains disabled in workload benchmark forks
 - [x] document persisted warm-state assumptions and keep persisted latency non-reportable until filesystem/page-fault controls are frozen
-- [ ] close the final TailCache 05 research-review measured-path cleanup before merge
+- [x] close the final TailCache 05 research-review measured-path cleanup by resolving each mixed-workload trace key once per operation (post-merge hardening in TailCache 06)
+
+
+### TailCache 06 - latency, allocation and GC result pipeline
+
+TailCache 06 provides the measurement/provenance pipeline required to explain a future heap-pressure crossover. It does **not** itself define the final pressure levels or make the current TailCache 05 mixed workload suitable for heap-savings claims.
+
+- [x] keep latency measurement unprofiled and separate from profiler runs
+- [x] capture JMH SampleTime p50 / p95 / p99 / p99.9 plus retained sample count
+- [x] capture throughput in a separate unprofiled Throughput run
+- [x] capture allocation MB/s and B/op with JMH's built-in GC profiler
+- [x] retain JMH MXBean collection count/time without mislabelling collection time as pause time
+- [x] add a G1-specific measurement-iteration profiler-envelope pause pipeline backed by retained unified GC logs
+- [x] capture G1 pause count / total / max while excluding concurrent phases
+- [x] retain raw JMH JSON, human-readable JMH output, per-fork GC logs and run metadata
+- [x] join matching latency / throughput / GC records into analysis-ready JSON and CSV
+- [x] record Git SHA, dirty state, Java/Gradle/JMH/backend versions and metric provenance
+- [x] default the pipeline to Caffeine vs Chronicle in-memory so persistence stays secondary
+- [x] pin G1 for TailCache 06 runs; keep other collectors as later sensitivities
+- [x] compile and run the short TailCache 06 pipeline on Java 21
+  - Final post-review smoke at `374cb697` completed successfully on the Java 21 benchmark toolchain with a clean tested tree.
+- [x] verify summary rows match all requested parameter combinations
+- [x] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
+- [x] verify allocation and collection fields agree with JMH `gc` secondary metrics
+- [x] verify G1 pause metrics agree with retained `-Xlog:gc=info` lines inside the recorded measurement-iteration profiler envelopes
+- [x] verify raw-result metadata records the exact tested Git head and a clean/dirty-tree flag
 
 ## Milestone 1 - trustworthy crossover harness
 
@@ -135,14 +160,19 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] capture benchmark environment metadata
 - [ ] quantify benchmark trace-selection / harness floor before reportable latency comparisons
 - [ ] verify reportable warmup is sufficient for measured-path compilation stability
+- [ ] validate the latency measurement against injected/known JVM pauses: JMH `SampleTime` randomly samples invocations and may miss the specific operation spanning a rare stop-the-world pause
+- [ ] add or validate a pause-sensitive secondary latency method (for example an every-request/HdrHistogram-style harness or equivalent controlled receipt) before claiming GC-driven p99/p99.9 effects; do not use sampled percentiles alone as proof that pauses were absent
 - [ ] document the Caffeine 50%-of-`maximumSize` frequency-sketch activation boundary discovered during review; do not inherit the 2048/4096 smoke ratio into reportable runs accidentally
 - [ ] freeze backend-specific entry-count / occupancy semantics before reportable comparisons; do not assume equal numeric Caffeine `maximumSize` and Chronicle `entries` are scientifically equivalent
 - [ ] design a dedicated GC-pressure workload/value-supply path that does **not** retain one Chronicle shadow payload per key on the Java heap
 - [ ] pin `-Xms == -Xmx` for crossover experiments so heap resizing is not another variable
 - [ ] use G1 as the initial primary collector unless pilot evidence justifies another baseline; keep ZGC or other collectors as sensitivity experiments
 - [ ] define pressure levels using measured live-set / old-gen occupancy rather than payload bytes alone
+- [ ] add a backend-neutral application-allocation/churn driver for the crossover experiment so GC is triggered under controlled, identical non-cache allocation pressure; a large retained cache live set by itself does not guarantee collections
+- [ ] treat retained live-set pressure and application allocation/churn rate as separate experimental controls; do not let Chronicle's ordinary-get materialization be the only source of garbage in the primary crossover study
 - [ ] choose a small pilot set spanning low, moderate, high and severe heap pressure without relying on arbitrary percentage labels
 - [ ] capture allocation rate, GC count, GC pause time, concurrent-GC activity and post-GC/live-heap occupancy alongside latency
+- [ ] retain pause exposure/frequency metrics (for example pauses per measured second and, where defensible, per operation) so rare GC stalls are visible even when percentile sampling misses the affected invocation
 - [ ] decide how workload seeds are replicated: one frozen primary seed plus robustness seeds, or multiple seeds in the main design
 - [ ] add a stable workload/trace fingerprint to retained raw results
 - [ ] verify deterministic trace coverage per measurement interval so repeated prefixes do not accidentally dominate results
@@ -185,6 +215,7 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] retain GC/allocation/live-set evidence needed to explain any latency crossover
 - [ ] retain raw outputs, environment metadata, trace fingerprints and configuration exports
 - [ ] repeat key findings across workload seeds / fresh forks
+- [ ] randomize or counterbalance condition order across reportable runs so backend/pressure comparisons are not confounded by temporal machine drift
 - [ ] perform robustness reruns for surprising or threshold-sensitive results
 - [ ] report **no crossover** as a valid result if Chronicle never recovers its access tax in the tested pressure range
 
