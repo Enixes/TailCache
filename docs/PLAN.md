@@ -160,6 +160,8 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] capture benchmark environment metadata
 - [ ] quantify benchmark trace-selection / harness floor before reportable latency comparisons
 - [ ] verify reportable warmup is sufficient for measured-path compilation stability
+- [ ] validate the latency measurement against injected/known JVM pauses: JMH `SampleTime` randomly samples invocations and may miss the specific operation spanning a rare stop-the-world pause
+- [ ] add or validate a pause-sensitive secondary latency method (for example an every-request/HdrHistogram-style harness or equivalent controlled receipt) before claiming GC-driven p99/p99.9 effects; do not use sampled percentiles alone as proof that pauses were absent
 - [ ] document the Caffeine 50%-of-`maximumSize` frequency-sketch activation boundary discovered during review; do not inherit the 2048/4096 smoke ratio into reportable runs accidentally
 - [ ] freeze backend-specific entry-count / occupancy semantics before reportable comparisons; do not assume equal numeric Caffeine `maximumSize` and Chronicle `entries` are scientifically equivalent
 - [ ] design a dedicated GC-pressure workload/value-supply path that does **not** retain one Chronicle shadow payload per key on the Java heap
@@ -170,6 +172,7 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [ ] treat retained live-set pressure and application allocation/churn rate as separate experimental controls; do not let Chronicle's ordinary-get materialization be the only source of garbage in the primary crossover study
 - [ ] choose a small pilot set spanning low, moderate, high and severe heap pressure without relying on arbitrary percentage labels
 - [ ] capture allocation rate, GC count, GC pause time, concurrent-GC activity and post-GC/live-heap occupancy alongside latency
+- [ ] retain pause exposure/frequency metrics (for example pauses per measured second and, where defensible, per operation) so rare GC stalls are visible even when percentile sampling misses the affected invocation
 - [ ] decide how workload seeds are replicated: one frozen primary seed plus robustness seeds, or multiple seeds in the main design
 - [ ] add a stable workload/trace fingerprint to retained raw results
 - [ ] verify deterministic trace coverage per measurement interval so repeated prefixes do not accidentally dominate results
