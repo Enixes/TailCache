@@ -181,6 +181,7 @@ This validation establishes that the **result pipeline** is internally consisten
 
 - Latency, throughput and GC/allocation numbers come from **separate runs** with the same parameterization. They can explain the same condition, but are not event-by-event correlated.
 - JMH SampleTime measures a sampled operation-latency distribution under closed-loop worker load.
+- JMH `SampleTime` randomly samples benchmark invocations rather than timing every cache operation. This is appropriate for ordinary percentile estimation, but a rare stop-the-world pause can be missed if the invocation spanning that pause was not selected for sampling. **Do not interpret a low sampled p99/p99.9 as proof that GC pauses did not affect service latency.** The crossover study must validate pause sensitivity separately before reportable conclusions.
 - `gc.time` and `gc.pause.time` are different metrics and must remain separately named.
 - GC pause totals are attributed to the JMH internal-profiler envelope around a measurement iteration; they are not claimed to be event-by-event correlated with the separate unprofiled latency samples.
 - p99.9 is only meaningful when the retained sample count is sufficient; the summary includes that count rather than hiding it.
