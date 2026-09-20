@@ -143,6 +143,7 @@ TailCache 06 provides the measurement/provenance pipeline required to explain a 
 - [x] default the pipeline to Caffeine vs Chronicle in-memory so persistence stays secondary
 - [x] pin G1 for TailCache 06 runs; keep other collectors as later sensitivities
 - [ ] compile and run the short TailCache 06 pipeline on Java 21
+  - Initial smoke validation at `51ae404` passed compilation, tests, 16-row expansion and metadata capture; current post-review head still requires rerun.
 - [ ] verify summary rows match all requested parameter combinations
 - [ ] verify p50 / p95 / p99 / p99.9 and sample counts agree with raw JMH JSON
 - [ ] verify allocation and collection fields agree with JMH `gc` secondary metrics
