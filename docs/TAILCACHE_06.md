@@ -1,6 +1,6 @@
 # TailCache 06 - latency, allocation and GC result pipeline
 
-**Status: IMPLEMENTED - RUNTIME VALIDATION PENDING**
+**Status: IMPLEMENTED - INITIAL SMOKE PASSED AT 51ae404; POST-REVIEW RERUN PENDING**
 
 ## Purpose
 
@@ -25,8 +25,8 @@ For the same benchmark parameters TailCache 06 runs three JMH trials:
 
 3. **Allocation / GC** - `Mode.Throughput` with:
    - JMH built-in `gc` profiler for `gc.alloc.rate`, `gc.alloc.rate.norm`, `gc.count` and `gc.time`;
-   - TailCache `GcMeasurementWindowProfiler` to record exact JMH measurement-iteration `System.nanoTime()` windows;
-   - TailCache `G1GcLogProfiler` to retain raw G1 logs and derive stop-the-world pause count, total and max only from those windows.
+   - TailCache `GcMeasurementWindowProfiler` to record the JMH internal-profiler envelope around each measurement iteration;
+   - TailCache `G1GcLogProfiler` to retain raw G1 logs and derive stop-the-world pause count, total and max from those envelopes.
 
 The result summarizer joins the three records by benchmark name, thread count and JMH parameters.
 
@@ -40,7 +40,7 @@ TailCache additionally enables JDK 21 unified logging for the profiled fork:
 -Xlog:gc=info:file=<raw-log>:timenanos,level,tags:filecount=0
 ```
 
-HotSpot's `timenanos` decorator is correlated with the `System.nanoTime()` start/end sidecar recorded for each JMH measurement iteration. `G1GcLogProfiler` parses only completed G1 `Pause ... <duration>` records inside those exact windows. It exports:
+HotSpot's `timenanos` decorator is correlated with the `System.nanoTime()` start/end sidecar recorded by the internal profiler for each JMH measurement iteration. JMH deliberately starts internal profilers before worker submission and stops them after workers finish, so this is a **measurement-iteration profiler envelope**, not the exact 300 ms/1 s workload timer boundary. `G1GcLogProfiler` parses completed G1 `Pause ... <duration>` records inside that envelope. It exports:
 
 - `gc.pause.count`
 - `gc.pause.time`
@@ -145,6 +145,7 @@ Each joined row contains:
 - Latency, throughput and GC/allocation numbers come from **separate runs** with the same parameterization. They can explain the same condition, but are not event-by-event correlated.
 - JMH SampleTime measures a sampled operation-latency distribution under closed-loop worker load.
 - `gc.time` and `gc.pause.time` are different metrics and must remain separately named.
+- GC pause totals are attributed to the JMH internal-profiler envelope around a measurement iteration; they are not claimed to be event-by-event correlated with the separate unprofiled latency samples.
 - p99.9 is only meaningful when the retained sample count is sufficient; the summary includes that count rather than hiding it.
 - Smoke results validate the pipeline only.
 - The current mixed-workload replacement-value bank still prevents this TailCache 05 workload from making heap-footprint/GC-savings claims. The dedicated pressure workload remains a separate Milestone 1 requirement.
