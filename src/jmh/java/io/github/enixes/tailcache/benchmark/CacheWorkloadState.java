@@ -183,15 +183,15 @@ public class CacheWorkloadState {
         return trace.isReadAt(traceIndex);
     }
 
-    public Long keyAt(int traceIndex) {
-        return keys[logicalIndexAt(traceIndex)];
-    }
-
-    public byte[] replacementValueAt(int traceIndex) {
-        return replacementValues[logicalIndexAt(traceIndex)];
-    }
-
-    private int logicalIndexAt(int traceIndex) {
+    public int logicalIndexAt(int traceIndex) {
         return Math.toIntExact(trace.keyAt(traceIndex));
+    }
+
+    public Long keyForLogicalIndex(int logicalIndex) {
+        return keys[logicalIndex];
+    }
+
+    public byte[] replacementValueForLogicalIndex(int logicalIndex) {
+        return replacementValues[logicalIndex];
     }
 }

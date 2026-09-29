@@ -22,7 +22,7 @@ TailCache is designed to answer questions such as:
 - How much of Chronicle Map's ordinary `get` cost comes from materializing a Java value from off-heap storage?
 - Does warm, file-backed Chronicle Map behave differently from its non-persisted in-memory mode?
 - How do uniform and skewed access distributions affect latency tails?
-- How do 95/5 and 70/30 read/update mixes behave under one-thread and same-JVM shared-cache contention?
+- How do 95/5 and 70/30 read/existing-key-put mixes behave under one-thread and same-JVM shared-cache contention?
 
 The smoke harness keeps the working set below the configured entry setting so validation runs avoid eviction/capacity exhaustion. The reportable experiment will freeze backend-specific occupancy semantics explicitly before comparing latency distributions, because Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent controls.
 
@@ -44,7 +44,7 @@ TailCache keeps two layers of benchmarks:
 | Payload size | `BYTES_256` (256 B), `KIB_4` (4 KiB) |
 | Access distribution | `UNIFORM`, `ZIPFIAN` |
 | Zipfian exponent | 0.99 initial value |
-| Read/update mix | `READ_95_WRITE_5`, `READ_70_WRITE_30` |
+| Read/existing-key-put mix | `READ_95_WRITE_5`, `READ_70_WRITE_30` |
 | Resident entries | 2,048 |
 | Configured entry setting | 4,096 (`maximumSize` for Caffeine; `entries` target for Chronicle Map) |
 | Deterministic trace | 100,000 operations from seed `0x5EED` |
