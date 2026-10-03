@@ -202,7 +202,7 @@ tasks.register<JavaExec>("jmhWorkloadSmoke") {
     val resultFile = resultDir.resolve("workload-smoke-1t.json")
     doFirst { resultDir.mkdirs() }
     args(
-        ".*CacheWorkloadBenchmark.*",
+        ".*CacheWorkloadBenchmark.mixedWorkload",
         "-t", "1",
         "-wi", "1",
         "-i", "1",
@@ -227,7 +227,7 @@ tasks.register<JavaExec>("jmhWorkloadShared16Smoke") {
     val resultFile = resultDir.resolve("workload-smoke-16t.json")
     doFirst { resultDir.mkdirs() }
     args(
-        ".*CacheWorkloadBenchmark.*",
+        ".*CacheWorkloadBenchmark.mixedWorkload",
         "-t", "16",
         "-wi", "1",
         "-i", "1",
@@ -283,7 +283,7 @@ fun registerTailCache06JmhTask(
     }
 
     args(
-        ".*CacheWorkloadBenchmark.*",
+        ".*CacheWorkloadBenchmark.mixedWorkload",
         "-p", "mode=${tailCache06Modes.get()}",
         "-t", tailCache06Threads.get(),
         "-bm", benchmarkMode,
@@ -473,4 +473,62 @@ tasks.register("tailCache06") {
     group = "benchmark"
     description = "Runs and summarizes the TailCache 06 result pipeline using benchmark defaults."
     dependsOn(tailCache06Summary)
+}
+
+// TailCache 07 is a focused, diagnostic matrix. Its JSON and per-iteration OS counters
+// are retained separately from the TailCache 06 candidate/result pipeline.
+tasks.register<JavaExec>("tailCache07Pilot") {
+    group = "benchmark"
+    description = "Runs the TailCache 07 bias-control pilot; results are diagnostic, not reportable."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
+
+    val runId = providers.gradleProperty("tailcache07RunId").orElse("pilot")
+    val modes = providers.gradleProperty("tailcache07Modes")
+        .orElse("CAFFEINE,CHRONICLE_IN_MEMORY,CHRONICLE_PERSISTED")
+    val payloads = providers.gradleProperty("tailcache07Payloads").orElse("BYTES_256,KIB_4")
+    val threads = providers.gradleProperty("tailcache07Threads").orElse("1")
+    val benchmark = providers.gradleProperty("tailcache07Benchmark").orElse("mixedWorkload")
+    val warmupIterations = providers.gradleProperty("tailcache07WarmupIterations").orElse("8")
+    val forks = providers.gradleProperty("tailcache07Forks").orElse("2")
+    val resultDir = layout.buildDirectory.dir("reports/tailcache07/${runId.get()}").get().asFile
+    val persistedRoot = layout.buildDirectory.dir("reports/tailcache07/persisted-files").get().asFile
+    doFirst {
+        resultDir.mkdirs()
+        persistedRoot.mkdirs()
+    }
+
+    args(
+        ".*CacheWorkloadBenchmark.${benchmark.get()}",
+        "-p", "mode=${modes.get()}",
+        "-p", "payloadSize=${payloads.get()}",
+        "-p", "accessPattern=UNIFORM",
+        "-p", "readWriteMix=READ_95_WRITE_5",
+        "-t", threads.get(),
+        "-wi", warmupIterations.get(), "-i", "5", "-f", forks.get(), "-w", "1s", "-r", "1s",
+        "-bm", "sample", "-tu", "ns",
+        "-jvmArgsAppend", "-XX:+UseG1GC -Xms512m -Xmx512m "
+                + "-Dtailcache.persistedRoot=${persistedRoot.absolutePath}",
+        "-prof", "io.github.enixes.tailcache.benchmark.PilotOsCountersProfiler:dir=${resultDir.absolutePath}",
+        "-prof", "comp",
+        "-rf", "json", "-rff", resultDir.resolve("results.json").absolutePath,
+        "-o", resultDir.resolve("jmh.txt").absolutePath,
+        "-foe", "true"
+    )
+}
+
+tasks.register<JavaExec>("tailCache07OpenDiagnostic") {
+    group = "benchmark"
+    description = "Runs separate persisted reopen/first-touch diagnostics (OS cache is not dropped)."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("io.github.enixes.tailcache.benchmark.PersistedOpenDiagnostic")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs + listOf("-Xms512m", "-Xmx512m"))
+    val diagnosticDir = layout.buildDirectory.dir("reports/tailcache07/open-diagnostic").get().asFile
+    val persistedRoot = layout.buildDirectory.dir("reports/tailcache07/persisted-files").get().asFile
+    args(persistedRoot.absolutePath, diagnosticDir.resolve("open-diagnostic.csv").absolutePath)
 }

@@ -17,9 +17,13 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+
+import static java.nio.file.StandardOpenOption.READ;
 
 /**
  * Shared cache state for TailCache's mixed-workload matrix.
@@ -55,14 +59,23 @@ public class CacheWorkloadState {
     private byte[][] replacementValues;
     private Path persistedDirectory;
     private Path persistedFile;
+    private MappedByteBuffer prefaultMapping;
+    private volatile long prefaultChecksum;
 
     @Setup(Level.Trial)
     public void setupTrial() throws IOException {
+        if (!Boolean.getBoolean("chronicle.analytics.disable")) {
+            throw new IllegalStateException("Benchmark fork must disable Chronicle analytics");
+        }
         SyntheticKeyValueGenerator dataGenerator = new SyntheticKeyValueGenerator();
         CacheConfig cacheConfig = new CacheConfig(CAPACITY, payloadSize.bytes());
 
         if (mode.isPersisted()) {
-            persistedDirectory = Files.createTempDirectory("tailcache-chronicle-");
+            Path root = Path.of(System.getProperty(
+                    "tailcache.persistedRoot", System.getProperty("java.io.tmpdir")
+            )).toAbsolutePath();
+            Files.createDirectories(root);
+            persistedDirectory = Files.createTempDirectory(root, "tailcache-chronicle-");
             persistedFile = persistedDirectory.resolve("tailcache.map");
         }
 
@@ -103,6 +116,20 @@ public class CacheWorkloadState {
             throw new IllegalStateException("Cache hit sanity check failed during workload setup");
         }
 
+        if (persistedFile != null) {
+            // Warm the file's page cache, then touch Chronicle's own mapped entry pages via get().
+            // This reduces first-touch bias but cannot prevent later eviction under host pressure.
+            try (FileChannel channel = FileChannel.open(persistedFile, READ)) {
+                long size = channel.size();
+                if (size > Integer.MAX_VALUE) {
+                    throw new IllegalStateException("Pilot prefault supports files up to 2 GiB: " + size);
+                }
+                prefaultMapping = channel.map(FileChannel.MapMode.READ_ONLY, 0, size);
+                prefaultMapping.load();
+            }
+            prefaultEntries();
+        }
+
         String zipfExponent = accessPattern == AccessPattern.ZIPFIAN
                 ? Double.toString(workloadSpec.zipfExponent())
                 : "n/a";
@@ -112,7 +139,8 @@ public class CacheWorkloadState {
                         + "stateScope=Benchmark(shared-cache) configuredEntries=%d populatedEntries=%d "
                         + "payloadBytes=%d traceSize=%d workloadSeed=0x%X accessPattern=%s "
                         + "zipfExponent=%s readRatio=%.2f writeRatio=%.2f keyRepresentation=preboxed-Long "
-                        + "persistedTempFile=%s%n",
+                        + "analyticsDisabled=%s persistedTempFile=%s persistedFileBytes=%s "
+                        + "persistedFileStore=%s prefault=%s%n",
                 mode,
                 cache.name(),
                 cache.configurationSummary(),
@@ -125,12 +153,64 @@ public class CacheWorkloadState {
                 zipfExponent,
                 readWriteMix.readRatio(),
                 readWriteMix.writeRatio(),
-                persistedFile == null ? "n/a" : persistedFile
+                Boolean.getBoolean("chronicle.analytics.disable"),
+                persistedFile == null ? "n/a" : persistedFile,
+                persistedFile == null ? "n/a" : Files.size(persistedFile),
+                persistedFile == null ? "n/a" : Files.getFileStore(persistedFile),
+                persistedFile == null ? "n/a" : "trialEntrySweep+mappedPageTouchEachIteration"
         );
+    }
+
+    @Setup(Level.Iteration)
+    public void setupIteration() {
+        if (persistedFile != null) {
+            prefaultMappedPages();
+        }
+    }
+
+    private void prefaultMappedPages() {
+        // Page-cache touch with no per-entry byte[] materialization before the timed interval.
+        MappedByteBuffer pages = prefaultMapping;
+        pages.load();
+        long checksum = 0;
+        for (int offset = 0; offset < pages.limit(); offset += 4_096) {
+            checksum += pages.get(offset);
+        }
+        checksum += pages.get(pages.limit() - 1);
+        prefaultChecksum = checksum;
+    }
+
+    private void prefaultEntries() {
+        long checksum = 0;
+        for (Long key : keys) {
+            byte[] value = cache.get(key);
+            if (value == null || value.length != payloadSize.bytes()) {
+                throw new IllegalStateException("Prefault entry missing or wrong size: " + key);
+            }
+            checksum += value[0] + value[value.length - 1];
+        }
+        prefaultChecksum = checksum;
     }
 
     @TearDown(Level.Trial)
     public void tearDownTrial() throws IOException {
+        RuntimeException observationFailure = null;
+        try {
+            if (cache != null && keys != null) {
+                int updatedEntries = 0;
+                for (int index = 0; index < keys.length; index++) {
+                    if (Arrays.equals(cache.get(keys[index]), replacementValues[index])) {
+                        updatedEntries++;
+                    }
+                }
+                System.out.printf("[TailCache][workload-observation] mode=%s payloadBytes=%d "
+                                + "updatedEntries=%d prefaultChecksum=%d%n",
+                        mode, payloadSize.bytes(), updatedEntries, prefaultChecksum);
+            }
+        } catch (RuntimeException exception) {
+            observationFailure = exception;
+        }
+        prefaultMapping = null;
         RuntimeException closeFailure = null;
         if (cache != null) {
             try {
@@ -160,6 +240,15 @@ public class CacheWorkloadState {
             }
         }
 
+        if (observationFailure != null) {
+            if (closeFailure != null) {
+                observationFailure.addSuppressed(closeFailure);
+            }
+            if (cleanupFailure != null) {
+                observationFailure.addSuppressed(cleanupFailure);
+            }
+            throw observationFailure;
+        }
         if (closeFailure != null) {
             if (cleanupFailure != null) {
                 closeFailure.addSuppressed(cleanupFailure);
