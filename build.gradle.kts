@@ -475,18 +475,26 @@ tasks.register("tailCache06") {
     dependsOn(tailCache06Summary)
 }
 
-// TailCache 07 is a focused, diagnostic matrix. Its JSON and per-iteration OS counters
-// are retained separately from the TailCache 06 candidate/result pipeline.
-tasks.register<JavaExec>("tailCache07Pilot") {
+// TailCache 07 keeps latency forks unprofiled. Compiler and OS counters belong to
+// separate diagnostic forks, with distinct run ids and raw result directories.
+fun registerTailCache07JmhTask(
+    taskName: String,
+    defaultRunId: String,
+    diagnostics: Boolean
+) = tasks.register<JavaExec>(taskName) {
     group = "benchmark"
-    description = "Runs the TailCache 07 bias-control pilot; results are diagnostic, not reportable."
+    description = if (diagnostics) {
+        "Runs TailCache 07 compiler/OS diagnostics separately from latency; not reportable."
+    } else {
+        "Runs the unprofiled TailCache 07 latency pilot; not reportable until gates pass."
+    }
     dependsOn(jmh.classesTaskName)
     classpath = jmh.runtimeClasspath
     mainClass.set("org.openjdk.jmh.Main")
     javaLauncher.set(java21Launcher)
     jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
 
-    val runId = providers.gradleProperty("tailcache07RunId").orElse("pilot")
+    val runId = providers.gradleProperty("tailcache07RunId").orElse(defaultRunId)
     val modes = providers.gradleProperty("tailcache07Modes")
         .orElse("CAFFEINE,CHRONICLE_IN_MEMORY,CHRONICLE_PERSISTED")
     val payloads = providers.gradleProperty("tailcache07Payloads").orElse("BYTES_256,KIB_4")
@@ -497,6 +505,9 @@ tasks.register<JavaExec>("tailCache07Pilot") {
     val resultDir = layout.buildDirectory.dir("reports/tailcache07/${runId.get()}").get().asFile
     val persistedRoot = layout.buildDirectory.dir("reports/tailcache07/persisted-files").get().asFile
     doFirst {
+        if (resultDir.exists() && resultDir.listFiles()?.isNotEmpty() == true) {
+            throw GradleException("TailCache 07 run id already has results: ${resultDir.absolutePath}")
+        }
         resultDir.mkdirs()
         persistedRoot.mkdirs()
     }
@@ -512,12 +523,148 @@ tasks.register<JavaExec>("tailCache07Pilot") {
         "-bm", "sample", "-tu", "ns",
         "-jvmArgsAppend", "-XX:+UseG1GC -Xms512m -Xmx512m "
                 + "-Dtailcache.persistedRoot=${persistedRoot.absolutePath}",
-        "-prof", "io.github.enixes.tailcache.benchmark.PilotOsCountersProfiler:dir=${resultDir.absolutePath}",
-        "-prof", "comp",
         "-rf", "json", "-rff", resultDir.resolve("results.json").absolutePath,
         "-o", resultDir.resolve("jmh.txt").absolutePath,
         "-foe", "true"
     )
+    if (diagnostics) {
+        args(
+            "-prof", "io.github.enixes.tailcache.benchmark.PilotOsCountersProfiler:dir=${resultDir.absolutePath}",
+            "-prof", "comp"
+        )
+    }
+}
+registerTailCache07JmhTask("tailCache07Pilot", "pilot", diagnostics = false)
+registerTailCache07JmhTask("tailCache07PilotDiagnostics", "pilot-diagnostics", diagnostics = true)
+
+// TailCache 08 runs one payload/order block at a time. The coordinator writes
+// machine provenance and combines blocks only after their raw files are safe.
+fun registerTailCache08JmhTask(taskName: String, kind: String) = tasks.register<JavaExec>(taskName) {
+    group = "benchmark"
+    description = "Runs a TailCache 08 $kind block; use scripts/tailcache08.py for the matrix."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("org.openjdk.jmh.Main")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
+
+    val runId = providers.gradleProperty("tailcache08RunId").orElse("candidate")
+    val block = providers.gradleProperty("tailcache08Block").orElse("block")
+    val modes = providers.gradleProperty("tailcache08Modes")
+        .orElse("CAFFEINE,CHRONICLE_IN_MEMORY,CHRONICLE_PERSISTED")
+    val payload = providers.gradleProperty("tailcache08Payload").orElse("BYTES_256")
+    val warmup = providers.gradleProperty("tailcache08WarmupIterations").orElse("8")
+    val measurement = providers.gradleProperty("tailcache08MeasurementIterations").orElse("5")
+    val forks = providers.gradleProperty("tailcache08Forks").orElse("2")
+    val resultDir = layout.buildDirectory
+        .dir("reports/tailcache08/${runId.get()}/${block.get()}/$kind").get().asFile
+    val persistedRoot = layout.buildDirectory.dir("reports/tailcache08/persisted-files").get().asFile
+    doFirst {
+        if (!runId.get().matches(Regex("[A-Za-z0-9._-]+"))
+                || !block.get().matches(Regex("[A-Za-z0-9._-]+"))) {
+            throw GradleException("TailCache 08 run id and block must use letters, digits, dot, underscore, or dash")
+        }
+        if (resultDir.exists() && resultDir.listFiles()?.isNotEmpty() == true) {
+            throw GradleException("TailCache 08 raw block already exists: ${resultDir.absolutePath}")
+        }
+        resultDir.mkdirs()
+        persistedRoot.mkdirs()
+        if (kind == "jfr") resultDir.resolve("recordings").mkdirs()
+    }
+    args(
+        ".*CacheWorkloadBenchmark.mixedWorkload",
+        "-p", "mode=${modes.get()}",
+        "-p", "payloadSize=${payload.get()}",
+        "-p", "accessPattern=UNIFORM",
+        "-p", "readWriteMix=READ_95_WRITE_5",
+        "-t", "1",
+        "-wi", warmup.get(), "-i", measurement.get(), "-f", forks.get(),
+        "-w", "1s", "-r", "1s",
+        "-bm", if (kind == "throughput") "thrpt" else "sample",
+        "-tu", if (kind == "throughput") "s" else "ns",
+        "-jvmArgsAppend", "-XX:+UseG1GC -Xms512m -Xmx512m "
+                + "-Dtailcache.persistedRoot=${persistedRoot.absolutePath}",
+        "-rf", "json", "-rff", resultDir.resolve("results.json").absolutePath,
+        "-o", resultDir.resolve("jmh.txt").absolutePath,
+        "-foe", "true"
+    )
+    if (kind == "diagnostics") {
+        args(
+            "-prof", "io.github.enixes.tailcache.benchmark.PilotOsCountersProfiler:dir=${resultDir.absolutePath}",
+            "-prof", "comp"
+        )
+    }
+    if (kind == "jfr") {
+        args("-prof", "jfr:dir=${resultDir.resolve("recordings").absolutePath}")
+    }
+}
+registerTailCache08JmhTask("tailCache08Latency", "latency")
+registerTailCache08JmhTask("tailCache08Throughput", "throughput")
+registerTailCache08JmhTask("tailCache08Diagnostics", "diagnostics")
+registerTailCache08JmhTask("tailCache08Jfr", "jfr")
+
+fun registerTailCache09JmhTask(taskName: String, mode: String, unit: String) =
+    tasks.register<JavaExec>(taskName) {
+        group = "benchmark"
+        description = "Runs TailCache 09 Chronicle sizing $mode; capacity probe is separate."
+        dependsOn(jmh.classesTaskName)
+        classpath = jmh.runtimeClasspath
+        mainClass.set("org.openjdk.jmh.Main")
+        javaLauncher.set(java21Launcher)
+        jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
+        val runId = providers.gradleProperty("tailcache09RunId").orElse("candidate")
+        val warmup = providers.gradleProperty("tailcache09WarmupIterations").orElse("8")
+        val measurement = providers.gradleProperty("tailcache09MeasurementIterations").orElse("5")
+        val forks = providers.gradleProperty("tailcache09Forks").orElse("2")
+        val estimates = providers.gradleProperty("tailcache09Estimates")
+            .orElse("HALF,MATCH,DOUBLE,CONSTANT")
+        val payloads = providers.gradleProperty("tailcache09Payloads").orElse("256,4096")
+        val resultDir = layout.buildDirectory.dir("reports/tailcache09/${runId.get()}/$mode").get().asFile
+        doFirst {
+            if (!runId.get().matches(Regex("[A-Za-z0-9._-]+"))) {
+                throw GradleException("TailCache 09 run id has invalid characters")
+            }
+            if (resultDir.exists() && resultDir.listFiles()?.isNotEmpty() == true) {
+                throw GradleException("TailCache 09 raw result already exists: ${resultDir.absolutePath}")
+            }
+            resultDir.mkdirs()
+        }
+        args(
+            ".*ChronicleSizingBenchmark.mixedWorkload",
+            "-p", "estimate=${estimates.get()}",
+            "-p", "actualPayloadBytes=${payloads.get()}",
+            "-t", "1", "-wi", warmup.get(), "-i", measurement.get(),
+            "-f", forks.get(), "-w", "1s", "-r", "1s",
+            "-bm", mode, "-tu", unit,
+            "-jvmArgsAppend", "-XX:+UseG1GC -Xms512m -Xmx512m",
+            "-rf", "json", "-rff", resultDir.resolve("results.json").absolutePath,
+            "-o", resultDir.resolve("jmh.txt").absolutePath,
+            "-foe", "true"
+        )
+    }
+registerTailCache09JmhTask("tailCache09Latency", "sample", "ns")
+registerTailCache09JmhTask("tailCache09Throughput", "thrpt", "s")
+
+tasks.register<JavaExec>("tailCache09Capacity") {
+    group = "benchmark"
+    description = "Probes Chronicle sizing capacity and first failure outside timed JMH runs."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("io.github.enixes.tailcache.benchmark.ChronicleSizingCapacityProbe")
+    javaLauncher.set(java21Launcher)
+    jvmArgs(chronicleJvmArgs + listOf("-Xms512m", "-Xmx512m"))
+    val runId = providers.gradleProperty("tailcache09RunId").orElse("candidate")
+    val resultDir = layout.buildDirectory.dir("reports/tailcache09/${runId.get()}/capacity").get().asFile
+    doFirst {
+        if (!runId.get().matches(Regex("[A-Za-z0-9._-]+"))) {
+            throw GradleException("TailCache 09 run id has invalid characters")
+        }
+        if (resultDir.exists() && resultDir.listFiles()?.isNotEmpty() == true) {
+            throw GradleException("TailCache 09 capacity result already exists: ${resultDir.absolutePath}")
+        }
+        resultDir.mkdirs()
+    }
+    args(resultDir.resolve("capacity.csv").absolutePath, resultDir.resolve("scratch").absolutePath)
 }
 
 tasks.register<JavaExec>("tailCache07OpenDiagnostic") {
