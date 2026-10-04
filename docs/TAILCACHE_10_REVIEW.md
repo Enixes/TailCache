@@ -2,7 +2,9 @@
 
 ## Decision on 2026-10-04
 
-**NO GO for secondary experiments.** `scripts/tailcache10_gate.py` read the recorded quality and schedule evidence in `docs/TAILCACHE_10_EVIDENCE.json` and wrote a machine-readable decision. RQ1 and RQ2 have no heap/live-set crossover sweep, the TailCache 08 persisted-warm validation is rejected, and remaining research hours have not been verified. The TickTick 10 due date is October 14 (10 calendar days from the decision date); the repository target is October 20 (16 calendar days). Calendar days are not interchangeable with available research hours. The current work should repair the primary protocol and repeat it on a quiet host, not launch a secondary experiment.
+**NO GO for secondary experiments.** `scripts/tailcache10_gate.py` read the recorded quality and schedule evidence in `docs/TAILCACHE_10_EVIDENCE.json` and wrote a machine-readable decision. RQ1 and RQ2 have no heap/live-set crossover sweep, the TailCache 08 persisted-warm candidate is rejected, and remaining research hours have not been verified. The TickTick 10 due date is October 14 (10 calendar days from the decision date); the repository target is October 20 (16 calendar days). Calendar days are not interchangeable with available research hours. The current work should repair the primary protocol and repeat it on a quiet host, not launch a secondary experiment.
+
+The later full-duration `08-candidate-20261004-a` also failed its variance and host-quality gates. The evidence input now points to that candidate's `quality.json`; its new result reinforces the same **NO GO** decision and supersedes the short validation as the latest attempted 08 run. See `docs/TAILCACHE_08_CANDIDATE_REVIEW.md` for the raw-data assessment.
 
 If the gate later passes, the selected order is (1) persisted two-JVM sharing, (2) Chronicle `getUsing`/object reuse, (3) cold/open/page-fault behavior. Eviction-policy simulation is cut first. The current 07 reopen/first-touch diagnostic remains separate from warm operation measurements and is not promoted into the primary data.
 

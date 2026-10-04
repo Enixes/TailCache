@@ -95,7 +95,7 @@ def run_block(run_id, block, kind, modes, payload, warmup, measure, forks, run_d
 
 
 def audit(run_dir, manifest):
-    rows, errors = [], []
+    rows, errors, host_observations, diagnostic_observations = [], [], [], []
     if "sourceSha256" in manifest:
         if not (run_dir / "source-snapshot.tar.gz").exists():
             errors.append("source snapshot missing")
@@ -110,6 +110,33 @@ def audit(run_dir, manifest):
                     errors.append(f"{item['block']}/{item['kind']}: source changed at {phase}")
     for item in manifest["invocations"]:
         raw = pathlib.Path(item["rawDirectory"])
+        control = run_dir / "orchestration" / item["block"] / item["kind"]
+        try:
+            before = json.loads((control / "before.json").read_text())
+            after = json.loads((control / "after.json").read_text())
+            def mem_kib(snapshot, label):
+                match = re.search(r"^" + label + r":\s*(\d+)",
+                                  snapshot["files"]["/proc/meminfo"], re.MULTILINE)
+                return int(match.group(1)) if match else None
+            def full_psi(snapshot):
+                match = re.search(r"^full avg10=([0-9.]+)",
+                                  snapshot["files"]["/proc/pressure/memory"], re.MULTILINE)
+                return float(match.group(1)) if match else None
+            swap_before = mem_kib(before, "SwapTotal") - mem_kib(before, "SwapFree")
+            swap_after = mem_kib(after, "SwapTotal") - mem_kib(after, "SwapFree")
+            observation = {"block": item["block"], "kind": item["kind"],
+                           "swapUsedBeforeMiB": round(swap_before / 1024, 1),
+                           "swapUsedAfterMiB": round(swap_after / 1024, 1),
+                           "swapUsedIncreaseMiB": round((swap_after - swap_before) / 1024, 1),
+                           "memoryFullPsiAvg10Before": full_psi(before),
+                           "memoryFullPsiAvg10After": full_psi(after)}
+            host_observations.append(observation)
+            if swap_after - swap_before > 256 * 1024:
+                errors.append(f"{item['block']}/{item['kind']}: swap use rose by more than 256 MiB")
+            if max(full_psi(before), full_psi(after)) > 1.0:
+                errors.append(f"{item['block']}/{item['kind']}: memory full PSI exceeded 1% at block boundary")
+        except (OSError, ValueError, KeyError, TypeError) as error:
+            errors.append(f"{item['block']}/{item['kind']}: host snapshot unreadable: {error}")
         for entry in item["files"]:
             path = raw / entry["path"]
             if not path.exists() or hashlib.sha256(path.read_bytes()).hexdigest() != entry["sha256"]:
@@ -136,8 +163,25 @@ def audit(run_dir, manifest):
         fingerprints = set(re.findall(r"traceSha256=([0-9a-f]{64})", output))
         if len(fingerprints) != 1:
             errors.append(f"{item['block']}/{item['kind']}: trace fingerprint missing or varied")
-        if item["kind"] == "jfr" and not list(raw.rglob("*.jfr")):
-            errors.append(f"{item['block']}: JFR recording missing")
+        if item["kind"] == "jfr":
+            recordings = list(raw.rglob("*.jfr"))
+            if len(recordings) != len(item["modes"]) * item["forks"]:
+                errors.append(f"{item['block']}: expected one JFR recording per condition and fork")
+        if item["kind"] == "diagnostics":
+            sidecars = sorted(raw.glob("*.os.csv"))
+            if len(sidecars) != len(item["modes"]) * item["forks"]:
+                errors.append(f"{item['block']}: expected one OS sidecar per condition and fork")
+            for sidecar in sidecars:
+                with sidecar.open(newline="") as stream:
+                    measured = [line for line in csv.DictReader(stream)
+                                if line["phase"] == "MEASUREMENT"]
+                observation = {"sidecar": sidecar.name, "measurementIterations": len(measured),
+                               "majorFaults": sum(int(line["majorFaults"]) for line in measured),
+                               "readBytes": sum(int(line["readBytes"]) for line in measured),
+                               "writeBytes": sum(int(line["writeBytes"]) for line in measured)}
+                diagnostic_observations.append(observation)
+                if observation["majorFaults"] > 0:
+                    errors.append(f"{item['block']}: diagnostic fork had major faults ({sidecar.name})")
         for record in records:
             metric = record["primaryMetric"]
             hist = metric.get("rawDataHistogram", [])
@@ -158,6 +202,13 @@ def audit(run_dir, manifest):
                     errors.append(f"{item['block']}/{row['mode']}: profiler contaminated primary")
             if item["kind"] == "throughput" and (record["mode"] != "thrpt" or metric["scoreUnit"] != "ops/s"):
                 errors.append(f"{item['block']}/{row['mode']}: bad throughput record")
+            if item["kind"] == "diagnostics":
+                compiler_ms = record.get("secondaryMetrics", {}).get("compiler.time.profiled", {}).get("score")
+                diagnostic_observations.append({"block": item["block"], "mode": row["mode"],
+                                                "payload": row["payload"],
+                                                "compilerTimeProfiledMs": compiler_ms})
+                if compiler_ms is None or compiler_ms > item["measure"] * 10:
+                    errors.append(f"{item['block']}/{row['mode']}: compiler time exceeds 1% of measured interval or is absent")
     for payload in PAYLOADS:
         for mode in MODES:
             points = [r for r in rows if r["kind"] == "latency" and r["payload"] == payload
@@ -178,7 +229,12 @@ def audit(run_dir, manifest):
         writer.writerows(rows)
     save(run_dir / "quality.json", {"machineChecksPass": not errors,
          "researchStatus": "requires_manual_review" if not errors else "rejected",
-         "errors": errors,
+         "errors": errors, "hostObservations": host_observations,
+         "diagnosticObservations": diagnostic_observations,
+         "screeningThresholds": {"swapRiseMiBPerBlock": 256,
+                                 "memoryFullPsiAvg10PercentAtBoundary": 1.0,
+                                 "compilerTimeFractionOfMeasurement": 0.01,
+                                 "diagnosticMajorFaults": 0},
          "limits": ["Process counters include setup and the whole JVM.",
                     "JFR/diagnostic latency is separate from unprofiled primary latency.",
                     "A machine-check pass does not establish a quiet host or GC crossover."]})
