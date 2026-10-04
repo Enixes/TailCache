@@ -219,7 +219,7 @@ def audit(run_dir, manifest):
                 errors.append(f"{mode}/{payload}: p99 block ratio exceeds 1.25")
     for item in manifest["invocations"]:
         if item["kind"] in ("latency", "throughput") and (
-                item["warmup"] < 8 or item["measure"] < 5 or item["forks"] < 2):
+                item["warmup"] < 12 or item["measure"] < 8 or item["forks"] < 3):
             errors.append(f"{item['block']}/{item['kind']}: validation duration/forks below planned candidate minimum")
     fields = ["block", "kind", "mode", "payload", "threads", "forks", "score", "unit",
               "samples", "p50Ns", "p95Ns", "p99Ns", "p999Ns"]
@@ -244,9 +244,9 @@ def audit(run_dir, manifest):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("run_id")
-    parser.add_argument("--warmup", type=int, default=8)
-    parser.add_argument("--measurement", type=int, default=5)
-    parser.add_argument("--forks", type=int, default=2)
+    parser.add_argument("--warmup", type=int, default=12)
+    parser.add_argument("--measurement", type=int, default=8)
+    parser.add_argument("--forks", type=int, default=3)
     parser.add_argument("--profile-forks", type=int, default=1)
     parser.add_argument("--skip-profile", action="store_true")
     parser.add_argument("--audit-only", action="store_true",

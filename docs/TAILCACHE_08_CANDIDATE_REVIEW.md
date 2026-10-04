@@ -1,5 +1,8 @@
 # TailCache 08 full candidate — researcher review (2026-10-04)
 
+> **Historical note:** this file reviews candidate A only. Candidate B and the final 12/8/3 stability probes supersede its next-attempt section; see `TAILCACHE_08_FINAL_REVIEW.md`.
+
+
 ## Decision
 
 **Reject the full candidate for performance claims.** The complete 12-block run (`08-candidate-20261004-a`) executed from the clean `3899f27` checkout with eight one-second warmups, five one-second measurements, and two unprofiled primary forks for each backend/payload/order condition. Separate one-fork compiler/OS and JFR blocks also completed. All JMH tasks exited successfully, raw hashes and factor checks passed, source fingerprints stayed fixed, and six JFR recordings were retained. The quality gate failed because host conditions and run-to-run tail latency were unstable.

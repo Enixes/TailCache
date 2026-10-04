@@ -553,9 +553,9 @@ fun registerTailCache08JmhTask(taskName: String, kind: String) = tasks.register<
     val modes = providers.gradleProperty("tailcache08Modes")
         .orElse("CAFFEINE,CHRONICLE_IN_MEMORY,CHRONICLE_PERSISTED")
     val payload = providers.gradleProperty("tailcache08Payload").orElse("BYTES_256")
-    val warmup = providers.gradleProperty("tailcache08WarmupIterations").orElse("8")
-    val measurement = providers.gradleProperty("tailcache08MeasurementIterations").orElse("5")
-    val forks = providers.gradleProperty("tailcache08Forks").orElse("2")
+    val warmup = providers.gradleProperty("tailcache08WarmupIterations").orElse("12")
+    val measurement = providers.gradleProperty("tailcache08MeasurementIterations").orElse("8")
+    val forks = providers.gradleProperty("tailcache08Forks").orElse("3")
     val resultDir = layout.buildDirectory
         .dir("reports/tailcache08/${runId.get()}/${block.get()}/$kind").get().asFile
     val persistedRoot = layout.buildDirectory.dir("reports/tailcache08/persisted-files").get().asFile

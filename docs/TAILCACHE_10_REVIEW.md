@@ -1,19 +1,39 @@
 # TailCache 10 — secondary-work decision and researcher review
 
-## Decision on 2026-10-04
+## Final decision on 2026-10-04
 
-**NO GO for secondary experiments.** `scripts/tailcache10_gate.py` read the recorded quality and schedule evidence in `docs/TAILCACHE_10_EVIDENCE.json` and wrote a machine-readable decision. RQ1 and RQ2 have no heap/live-set crossover sweep, the TailCache 08 persisted-warm candidate is rejected, and remaining research hours have not been verified. The TickTick 10 due date is October 14 (10 calendar days from the decision date); the repository target is October 20 (16 calendar days). Calendar days are not interchangeable with available research hours. The current work should repair the primary protocol and repeat it on a quiet host, not launch a secondary experiment.
+**NO GO for secondary experiments. TailCache 10 is closed as a scope decision.**
 
-The later full-duration `08-candidate-20261004-a` also failed its variance and host-quality gates. The evidence input now points to that candidate's `quality.json`; its new result reinforces the same **NO GO** decision and supersedes the short validation as the latest attempted 08 run. See `docs/TAILCACHE_08_CANDIDATE_REVIEW.md` for the raw-data assessment.
+Candidate B materially improved the TailCache 08 environment: boundary memory PSI stayed at zero, swap use fell, diagnostics recorded zero major faults/read bytes, and the 4-KiB order comparisons were stable. A later 12/8/3 targeted replication also brought all 256-B two-order p99 ratios below 1.25. Nevertheless TailCache 08 still fails its conservative JIT gate, and—more importantly—TailCache 08 is not RQ1/RQ2 at all.
 
-If the gate later passes, the selected order is (1) persisted two-JVM sharing, (2) Chronicle `getUsing`/object reuse, (3) cold/open/page-fault behavior. Eviction-policy simulation is cut first. The current 07 reopen/first-touch diagnostic remains separate from warm operation measurements and is not promoted into the primary data.
+The primary heap/live-set crossover workload has not yet been implemented. RQ1 and RQ2 therefore remain `missing`, while persisted-warm remains `invalid` for promotion because its machine-quality artifact is an overall rejected TailCache 08 candidate and primary-fork residency is not directly proven.
 
-## Audit of the gate
+`scripts/tailcache10_gate.py` must consequently return `NO_GO`. This is the intended scope guard, not an unfinished task.
 
-The script requires explicit `sound`, `invalid`, or `missing` states for RQ1, RQ2, and persisted-warm quality; it also checks task/project dates and a recorded remaining-hour reserve. Missing hours fail closed rather than assuming that a future calendar deadline implies spare time. Its present negative decision follows the 07 and 08 researcher reviews. A synthetic positive input with all three quality states `sound` and eight remaining hours selected the first priority, two-JVM sharing, verifying that the order is encoded rather than only described in prose.
+## What is cut
 
-The input evidence states are researcher judgments backed by the cited local reviews; the script does not independently inspect a JFR recording or infer heap-pressure crossover from JMH JSON. Before changing any state to `sound`, rerun the primary study and link its artifact-specific review, including the persisted page-state gate. The five-hour threshold is a conservative scheduling reserve drawn from the scope guard's secondary-work rule; it is a decision policy, not a measured effort estimate for two-JVM sharing.
+Do not start, in current priority order:
 
-## Claim limit
+1. persisted two-JVM sharing;
+2. Chronicle `getUsing` / object-reuse sensitivity;
+3. cold/open/page-fault behavior;
+4. eviction simulation.
 
-This is a scope decision, not a result about two-JVM sharing, `getUsing`, cold starts, or eviction. TailCache 09 capacity sensitivity can stand as its own diagnostic design, but its short timing data and the invalid 08 baseline cannot establish or explain the primary crossover.
+TailCache 09 remains useful as a completed capacity/sizing diagnostic, but its timing validation is not expanded merely to consume the remaining schedule.
+
+## What work is protected instead
+
+The next engineering/research work belongs to Milestone 1 and the primary RQ1/RQ2 campaign:
+
+- validate a pause-sensitive latency method rather than relying on SampleTime alone for GC-tail claims;
+- remove the Chronicle replacement-value heap shadow from the crossover path;
+- add backend-neutral allocation/churn;
+- define measured live-set/old-gen pressure levels and occupancy semantics;
+- verify warmup/JIT stability or explicitly redesign the measurement policy around the observed compiler behavior;
+- then sweep Caffeine versus Chronicle in-memory across pressure and payload size.
+
+## Audit and claim limit
+
+The gate consumes explicit `sound`, `invalid` or `missing` states plus the cited evidence artifact and schedule reserve. Missing remaining research hours fail closed. A synthetic all-sound input has already verified that the priority ordering is encoded.
+
+This decision says nothing about whether two-JVM sharing, `getUsing`, cold starts or eviction would perform well. It only says they should not be run before the primary crossover evidence is sound.

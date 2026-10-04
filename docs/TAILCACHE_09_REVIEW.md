@@ -21,3 +21,10 @@ The initial 64-resident timing validation was too far from every capacity bounda
 5. Persisted capacity is a distinct checksum/storage stratum. Timed 09 results are in-memory only, avoiding page-fault contamination of this sizing question. Neither the persisted capacity counts nor the 09 timing checks repair TailCache 08's invalid persisted-warm baseline or answer its heap/GC crossover questions.
 
 **Verdict:** The study design and measurement paths are implemented and the capacity perturbation is verified. Retain the 2026-10-04 timing results as validation only. Repeat under a quiet host with planned warmup, two or more forks, reversed estimate order, and independent capacity replicates before claiming a throughput or tail-latency effect.
+
+
+## Final task closure
+
+TailCache 09 is **closed as an implemented and validated diagnostic study**, not as a reportable latency-effect estimate. The capacity perturbation is real and retained raw evidence demonstrates that Chronicle sizing policy changes realized capacity. The timed one-fork results remain validation-only.
+
+A longer reportable sizing campaign is deliberately not launched now. TailCache 10 remains NO-GO and the project scope says secondary sensitivity work must not displace the unresolved primary crossover harness. If sizing later becomes necessary to explain an RQ1/RQ2 crossover, rerun 09 with the stronger replication policy, reversed estimate order and independent capacity replicates. Until then, the current capacity result is the completed deliverable.
