@@ -21,6 +21,9 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Arrays;
 
 import static java.nio.file.StandardOpenOption.READ;
@@ -137,7 +140,7 @@ public class CacheWorkloadState {
         System.out.printf(
                 "[TailCache][workload-config] mode=%s adapter=%s backendConfig={%s} "
                         + "stateScope=Benchmark(shared-cache) configuredEntries=%d populatedEntries=%d "
-                        + "payloadBytes=%d traceSize=%d workloadSeed=0x%X accessPattern=%s "
+                        + "payloadBytes=%d traceSize=%d workloadSeed=0x%X traceSha256=%s accessPattern=%s "
                         + "zipfExponent=%s readRatio=%.2f writeRatio=%.2f keyRepresentation=preboxed-Long "
                         + "analyticsDisabled=%s persistedTempFile=%s persistedFileBytes=%s "
                         + "persistedFileStore=%s prefault=%s%n",
@@ -149,6 +152,7 @@ public class CacheWorkloadState {
                 payloadSize.bytes(),
                 TRACE_SIZE,
                 WORKLOAD_SEED,
+                traceFingerprint(),
                 accessPattern,
                 zipfExponent,
                 readWriteMix.readRatio(),
@@ -159,6 +163,22 @@ public class CacheWorkloadState {
                 persistedFile == null ? "n/a" : Files.getFileStore(persistedFile),
                 persistedFile == null ? "n/a" : "trialEntrySweep+mappedPageTouchEachIteration"
         );
+    }
+
+    private String traceFingerprint() {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            for (int index = 0; index < trace.size(); index++) {
+                long key = trace.keyAt(index);
+                for (int shift = 56; shift >= 0; shift -= 8) {
+                    digest.update((byte) (key >>> shift));
+                }
+                digest.update((byte) (trace.isReadAt(index) ? 1 : 0));
+            }
+            return HexFormat.of().formatHex(digest.digest());
+        } catch (NoSuchAlgorithmException exception) {
+            throw new AssertionError("SHA-256 is required by the Java platform", exception);
+        }
     }
 
     @Setup(Level.Iteration)

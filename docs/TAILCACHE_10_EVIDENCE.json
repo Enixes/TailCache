@@ -1,0 +1,18 @@
+{
+  "asOfDate": "2026-10-04",
+  "task10DueDate": "2026-10-14",
+  "projectTargetDate": "2026-10-20",
+  "remainingResearchHours": null,
+  "minimumSecondaryHours": 5,
+  "primaryQuality": {
+    "rq1": "missing",
+    "rq2": "missing",
+    "persistedWarm": "invalid"
+  },
+  "sources": {
+    "rq1": "docs/PLAN.md Milestone 1/RQ1 and docs/TAILCACHE_08_FINAL_REVIEW.md: the live-set/GC-pressure crossover harness is not implemented yet",
+    "rq2": "docs/PLAN.md Milestone 2/RQ2 and docs/TAILCACHE_08_FINAL_REVIEW.md: no payload-shift crossover sweep exists yet",
+    "persistedWarm": "build/reports/tailcache08/08-candidate-20261004-b/quality.json",
+    "schedule": "TickTick TailCache 10 due 2026-10-14; docs/SCOPE.md target 2026-10-20"
+  }
+}
