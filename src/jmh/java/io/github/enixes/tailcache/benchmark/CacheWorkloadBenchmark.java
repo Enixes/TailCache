@@ -26,6 +26,23 @@ import java.util.concurrent.TimeUnit;
 @Fork(3)
 public class CacheWorkloadBenchmark {
 
+    /** Trace selection, branch and Blackhole floor with the same trial state. */
+    @Benchmark
+    public void traceAndBranchFloor(
+            CacheWorkloadState state,
+            WorkloadCursorState cursor,
+            Blackhole blackhole
+    ) {
+        int traceIndex = cursor.nextTraceIndex();
+        int logicalIndex = state.logicalIndexAt(traceIndex);
+        Long key = state.keyForLogicalIndex(logicalIndex);
+        if (state.isReadAt(traceIndex)) {
+            blackhole.consume(key);
+        } else {
+            blackhole.consume(state.replacementValueForLogicalIndex(logicalIndex));
+        }
+    }
+
     @Benchmark
     public void mixedWorkload(
             CacheWorkloadState state,

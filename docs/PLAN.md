@@ -157,8 +157,8 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 - [x] commit and pin the Gradle 9.7.1 wrapper
 - [x] run unit tests on Java 21
 - [x] run `jmhSmoke` on Java 21
-- [ ] capture benchmark environment metadata
-- [ ] quantify benchmark trace-selection / harness floor before reportable latency comparisons
+- [x] capture benchmark environment metadata for the TailCache 07 pilot (CPU, memory pressure, JVM, mount, filesystem and storage device); repeat on the eventual reportable host
+- [x] quantify benchmark trace-selection / harness floor in the TailCache 07 pilot; the observed floor is too large to ignore for small tail differences
 - [ ] verify reportable warmup is sufficient for measured-path compilation stability
 - [ ] validate the latency measurement against injected/known JVM pauses: JMH `SampleTime` randomly samples invocations and may miss the specific operation spanning a rare stop-the-world pause
 - [ ] add or validate a pause-sensitive secondary latency method (for example an every-request/HdrHistogram-style harness or equivalent controlled receipt) before claiming GC-driven p99/p99.9 effects; do not use sampled percentiles alone as proof that pauses were absent
@@ -182,9 +182,9 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 
 ### Persisted-mode controls - secondary to the crossover
 
-- [ ] make the persisted benchmark root configurable before any reportable persisted run
-- [ ] capture filesystem, mount and storage-device metadata for persisted runs
-- [ ] verify warm persisted trials are not dominated by first-touch page faults or setup writeback
+- [x] make the persisted benchmark root configurable before any reportable persisted run
+- [x] capture filesystem, mount and storage-device metadata for the TailCache 07 persisted pilot; repeat with each reportable environment
+- [ ] verify warm persisted trials are not dominated by first-touch page faults or setup writeback (TailCache 07 pilot failed this gate; see `TAILCACHE_07.md`)
 - [ ] keep persisted mode out of the headline crossover unless it answers a specific follow-up hypothesis
 
 ## Milestone 2 - primary study: when does off-heap pay off?
