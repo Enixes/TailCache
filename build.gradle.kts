@@ -10,6 +10,7 @@ val chronicleMapVersion = "2026.1"
 val jmhVersion = "1.37"
 val junitVersion = "6.1.3"
 val jacksonVersion = "2.22.2"
+val hdrHistogramVersion = "2.2.2"
 
 java {
     toolchain {
@@ -43,6 +44,7 @@ val chronicleJvmArgs = listOf(
 dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine:$caffeineVersion")
     implementation("net.openhft:chronicle-map:$chronicleMapVersion")
+    implementation("org.hdrhistogram:HdrHistogram:$hdrHistogramVersion")
 
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -678,4 +680,115 @@ tasks.register<JavaExec>("tailCache07OpenDiagnostic") {
     val diagnosticDir = layout.buildDirectory.dir("reports/tailcache07/open-diagnostic").get().asFile
     val persistedRoot = layout.buildDirectory.dir("reports/tailcache07/persisted-files").get().asFile
     args(persistedRoot.absolutePath, diagnosticDir.resolve("open-diagnostic.csv").absolutePath)
+}
+
+// Task 12 parameters are exploratory until pressure calibration and the pilot freeze them.
+val tailCache12RunId = providers.gradleProperty("tailcache12RunId").orElse("development")
+val tailCache12Heap = providers.gradleProperty("tailcache12HeapMiB").orElse("512")
+val tailCache12Backends = providers.gradleProperty("tailcache12Backends").orElse("CAFFEINE,CHRONICLE_IN_MEMORY")
+val tailCache12Payloads = providers.gradleProperty("tailcache12Payloads").orElse("256,4096")
+val tailCache12Residents = providers.gradleProperty("tailcache12Residents").orElse("8192")
+val tailCache12LiveBytes = providers.gradleProperty("tailcache12LiveBytes").orElse("0")
+val tailCache12Churn = providers.gradleProperty("tailcache12ChurnBytesPerSecond").orElse("16777216")
+val tailCache12Seed = providers.gradleProperty("tailcache12Seed").orElse("24301")
+
+fun tailCache12Directory(kind: String): File {
+    require(tailCache12RunId.get().matches(Regex("[A-Za-z0-9._-]+"))) { "Invalid Task 12 run id" }
+    require(tailCache12Heap.get().toInt() >= 64) { "Task 12 heap must be at least 64 MiB" }
+    return layout.buildDirectory.dir("reports/tailcache12/${tailCache12RunId.get()}/$kind").get().asFile
+}
+
+fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = false) =
+    tasks.register<JavaExec>(taskName) {
+        group = "benchmark"
+        description = "Task 12 crossover $kind channel; calibration/pilot gates still required."
+        dependsOn(jmh.classesTaskName)
+        classpath = jmh.runtimeClasspath
+        mainClass.set("org.openjdk.jmh.Main")
+        javaLauncher.set(java21Launcher)
+        jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
+        val directory = tailCache12Directory(kind)
+        doFirst {
+            if (directory.exists() && directory.listFiles()?.isNotEmpty() == true) {
+                throw GradleException("Refusing existing Task 12 results: ${directory.absolutePath}")
+            }
+            directory.mkdirs()
+        }
+        val warmups = providers.gradleProperty("tailcache12Warmups").orElse(if (smoke) "1" else "12")
+        val measurements = providers.gradleProperty("tailcache12Measurements").orElse(if (smoke) "1" else "8")
+        val forks = providers.gradleProperty("tailcache12Forks").orElse(if (smoke) "1" else "3")
+        val duration = if (smoke) "300ms" else "1s"
+        val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
+        if (kind == "compiler" || kind == "allocation") {
+            jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,level,tags")
+        }
+        if (kind == "compiler") {
+            jvmOptions.addAll(listOf("-Dtailcache12.compilerWindow=true", "-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
+                "-XX:LogFile=${directory.resolve("jit-%p.xml").absolutePath}"))
+        }
+        args(
+            ".*CrossoverBenchmark." + if (kind == "floor") "freshSupplyFloor" else "mixedWorkload",
+            "-p", "backend=${tailCache12Backends.get()}", "-p", "payloadBytes=${tailCache12Payloads.get()}",
+            "-p", "residentEntries=${tailCache12Residents.get()}",
+            "-p", "applicationLiveBytes=${tailCache12LiveBytes.get()}",
+            "-p", "churnBytesPerSecond=${tailCache12Churn.get()}", "-p", "seed=${tailCache12Seed.get()}",
+            "-t", "1", "-wi", warmups.get(), "-i", measurements.get(), "-f", forks.get(),
+            "-w", duration, "-r", duration,
+            "-bm", if (kind in listOf("throughput", "allocation")) "thrpt" else "sample",
+            "-tu", if (kind in listOf("throughput", "allocation")) "s" else "ns",
+            "-jvmArgsAppend", jvmOptions.joinToString(" "),
+            "-rf", "json", "-rff", directory.resolve("results.json").absolutePath,
+            "-o", directory.resolve("jmh.txt").absolutePath, "-foe", "true"
+        )
+        if (kind == "compiler") args("-prof", "comp")
+        if (kind == "allocation") args("-prof", "gc")
+    }
+
+registerTailCache12Jmh("tailCache12Smoke", "smoke", smoke = true)
+registerTailCache12Jmh("tailCache12Sample", "sample")
+registerTailCache12Jmh("tailCache12Throughput", "throughput")
+registerTailCache12Jmh("tailCache12Compiler", "compiler")
+registerTailCache12Jmh("tailCache12Allocation", "allocation")
+registerTailCache12Jmh("tailCache12SupplyFloor", "floor")
+
+tasks.register<JavaExec>("tailCache12EveryOperation") {
+    group = "benchmark"
+    description = "Task 12 every-operation/gap channel with explicit validation-only pause injection."
+    dependsOn(sourceSets.main.get().classesTaskName)
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("io.github.enixes.tailcache.workload.CrossoverLatencyRunner")
+    javaLauncher.set(java21Launcher)
+    val directory = tailCache12Directory("every-operation")
+    doFirst {
+        if (directory.exists() && directory.listFiles()?.isNotEmpty() == true) {
+            throw GradleException("Refusing existing Task 12 results: ${directory.absolutePath}")
+        }
+        directory.mkdirs()
+    }
+    jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m",
+        "-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,level,tags"))
+    args("--out", directory.resolve("worker").absolutePath,
+        "--backend", providers.gradleProperty("tailcache12Backend").orElse("CAFFEINE").get(),
+        "--payload", providers.gradleProperty("tailcache12Payload").orElse("256").get(),
+        "--residents", tailCache12Residents.get(), "--application-live-bytes", tailCache12LiveBytes.get(),
+        "--churn-bytes-sec", tailCache12Churn.get(), "--seed", tailCache12Seed.get(),
+        "--warmup", providers.gradleProperty("tailcache12Warmups").orElse("12").get(),
+        "--measure", providers.gradleProperty("tailcache12Measurements").orElse("8").get(),
+        "--iteration-ms", providers.gradleProperty("tailcache12IterationMs").orElse("1000").get(),
+        "--validation", providers.gradleProperty("tailcache12Validation").orElse("none").get(),
+        "--timer-floor", providers.gradleProperty("tailcache12TimerFloor").orElse("false").get())
+}
+
+tasks.register<JavaExec>("tailCache12Retention") {
+    group = "benchmark"
+    description = "Task 12 full-GC retained-object diagnostic; not a campaign measurement."
+    dependsOn(jmh.classesTaskName)
+    classpath = jmh.runtimeClasspath
+    mainClass.set("io.github.enixes.tailcache.benchmark.CrossoverRetentionDiagnostic")
+    javaLauncher.set(java21Launcher)
+    val backend = providers.gradleProperty("tailcache12Backend").orElse("CAFFEINE").get()
+    val payload = providers.gradleProperty("tailcache12Payload").orElse("4096").get()
+    val directory = tailCache12Directory("retention-$backend-${tailCache12Residents.get()}-$payload")
+    jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m"))
+    args(backend, tailCache12Residents.get(), payload, directory.absolutePath)
 }

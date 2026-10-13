@@ -1,0 +1,31 @@
+{
+  "asOfDate": "2026-10-13",
+  "taskComplete": false,
+  "campaignReady": false,
+  "stages": {
+    "12A": "implemented_and_functionally_validated",
+    "12B": "pause_capture_validated_jit_and_observer_qualification_pending",
+    "12C": "not_implemented",
+    "12D": "host_monitor_and_provenance_slice_implemented_gc_exposure_pipeline_pending",
+    "12E": "not_run",
+    "12F": "not_run",
+    "12G": "not_implemented"
+  },
+  "functionalEvidence": "build/reports/tailcache12/12ab-final-20261013/audit.json",
+  "pauseEvidence": "build/reports/tailcache12/12b-pause-bounded-20261013/audit.json",
+  "qualificationEvidence": "build/reports/tailcache12/12b-jit-bounded-20261013/audit.json",
+  "latestJit": {
+    "backend": "CAFFEINE",
+    "payloadBytes": 256,
+    "residentEntries": 8192,
+    "warmups": 12,
+    "measurementIterations": 8,
+    "broadCompilerTotalMs": 93,
+    "broadCompilerCeilingMs": 80,
+    "maximumWorkerEnvelopeCompilerMs": 26,
+    "perIterationCeilingMs": 10,
+    "hostPass": false,
+    "remainingQualificationBlocksSuspended": 7
+  },
+  "nextWork": "Resolve host/JIT qualification and freeze observer rules, then implement occupancy/exposure calibration before the pilot."
+}
