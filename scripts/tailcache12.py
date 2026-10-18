@@ -21,7 +21,7 @@ def save(path, value):
 
 
 def sources():
-    for name in ("build.gradle.kts", "settings.gradle.kts", "gradlew", "gradle/wrapper", "src", "scripts", "docs"):
+    for name in ("build.gradle.kts", "settings.gradle.kts", "gradle.properties", "gradlew", "gradle/wrapper", "src", "scripts", "docs"):
         path = ROOT / name
         files = [path] if path.is_file() else sorted(path.rglob("*"))
         for file in files:
@@ -37,6 +37,12 @@ def source_hash():
     return digest.hexdigest()
 
 
+def raw_directory(attempt, invocation):
+    """Resolve the manifest's sibling run after copying an evidence bundle to another host."""
+    sibling = attempt.parent / (attempt.name + "-" + invocation["label"])
+    return sibling if sibling.is_dir() else pathlib.Path(invocation["rawDirectory"])
+
+
 def host_snapshot():
     mem = pathlib.Path("/proc/meminfo").read_text()
     vm = pathlib.Path("/proc/vmstat").read_text()
@@ -45,6 +51,17 @@ def host_snapshot():
     row = {"monotonicNs": time.monotonic_ns(), "memAvailableKiB": field(mem, "MemAvailable"),
            "swapUsedKiB": field(mem, "SwapTotal") - field(mem, "SwapFree"),
            "swapInPages": field(vm, "pswpin"), "swapOutPages": field(vm, "pswpout")}
+    for label in ("zswpin", "zswpout", "oom_kill"):
+        match = re.search(r"^" + label + r"\s+(\d+)", vm, re.M)
+        row[label] = int(match[1]) if match else -1
+    try:
+        row["governor"] = pathlib.Path("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor").read_text().strip()
+    except OSError:
+        row["governor"] = "unavailable"
+    supplies = []
+    for path in sorted(pathlib.Path("/sys/class/power_supply").glob("*/online")):
+        supplies.append(path.parent.name + "=" + path.read_text().strip())
+    row["externalPower"] = ";".join(supplies) or "unavailable"
     for resource in ("memory", "io"):
         pressure = pathlib.Path(f"/proc/pressure/{resource}").read_text()
         row[resource + "FullTotalUs"] = int(re.search(r"^full .* total=(\d+)", pressure, re.M).group(1))
@@ -53,9 +70,13 @@ def host_snapshot():
 
 
 def host_gate(snapshots):
+    if len(snapshots) < 2:
+        return ["missing host interval samples"], None
     before, after = snapshots[0], snapshots[-1]
     elapsed_us = (after["monotonicNs"] - before["monotonicNs"]) / 1000
     reasons = []
+    if elapsed_us <= 0:
+        return ["nonpositive host monitoring interval"], None
     if max(before["memoryFullAvg10"], after["memoryFullAvg10"]) != 0:
         reasons.append("nonzero boundary memory-full PSI")
     fraction = (after["memoryFullTotalUs"] - before["memoryFullTotalUs"]) / elapsed_us
@@ -63,6 +84,15 @@ def host_gate(snapshots):
         reasons.append("interval memory-full PSI exceeds 0.1%")
     if after["swapInPages"] != before["swapInPages"] or after["swapOutPages"] != before["swapOutPages"]:
         reasons.append("swap-in/out counters increased")
+    for name in ("zswpin", "zswpout", "oom_kill"):
+        if name in before and name in after and before[name] != after[name]:
+            reasons.append(f"{name} counter changed")
+    for name in ("governor", "externalPower"):
+        values = {s.get(name, "unavailable") for s in snapshots}
+        if len(values) != 1:
+            reasons.append(f"{name} changed during block")
+    if any("=0" in s.get("externalPower", "") for s in snapshots):
+        reasons.append("external power is disconnected")
     return reasons, fraction
 
 
@@ -70,14 +100,18 @@ def invoke(attempt, manifest, label, task, properties):
     run_id = attempt.name + "-" + label
     control = attempt / label
     control.mkdir()
-    command = ["rtk", "proxy", str(ROOT / "gradlew"), "--offline", task,
+    command = [str(ROOT / "gradlew"), "--offline", task,
                f"-Ptailcache12RunId={run_id}"]
     command += [f"-Ptailcache12{key}={value}" for key, value in properties.items()]
     snapshots = [host_snapshot()]
+    monitor_errors = []
     finished = threading.Event()
     def monitor():
-        while not finished.wait(1):
-            snapshots.append(host_snapshot())
+        try:
+            while not finished.wait(1):
+                snapshots.append(host_snapshot())
+        except Exception as error:
+            monitor_errors.append(str(error))
     sampler = threading.Thread(target=monitor, daemon=True)
     sampler.start()
     started_source = source_hash()
@@ -93,14 +127,18 @@ def invoke(attempt, manifest, label, task, properties):
         writer.writeheader()
         writer.writerows(snapshots)
     host_reasons, fraction = host_gate(snapshots)
+    if monitor_errors:
+        host_reasons.append("host monitor failed: " + "; ".join(monitor_errors))
     raw = REPORTS / run_id
     artifact_hashes = {str(p.relative_to(raw)): hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in sorted(raw.rglob("*")) if p.is_file()} if raw.exists() else {}
     record = {"label": label, "command": command, "exitCode": code, "rawDirectory": str(raw),
-              "rawSha256": artifact_hashes, "sourceUnchanged": started_source == source_hash(),
+              "rawSha256": artifact_hashes, "sourceUnchanged": started_source == source_hash() == manifest["sourceSha256"],
+              "properties": properties,
               "controlSha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in control.iterdir() if p.is_file()},
               "hostQualityPass": not host_reasons, "hostRejectionReasons": host_reasons,
+              "hostMonitorErrors": monitor_errors,
               "memoryFullStallFraction": fraction}
     manifest["invocations"].append(record)
     save(attempt / "manifest.json", manifest)
@@ -179,7 +217,7 @@ def replay(attempt):
     manifest = json.loads((attempt / "manifest.json").read_text())
     paths = {}
     for invocation in manifest["invocations"]:
-        raw = pathlib.Path(invocation["rawDirectory"])
+        raw = raw_directory(attempt, invocation)
         for name, digest in invocation["rawSha256"].items():
             if hashlib.sha256((raw / name).read_bytes()).hexdigest() != digest:
                 raise ValueError(f"Changed raw artifact: {raw / name}")
@@ -206,12 +244,14 @@ def replay(attempt):
     else:
         observations = []
         for invocation in manifest["invocations"]:
-            record = json.loads((pathlib.Path(invocation["rawDirectory"]) / "compiler/results.json").read_text())[0]
+            record = json.loads((raw_directory(attempt, invocation) / "compiler/results.json").read_text())[0]
             metric = record["secondaryMetrics"]["compiler.time.profiled"]
             values = metric.get("rawData", [[]])[0]
             with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
-                snapshots = [{k: float(v) for k, v in r.items()} for r in csv.DictReader(stream)]
+                snapshots = [{k: (v if k in ("governor", "externalPower") else float(v)) for k, v in r.items()}
+                             for r in csv.DictReader(stream)]
             reasons, _ = host_gate(snapshots)
+            reasons.extend(invocation.get("hostMonitorErrors", []))
             observations.append({"label": invocation["label"], "compilerTotalMs": metric["score"],
                                  "compilerPerIterationMs": values,
                                  "jitPass": metric["score"] <= 80 and len(values) == 8 and max(values) <= 10,
@@ -240,9 +280,9 @@ def main():
     attempt.mkdir(parents=True)
     manifest = {"schemaVersion": "tailcache12-development-v1", "stage": args.stage,
                 "reportable": False, "sourceSha256": source_hash(), "invocations": [],
-                "gitHead": subprocess.run(["rtk", "proxy", "git", "rev-parse", "HEAD"], cwd=ROOT,
+                "gitHead": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
                                           capture_output=True, text=True, check=True).stdout.strip(),
-                "gitStatus": subprocess.run(["rtk", "proxy", "git", "status", "--short"], cwd=ROOT,
+                "gitStatus": subprocess.run(["git", "status", "--short"], cwd=ROOT,
                                             capture_output=True, text=True, check=True).stdout}
     with tarfile.open(attempt / "source.tar.gz", "w:gz") as archive:
         for path in sources():
@@ -252,7 +292,7 @@ def main():
     for label, command in (("uname", ["uname", "-a"]), ("cpu", ["lscpu"]),
                            ("java", ["java", "-version"]),
                            ("mount", ["findmnt", "-J", "-T", str(ROOT)])):
-        result = subprocess.run(["rtk", "proxy", *command], cwd=ROOT, capture_output=True, text=True)
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
         environment[label] = {"exitCode": result.returncode, "stdout": result.stdout, "stderr": result.stderr}
     for path in ("/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor", "/sys/firmware/acpi/platform_profile"):
         try:
@@ -332,6 +372,14 @@ def main():
                     passed = total <= 80 and len(values) == 8 and max(values) <= 10
                     worker_values = [int(x) for x in re.findall(r"phase=MEASUREMENT .*workerEnvelopeCompilerMs=(\d+)",
                                                                (attempt / f"jit-{repeat}-{backend}-{payload}" / "gradle.log").read_text())]
+                    sidecars = list((raw / "compiler").glob("iterations-*.csv"))
+                    if len(sidecars) != 1:
+                        raise ValueError("Expected one compiler-worker sidecar")
+                    with sidecars[0].open(newline="") as stream:
+                        worker_values = [int(r["workerEnvelopeCompilerMs"]) for r in csv.DictReader(stream)
+                                         if r["phase"] == "MEASUREMENT"]
+                    if len(worker_values) != 8:
+                        raise ValueError("Incomplete compiler-worker measurement rows")
                     observations.append({"repeat": repeat, "backend": backend, "payload": payload,
                                          "compilerTotalMs": total, "compilerPerIterationMs": values,
                                          "workerEnvelopeCompilerMs": worker_values,

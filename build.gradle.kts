@@ -719,8 +719,9 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val forks = providers.gradleProperty("tailcache12Forks").orElse(if (smoke) "1" else "3")
         val duration = if (smoke) "300ms" else "1s"
         val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
+        jvmOptions.add("-Dtailcache12.observationDir=${directory.absolutePath}")
         if (kind == "compiler" || kind == "allocation") {
-            jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,level,tags")
+            jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0")
         }
         if (kind == "compiler") {
             jvmOptions.addAll(listOf("-Dtailcache12.compilerWindow=true", "-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
@@ -765,8 +766,11 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
         }
         directory.mkdirs()
     }
+    val compilerDiagnostics = providers.gradleProperty("tailcache12CompilerDiagnostics").orElse("false").get().toBoolean()
     jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m",
-        "-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,level,tags"))
+        "-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0"))
+    if (compilerDiagnostics) jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
+        "-XX:LogFile=${directory.resolve("jit-%p.xml").absolutePath}")
     args("--out", directory.resolve("worker").absolutePath,
         "--backend", providers.gradleProperty("tailcache12Backend").orElse("CAFFEINE").get(),
         "--payload", providers.gradleProperty("tailcache12Payload").orElse("256").get(),
@@ -776,7 +780,8 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
         "--measure", providers.gradleProperty("tailcache12Measurements").orElse("8").get(),
         "--iteration-ms", providers.gradleProperty("tailcache12IterationMs").orElse("1000").get(),
         "--validation", providers.gradleProperty("tailcache12Validation").orElse("none").get(),
-        "--timer-floor", providers.gradleProperty("tailcache12TimerFloor").orElse("false").get())
+        "--timer-floor", providers.gradleProperty("tailcache12TimerFloor").orElse("false").get(),
+        "--compiler-diagnostics", compilerDiagnostics.toString())
 }
 
 tasks.register<JavaExec>("tailCache12Retention") {

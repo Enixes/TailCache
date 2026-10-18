@@ -31,15 +31,28 @@ public class CrossoverBenchmark {
         private final boolean compilerWindow = Boolean.getBoolean("tailcache12.compilerWindow");
         private java.lang.management.CompilationMXBean compiler;
         private long compilerStartMs;
+        private java.nio.file.Path observationDirectory;
+        private final java.util.ArrayList<IterationObservation> observations = new java.util.ArrayList<>();
+
+        private record IterationObservation(IterationType phase, long operations, long writes,
+                                            ApplicationChurn.Snapshot churn, long compilerMs) { }
 
         @Setup(Level.Trial)
         public void setup(BenchmarkParams params) {
             if (params.getThreads() != 1) throw new IllegalArgumentException("Crossover requires one cache worker");
+            observations.ensureCapacity(params.getWarmup().getCount() + params.getMeasurement().getCount());
+            observationDirectory = java.nio.file.Path.of(System.getProperty("tailcache12.observationDir",
+                    "build/reports/tailcache12/unmanaged-observations"));
+            try { java.nio.file.Files.createDirectories(observationDirectory); }
+            catch (java.io.IOException failure) { throw new java.io.UncheckedIOException(failure); }
             CrossoverConfig config = new CrossoverConfig(residentEntries, payloadBytes, seed,
                     applicationLiveBytes, 4096, churnBytesPerSecond, 128);
             workload = new CrossoverWorkload(backend, config);
             churn = new ApplicationChurn(churnBytesPerSecond, 4096, 128);
             if (compilerWindow) compiler = java.lang.management.ManagementFactory.getCompilationMXBean();
+            // JMH may include trial teardown in its final compiler-profiler envelope. Emit the
+            // buffered observations only after the fork has returned its benchmark results.
+            Runtime.getRuntime().addShutdownHook(new Thread(this::exportObservations, "tailcache-observation-export"));
             System.out.printf("[TailCache12] backend=%s config={%s} residents=%d payload=%d "
                             + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s%n",
                     backend, workload.backendConfiguration(), residentEntries, payloadBytes,
@@ -59,16 +72,31 @@ public class CrossoverBenchmark {
         public void endIteration(IterationParams iteration, BenchmarkParams benchmark) {
             long workerCompilerMs = compilerWindow ? compiler.getTotalCompilationTime() - compilerStartMs : -1;
             ApplicationChurn.Snapshot snapshot = churn.stop();
-            System.out.printf("[TailCache12][iteration] phase=%s operations=%d writes=%d churnPayloadBytes=%d "
-                            + "churnPayloadBytesPerSecond=%.1f churnJvmAllocatedBytes=%d churnDroppedBytes=%d lateTicks=%d "
-                            + "retainedRingBytes=%d envelopeStartNs=%d envelopeEndNs=%d workerEnvelopeCompilerMs=%d%n",
-                    iteration.getType(), workload.operations() - operationsBefore, workload.writes() - writesBefore,
-                    snapshot.allocatedBytes(), snapshot.realizedBytesPerSecond(), snapshot.jvmAllocatedBytes(),
-                    snapshot.droppedBytes(), snapshot.lateTicks(), snapshot.retainedPayloadBytes(), snapshot.startNs(), snapshot.endNs(), workerCompilerMs);
+            observations.add(new IterationObservation(iteration.getType(), workload.operations() - operationsBefore,
+                    workload.writes() - writesBefore, snapshot, workerCompilerMs));
             if (iteration.getType() == IterationType.WARMUP) {
                 warmups++;
                 // Allocating full-value integrity check, followed by two settling warmups.
                 if (warmups == Math.max(1, benchmark.getWarmup().getCount() - 2)) workload.verifyContents();
+            }
+        }
+
+        private void exportObservations() {
+            java.nio.file.Path output = observationDirectory.resolve("iterations-" + ProcessHandle.current().pid() + ".csv");
+            try (java.io.BufferedWriter writer = java.nio.file.Files.newBufferedWriter(output,
+                    java.nio.file.StandardOpenOption.CREATE_NEW)) {
+                writer.write("phase,operations,writes,churnPayloadBytes,churnPayloadBytesPerSecond,churnJvmAllocatedBytes,"
+                        + "churnDroppedBytes,lateTicks,retainedRingBytes,envelopeStartNs,envelopeEndNs,workerEnvelopeCompilerMs\n");
+                for (IterationObservation observation : observations) {
+                    ApplicationChurn.Snapshot snapshot = observation.churn();
+                    writer.write(observation.phase() + "," + observation.operations() + "," + observation.writes()
+                            + "," + snapshot.allocatedBytes() + "," + snapshot.realizedBytesPerSecond()
+                            + "," + snapshot.jvmAllocatedBytes() + "," + snapshot.droppedBytes() + "," + snapshot.lateTicks()
+                            + "," + snapshot.retainedPayloadBytes() + "," + snapshot.startNs() + "," + snapshot.endNs()
+                            + "," + observation.compilerMs() + "\n");
+                }
+            } catch (java.io.IOException failure) {
+                throw new java.io.UncheckedIOException("Unable to export iteration evidence", failure);
             }
         }
 

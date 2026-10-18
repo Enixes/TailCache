@@ -164,6 +164,8 @@ Chronicle Map's primary adapter uses ordinary `get`. Ordinary Chronicle `get` ma
 
 ## Run JMH directly
 
+For the dedicated heap-pressure workload, pause validation, and calibration on another machine, follow the [Task 12 runbook](docs/TAILCACHE_12_RUNBOOK.md). Task 12 has no accepted crossover campaign yet; its validation/calibration outputs remain diagnostic.
+
 Run the benchmark suite:
 
 ```bash

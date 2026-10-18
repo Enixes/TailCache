@@ -33,6 +33,12 @@ public final class CrossoverLatencyRunner {
         long durationNs = number(options, "--iteration-ms", 1000) * 1_000_000;
         String validation = options.getOrDefault("--validation", "none");
         boolean floor = Boolean.parseBoolean(options.getOrDefault("--timer-floor", "false"));
+        boolean compilerDiagnostics = Boolean.parseBoolean(options.getOrDefault("--compiler-diagnostics", "false"));
+        java.lang.management.CompilationMXBean compiler = compilerDiagnostics
+                ? ManagementFactory.getCompilationMXBean() : null;
+        if (compilerDiagnostics && (compiler == null || !compiler.isCompilationTimeMonitoringSupported())) {
+            throw new IllegalStateException("Compiler-time evidence unavailable");
+        }
         if (warmups < 0 || measurements < 1 || durationNs <= 0
                 || !java.util.Set.of("none", "long-operation", "gc").contains(validation)
                 || (!validation.equals("none") && durationNs < 500_000_000)) {
@@ -41,6 +47,8 @@ public final class CrossoverLatencyRunner {
         EveryOperationRecorder warmupRecorder = new EveryOperationRecorder();
         EveryOperationRecorder[] measurementRecorders = new EveryOperationRecorder[measurements];
         for (int i = 0; i < measurements; i++) measurementRecorders[i] = new EveryOperationRecorder();
+        // Defer formatting, histogram queries, and file output until all worker windows have ended.
+        java.util.List<Observation> observations = new java.util.ArrayList<>(warmups + measurements);
         try (CrossoverWorkload workload = new CrossoverWorkload(backend, config);
              ApplicationChurn churn = new ApplicationChurn(config.churnBytesPerSecond(), 4096, 128);
              BufferedWriter writer = Files.newBufferedWriter(directory.resolve("iterations.csv"))) {
@@ -55,7 +63,7 @@ public final class CrossoverLatencyRunner {
             writer.write("phase,iteration,startNs,endNs,uptimeStartMs,uptimeEndMs,operations,serviceP50Ns,serviceP99Ns,"
                     + "serviceP999Ns,serviceMaxNs,completionGapMaxNs,serviceAbove1ms,gapAbove1ms,serviceAbove10ms,gapAbove10ms,"
                     + "churnPayloadBytes,churnPayloadBytesPerSecond,churnDroppedBytes,churnLateTicks,churnRetainedBytes,"
-                    + "injectionStartNs,injectionEndNs,uptimeAnchorBeforeNs,uptimeAnchorAfterNs,churnJvmAllocatedBytes,writes\n");
+                    + "injectionStartNs,injectionEndNs,uptimeAnchorBeforeNs,uptimeAnchorAfterNs,churnJvmAllocatedBytes,writes,compilerMs\n");
             for (int i = 0; i < warmups + measurements; i++) {
                 boolean measured = i >= warmups;
                 int index = measured ? i - warmups + 1 : i + 1;
@@ -66,6 +74,7 @@ public final class CrossoverLatencyRunner {
                 if (injector != null) injector.start();
                 churn.start();
                 long writesBefore = workload.writes();
+                long compilerBefore = compiler == null ? -1 : compiler.getTotalCompilationTime();
                 long anchorBefore = System.nanoTime();
                 long uptimeStart = ManagementFactory.getRuntimeMXBean().getUptime();
                 long anchorAfter = System.nanoTime();
@@ -98,20 +107,37 @@ public final class CrossoverLatencyRunner {
                     consumed = localChecksum;
                 }
                 long uptimeEnd = ManagementFactory.getRuntimeMXBean().getUptime();
+                long compilerMs = compiler == null ? -1 : compiler.getTotalCompilationTime() - compilerBefore;
                 ApplicationChurn.Snapshot allocation = churn.stop();
                 if (injector != null) injector.finish();
-                writer.write((measured ? "MEASUREMENT" : "WARMUP") + "," + index + "," + start + "," + end + ","
-                        + uptimeStart + "," + uptimeEnd + "," + recorder.operations() + "," + recorder.servicePercentile(50)
-                        + "," + recorder.servicePercentile(99) + "," + recorder.servicePercentile(99.9) + ","
-                        + recorder.serviceMaxNs() + "," + recorder.gapMaxNs() + "," + recorder.serviceAbove1ms() + ","
-                        + recorder.gapAbove1ms() + "," + recorder.serviceAbove10ms() + "," + recorder.gapAbove10ms() + ","
-                        + allocation.allocatedBytes() + "," + allocation.realizedBytesPerSecond() + ","
-                        + allocation.droppedBytes() + "," + allocation.lateTicks() + "," + allocation.retainedPayloadBytes()
-                        + "," + (injector == null ? 0 : injector.before) + "," + (injector == null ? 0 : injector.after)
-                        + "," + anchorBefore + "," + anchorAfter + "," + allocation.jvmAllocatedBytes()
-                        + "," + (workload.writes() - writesBefore) + "\n");
-                writer.flush();
+                observations.add(new Observation(measured, index, start, end, uptimeStart, uptimeEnd,
+                        recorder.operations(), allocation, injector == null ? 0 : injector.before,
+                        injector == null ? 0 : injector.after, anchorBefore, anchorAfter,
+                        workload.writes() - writesBefore, compilerMs));
                 if (!measured && index == Math.max(1, warmups - 2)) workload.verifyContents();
+            }
+            for (Observation observation : observations) {
+                // Warmup histograms are reused; only their operation counts are exported.
+                EveryOperationRecorder recorder = observation.measured()
+                        ? measurementRecorders[observation.index() - 1] : null;
+                ApplicationChurn.Snapshot allocation = observation.allocation();
+                writer.write((observation.measured() ? "MEASUREMENT" : "WARMUP") + "," + observation.index()
+                        + "," + observation.start() + "," + observation.end() + "," + observation.uptimeStart()
+                        + "," + observation.uptimeEnd() + "," + observation.operations()
+                        + "," + (recorder == null ? 0 : recorder.servicePercentile(50))
+                        + "," + (recorder == null ? 0 : recorder.servicePercentile(99))
+                        + "," + (recorder == null ? 0 : recorder.servicePercentile(99.9))
+                        + "," + (recorder == null ? 0 : recorder.serviceMaxNs())
+                        + "," + (recorder == null ? 0 : recorder.gapMaxNs())
+                        + "," + (recorder == null ? 0 : recorder.serviceAbove1ms())
+                        + "," + (recorder == null ? 0 : recorder.gapAbove1ms())
+                        + "," + (recorder == null ? 0 : recorder.serviceAbove10ms())
+                        + "," + (recorder == null ? 0 : recorder.gapAbove10ms())
+                        + "," + allocation.allocatedBytes() + "," + allocation.realizedBytesPerSecond()
+                        + "," + allocation.droppedBytes() + "," + allocation.lateTicks() + "," + allocation.retainedPayloadBytes()
+                        + "," + observation.injectionStart() + "," + observation.injectionEnd()
+                        + "," + observation.anchorBefore() + "," + observation.anchorAfter()
+                        + "," + allocation.jvmAllocatedBytes() + "," + observation.writes() + "," + observation.compilerMs() + "\n");
             }
             for (int i = 0; i < measurements; i++) measurementRecorders[i].export(directory, "iteration-" + (i + 1));
             Files.writeString(directory.resolve("integrity.txt"), "contentChecksum=" + workload.verifyContents()
@@ -119,6 +145,11 @@ public final class CrossoverLatencyRunner {
                     + "\nwrites=" + workload.writes() + "\nconsumed=" + consumed + "\n");
         }
     }
+
+    private record Observation(boolean measured, int index, long start, long end, long uptimeStart,
+                               long uptimeEnd, long operations, ApplicationChurn.Snapshot allocation,
+                               long injectionStart, long injectionEnd, long anchorBefore,
+                               long anchorAfter, long writes, long compilerMs) { }
 
     private static int integer(Map<String, String> options, String key, int fallback) {
         return Math.toIntExact(number(options, key, fallback));
