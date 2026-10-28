@@ -4,6 +4,8 @@ import argparse
 import csv
 import hashlib
 import json
+import math
+import os
 import pathlib
 import re
 import subprocess
@@ -11,9 +13,52 @@ import tarfile
 import threading
 import time
 
+from tailcache12_analysis import compiler_rejection_reasons
+from tailcache12_controller import wait_for_launch
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "build/reports/tailcache12"
 BACKENDS = ("CAFFEINE", "CHRONICLE_IN_MEMORY")
+HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter")
+HOST_RULE_VERSION = "tailcache12-host-v2-settling"
+
+
+def decode_host_row(row):
+    return {k: (v if k in HOST_STRING_FIELDS else float(v)) for k, v in row.items()}
+
+
+def windows_host_snapshot(path, required=False):
+    if path is None:
+        if required:
+            raise ValueError("Windows host observation is required for this WSL run")
+        return {}
+    source = pathlib.Path(path)
+    if source.suffix == ".jsonl":
+        # A replaced NTFS filename can remain cached in DrvFS. Read the last complete
+        # append-only record from a stable inode, with bounded I/O as history grows.
+        with source.open("rb") as stream:
+            stream.seek(0, 2)
+            stream.seek(max(0, stream.tell() - 16384))
+            lines = stream.read().splitlines(keepends=True)
+        complete = [line for line in lines if line.endswith(b"\n")]
+        if not complete:
+            raise ValueError("No complete Windows host observation")
+        data = json.loads(complete[-1])
+    else:
+        data = json.loads(source.read_text(encoding="utf-8-sig"))
+    return {"windowsHostRequired": 1, "windowsSampleAgeMs": time.time() * 1000 - data["timestampUnixMs"],
+            "windowsMonitorVersion": data.get("monitorVersion", 0),
+            "windowsAvailableMiB": data["availableMiB"], "windowsCommitPercent": data["commitPercent"],
+            "windowsOtherCpuPercent": data["outsideGuestCpuPercent"], "windowsPowerScheme": data["powerScheme"],
+            "windowsTotalCpuPercent": data.get("totalCpuPercent", -1),
+            "windowsGuestCpuPercent": data.get("guestCpuPercent", -1),
+            "windowsCpuCounter": data.get("outsideCpuCounter", "unspecified"),
+            "windowsIntervalMs": data.get("intervalMs", 2000),
+            "windowsActualFrequencyMHz": data.get("actualFrequencyMHz", -1),
+            "windowsProcessorPerformancePercent": data.get("processorPerformancePercent", -1),
+            "windowsPerformanceLimitFlags": data.get("performanceLimitFlags", -1),
+            "windowsPageReadsPerSecond": data["pageReadsPerSecond"],
+            "windowsPagesOutputPerSecond": data["pagesOutputPerSecond"]}
 
 
 def save(path, value):
@@ -66,10 +111,33 @@ def host_snapshot():
         pressure = pathlib.Path(f"/proc/pressure/{resource}").read_text()
         row[resource + "FullTotalUs"] = int(re.search(r"^full .* total=(\d+)", pressure, re.M).group(1))
         row[resource + "FullAvg10"] = float(re.search(r"^full avg10=([\d.]+)", pressure, re.M).group(1))
+    row.update(windows_host_snapshot(os.environ.get("TAILCACHE_WINDOWS_HOST_FILE"),
+                                    os.environ.get("TAILCACHE_REQUIRE_WINDOWS_HOST") == "1"))
     return row
 
 
-def host_gate(snapshots):
+def measurement_windows(directory):
+    files = list(directory.glob("*/iterations-*.csv"))
+    files += list(directory.glob("every-operation/worker/iterations.csv"))
+    windows = []
+    for path in files:
+        with path.open(newline="") as stream:
+            for row in csv.DictReader(stream):
+                if row["phase"] == "MEASUREMENT":
+                    windows.append((int(row.get("envelopeStartNs", row.get("startNs"))),
+                                    int(row.get("envelopeEndNs", row.get("endNs")))))
+    windows.sort()
+    if any(a >= b for a, b in windows):
+        raise ValueError("Invalid worker timing evidence")
+    return windows
+
+
+def replay_host_gate(manifest, directory, snapshots):
+    windows = measurement_windows(directory) if manifest.get("hostRuleVersion") == HOST_RULE_VERSION else None
+    return host_gate(snapshots, cpu_windows=windows or None)
+
+
+def host_gate(snapshots, cpu_windows=None):
     if len(snapshots) < 2:
         return ["missing host interval samples"], None
     before, after = snapshots[0], snapshots[-1]
@@ -93,10 +161,48 @@ def host_gate(snapshots):
             reasons.append(f"{name} changed during block")
     if any("=0" in s.get("externalPower", "") for s in snapshots):
         reasons.append("external power is disconnected")
+    if any(s.get("windowsHostRequired") == 1 for s in snapshots):
+        if any(s.get("windowsMonitorVersion") not in (3, 4, 5) for s in snapshots):
+            reasons.append("unqualified Windows observer version")
+        required = ("windowsSampleAgeMs", "windowsAvailableMiB", "windowsCommitPercent",
+                    "windowsOtherCpuPercent", "windowsPowerScheme")
+        if any(any(name not in s for name in required) for s in snapshots):
+            reasons.append("incomplete Windows host observations")
+        else:
+            if any(not math.isfinite(s[name]) for s in snapshots for name in required[:-1]):
+                reasons.append("invalid Windows host observations")
+                return reasons, fraction
+            if any(not s["windowsPowerScheme"] or s["windowsPowerScheme"] == "unavailable" for s in snapshots):
+                reasons.append("missing Windows power scheme")
+            if any(not -1000 <= s["windowsSampleAgeMs"] <= 5000 for s in snapshots):
+                reasons.append("Windows host observations are stale or clocks disagree")
+            if min(s["windowsAvailableMiB"] for s in snapshots) < 4096:
+                reasons.append("Windows available memory fell below 4 GiB")
+            if max(s["windowsCommitPercent"] for s in snapshots) > 85:
+                reasons.append("Windows commit charge exceeded 85%")
+            cpu_samples = snapshots
+            if cpu_windows:
+                # CPU startup load may settle during warmup. Keep full-block memory,
+                # paging, power and freshness checks, but require CPU quiet during the
+                # final ten settling seconds and every actual measurement window.
+                cpu_samples = []
+                for sample in snapshots:
+                    end = sample["monotonicNs"] - sample["windowsSampleAgeMs"] * 1_000_000
+                    start = end - max(1000, sample.get("windowsIntervalMs", 2000)) * 1_000_000
+                    if any(end >= a - 10_000_000_000 and start <= b for a, b in cpu_windows):
+                        cpu_samples.append(sample)
+                if len(cpu_samples) < 2:
+                    reasons.append("missing Windows CPU observations in settling/measurement interval")
+            if cpu_samples and max(s["windowsOtherCpuPercent"] for s in cpu_samples) > 10:
+                reasons.append("Windows CPU outside the guest exceeded 10%"
+                               + (" in settling/measurement interval" if cpu_windows else ""))
+            if len({s["windowsPowerScheme"] for s in snapshots}) != 1:
+                reasons.append("Windows power scheme changed during block")
     return reasons, fraction
 
 
 def invoke(attempt, manifest, label, task, properties):
+    controller_schedule = wait_for_launch(properties)
     run_id = attempt.name + "-" + label
     control = attempt / label
     control.mkdir()
@@ -126,15 +232,16 @@ def invoke(attempt, manifest, label, task, properties):
         writer = csv.DictWriter(stream, fieldnames=list(snapshots[0]))
         writer.writeheader()
         writer.writerows(snapshots)
-    host_reasons, fraction = host_gate(snapshots)
+    raw = REPORTS / run_id
+    host_reasons, fraction = replay_host_gate(manifest, raw, snapshots)
     if monitor_errors:
         host_reasons.append("host monitor failed: " + "; ".join(monitor_errors))
-    raw = REPORTS / run_id
     artifact_hashes = {str(p.relative_to(raw)): hashlib.sha256(p.read_bytes()).hexdigest()
                        for p in sorted(raw.rglob("*")) if p.is_file()} if raw.exists() else {}
     record = {"label": label, "command": command, "exitCode": code, "rawDirectory": str(raw),
               "rawSha256": artifact_hashes, "sourceUnchanged": started_source == source_hash() == manifest["sourceSha256"],
               "properties": properties,
+              "controllerQuietSchedule": controller_schedule,
               "controlSha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in control.iterdir() if p.is_file()},
               "hostQualityPass": not host_reasons, "hostRejectionReasons": host_reasons,
@@ -189,28 +296,43 @@ def pause_audit(directory, validation):
     if validation == "long-operation":
         observation["pass"] = int(row["serviceMaxNs"]) >= 40_000_000 and int(row["serviceAbove10ms"]) >= 1
         return observation
-    text = "\n".join(p.read_text() for p in directory.glob("every-operation/gc-*.log"))
-    pauses = re.findall(r"\[(\d+)ms\].*GC\((\d+)\) Pause Full \(System.gc\(\)\).* ([\d.]+)ms", text)
+    from tailcache12_analysis import parse_gc
+    logs = list(directory.glob("every-operation/gc-*.log"))
+    if len(logs) != 1:
+        raise ValueError("Expected one GC log for pause validation")
+    pauses = [p for p in parse_gc(logs[0])["pauses"] if p["kind"] == "Pause Full (System.gc())"]
     if len(pauses) != 1:
         return {**observation, "pass": False, "reason": "Expected exactly one logged System.gc pause"}
-    uptime_end, gc_id, duration_ms = pauses[0]
-    anchor_before = int(row.get("uptimeAnchorBeforeNs", row["startNs"]))
-    anchor_after = int(row.get("uptimeAnchorAfterNs", row["startNs"]))
-    alignment_error = 1_000_000 + anchor_after - anchor_before
-    pause_end = (anchor_before + anchor_after) // 2 + (int(uptime_end) - int(row["uptimeStartMs"])) * 1_000_000
-    pause_start = pause_end - float(duration_ms) * 1_000_000
+    pause = pauses[0]
+    pause_start, pause_end = pause["startNs"], pause["endNs"]
+    duration_ns = pause["loggedDurationNs"]
     with (worker / "iteration-1-stall-events.csv").open(newline="") as stream:
         events = list(csv.DictReader(stream))
-    overlapping = [x for x in events if int(x["previousCompletionNs"]) <= pause_end + 2_000_000
-                   and int(x["endNs"]) >= pause_start - 2_000_000]
+    overlapping = [x for x in events if int(x["previousCompletionNs"]) <= pause_end
+                   and int(x["endNs"]) >= pause_start]
     observed_gap = max((int(x["completionGapNs"]) for x in overlapping), default=0)
-    observation.update({"gcId": gc_id, "gcPauseMs": float(duration_ms), "overlappingEventCount": len(overlapping),
-                        "overlappingGapNs": observed_gap, "clockAlignmentUncertaintyNs": alignment_error,
-                        "pass": bool(overlapping) and observed_gap >= float(duration_ms) * 750_000
-                        and alignment_error <= 2_000_000
+    observation.update({"gcId": pause["gcId"], "gcPauseMs": duration_ns / 1_000_000,
+                        "overlappingEventCount": len(overlapping), "overlappingGapNs": observed_gap,
+                        "clockSource": "unified-log timenanos / System.nanoTime",
+                        "clockAlignmentUncertaintyNs": 0,
+                        "pass": bool(overlapping) and observed_gap >= duration_ns * 0.75
+                        and not pause["startDerivedFromDuration"]
+                        and int(row["startNs"]) <= pause_start < pause_end <= int(row["endNs"])
                         and int(row["injectionStartNs"]) > int(row["startNs"])
                         and int(row["injectionEndNs"]) < int(row["endNs"])})
     return observation
+
+
+def compiler_worker_values(directory):
+    sidecars = list((directory / "compiler").glob("iterations-*.csv"))
+    if len(sidecars) != 1:
+        raise ValueError("Expected one compiler-worker sidecar")
+    with sidecars[0].open(newline="") as stream:
+        values = [int(row["workerEnvelopeCompilerMs"]) for row in csv.DictReader(stream)
+                  if row["phase"] == "MEASUREMENT"]
+    if len(values) != 8 or any(value < 0 for value in values):
+        raise ValueError("Incomplete or invalid compiler-worker measurement rows")
+    return values
 
 
 def replay(attempt):
@@ -248,13 +370,14 @@ def replay(attempt):
             metric = record["secondaryMetrics"]["compiler.time.profiled"]
             values = metric.get("rawData", [[]])[0]
             with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
-                snapshots = [{k: (v if k in ("governor", "externalPower") else float(v)) for k, v in r.items()}
-                             for r in csv.DictReader(stream)]
-            reasons, _ = host_gate(snapshots)
+                snapshots = [decode_host_row(r) for r in csv.DictReader(stream)]
+            reasons, _ = replay_host_gate(manifest, raw_directory(attempt, invocation), snapshots)
             reasons.extend(invocation.get("hostMonitorErrors", []))
+            worker_values = compiler_worker_values(raw_directory(attempt, invocation))
             observations.append({"label": invocation["label"], "compilerTotalMs": metric["score"],
                                  "compilerPerIterationMs": values,
-                                 "jitPass": metric["score"] <= 80 and len(values) == 8 and max(values) <= 10,
+                                 "workerEnvelopeCompilerMs": worker_values,
+                                 "jitPass": not compiler_rejection_reasons(metric["score"], values),
                                  "hostPass": not reasons})
         audit["jit"] = observations
         audit["functionalPass"] = len(observations) == 8 and all(x["jitPass"] and x["hostPass"] for x in observations)
@@ -279,6 +402,7 @@ def main():
         parser.error(f"Attempt exists: {attempt}")
     attempt.mkdir(parents=True)
     manifest = {"schemaVersion": "tailcache12-development-v1", "stage": args.stage,
+                "hostRuleVersion": HOST_RULE_VERSION,
                 "reportable": False, "sourceSha256": source_hash(), "invocations": [],
                 "gitHead": subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT,
                                           capture_output=True, text=True, check=True).stdout.strip(),
@@ -369,17 +493,8 @@ def main():
                     metric = record["secondaryMetrics"]["compiler.time.profiled"]
                     values = metric.get("rawData", [[]])[0]
                     total = metric["score"]
-                    passed = total <= 80 and len(values) == 8 and max(values) <= 10
-                    worker_values = [int(x) for x in re.findall(r"phase=MEASUREMENT .*workerEnvelopeCompilerMs=(\d+)",
-                                                               (attempt / f"jit-{repeat}-{backend}-{payload}" / "gradle.log").read_text())]
-                    sidecars = list((raw / "compiler").glob("iterations-*.csv"))
-                    if len(sidecars) != 1:
-                        raise ValueError("Expected one compiler-worker sidecar")
-                    with sidecars[0].open(newline="") as stream:
-                        worker_values = [int(r["workerEnvelopeCompilerMs"]) for r in csv.DictReader(stream)
-                                         if r["phase"] == "MEASUREMENT"]
-                    if len(worker_values) != 8:
-                        raise ValueError("Incomplete compiler-worker measurement rows")
+                    passed = not compiler_rejection_reasons(total, values)
+                    worker_values = compiler_worker_values(raw)
                     observations.append({"repeat": repeat, "backend": backend, "payload": payload,
                                          "compilerTotalMs": total, "compilerPerIterationMs": values,
                                          "workerEnvelopeCompilerMs": worker_values,

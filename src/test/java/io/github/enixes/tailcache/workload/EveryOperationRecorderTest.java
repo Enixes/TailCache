@@ -10,6 +10,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EveryOperationRecorderTest {
     @Test
+    void branchWarmupCannotContaminateARealRecorder(@TempDir Path directory) throws Exception {
+        EveryOperationRecorder real = new EveryOperationRecorder();
+        EveryOperationRecorder.warmupBranches();
+        assertEquals(0, real.operations());
+        assertEquals(0, real.recordedCount());
+        real.record(20_000_000, 20_000_100, 19_000_000);
+        assertEquals(1, real.recordedCount());
+        assertEquals(100, real.serviceMaxNs());
+        assertEquals(1_000_100, real.gapMaxNs());
+        assertEquals(0, real.serviceAbove1ms());
+        assertEquals(1, real.gapAbove1ms());
+        assertEquals(0, real.overflowCount());
+        real.export(directory, "real-after-branch-warmup");
+        assertEquals(2, Files.readAllLines(directory.resolve("real-after-branch-warmup-stall-events.csv")).size());
+    }
+
+    @Test
     void recordingUsesPreallocatedStorage() {
         com.sun.management.ThreadMXBean threads =
                 (com.sun.management.ThreadMXBean) java.lang.management.ManagementFactory.getThreadMXBean();

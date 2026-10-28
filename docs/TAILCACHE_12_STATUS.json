@@ -1,36 +1,347 @@
 {
-  "asOfDate": "2026-10-18",
+  "asOfDate": "2026-10-28",
   "taskComplete": false,
   "campaignReady": false,
+  "reportable": false,
+  "tickTickTaskId": "6a99b1248f0842fe140aa129",
+  "dueDateLocal": "2026-11-07T15:00:00+05:30",
+  "branch": "tailcache-12-crossover",
+  "startingCommit": "ed9a9358b42eb3de04ad3c2de1a127a9e54ed90a",
+  "sourceChangesCommitted": true,
   "stages": {
-    "12A": "implemented_and_functionally_validated",
-    "12B": "pause_capture_validated_jit_and_observer_qualification_pending",
-    "12C": "calibration_runner_and_replay_implemented_no_accepted_grid",
-    "12D": "gc_occupancy_exposure_parser_and_zswap_host_gates_functionally_validated",
-    "12E": "not_run",
-    "12F": "not_run",
-    "12G": "not_implemented"
+    "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
+    "12B": "v5_functional_and_both_complete_compiler_screens_qualified_independent_observer_floor_coherence_pending",
+    "12C": "no_accepted_grid_005_stopped_at12_of64_slots_after_two_cpu_only_retries",
+    "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
+    "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
+    "12F": "not_implemented_or_run",
+    "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
   },
-  "functionalEvidence": "build/reports/tailcache12/12ab-final-20261013/audit.json",
-  "pauseEvidence": "build/reports/tailcache12/12b-pause-bounded-20261013/audit.json",
-  "qualificationEvidence": "build/reports/tailcache12/12b-jit-export-20261018/audit.json",
+  "verification": {
+    "javaTests": 34,
+    "pythonTests": 40,
+    "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
+    "jmhAndResultToolsCompilation": "passed",
+    "latestPythonPlatform": "40 tests passed in WSL Linux; includes prospective retry selection, complete synthetic grid audit and raw quiet replay; native forced-lock regression remains passed",
+    "nativeObserverRegression": "build/reports/tailcache12/host-observer-sharing-test-20261028-002/result.json"
+  },
+  "functionalEvidence": "build/reports/tailcache12/wsl-observer5-functional-20261028-001/replayed-audit.json",
+  "compilerCandidateEvidence": "build/reports/tailcache12/wsl-lifecycle-jit60-20261027-001/audit.json",
+  "latestQualificationEvidence": "build/reports/tailcache12/wsl-observer5-jit60-20261028-001/replayed-audit.json",
   "latestJit": {
-    "backend": "CAFFEINE",
-    "payloadBytes": 256,
-    "residentEntries": 8192,
-    "warmups": 30,
+    "warmups": 60,
     "measurementIterations": 8,
-    "broadCompilerTotalMs": 94,
-    "broadCompilerCeilingMs": 80,
-    "maximumWorkerEnvelopeCompilerMs": null,
-    "workerEvidenceLimit": "Intermediate shutdown stdout was missing; the final CSV export was validated by a separate functional smoke.",
-    "perIterationCeilingMs": 10,
-    "hostPass": false,
-    "remainingQualificationBlocksSuspended": 7
+    "completedBlocks": 8,
+    "compilerPassingBlocks": 8,
+    "hostPassingBlocks": 8,
+    "remainingBlocksSuspended": 0,
+    "aggregateCompilerCeilingMs": 80,
+    "perIterationCompilerCeilingMs": 10,
+    "maximumBroadCompilerTotalMs": 11,
+    "maximumBroadCompilerIterationMs": 4,
+    "hostRuleVersion": "tailcache12-host-v2-settling",
+    "warmupQualifiedForProbeInputs": true,
+    "replayed": true,
+    "residents": 32768
   },
-  "newGcEvidence": "build/reports/tailcache12/12cd-probe-20261018/calibration.json",
-  "newPauseEvidence": "build/reports/tailcache12/12b-pause-nanoclock-20261018/audit.json",
-  "newQualificationEvidence": "build/reports/tailcache12/12b-jit-export-20261018/audit.json",
+  "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
+  "currentBlocker": "User is handling native Linux installation. Source checkpoint publication requested; Windows continuation paused. Calibration005 remains rejected at12/64 slots,15 candidates after CPU-only per-slot retry exhaustion.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
-  "nextWork": "Run host/JIT qualification on the user's larger machine, obtain a passing calibration grid, and freeze observer rules before the pilot."
+  "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
+  "nextWork": "Clone the latest tailcache-12-crossover source checkpoint on native Linux, read docs/TAILCACHE_12_NATIVE_HANDOVER.md, retrieve local raw evidence if needed, and use fresh environment/attempt IDs with requalification. Do not restart WSL timings automatically. User will handle OS installation.",
+  "currentHarnessQualified": true,
+  "recorderBranchWarmupOperations": 40000,
+  "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
+  "everyOperationQualification": {
+    "evidence": "build/reports/tailcache12/wsl-observer5-everyop-jit60-20261028-001/everyop-jit.json",
+    "completedBlocks": 8,
+    "expectedBlocks": 8,
+    "hostPassingBlocks": 8,
+    "maximumCompilerTotalMs": 1,
+    "maximumCompilerIterationMs": 1,
+    "replayed": true,
+    "scope": "Current v5 source; full two-order/four-condition screen at32768 residents,512MiB heap,32MiB/s churn,live0"
+  },
+  "calibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-005/calibration.json",
+  "nextCalibrationAttempt": "not_declared_until_native_linux_is_ready_and_requalified",
+  "pressureDiagnosticAttempt": "wsl-observer5-pressure96-jit60-20261028-001",
+  "matchingPressureDiagnostic": {
+    "evidence": "build/reports/tailcache12/wsl-observer5-pressure96-jit60-20261028-001/everyop-jit.json",
+    "completedBlocks": 2,
+    "hostPassingBlocks": 2,
+    "compilerTotalsMs": [
+      1,
+      0
+    ],
+    "maximumCompilerIterationMs": 1,
+    "replayed": true
+  },
+  "previousHarnessEvidence": {
+    "functional": "build/reports/tailcache12/wsl-recorderwarm-functional-20261028-001/audit.json",
+    "jit": "build/reports/tailcache12/wsl-recorderwarm-jit60-20261028-001/audit.json",
+    "everyop": "build/reports/tailcache12/wsl-recorderwarm-everyop-jit60-20261028-001/everyop-jit.json"
+  },
+  "controllerScheduleExperiment": {
+    "anchorUtc": "2026-10-28T12:26:02.816Z",
+    "periodSeconds": 900,
+    "minimumBeforeSeconds": 180,
+    "afterSeconds": 120,
+    "measurementSourceVersion": "tailcache12-measurement-source-v2-controller",
+    "appliesBeforeBlockHostSampler": true,
+    "changesAcceptanceLimits": false,
+    "status": "both_complete_compiler_screens_passed_replayed",
+    "nextCalibrationAnchorUtc": "2026-10-28T15:40:06.285Z",
+    "currentQualificationAnchorUtc": "2026-10-28T14:55:05.204Z",
+    "currentQualificationAnchorUnixSeconds": 1793199305.204,
+    "nextCalibrationAnchorUnixSeconds": 1793202006.285
+  },
+  "retainedCheckpointArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-checkpoint-20261028T124127Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-checkpoint-20261028T124127Z.tar.gz",
+    "bytes": 214058050,
+    "sha256": "5b879abdb3dcb13848b9708a70813687bb180f7c9eea552c9ece2c790d258c6e",
+    "includes": "All retained evidence through runtime-bean rejection, native history snapshot and guarded-source checkpoint; new qualification not yet run"
+  },
+  "qualificationScope": "Current v5 source qualified for tested compiler inputs and two matching pressure96 probes. Larger-pressure forks still need their own gates; independent observer/floor/coherence remains pending.",
+  "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
+  "measurementSourceSha256": "866e0d76f0125b716007745824d2e85949a4c78ff9c4db0ef3ba0d4ff84a9888",
+  "calibrationDeclaration": {
+    "attempt": "wsl-recorder-calibration-20261028-005",
+    "preflight": "wsl-quiet-preflight-20261028-012",
+    "status": "rejected_cpu_retry_limit_exhausted",
+    "expectedLogicalSlots": 64,
+    "maximumJvmAttempts": 72,
+    "hostCpuRetriesPerSlot": 2,
+    "hostCpuRetryBudget": 8,
+    "warmups": 60,
+    "measurementIterations": 8,
+    "residents": 32768,
+    "heapMiB": 512,
+    "payloadBytes": [
+      256,
+      4096
+    ],
+    "applicationLiveMiB": [
+      0,
+      96,
+      208,
+      288
+    ],
+    "churnMiBPerSecond": 32,
+    "seed": 24301,
+    "repeats": 2,
+    "controllerAnchorUtc": "2026-10-28T15:40:06.285Z",
+    "controllerAnchorUnixSeconds": 1793202006.285,
+    "completedLogicalSlots": 12,
+    "recordedJvmAttempts": 15,
+    "extraJvmsUsed": 2
+  },
+  "guardedQualificationArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
+    "bytes": 55581704,
+    "sha256": "fb8faff7054efa9f0ea59f3b53ff1520bc62cd1dcf07eb3844c67d85383a85f5"
+  },
+  "hostNoiseDiagnostic": {
+    "attempt": "host-noise-diagnostic-20261028-003",
+    "seconds": 180,
+    "subsequentQuietPreflight": "wsl-quiet-preflight-20261028-009",
+    "status": "completed_observer_crash_found_and_repaired",
+    "concurrentJavaBenchmarkAllowed": false,
+    "rejectedNativeSampleUtc": "2026-10-28T13:53:24.426Z",
+    "rejectedRootCpuPercent": 23.964942932128906,
+    "counterIntervalMs": 1022.6773000005633,
+    "intervalEndRelativeToMeasurementStartSeconds": 8.333375988796876,
+    "measurementSeconds": 8.003763179,
+    "specificProcessCauseKnown": false,
+    "sampleCount": 177,
+    "freshHostSamples": 96,
+    "uniqueFreshNativeTimestamps": 91,
+    "freshRootCpuPeak": 22.162494659423828,
+    "analysis": "build/reports/tailcache12/host-noise-diagnostic-20261028-003/analysis.json",
+    "subsequentQuietPreflightResult": false,
+    "quiet009Reason": "stale native observations after snapshot-sharing crash"
+  },
+  "calibrationRejectionArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-calibration004-rejection-20261028T135752Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-calibration004-rejection-20261028T135752Z.tar.gz",
+    "bytes": 4154513,
+    "sha256": "977d3543eb50c77420c7d2f9b0c626c2e1489c6fc5053a43f2531b0091d75698"
+  },
+  "qualifiedMeasurementSourceSha256": "866e0d76f0125b716007745824d2e85949a4c78ff9c4db0ef3ba0d4ff84a9888",
+  "nativeHostObserver": {
+    "monitorVersion": 5,
+    "processId": 9032,
+    "windowsFolder": "C:/Users/deity/AppData/Local/Temp/TailCacheHost-20261028-003",
+    "wslHistory": "/mnt/c/Users/deity/AppData/Local/Temp/TailCacheHost-20261028-003/history.jsonl",
+    "previousPid": 21828,
+    "previousSessionRetained": true,
+    "repair": "Append authoritative history first; tolerate only optional-snapshot sharing/lock failures; reader permits delete sharing",
+    "nativeLockRegressionPassed": true,
+    "freshQualificationPending": false,
+    "status": "stop_requested_after_benchmark_exit_for_migration"
+  },
+  "quietPreflightDeclaration": {
+    "attempt": "wsl-quiet-preflight-20261028-010",
+    "quietSeconds": 120,
+    "timeoutSeconds": 300,
+    "benchmarkChained": false,
+    "status": "passed",
+    "elapsedSeconds": 142.60908276200098,
+    "sampleCount": 142,
+    "earlyCpuRejectedWindows": 5,
+    "monitorFailure": null
+  },
+  "observerRepairArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-observer5-repair-20261028T142240Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-observer5-repair-20261028T142240Z.tar.gz",
+    "bytes": 1600597,
+    "sha256": "f3fcf4dba4411a0556e98bc22af6ead528672c462e7d217e1b2088a92d29b706"
+  },
+  "calibrationRetryProtocol": {
+    "version": "tailcache12-calibration-hostcpu-retry-v1",
+    "document": "docs/TAILCACHE_12_CALIBRATION_RETRY_PROTOCOL.md",
+    "scope": "exploratory_calibration_only",
+    "status": "used_in_real_calibration005_preserved_rejected_after_per_slot_limit",
+    "maxExtraJvmsPerSlot": 2,
+    "maxExtraJvmsPerGrid": 8,
+    "maxTotalJvmsFor64Slots": 72,
+    "eligibleFailure": "sole Windows root-CPU settling/measurement rejection with every other check passing",
+    "selection": "first_quality_passing_candidate_independent_of_endpoints",
+    "quietSecondsPerRetry": 60,
+    "quietTimeoutSeconds": 300,
+    "maxQuietToBlockSeconds": 360,
+    "legacyInterpretationUnchanged": true,
+    "primaryCampaignPolicyUnchanged": true,
+    "realCalibration004ReplayedStillRejected": true,
+    "syntheticVerificationOnly": {
+      "logicalSlots": 64,
+      "candidateAttempts": 65,
+      "invalidCpuCandidatesRetained": 1
+    }
+  },
+  "nextQualificationSequence": {
+    "preflight": "wsl-quiet-preflight-20261028-011",
+    "functional": "wsl-observer5-functional-20261028-001",
+    "pressure96": "wsl-observer5-pressure96-jit60-20261028-001",
+    "everyopJit": "wsl-observer5-everyop-jit60-20261028-001",
+    "jmhJit": "wsl-observer5-jit60-20261028-001",
+    "status": "completed_passed_raw_replayed_source_matched",
+    "warmups": 60,
+    "measurements": 8,
+    "compilerResidents": 32768,
+    "anchor": "use_next_actual_heartbeat_timestamp_before_coordination_and_preflight",
+    "calibrationChained": false,
+    "controllerAnchorUtc": "2026-10-28T14:55:05.204Z",
+    "controllerAnchorUnixSeconds": 1793199305.204
+  },
+  "retryEngineeringArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-calibration-retry-engineering-20261028T145305Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-calibration-retry-engineering-20261028T145305Z.tar.gz",
+    "bytes": 3161345,
+    "sha256": "91785ee6c6c3ce72bd8fa85a847604f45fa0880e0b0515c780cc693cdb2b89dd"
+  },
+  "historicalV4Qualification": {
+    "functionalEvidence": "build/reports/tailcache12/wsl-controllerguard-functional-20261028-001/replayed-audit.json",
+    "latestQualificationEvidence": "build/reports/tailcache12/wsl-controllerguard-jit60-20261028-001/replayed-audit.json",
+    "everyOperationQualification": {
+      "evidence": "build/reports/tailcache12/wsl-observer5-everyop-jit60-20261028-001/everyop-jit.json",
+      "completedBlocks": 8,
+      "expectedBlocks": 8,
+      "hostPassingBlocks": 8,
+      "maximumCompilerTotalMs": 1,
+      "maximumCompilerIterationMs": 1,
+      "replayed": true,
+      "scope": "Current v5 source; full two-order/four-condition screen at32768 residents,512MiB heap,32MiB/s churn,live0"
+    }
+  },
+  "previousCalibrationDeclaration": {
+    "attempt": "wsl-recorder-calibration-20261028-004",
+    "preflight": "wsl-quiet-preflight-20261028-008",
+    "status": "rejected_incomplete",
+    "expectedFreshJvms": 64,
+    "warmups": 60,
+    "measurementIterations": 8,
+    "residents": 32768,
+    "heapMiB": 512,
+    "payloadBytes": [
+      256,
+      4096
+    ],
+    "applicationLiveMiB": [
+      0,
+      96,
+      208,
+      288
+    ],
+    "churnMiBPerSecond": 32,
+    "seed": 24301,
+    "repeats": 2,
+    "controllerAnchorUnixSeconds": 1793194083.764,
+    "completedBlocks": 14,
+    "expectedBlocks": 64,
+    "hostPassingBlocks": 13,
+    "compilerPassingBlocks": 14,
+    "first13AllPerForkGatesPassed": true
+  },
+  "qualificationCheckpoint": {
+    "measurementSourceSha256": "866e0d76f0125b716007745824d2e85949a4c78ff9c4db0ef3ba0d4ff84a9888",
+    "rawReplayed": true,
+    "sourceArchivesMatched": true,
+    "totalHostPassingBlocks": 32,
+    "attempts": {
+      "wsl-observer5-functional-20261028-001": {
+        "manifestSha256": "17cb9e80f0b54081f36f19071eb32618337ee45cdc717ad37773a4b72a6fbd0d",
+        "sourceArchiveSha256": "eab714c125ae89c411b303d600ff594c88253cadab8a72fdbd7ecf700722ef31",
+        "auditSha256": "7ae4b9902a744291f71849b9330ebdc1bacc90f072bf8fb1be5f2ce4a09d359a",
+        "hostPassingBlocks": 14
+      },
+      "wsl-observer5-pressure96-jit60-20261028-001": {
+        "manifestSha256": "d0722bfdbe1778018d9f753ce48e6238f76c1e6224b54fb71e59f061bb31100d",
+        "sourceArchiveSha256": "b837f9f31a8891323d9a4c5676def4d2f462ddeab58518e658da32bb4521cb3a",
+        "auditSha256": "ba0c58ee603eecc9ec2c4f0b350fafb12ea1acf6821355e71d2c8a7dc92fb6e9",
+        "hostPassingBlocks": 2
+      },
+      "wsl-observer5-everyop-jit60-20261028-001": {
+        "manifestSha256": "8ebb3acd1ef45be6b5a6a77f714ba300b68e678f3fc2ff569793341b662dbb60",
+        "sourceArchiveSha256": "1e35e6bfe7c98b9ec1ac4bb9d48770dceea9771b44872ab48aada5c634225b96",
+        "auditSha256": "9778da77542d804448afc886e76ae3fe052bf378649401fbc900c9e6e29e0339",
+        "hostPassingBlocks": 8
+      },
+      "wsl-observer5-jit60-20261028-001": {
+        "manifestSha256": "8e4d9f6c59c36159a3d3a5432d101148e584be77bf94387530d3fb39528ea895",
+        "sourceArchiveSha256": "6b5218cd295b12dc97ba2b3358bb85a92bf462d6bb15051283ac77d01242befb",
+        "auditSha256": "bc26f22a3be31d218fdce4f6a6673ba3429681d7ef254fd774dd65b998eeedca",
+        "hostPassingBlocks": 8
+      }
+    }
+  },
+  "v5QualificationArchive": {
+    "linuxPath": "/opt/tailcache/evidence-archives/tailcache-observer5-qualification-20261028T154506Z.tar.gz",
+    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-observer5-qualification-20261028T154506Z.tar.gz",
+    "bytes": 54492787,
+    "sha256": "e92a818777185f829660faf78efb887b73b2f1a843394b7391bc53eb48540f86"
+  },
+  "nativeMigration": {
+    "status": "work_saved_user_managed_installation",
+    "handover": "docs/TAILCACHE_12_NATIVE_HANDOVER.md",
+    "windowsContinuation": "PAUSED",
+    "benchmarkDriverActive": false,
+    "osInstallationPerformed": false,
+    "driveChangesPerformed": false,
+    "portableArchive": "TailCache-work-20261028.tar.gz",
+    "fullWslExport": "Ubuntu-WSL-20261028.tar",
+    "secondaryBackupPath": "G:/TailCache-backup-20261028-001",
+    "primaryBackupPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/native-migration/20261028-001",
+    "workArchiveSha256": "07cdbd5b4607a8164ad945fb73f00f3fdbf8807e821981d7955ad2f2b1781c41",
+    "fullWslExportSha256": "1d3823d7d1a72cf2a165bb208bdc09f12f6f8077f4f324741bfed104af946246",
+    "backupChecksumsVerified": true
+  },
+  "sourcePublication": {
+    "branch": "tailcache-12-crossover",
+    "repository": "https://github.com/Enixes/TailCache",
+    "checkpoint": "commit_containing_this_status_file",
+    "rawEvidenceIncludedInGit": false,
+    "publicationRequestedByUser": true
+  }
 }

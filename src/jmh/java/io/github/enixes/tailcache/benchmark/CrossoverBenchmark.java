@@ -47,6 +47,7 @@ public class CrossoverBenchmark {
             catch (java.io.IOException failure) { throw new java.io.UncheckedIOException(failure); }
             CrossoverConfig config = new CrossoverConfig(residentEntries, payloadBytes, seed,
                     applicationLiveBytes, 4096, churnBytesPerSecond, 128);
+            CrossoverLifecycleWarmup.prepare(backend, config);
             workload = new CrossoverWorkload(backend, config);
             churn = new ApplicationChurn(churnBytesPerSecond, 4096, 128);
             if (compilerWindow) compiler = java.lang.management.ManagementFactory.getCompilationMXBean();
@@ -54,9 +55,10 @@ public class CrossoverBenchmark {
             // buffered observations only after the fork has returned its benchmark results.
             Runtime.getRuntime().addShutdownHook(new Thread(this::exportObservations, "tailcache-observation-export"));
             System.out.printf("[TailCache12] backend=%s config={%s} residents=%d payload=%d "
-                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s%n",
+                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d%n",
                     backend, workload.backendConfiguration(), residentEntries, payloadBytes,
-                    applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE, workload.traceFingerprint(), FreshValueGenerator.VERSION);
+                    applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE, workload.traceFingerprint(), FreshValueGenerator.VERSION,
+                    CrossoverLifecycleWarmup.TRIALS);
         }
 
         @Setup(Level.Iteration)

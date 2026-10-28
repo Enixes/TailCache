@@ -34,9 +34,12 @@ public final class CrossoverLatencyRunner {
         String validation = options.getOrDefault("--validation", "none");
         boolean floor = Boolean.parseBoolean(options.getOrDefault("--timer-floor", "false"));
         boolean compilerDiagnostics = Boolean.parseBoolean(options.getOrDefault("--compiler-diagnostics", "false"));
-        java.lang.management.CompilationMXBean compiler = compilerDiagnostics
+        boolean compilerCounters = compilerDiagnostics
+                || Boolean.parseBoolean(options.getOrDefault("--compiler-counters", "true"));
+        java.lang.management.RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
+        java.lang.management.CompilationMXBean compiler = compilerCounters
                 ? ManagementFactory.getCompilationMXBean() : null;
-        if (compilerDiagnostics && (compiler == null || !compiler.isCompilationTimeMonitoringSupported())) {
+        if (compilerCounters && (compiler == null || !compiler.isCompilationTimeMonitoringSupported())) {
             throw new IllegalStateException("Compiler-time evidence unavailable");
         }
         if (warmups < 0 || measurements < 1 || durationNs <= 0
@@ -44,6 +47,8 @@ public final class CrossoverLatencyRunner {
                 || (!validation.equals("none") && durationNs < 500_000_000)) {
             throw new IllegalArgumentException("Invalid timing or validation parameters");
         }
+        CrossoverLifecycleWarmup.prepare(backend, config);
+        EveryOperationRecorder.warmupBranches();
         EveryOperationRecorder warmupRecorder = new EveryOperationRecorder();
         EveryOperationRecorder[] measurementRecorders = new EveryOperationRecorder[measurements];
         for (int i = 0; i < measurements; i++) measurementRecorders[i] = new EveryOperationRecorder();
@@ -59,7 +64,10 @@ public final class CrossoverLatencyRunner {
                     + "\ntimerFloor=" + floor + "\npid=" + ProcessHandle.current().pid()
                     + "\njdkVersion=" + System.getProperty("java.version") + "\noptions=" + options
                     + "\nhistogramSignificantDigits=3\nhistogramMaxNs=" + EveryOperationRecorder.MAX_NS
-                    + "\njvmArgs=" + ManagementFactory.getRuntimeMXBean().getInputArguments() + "\n");
+                    + "\nlifecycleWarmupTrials=" + CrossoverLifecycleWarmup.TRIALS
+                    + "\nrecorderBranchWarmupOperations=" + EveryOperationRecorder.BRANCH_WARMUP_OPERATIONS
+                    + "\ncompilerCounters=" + compilerCounters + "\ncompilerXml=" + compilerDiagnostics
+                    + "\njvmArgs=" + runtime.getInputArguments() + "\n");
             writer.write("phase,iteration,startNs,endNs,uptimeStartMs,uptimeEndMs,operations,serviceP50Ns,serviceP99Ns,"
                     + "serviceP999Ns,serviceMaxNs,completionGapMaxNs,serviceAbove1ms,gapAbove1ms,serviceAbove10ms,gapAbove10ms,"
                     + "churnPayloadBytes,churnPayloadBytesPerSecond,churnDroppedBytes,churnLateTicks,churnRetainedBytes,"
@@ -76,37 +84,17 @@ public final class CrossoverLatencyRunner {
                 long writesBefore = workload.writes();
                 long compilerBefore = compiler == null ? -1 : compiler.getTotalCompilationTime();
                 long anchorBefore = System.nanoTime();
-                long uptimeStart = ManagementFactory.getRuntimeMXBean().getUptime();
+                long uptimeStart = runtime.getUptime();
                 long anchorAfter = System.nanoTime();
                 long start = System.nanoTime();
                 long deadline = start + durationNs;
-                long previousEnd = start;
-                boolean injectedLongOperation = false;
-                long localChecksum = 0;
+                // Campaign calls pass false in both phases. Keep phase/index checks outside
+                // the hot method: they otherwise invalidate its OSR compilation at measurement.
+                boolean injectLongOperation = measured && index == 1 && validation.equals("long-operation");
                 if (injector != null) injector.release();
-                long end;
-                try {
-                    do {
-                        long operationStart = System.nanoTime();
-                        if (measured && index == 1 && validation.equals("long-operation")
-                                && !injectedLongOperation && operationStart - start >= 200_000_000) {
-                            long until = operationStart + 50_000_000;
-                            while (System.nanoTime() < until) LockSupport.parkNanos(until - System.nanoTime());
-                            injectedLongOperation = true;
-                        }
-                        if (floor) localChecksum++;
-                        else {
-                            byte[] value = workload.executeNext();
-                            localChecksum += value[0];
-                        }
-                        end = System.nanoTime();
-                        recorder.record(operationStart, end, previousEnd);
-                        previousEnd = end;
-                    } while (end < deadline);
-                } finally {
-                    consumed = localChecksum;
-                }
-                long uptimeEnd = ManagementFactory.getRuntimeMXBean().getUptime();
+                TimedWindow window = runWindow(workload, recorder, start, deadline, floor, injectLongOperation);
+                long end = window.endNs();
+                long uptimeEnd = runtime.getUptime();
                 long compilerMs = compiler == null ? -1 : compiler.getTotalCompilationTime() - compilerBefore;
                 ApplicationChurn.Snapshot allocation = churn.stop();
                 if (injector != null) injector.finish();
@@ -145,6 +133,37 @@ public final class CrossoverLatencyRunner {
                     + "\nwrites=" + workload.writes() + "\nconsumed=" + consumed + "\n");
         }
     }
+
+    static TimedWindow runWindow(CrossoverWorkload workload, EveryOperationRecorder recorder,
+                                 long start, long deadline, boolean floor, boolean injectLongOperation) {
+        long previousEnd = start;
+        boolean injected = false;
+        long localChecksum = 0;
+        long end;
+        try {
+            do {
+                long operationStart = System.nanoTime();
+                if (injectLongOperation && !injected && operationStart - start >= 200_000_000) {
+                    long until = operationStart + 50_000_000;
+                    while (System.nanoTime() < until) LockSupport.parkNanos(until - System.nanoTime());
+                    injected = true;
+                }
+                if (floor) localChecksum++;
+                else {
+                    byte[] value = workload.executeNext();
+                    localChecksum += value[0];
+                }
+                end = System.nanoTime();
+                recorder.record(operationStart, end, previousEnd);
+                previousEnd = end;
+            } while (end < deadline);
+        } finally {
+            consumed = localChecksum;
+        }
+        return new TimedWindow(end, localChecksum);
+    }
+
+    record TimedWindow(long endNs, long checksum) { }
 
     private record Observation(boolean measured, int index, long start, long end, long uptimeStart,
                                long uptimeEnd, long operations, ApplicationChurn.Snapshot allocation,

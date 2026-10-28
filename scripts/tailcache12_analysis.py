@@ -66,6 +66,13 @@ def parse_gc(path):
             # Heap figures follow the pause label; strip them for matching gc,start.
             name = description[:heap.start()].rstrip() if heap else description
             key = (gc_id, name)
+            # G1 can append this outcome only at pause end. Preserve the outcome,
+            # but match the exact start label rather than inventing a second pause.
+            evacuation_failure = name.endswith(" (Evacuation Failure)")
+            if key not in pending and evacuation_failure:
+                base_name = name.removesuffix(" (Evacuation Failure)")
+                if (gc_id, base_name) in pending:
+                    key = (gc_id, base_name)
             logged_ns = round(float(duration) * 1_000_000)
             start_ns = pending.pop(key, None)
             derived = start_ns is None
@@ -74,6 +81,7 @@ def parse_gc(path):
                 errors.append(f"Invalid pause duration: {message}")
             row = {"gcId": gc_id, "kind": name, "startNs": start_ns, "endNs": timestamp,
                    "loggedDurationNs": logged_ns, "startDerivedFromDuration": derived,
+                   "startKind": None if derived else key[1], "evacuationFailure": evacuation_failure,
                    "regionsAfter": dict(regions.get(gc_id, {})) if heap else {}}
             if heap:
                 values = heap.groups()
@@ -116,6 +124,19 @@ def validate_windows(windows):
         raise ValueError("Unsorted or overlapping measurement windows")
 
 
+def compiler_rejection_reasons(total_ms, iteration_ms, expected_iterations=8):
+    """The frozen 1% aggregate and per-iteration compiler-time screen."""
+    if (len(iteration_ms) != expected_iterations or not math.isfinite(total_ms) or total_ms < 0
+            or any(not math.isfinite(v) or v < 0 for v in iteration_ms)):
+        return ["missing or invalid compiler-time evidence"]
+    reasons = []
+    if total_ms > 80:
+        reasons.append("compiler total exceeds 80 ms")
+    if max(iteration_ms, default=0) > 10:
+        reasons.append("compiler iteration exceeds 10 ms")
+    return reasons
+
+
 def gc_summary(parsed, windows, operations):
     validate_windows(windows)
     if operations <= 0:
@@ -130,6 +151,7 @@ def gc_summary(parsed, windows, operations):
                      for p in occupancy if "old" in p["regionsAfter"]]
     return {"measurementSeconds": elapsed / 1e9, "operations": operations,
             "pauseCount": len(paused), "pauseTotalWholeMs": sum(p["loggedDurationNs"] for p in paused) / 1e6,
+            "evacuationFailureCount": sum(p.get("evacuationFailure", False) for p in paused),
             "pauseOverlapMs": sum(p["overlapNs"] for p in paused) / 1e6,
             "pauseMaxWholeMs": max((p["loggedDurationNs"] for p in paused), default=0) / 1e6,
             "pauseExposureFraction": sum(p["overlapNs"] for p in paused) / elapsed,

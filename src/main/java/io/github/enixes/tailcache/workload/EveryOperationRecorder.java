@@ -13,6 +13,8 @@ import java.nio.file.Path;
 public final class EveryOperationRecorder {
     public static final long MAX_NS = 60_000_000_000L;
     public static final long EVENT_THRESHOLD_NS = 1_000_000L;
+    public static final int BRANCH_WARMUP_OPERATIONS = 40_000;
+    private static volatile long branchWarmupChecksum;
     private final Histogram service = new Histogram(1, MAX_NS, 3);
     private final Histogram completionGap = new Histogram(1, MAX_NS, 3);
     private final long[][] events = new long[4096][5];
@@ -30,6 +32,29 @@ public final class EveryOperationRecorder {
     public EveryOperationRecorder() {
         service.setAutoResize(false);
         completionGap.setAutoResize(false);
+    }
+
+    /** Train legitimate rare-stall paths before constructing any measured recorder. */
+    public static void warmupBranches() {
+        EveryOperationRecorder scratch = new EveryOperationRecorder();
+        long checksum = 0;
+        for (int i = 0; i < BRANCH_WARMUP_OPERATIONS; i++) {
+            if ((i & 127) == 0) {
+                checksum += scratch.servicePercentile(99.9) + scratch.gapMaxNs();
+                scratch.reset();
+            }
+            // Synthetic timestamps exercise recorder code only: no workload, sleep or export.
+            switch (i % 6) {
+                case 0, 1 -> scratch.record(20_000_000, 20_000_100, 20_000_000);
+                case 2 -> scratch.record(20_000_000, 21_000_000, 20_000_000);
+                case 3 -> scratch.record(20_000_000, 20_000_100, 19_000_000);
+                case 4 -> scratch.record(20_000_000, 30_000_000, 20_000_000);
+                case 5 -> scratch.record(20_000_000, 20_000_100, 10_000_000);
+                default -> throw new AssertionError();
+            }
+        }
+        branchWarmupChecksum = checksum + scratch.servicePercentile(99.9)
+                + scratch.recordedCount() + scratch.operations();
     }
 
     public void reset() {

@@ -87,6 +87,27 @@ class CrossoverWorkloadTest {
     }
 
     @Test
+    void lifecycleWarmupDoesNotChangeTheMeasuredWorkloadState() {
+        for (CrossoverBackend backend : CrossoverBackend.values()) {
+            CrossoverConfig config = config(4096);
+            CrossoverLifecycleWarmup.prepare(backend, config);
+            try (CrossoverWorkload measured = new CrossoverWorkload(backend, config);
+                 CrossoverWorkload reference = new CrossoverWorkload(backend, config)) {
+                assertEquals(0, measured.operations());
+                assertEquals(0, measured.writes());
+                assertEquals(config.residentEntries(), measured.size());
+                assertEquals(reference.verifyContents(), measured.verifyContents());
+                assertEquals(reference.applicationChecksum(), measured.applicationChecksum());
+                assertEquals(reference.traceFingerprint(), measured.traceFingerprint());
+                for (int i = 0; i < CrossoverWorkload.TRACE_SIZE; i++) {
+                    assertArrayEquals(reference.executeNext(), measured.executeNext());
+                }
+                assertEquals(reference.verifyContents(), measured.verifyContents());
+            }
+        }
+    }
+
+    @Test
     void pacedChurnAllocatesAndRetainsOnlyItsBoundedRing() {
         try (ApplicationChurn churn = new ApplicationChurn(8 * 1024 * 1024, 1024, 16)) {
             churn.start();

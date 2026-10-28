@@ -719,12 +719,14 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val forks = providers.gradleProperty("tailcache12Forks").orElse(if (smoke) "1" else "3")
         val duration = if (smoke) "300ms" else "1s"
         val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
+        // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
+        jvmOptions.add("-Dtailcache12.compilerWindow=true")
         jvmOptions.add("-Dtailcache12.observationDir=${directory.absolutePath}")
-        if (kind == "compiler" || kind == "allocation") {
+        if (kind in listOf("compiler", "allocation", "sample-calibration")) {
             jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0")
         }
         if (kind == "compiler") {
-            jvmOptions.addAll(listOf("-Dtailcache12.compilerWindow=true", "-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
+            jvmOptions.addAll(listOf("-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
                 "-XX:LogFile=${directory.resolve("jit-%p.xml").absolutePath}"))
         }
         args(
@@ -747,6 +749,8 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
 
 registerTailCache12Jmh("tailCache12Smoke", "smoke", smoke = true)
 registerTailCache12Jmh("tailCache12Sample", "sample")
+// Separate minimally logged SampleTime forks establish recorder-specific pressure bands.
+registerTailCache12Jmh("tailCache12SampleCalibration", "sample-calibration")
 registerTailCache12Jmh("tailCache12Throughput", "throughput")
 registerTailCache12Jmh("tailCache12Compiler", "compiler")
 registerTailCache12Jmh("tailCache12Allocation", "allocation")
@@ -767,6 +771,7 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
         directory.mkdirs()
     }
     val compilerDiagnostics = providers.gradleProperty("tailcache12CompilerDiagnostics").orElse("false").get().toBoolean()
+    val compilerCounters = providers.gradleProperty("tailcache12CompilerCounters").orElse("true").get().toBoolean()
     jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m",
         "-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0"))
     if (compilerDiagnostics) jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",
@@ -781,7 +786,8 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
         "--iteration-ms", providers.gradleProperty("tailcache12IterationMs").orElse("1000").get(),
         "--validation", providers.gradleProperty("tailcache12Validation").orElse("none").get(),
         "--timer-floor", providers.gradleProperty("tailcache12TimerFloor").orElse("false").get(),
-        "--compiler-diagnostics", compilerDiagnostics.toString())
+        "--compiler-diagnostics", compilerDiagnostics.toString(),
+        "--compiler-counters", compilerCounters.toString())
 }
 
 tasks.register<JavaExec>("tailCache12Retention") {
