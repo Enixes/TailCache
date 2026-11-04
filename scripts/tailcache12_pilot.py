@@ -92,6 +92,8 @@ def qualification_refs(functional, jit, calibrated, everyop):
     if not result["calibrationReady"] or warmups != {manifest["inputs"]["warmups"]}:
         raise ValueError("Both-recorder calibration and JIT warmup duration must agree")
     everyop_result = everyop_jit.replay(everyop)
+    if manifests[3].get("nativeEnvironmentVersion") == 1 and everyop_result.get("compilerXml") is not False:
+        raise ValueError("New native pilot qualification requires the actual unprofiled every-operation recorder")
     conditions = [(p["properties"]["Backend"], p["properties"]["Payload"]) for p in manifests[3]["invocations"]]
     expected_conditions = {(backend,payload) for backend in evidence.BACKENDS for payload in (256,4096)}
     if (not everyop_result["qualityPass"] or len(conditions) != 8

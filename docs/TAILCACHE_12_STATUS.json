@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Native calibration001 terminal compiler failure at Caffeine4096/live0 every-operation: second iteration20ms>10ms. Host/churn/occupancy passed; four accepted slots retained but full grid rejected/incomplete. Matching XML diagnostic declared before any new grid.",
+  "currentBlocker": "Three matching96-warmup XML diagnostics passed without identifying the actual unprofiled20-ms compiler failure. Bounded120-warmup preparation experiment and actual-unprofiled recorder qualification implemented/tested; no new calibration yet.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run native-final-calibration-jitdiag-20261105-001 (up to3 Caffeine4096/live0 XML replicas,96/8). Diagnose compiler activity and review preparation before another calibration; no compiler replacement or endpoint-based rerun.",
+  "nextWork": "Run native-final-preparation120-20261105-001: freshquiet, full120 JMH screen, full120 actual-unprofiled every-operation screen, two matchingpressure96 XML probes and ten120-warmup floors. Stop/review any failure; only then declare a new calibration.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -513,7 +513,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "146188616e14bc8817a4de50caa7cbf8c49f2067808c48bb4592336ecf3161c4",
-    "pythonTests": 64,
+    "pythonTests": 65,
     "javaTests": 35,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -546,6 +546,9 @@
     "calibrationAttempt": "native-final-calibration-20261105-001",
     "calibrationSelectedSlots": 4,
     "calibrationRecordedJvms": 5,
-    "nextCompilerDiagnostic": "native-final-calibration-jitdiag-20261105-001"
+    "nextCompilerDiagnostic": "native-final-calibration-jitdiag-20261105-001",
+    "nextPreparation": "native-final-preparation120-20261105-001",
+    "candidateWarmups": 120,
+    "unprofiledScreenImplemented": true
   }
 }

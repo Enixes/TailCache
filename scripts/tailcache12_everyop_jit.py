@@ -17,24 +17,26 @@ def replay(attempt):
     if manifest["stage"] != "everyop-jit" or calibration.sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]:
         raise ValueError("Wrong diagnostic stage or changed source archive")
     observations = []
+    xml_required = manifest.get("compilerXml", True)
     for invocation in manifest["invocations"]:
         raw = calibration.verify_invocation(attempt, invocation)
         worker = raw / "every-operation/worker"
         config = dict(line.split("=", 1) for line in (worker / "configuration.txt").read_text().splitlines() if "=" in line)
-        if config.get("compilerXml") != "true" or config.get("compilerCounters") != "true":
-            raise ValueError("Missing separate compiler instrumentation")
+        if config.get("compilerXml") != str(xml_required).lower() or config.get("compilerCounters") != "true":
+            raise ValueError("Compiler instrumentation differs from the declared qualification channel")
         with (worker / "iterations.csv").open(newline="") as stream:
             all_rows = list(csv.DictReader(stream))
         rows = [r for r in all_rows if r["phase"] == "MEASUREMENT"]
         windows = [(int(r["startNs"]), int(r["endNs"])) for r in rows]
         summary = every_operation_fork_summary(raw / "every-operation", invocation["properties"],
-                                               compiler_diagnostics=True)
+                                               compiler_diagnostics=xml_required)
         values = summary["compilerPerIterationMs"]
         reasons = summary["rejectionReasons"]
         xml, gc = list((raw / "every-operation").glob("jit-*.xml")), list((raw / "every-operation").glob("gc-*.log"))
-        if len(xml) != 1 or len(gc) != 1:
-            raise ValueError("Expected one compiler XML and one GC log")
-        details = classify_tasks(xml[0], gc[0], windows)
+        if len(xml) != (1 if xml_required else 0) or len(gc) != 1:
+            raise ValueError("Compiler XML/GC artifacts differ from declared qualification instrumentation")
+        details = classify_tasks(xml[0], gc[0], windows) if xml_required else dict(tasks=[],
+            deoptimizationEvents=[], workerWindowsSeconds=None, alignmentUncertaintyMs=None)
         with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
             samples = [evidence.decode_host_row(r) for r in csv.DictReader(stream)]
         host_reasons, _ = evidence.replay_host_gate(manifest, raw, samples)
@@ -49,10 +51,11 @@ def replay(attempt):
             workerWindowsSeconds=details["workerWindowsSeconds"],
             alignmentUncertaintyMs=details["alignmentUncertaintyMs"]))
     result = dict(schemaVersion="tailcache12-everyop-jit-v1", reportable=False,
+        compilerXml=xml_required, qualificationChannel="xml-diagnostic" if xml_required else "actual-unprofiled-recorder",
         completedBlocks=len(observations), expectedBlocks=len(manifest["expectedBlocks"]),
         qualityPass=len(observations)==len(manifest["expectedBlocks"]) and all(not r["rejectionReasons"] for r in observations),
         observations=observations,
-        limits=["Compiler diagnostic forks cannot supply primary latency endpoints.",
+        limits=["Qualification forks cannot supply primary latency endpoints.",
                 "XML task wall time is not compiler CPU time or JVM pause duration."])
     evidence.save(attempt / "everyop-jit.json", result)
     print(f"everyop-jit={attempt / 'everyop-jit.json'} pass={result['qualityPass']} blocks={len(observations)}/{len(manifest['expectedBlocks'])}",flush=True)
@@ -71,6 +74,7 @@ def main():
     parser.add_argument("--heap-mib",type=int,default=512)
     parser.add_argument("--live-mib",type=int,default=0)
     parser.add_argument("--churn-mib",type=int,default=32)
+    parser.add_argument("--unprofiled",action="store_true",help="Qualify the actual no-XML recorder using its raw counters")
     args=parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.attempt_id): parser.error("Invalid attempt ID")
     attempt=evidence.REPORTS/args.attempt_id
@@ -83,7 +87,7 @@ def main():
                 grid.append((f"r{repeat}-{backend}-p{payload}",dict(Backend=backend,Payload=payload,
                     Residents=args.residents,HeapMiB=args.heap_mib,LiveBytes=args.live_mib*1024**2,
                     ChurnBytesPerSecond=args.churn_mib*1024**2,Warmups=args.warmups,Measurements=8,
-                    Seed=24301,CompilerDiagnostics="true")))
+                    Seed=24301,CompilerDiagnostics="false" if args.unprofiled else "true")))
     args.stage="everyop-jit"
     args.live_mib=[args.live_mib]
     args.measurements=8
@@ -91,6 +95,8 @@ def main():
     args.seed=24301
     args.resume=False
     manifest=calibration.prepare(attempt,args,grid)
+    manifest["compilerXml"] = not args.unprofiled
+    evidence.save(attempt/"manifest.json",manifest)
     for label,props in grid:
         evidence.invoke(attempt,manifest,label,"tailCache12EveryOperation",props)
         if replay(attempt)["observations"][-1]["rejectionReasons"]: break
