@@ -31,11 +31,12 @@ public class CrossoverBenchmark {
         private final boolean compilerWindow = Boolean.getBoolean("tailcache12.compilerWindow");
         private java.lang.management.CompilationMXBean compiler;
         private long compilerStartMs;
+        private long workerAllocationStart;
         private java.nio.file.Path observationDirectory;
         private final java.util.ArrayList<IterationObservation> observations = new java.util.ArrayList<>();
 
         private record IterationObservation(IterationType phase, long operations, long writes,
-                                            ApplicationChurn.Snapshot churn, long compilerMs) { }
+                                            ApplicationChurn.Snapshot churn, long compilerMs, long workerAllocatedBytes) { }
 
         @Setup(Level.Trial)
         public void setup(BenchmarkParams params) {
@@ -45,6 +46,8 @@ public class CrossoverBenchmark {
                     "build/reports/tailcache12/unmanaged-observations"));
             try { java.nio.file.Files.createDirectories(observationDirectory); }
             catch (java.io.IOException failure) { throw new java.io.UncheckedIOException(failure); }
+            WorkerProcessEvidence.write(observationDirectory, backend, payloadBytes,
+                    params.getBenchmark().endsWith("freshSupplyFloor") ? "supply-floor" : "workload");
             CrossoverConfig config = new CrossoverConfig(residentEntries, payloadBytes, seed,
                     applicationLiveBytes, 4096, churnBytesPerSecond, 128);
             CrossoverLifecycleWarmup.prepare(backend, config);
@@ -68,14 +71,16 @@ public class CrossoverBenchmark {
             writesBefore = workload.writes();
             churn.start();
             if (compilerWindow) compilerStartMs = compiler.getTotalCompilationTime();
+            workerAllocationStart = WorkerAllocationCounter.currentBytes();
         }
 
         @TearDown(Level.Iteration)
         public void endIteration(IterationParams iteration, BenchmarkParams benchmark) {
+            long workerAllocatedBytes = WorkerAllocationCounter.currentBytes() - workerAllocationStart;
             long workerCompilerMs = compilerWindow ? compiler.getTotalCompilationTime() - compilerStartMs : -1;
             ApplicationChurn.Snapshot snapshot = churn.stop();
             observations.add(new IterationObservation(iteration.getType(), workload.operations() - operationsBefore,
-                    workload.writes() - writesBefore, snapshot, workerCompilerMs));
+                    workload.writes() - writesBefore, snapshot, workerCompilerMs, workerAllocatedBytes));
             if (iteration.getType() == IterationType.WARMUP) {
                 warmups++;
                 // Allocating full-value integrity check, followed by two settling warmups.
@@ -88,14 +93,14 @@ public class CrossoverBenchmark {
             try (java.io.BufferedWriter writer = java.nio.file.Files.newBufferedWriter(output,
                     java.nio.file.StandardOpenOption.CREATE_NEW)) {
                 writer.write("phase,operations,writes,churnPayloadBytes,churnPayloadBytesPerSecond,churnJvmAllocatedBytes,"
-                        + "churnDroppedBytes,lateTicks,retainedRingBytes,envelopeStartNs,envelopeEndNs,workerEnvelopeCompilerMs\n");
+                        + "churnDroppedBytes,lateTicks,retainedRingBytes,envelopeStartNs,envelopeEndNs,workerEnvelopeCompilerMs,workerJvmAllocatedBytes\n");
                 for (IterationObservation observation : observations) {
                     ApplicationChurn.Snapshot snapshot = observation.churn();
                     writer.write(observation.phase() + "," + observation.operations() + "," + observation.writes()
                             + "," + snapshot.allocatedBytes() + "," + snapshot.realizedBytesPerSecond()
                             + "," + snapshot.jvmAllocatedBytes() + "," + snapshot.droppedBytes() + "," + snapshot.lateTicks()
                             + "," + snapshot.retainedPayloadBytes() + "," + snapshot.startNs() + "," + snapshot.endNs()
-                            + "," + observation.compilerMs() + "\n");
+                            + "," + observation.compilerMs() + "," + observation.workerAllocatedBytes() + "\n");
                 }
             } catch (java.io.IOException failure) {
                 throw new java.io.UncheckedIOException("Unable to export iteration evidence", failure);
@@ -118,7 +123,9 @@ public class CrossoverBenchmark {
 
     @Benchmark
     public void mixedWorkload(PressureState state, Blackhole blackhole) {
-        blackhole.consume(state.workload.executeNext());
+        byte[] value = state.workload.executeNext();
+        blackhole.consume(value[0]);
+        blackhole.consume(value);
     }
 
     @Benchmark

@@ -18,6 +18,7 @@ public final class CrossoverRetentionDiagnostic {
         Path directory = Path.of(args[3]);
         if (Files.exists(directory)) throw new IllegalStateException("Output exists: " + directory);
         Files.createDirectories(directory);
+        WorkerProcessEvidence.write(directory, backend, payload, "retention");
         CrossoverConfig config = new CrossoverConfig(residents, payload, 0x5EEDL, 0, 4096, 0, 128);
         CrossoverLifecycleWarmup.prepare(backend, config);
         histogram(directory.resolve("empty.txt"));

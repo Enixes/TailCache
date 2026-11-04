@@ -21,7 +21,8 @@ JMH_SAMPLE_SECONDARIES = {"p0.00", "p0.50", "p0.90", "p0.95", "p0.99", "p0.999",
 
 
 def every_operation_fork_summary(directory, inputs, expected_trace=None,
-                                 jdk_version=None, occupancy_band=None, compiler_diagnostics=False):
+                                 jdk_version=None, occupancy_band=None, compiler_diagnostics=False,
+                                 runtime_identity=None):
     """Validate actual controls as well as the worker's measured quality evidence."""
     directory = pathlib.Path(directory)
     worker = directory / "worker"
@@ -48,6 +49,9 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
         raise ValueError("Workload trace mismatch")
     if jdk_version is not None and configuration["jdkVersion"] != jdk_version:
         raise ValueError("Runtime identity differs from the frozen protocol")
+    if runtime_identity is not None and any(configuration.get(k) != runtime_identity[k]
+                                            for k in ("jdkVersion", "vmName", "vmVersion")):
+        raise ValueError("Exact every-operation VM build differs from the frozen protocol")
     options = configuration["options"]
     for option, expected in (("--warmup", inputs["Warmups"]), ("--measure", inputs["Measurements"]),
                              ("--iteration-ms", 1000)):
@@ -77,7 +81,9 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
     if not result["p999Adequate"]:
         reasons.append("fewer than 100000 retained observations for p99.9")
     result.update(kind="every-operation", inputs=inputs, traceSha256=configuration["traceSha256"],
-                  jdkVersion=configuration["jdkVersion"], accepted=not reasons)
+                  jdkVersion=configuration["jdkVersion"], vmName=configuration.get("vmName"),
+                  vmVersion=configuration.get("vmVersion"), javaRuntimeVersion=configuration.get("javaRuntimeVersion"),
+                  accepted=not reasons)
     return result
 
 
@@ -118,6 +124,9 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     if len(records) != 1:
         raise ValueError("Expected exactly one JMH condition")
     record = records[0]
+    method = "freshSupplyFloor" if kind == "floor" else "mixedWorkload"
+    if record.get("benchmark") != "io.github.enixes.tailcache.benchmark.CrossoverBenchmark." + method:
+        raise ValueError("JMH method differs from the declared channel")
     if record.get("jmhVersion") != "1.37":
         raise ValueError("Histogram semantics require the qualified JMH 1.37 build")
     for field in ("jmhVersion", "jdkVersion", "vmName", "vmVersion"):
@@ -125,7 +134,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
             raise ValueError("Runtime identity differs from the frozen protocol")
     secondaries = set(record.get("secondaryMetrics", {}))
     allowed_secondaries = JMH_SAMPLE_SECONDARIES if kind != "throughput" else set()
-    if kind in ("sample", "sample-calibration", "throughput") and (secondaries - allowed_secondaries
+    if kind in ("sample", "sample-calibration", "throughput", "floor") and (secondaries - allowed_secondaries
             or "-XX:+LogCompilation" in record["jvmArgs"]):
         raise ValueError("A profiled fork cannot supply an unprofiled endpoint")
     if record["forks"] != 1 or record["threads"] != 1:
@@ -176,7 +185,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
               "jdkVersion": record["jdkVersion"], "traceSha256": expected_trace,
               "operations": sum(operations), "iterationOperations": operations,
               "compilerPerIterationMs": compiler, "rejectionReasons": reasons}
-    if kind in ("sample", "sample-calibration", "compiler"):
+    if kind in ("sample", "sample-calibration", "compiler", "floor"):
         if record["mode"] != "sample" or record["primaryMetric"]["scoreUnit"] != "ns/op":
             raise ValueError("Wrong latency mode/units")
         forks = record["primaryMetric"].get("rawDataHistogram", [])
@@ -224,7 +233,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     return result
 
 
-def hierarchical_ratio(blocks, seed=24301, resamples=5000):
+def hierarchical_ratio(blocks, seed=24301, resamples=5000, confidence=0.95):
     """Paired fork ordinals within counterbalanced passes; two-level bootstrap."""
     if len(blocks) < 2 or any(len(block) < 3 for block in blocks):
         raise ValueError("Require two independent passes and three paired forks per pass")
@@ -232,6 +241,11 @@ def hierarchical_ratio(blocks, seed=24301, resamples=5000):
         raise ValueError("Endpoints must be positive and finite")
     if resamples < 1000:
         raise ValueError("At least 1000 bootstrap replicates required")
+    if not 0 < confidence < 1:
+        raise ValueError("Confidence must be strictly between zero and one")
+    tail = (1 - confidence) / 2
+    if resamples * tail < 20:
+        raise ValueError("At least twenty bootstrap draws per requested tail required")
     def ratio(block):
         return statistics.median(b for _, b in block) / statistics.median(a for a, _ in block)
     estimates = [ratio(block) for block in blocks]
@@ -242,13 +256,48 @@ def hierarchical_ratio(blocks, seed=24301, resamples=5000):
         ratios = [ratio(rng.choices(block, k=len(block))) for block in selected]
         draws.append(math.exp(statistics.median(math.log(r) for r in ratios)))
     draws.sort()
-    return {"ratio": math.exp(statistics.median(math.log(r) for r in estimates)),
-            "lower95": draws[math.ceil(0.025 * resamples) - 1],
-            "upper95": draws[math.ceil(0.975 * resamples) - 1],
+    result = {"ratio": math.exp(statistics.median(math.log(r) for r in estimates)),
+            "lower": draws[math.ceil(tail * resamples) - 1],
+            "upper": draws[math.ceil((1 - tail) * resamples) - 1],
+            "confidenceLevel": confidence,
             "blockRatios": estimates, "independentPasses": len(blocks),
             "pairedForksPerPass": [len(block) for block in blocks], "resamples": resamples,
             "method": "paired-fork hierarchical bootstrap, outer counterbalanced passes",
             "limits": "Two outer passes give coarse uncertainty. No operations/iterations are independent replicas."}
+    if confidence == 0.95:
+        result.update(lower95=result["lower"], upper95=result["upper"])
+    return result
+
+
+def between_operation_fraction(directory):
+    """Quantization bounds on time outside service intervals, not pure observer CPU cost.
+
+    This also includes genuine pauses between calls; it must not reject a pressure
+    condition merely because the studied GC effect increased this fraction.
+    """
+    from tailcache12_analysis import histogram
+    worker = pathlib.Path(directory) / "worker"
+    config = (worker / "configuration.txt").read_text()
+    if "histogramSignificantDigits=3\n" not in config:
+        raise ValueError("HDR quantization bounds require the pinned three-digit recorder")
+    with (worker / "iterations.csv").open(newline="") as stream:
+        rows = [r for r in csv.DictReader(stream) if r["phase"] == "MEASUREMENT"]
+    elapsed = service_lower = service_upper = operations = 0
+    for row in rows:
+        count = int(row["operations"])
+        elapsed += int(row["endNs"]) - int(row["startNs"])
+        operations += count
+        for upper, n in histogram(worker / f"iteration-{row['iteration']}-service-bins.csv", count):
+            width = 1 << max(0, int(upper).bit_length() - 11)
+            if int(upper) % width != width - 1:
+                raise ValueError("Histogram bin is not an HDR upper equivalent")
+            service_lower += (upper - width + 1) * n
+            service_upper += upper * n
+    if operations <= 0 or elapsed <= 0 or service_lower > elapsed:
+        raise ValueError("Service histograms cannot fit inside the recorded worker windows")
+    return dict(lower=max(0, (elapsed - service_upper) / elapsed),
+                upper=max(0, (elapsed - service_lower) / elapsed), operations=operations,
+                interpretation="Wall time outside recorded service intervals; includes recorder/loop work and between-call pauses")
 
 
 def variance_reasons(backend_blocks, p99_limit=1.25, p999_limit=1.5):

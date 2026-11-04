@@ -18,6 +18,7 @@ import tarfile
 import time
 
 import tailcache12 as evidence
+import tailcache12_native_retry as native_retry
 from tailcache12_analysis import VERSION, every_operation_summary
 from tailcache12_study_analysis import every_operation_fork_summary, jmh_fork_summary
 from tailcache12_calibration_retry import candidate_label, declare_policy, select as select_retry_slots
@@ -146,7 +147,9 @@ def replay(attempt):
         raise ValueError("Changed source snapshot")
     expected = manifest["expectedBlocks"]
     retry_policy = verify_retry_declaration(attempt, manifest)
-    if retry_policy and archive_measurement_source_hash(attempt / "source.tar.gz") != manifest["measurementSourceSha256"]:
+    native_policy = native_retry.verify_declaration(attempt, manifest,
+        [(label, command_properties(props)) for label, props in calibration_grid(manifest["inputs"])])
+    if (retry_policy or native_policy) and archive_measurement_source_hash(attempt / "source.tar.gz") != manifest["measurementSourceSha256"]:
         raise ValueError("Calibration measurement-source identity changed or is incomplete")
     rows, fingerprints, runtime_identity = [], {}, None
     for invocation in manifest["invocations"]:
@@ -206,9 +209,15 @@ def replay(attempt):
         summary.update(label=invocation["label"], inputs=props, channel=channel,
                        hostPass=not host_reasons, hostRejectionReasons=host_reasons,
                        nativeHostVersions=native_versions, hostWindowStartNs=host[0]["monotonicNs"],
+                       nativeObserverVersions=sorted({s.get("nativeObserverVersion", 0) for s in host}),
                        hostWindowEndNs=host[-1]["monotonicNs"],
                        memoryFullStallFraction=fraction)
         rows.append(summary)
+    if manifest.get("hostRuleVersion") == "tailcache12-host-v4-native-cpu" and runtime_identity:
+        for row in rows:
+            if row["channel"] == "every-operation" and any(row.get(k) != runtime_identity[k]
+                                                           for k in ("jdkVersion", "vmName", "vmVersion")):
+                raise ValueError("Calibration recorders used different exact VM builds")
     selection, retry_preflights, preflight_errors = None, {}, []
     selected_rows = rows
     if retry_policy:
@@ -216,6 +225,12 @@ def replay(attempt):
         retry_preflights, preflight_errors = verify_retry_preflights(attempt, manifest, rows, selection)
         chosen = set(selection["selectedLabels"])
         selected_rows = [r for r in rows if r["label"] in chosen]
+        for row in rows:
+            row.update(selection["attemptStatuses"][row["label"]])
+    elif native_policy:
+        selection = native_retry.select(manifest, rows)
+        retry_preflights, preflight_errors = native_retry.verify_preflights(attempt, manifest, rows, selection)
+        selected_rows = [r for r in rows if r["label"] in selection["selectedLabels"]]
         for row in rows:
             row.update(selection["attemptStatuses"][row["label"]])
     bands, calibration_errors = [], []
@@ -275,11 +290,12 @@ def replay(attempt):
                          "JIT, observer coherence and the pilot must pass before a campaign.",
                          "Post-GC used heap and old-region capacity are not an exact live-set census."]}
     if selection:
-        result.update(hostCpuRetryState=selection, retryPreflightRejectionReasons=preflight_errors,
-                      measurementSourceSha256=manifest["measurementSourceSha256"],
+        result.update(measurementSourceSha256=manifest["measurementSourceSha256"],
                       replayedRetryPreflights=retry_preflights,
                       rejectedCandidateAttempts=[dict(label=r["label"], reasons=r["rejectionReasons"] + r["hostRejectionReasons"])
                                                  for r in rows if r["label"] in selection["excludedLabels"]])
+        result.update({("nativeHostRetryState" if native_policy else "hostCpuRetryState"): selection,
+                       ("nativeRetryPreflightRejectionReasons" if native_policy else "retryPreflightRejectionReasons"): preflight_errors})
     evidence.save(attempt / "calibration.json", result)
     columns = ["label", "channel", "backend", "payloadBytes", "applicationLiveBytes", "postGcMedianFraction",
                "oldRegionsMedianHeapFraction", "pauseCount", "pauseOverlapMs", "pausesPerSecond",
@@ -304,6 +320,10 @@ def prepare(attempt, args, grid):
                                   getattr(args, "host_cpu_retry_budget", 8))
     if retry_policy and args.stage != "calibrate":
         raise ValueError("Host-CPU retries apply only to exploratory calibration")
+    native_policy = native_retry.declare_policy(getattr(args, "native_host_retries", 0),
+        getattr(args, "native_host_retry_budget", 8), args.stage) if getattr(args, "native_host_retries", 0) else None
+    if retry_policy and native_policy:
+        raise ValueError("Windows and native replacement policies cannot be combined")
     if attempt.exists():
         if not args.resume:
             raise ValueError("Attempt exists; use --resume for an interrupted immutable attempt")
@@ -321,6 +341,9 @@ def prepare(attempt, args, grid):
                 "gitHead": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=evidence.ROOT, text=True).strip(),
                 "gitStatus": subprocess.check_output(["git", "status", "--short"], cwd=evidence.ROOT, text=True)}
     initial_host = evidence.host_snapshot()
+    if native_policy:
+        native_retry.initialize(attempt, manifest,
+            [(label, command_properties(props)) for label, props in grid], native_policy, initial_host)
     if retry_policy:
         history = os.environ.get("TAILCACHE_WINDOWS_HOST_FILE", "")
         if (os.environ.get("TAILCACHE_REQUIRE_WINDOWS_HOST") != "1" or not pathlib.Path(history).is_absolute()
@@ -359,6 +382,9 @@ def vars_inputs(args):
     policy = declare_policy(getattr(args, "host_cpu_retries", 0), getattr(args, "host_cpu_retry_budget", 8))
     if policy:
         inputs["calibrationHostCpuRetryPolicy"] = policy
+    if getattr(args, "native_host_retries", 0):
+        inputs["nativeHostRetryPolicy"] = native_retry.declare_policy(args.native_host_retries,
+            getattr(args, "native_host_retry_budget", 8), args.stage)
     return inputs
 
 
@@ -424,6 +450,8 @@ def main():
     parser.add_argument("--host-cpu-retries", type=int, choices=(0, 1, 2), default=0,
                         help="Prospective calibration-only extra JVMs per host-CPU-rejected logical slot")
     parser.add_argument("--host-cpu-retry-budget", type=int, choices=range(1, 9), default=8)
+    parser.add_argument("--native-host-retries", type=int, choices=(0, 1, 2), default=0)
+    parser.add_argument("--native-host-retry-budget", type=int, choices=range(1, 9), default=8)
     args = parser.parse_args()
     if args.channels is None:
         args.channels = list(CHANNELS) if args.stage == "calibrate" else ["every-operation"]
@@ -450,6 +478,10 @@ def main():
         parser.error("Duplicate channels")
     grid = calibration_grid(vars_inputs(args))
     manifest = prepare(attempt, args, grid)
+    if manifest.get("nativeHostRetryPolicy"):
+        result = native_retry.run_grid(attempt, manifest, replay,
+            lambda p: "tailCache12EveryOperation" if p["Channel"] == "every-operation" else "tailCache12SampleCalibration")
+        return 0 if result["calibrationReady"] else 1
     if manifest.get("calibrationHostCpuRetryPolicy"):
         return 0 if run_retry_grid(attempt, manifest)["calibrationReady"] else 1
     completed = {x["label"] for x in manifest["invocations"]}

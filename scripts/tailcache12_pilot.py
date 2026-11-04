@@ -15,6 +15,7 @@ import tarfile
 import tailcache12 as evidence
 import tailcache12_calibrate as calibration
 import tailcache12_everyop_jit as everyop_jit
+import tailcache12_native_retry as native_retry
 from tailcache12_study_analysis import (every_operation_fork_summary, hierarchical_ratio,
                                        jmh_fork_summary, variance_reasons)
 from tailcache12_provenance import VERSION as SOURCE_VERSION, archive_measurement_source_hash, measurement_source_hash
@@ -23,6 +24,19 @@ TASKS = {"sample": "tailCache12Sample", "every-operation": "tailCache12EveryOper
          "throughput": "tailCache12Throughput", "allocation": "tailCache12Allocation",
          "sample-calibration": "tailCache12SampleCalibration", "compiler": "tailCache12Compiler"}
 PRIMARY = ("sample", "every-operation")
+
+
+def verify_native_environments(manifests, current=None):
+    declarations = [m.get("nativeEnvironmentDeclaration") for m in manifests]
+    if any(m.get("nativeEnvironmentVersion") == 1 for m in manifests):
+        if not all(declarations):
+            raise ValueError("Missing frozen native qualification environment")
+        normalized = [evidence.native_host.normalized_environment(d) for d in declarations]
+        if any(d != normalized[0] for d in normalized[1:]):
+            raise ValueError("Qualification references span different native environments")
+        if current is not None and evidence.native_host.normalized_environment(
+                evidence.native_host.environment_declaration(current)) != normalized[0]:
+            raise ValueError("Current native host differs from qualification environment")
 
 
 def schedule(inputs, order_seed=24301):
@@ -89,6 +103,7 @@ def qualification_refs(functional, jit, calibrated, everyop):
         if any(props[key] != manifest["inputs"][field] for key,field in
                (("Residents","residents"),("HeapMiB","heapMiB"),("ChurnBytesPerSecond","churnBytesPerSecond"))):
             raise ValueError("Every-operation qualification controls differ from calibration")
+    verify_native_environments(manifests, evidence.host_snapshot())
     refs = {}
     for name, attempt in (("functional", functional), ("jit", jit), ("calibration", calibrated), ("everyopJit",everyop)):
         refs[name] = {"attempt": attempt.name, "manifestSha256": calibration.sha(attempt / "manifest.json"),
@@ -109,7 +124,8 @@ def analyze(attempt, manifest, invocation):
                 and b["applicationLiveBytes"] == props["LiveBytes"])
     if channel == "every-operation":
         result = every_operation_fork_summary(raw / channel, props, trace,
-                                              manifest["runtimeIdentity"]["jdkVersion"], band)
+                                              manifest["runtimeIdentity"]["jdkVersion"], band,
+                                              runtime_identity=manifest["runtimeIdentity"])
     else:
         inputs = dict(props, ConsoleFile=str(attempt / invocation["label"] / "gradle.log"))
         result = jmh_fork_summary(raw, channel, inputs, trace, manifest["runtimeIdentity"],
@@ -117,8 +133,12 @@ def analyze(attempt, manifest, invocation):
     with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
         samples = [evidence.decode_host_row(row) for row in csv.DictReader(stream)]
     reasons, fraction = evidence.replay_host_gate(manifest, raw, samples)
-    result["rejectionReasons"].extend(reasons + invocation.get("hostMonitorErrors", []))
-    result.update(label=invocation["label"], inputs=props, hostPass=not reasons,
+    host_reasons = reasons + invocation.get("hostMonitorErrors", [])
+    result["rejectionReasons"].extend(host_reasons)
+    result.update(label=invocation["label"], inputs=props, hostPass=not host_reasons,
+                  hostRejectionReasons=host_reasons,
+                  nativeObserverVersions=sorted({r.get("nativeObserverVersion", 0) for r in samples}),
+                  hostWindowStartNs=samples[0]["monotonicNs"], hostWindowEndNs=samples[-1]["monotonicNs"],
                   memoryFullStallFraction=fraction, accepted=not result["rejectionReasons"])
     return result
 
@@ -127,6 +147,11 @@ def replay(attempt):
     manifest = json.loads((attempt / "manifest.json").read_text())
     if calibration.sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]:
         raise ValueError("Changed pilot source archive")
+    grid = schedule(manifest["inputs"], manifest["orderSeed"])
+    if (manifest["schedule"] != [dict(label=k, properties=v) for k, v in grid]
+            or manifest["expectedBlocks"] != [k for k, _ in grid]):
+        raise ValueError("Changed canonical pilot schedule")
+    policy = native_retry.verify_declaration(attempt, manifest, grid)
     for ref in manifest["qualificationRefs"].values():
         dependency = attempt.parent / ref["attempt"]
         if (calibration.sha(dependency / "manifest.json") != ref["manifestSha256"]
@@ -137,12 +162,28 @@ def replay(attempt):
         for invocation in dependency_manifest["invocations"]:
             calibration.verify_invocation(dependency, invocation)
     rows = [analyze(attempt, manifest, item) for item in manifest["invocations"]]
-    missing = [label for label in manifest["expectedBlocks"] if label not in {r["label"] for r in rows}]
+    state, checks, errors = None, {}, []
+    selected_rows = rows
+    if policy:
+        state = native_retry.select(manifest, rows)
+        checks, errors = native_retry.verify_preflights(attempt, manifest, rows, state)
+        selected_rows = [r for r in rows if r["label"] in state["selectedLabels"]]
+        for r in rows:
+            r.update(state["attemptStatuses"][r["label"]])
+        missing = state["missingSlots"]
+        errors += state["terminalRejectionReasons"]
+    else:
+        for index, row in enumerate(rows):
+            if index >= len(grid) or (row["label"], row["inputs"]) != grid[index]:
+                raise ValueError("Unexpected pilot fork order or controls")
+        missing = [label for label in manifest["expectedBlocks"] if label not in {r["label"] for r in rows}]
+    if manifest.get("terminalDriverFailure"):
+        errors.append("Terminal pilot driver failure: " + manifest["terminalDriverFailure"]["reason"])
     comparisons = []
     for channel in PRIMARY:
         for payload in manifest["inputs"]["payloads"]:
             for live in (min(manifest["inputs"]["liveBytes"]), max(manifest["inputs"]["liveBytes"])):
-                selected = [r for r in rows if r["inputs"]["Channel"] == channel
+                selected = [r for r in selected_rows if r["inputs"]["Channel"] == channel
                             and r["inputs"]["Payload"] == payload and r["inputs"]["LiveBytes"] == live]
                 comparison = dict(channel=channel, payloadBytes=payload, applicationLiveBytes=live,
                                   complete=False, varianceRejectionReasons=[])
@@ -159,15 +200,19 @@ def replay(attempt):
                 comparisons.append(comparison)
     result = dict(schemaVersion="tailcache12-pilot-v1", reportable=False, campaignReady=False,
                   replaySourceSha256=evidence.source_hash(), observations=rows, comparisons=comparisons,
-                  completedBlocks=len(rows), expectedBlocks=len(manifest["expectedBlocks"]), missingBlocks=missing,
-                  dataCompleteAndQualityPass=not missing and len(rows) == len(manifest["expectedBlocks"])
-                      and all(r["accepted"] for r in rows),
+                  completedBlocks=len(selected_rows), recordedJvmAttempts=len(rows),
+                  expectedBlocks=len(manifest["expectedBlocks"]), missingBlocks=missing, rejectionReasons=errors,
+                  dataCompleteAndQualityPass=not missing and not errors and len(selected_rows) == len(manifest["expectedBlocks"])
+                      and all(r["accepted"] for r in selected_rows),
                   provisionalVariancePass=all(c["complete"] and not c["varianceRejectionReasons"] for c in comparisons),
                   requiresObserverExposureAndRetryRuleReview=True,
                   limits=["Pilot data cannot enter the confirmatory campaign.",
                           "Supporting diagnostic channels have one fresh fork per order; they are descriptive only.",
                           "Provisional p99/p99.9 variance limits are 1.25/1.5; pilot review must freeze final rules.",
                           "Unprofiled SampleTime pressure is supported by separate logged SampleTime calibration forks."])
+    if state:
+        result.update(nativeHostRetryState=state, replayedRetryPreflights=checks,
+                      nativeRetryPreflightRejectionReasons=errors)
     evidence.save(attempt / "pilot.json", result)
     print(f"pilot={attempt / 'pilot.json'} blocks={len(rows)}/{len(manifest['expectedBlocks'])} "
           f"quality={result['dataCompleteAndQualityPass']} campaignReady=False", flush=True)
@@ -184,6 +229,8 @@ def main():
     parser.add_argument("--everyop-jit")
     parser.add_argument("--order-seed", type=int, default=24301)
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--native-host-retries", type=int, choices=(0, 1, 2), default=0)
+    parser.add_argument("--native-host-retry-budget", type=int, choices=range(1, 9), default=8)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+", args.attempt_id):
         parser.error("Invalid attempt ID")
@@ -203,6 +250,8 @@ def main():
             parser.error("Pilot requires --functional, --jit, --everyop-jit and --calibration attempt IDs")
         refs, inputs, calibrated = qualification_refs(*(evidence.REPORTS / name for name in
             (args.functional, args.jit, args.calibration,args.everyop_jit)))
+        inputs = {k: v for k, v in inputs.items() if k not in
+                  ("nativeHostRetryPolicy", "calibrationHostCpuRetryPolicy")}
         grid = schedule(inputs, args.order_seed)
         traces = {row["traceSha256"] for row in calibrated["observations"] if "traceSha256" in row}
         if len(traces) != 1 or not calibrated["runtimeIdentity"]:
@@ -217,12 +266,18 @@ def main():
                         calibrationBands=calibrated["calibrationBands"],
                         expectedBlocks=[label for label, _ in grid],
                         schedule=[dict(label=label, properties=props) for label, props in grid])
+        initial_host = evidence.host_snapshot()
+        native_retry.initialize(attempt, manifest, grid,
+            native_retry.declare_policy(args.native_host_retries, args.native_host_retry_budget, "pilot"), initial_host)
         with tarfile.open(attempt / "source.tar.gz", "w:gz") as archive:
             for path in evidence.sources():
                 archive.add(path, arcname=str(path.relative_to(evidence.ROOT)))
         manifest["sourceArchiveSha256"] = calibration.sha(attempt / "source.tar.gz")
         evidence.save(attempt / "manifest.json", manifest)
-        evidence.save(attempt / "environment.json", dict(initialHost=evidence.host_snapshot()))
+        evidence.save(attempt / "environment.json", dict(initialHost=initial_host))
+    if manifest.get("nativeHostRetryPolicy"):
+        result = native_retry.run_grid(attempt, manifest, replay, lambda p: TASKS[p["Channel"]])
+        return 0 if result["dataCompleteAndQualityPass"] else 1
     done = {row["label"] for row in manifest["invocations"]}
     for label, props in grid:
         if label in done:

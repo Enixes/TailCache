@@ -225,7 +225,7 @@ class CalibrationRetryAuditTest(unittest.TestCase):
                         worker.mkdir()
                         (worker / "configuration.txt").write_text(
                             f"backend={props['Backend']}\ntraceSha256={trace}\nvalueGenerator=xorshift-key-version-v1\n"
-                            f"jdkVersion=21\njvmArgs=-Xms512m -Xmx512m\n"
+                            f"jdkVersion=21\nvmName=Fixture VM\nvmVersion=21\njvmArgs=-Xms512m -Xmx512m\n"
                             f"config=Config[residentEntries=32768, payloadBytes={props['Payload']}, "
                             f"applicationLiveBytes={props['LiveBytes']}, seed=24301]\n")
                         timing = worker / "iterations.csv"
@@ -255,7 +255,8 @@ class CalibrationRetryAuditTest(unittest.TestCase):
             (p / "manifest.json").write_text(json.dumps(m))
             def parsed(props):
                 fraction = {0: .1, 96: .35, 208: .6, 288: .85}[props["LiveBytes"] // 1024**2]
-                return dict(rejectionReasons=[], jdkVersion="21", postGcUsedHeapMedianFraction=fraction,
+                return dict(rejectionReasons=[], jdkVersion="21", vmName="Fixture VM", vmVersion="21",
+                    postGcUsedHeapMedianFraction=fraction,
                     oldRegionsMedianHeapFraction=fraction, pauseCount=2, pauseOverlapMs=1, pausesPerSecond=.25,
                     servicePercentilesNs={"99": 100, "99.9": 200})
             with patch.object(calibration, "archive_measurement_source_hash", return_value="measurement-fixture"), \

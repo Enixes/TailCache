@@ -7,10 +7,14 @@ import hashlib
 import pathlib
 import tarfile
 
-VERSION = "tailcache12-measurement-source-v2-controller"
+VERSION = "tailcache12-measurement-source-v4-native-cpu"
+NATIVE_LEGACY_VERSION = "tailcache12-measurement-source-v3-native-cpu"
+LEGACY_VERSION = "tailcache12-measurement-source-v2-controller"
+NATIVE_CONTROLS = ("scripts/tailcache12_native_host.py", "scripts/tailcache12_native.py")
 CONTROLS = ("build.gradle.kts", "settings.gradle.kts", "gradle.properties", "gradlew",
             "scripts/tailcache12.py", "scripts/tailcache12_controller.py",
-            "scripts/windows_host_monitor.ps1")
+            "scripts/windows_host_monitor.ps1", "scripts/tailcache12_native_host.py",
+            "scripts/tailcache12_native.py")
 PREFIXES = ("src/main/", "src/jmh/", "gradle/wrapper/")
 
 
@@ -19,9 +23,13 @@ def selected(name):
 
 
 def fingerprint(files):
-    if not set(CONTROLS).issubset(files) or any(not any(n.startswith(p) for n in files) for p in PREFIXES):
+    native = (any(n in files for n in NATIVE_CONTROLS)
+              or b"tailcache12_native_host" in files.get("scripts/tailcache12.py", b""))
+    controls = CONTROLS if native else tuple(n for n in CONTROLS if n not in NATIVE_CONTROLS)
+    if not set(controls).issubset(files) or any(not any(n.startswith(p) for n in files) for p in PREFIXES):
         raise ValueError("Incomplete measurement source snapshot")
-    digest = hashlib.sha256((VERSION + "\0").encode())
+    native_version = VERSION if b"tailcache12-host-v4-native-cpu" in files.get("scripts/tailcache12.py", b"") else NATIVE_LEGACY_VERSION
+    digest = hashlib.sha256(((native_version if native else LEGACY_VERSION) + "\0").encode())
     for name in sorted(files):
         digest.update(name.encode() + b"\0")
         digest.update(hashlib.sha256(files[name]).digest())

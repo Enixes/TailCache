@@ -21,7 +21,8 @@ class StudyAnalysisTest(unittest.TestCase):
                              "seed=24301, applicationLiveBytes=0, churnBytesPerSecond=1024]\n"
                              "jvmArgs=[-Xms512m, -Xmx512m, -XX:+UseG1GC]\ncompilerCounters=true\n"
                              "compilerXml=false\nvalueGenerator=xorshift-key-version-v1\ntraceSha256=abc\n"
-                             "jdkVersion=21.0.12.1\noptions={--warmup=60, --measure=8, --iteration-ms=1000}\n")
+                             "jdkVersion=21.0.12.1\nvmName=OpenJDK\nvmVersion=exact-build\n"
+                             "options={--warmup=60, --measure=8, --iteration-ms=1000}\n")
             path = worker / "configuration.txt"
             path.write_text(configuration)
             (worker / "integrity.txt").write_text("contentChecksum=1\napplicationChecksum=2\nconsumed=3\noperations=680000\nwrites=34000\n")
@@ -36,6 +37,10 @@ class StudyAnalysisTest(unittest.TestCase):
                 return dict(rejectionReasons=[], compilerPerIterationMs=compiler, p999Adequate=True)
             with patch("tailcache12_study_analysis.every_operation_summary", return_value=summary([0] * 8)):
                 self.assertTrue(every_operation_fork_summary(root, inputs, "abc", "21.0.12.1")["accepted"])
+                vm = dict(jdkVersion="21.0.12.1", vmName="OpenJDK", vmVersion="exact-build")
+                self.assertTrue(every_operation_fork_summary(root, inputs, runtime_identity=vm)["accepted"])
+                with self.assertRaises(ValueError):
+                    every_operation_fork_summary(root, inputs, runtime_identity=dict(vm, vmVersion="different-build"))
                 with self.assertRaises(ValueError):
                     every_operation_fork_summary(root, inputs, "different-trace")
             with patch("tailcache12_study_analysis.every_operation_summary", return_value=summary([11] + [0] * 7)):
@@ -61,7 +66,8 @@ class StudyAnalysisTest(unittest.TestCase):
             inputs = dict(Backend="CAFFEINE", Payload=256, Residents=8192, LiveBytes=0,
                           ChurnBytesPerSecond=1024, Seed=24301, Warmups=60, Measurements=8, HeapMiB=512)
             runtime = dict(jmhVersion="1.37", jdkVersion="21.0.12.1", vmName="OpenJDK", vmVersion="test-build")
-            record = dict(runtime, forks=1, threads=1, mode="sample", warmupIterations=60,
+            record = dict(runtime, benchmark="io.github.enixes.tailcache.benchmark.CrossoverBenchmark.mixedWorkload",
+                          forks=1, threads=1, mode="sample", warmupIterations=60,
                           measurementIterations=8, measurementTime="1 s", warmupTime="1 s",
                           jvmArgs=["-Xms512m", "-Xmx512m", "-XX:+UseG1GC"],
                           params=dict(backend="CAFFEINE", payloadBytes="256", residentEntries="8192",
@@ -85,6 +91,11 @@ class StudyAnalysisTest(unittest.TestCase):
             result = jmh_fork_summary(raw, "sample", inputs, trace, runtime)
             self.assertTrue(result["accepted"])
             self.assertEqual(200000, result["sampleCount"])
+            record["benchmark"] = "io.github.enixes.tailcache.benchmark.CrossoverBenchmark.freshSupplyFloor"
+            path.write_text(json.dumps([record]))
+            with self.assertRaises(ValueError):
+                jmh_fork_summary(raw, "sample", inputs, trace, runtime)
+            record["benchmark"] = "io.github.enixes.tailcache.benchmark.CrossoverBenchmark.mixedWorkload"
             record["secondaryMetrics"] = {"gc.alloc.rate": {"score": 1}}
             path.write_text(json.dumps([record]))
             with self.assertRaises(ValueError):

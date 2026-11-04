@@ -15,12 +15,14 @@ import time
 
 from tailcache12_analysis import compiler_rejection_reasons
 from tailcache12_controller import wait_for_launch
+import tailcache12_native_host as native_host
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "build/reports/tailcache12"
 BACKENDS = ("CAFFEINE", "CHRONICLE_IN_MEMORY")
-HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter")
-HOST_RULE_VERSION = "tailcache12-host-v2-settling"
+HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter") + native_host.STRING_FIELDS
+HOST_RULE_VERSION = "tailcache12-host-v4-native-cpu"
+SETTLING_HOST_VERSIONS = ("tailcache12-host-v2-settling", "tailcache12-host-v3-native-cpu", HOST_RULE_VERSION)
 
 
 def decode_host_row(row):
@@ -94,6 +96,7 @@ def host_snapshot():
     def field(text, label):
         return int(re.search(r"^" + label + r":?\s+(\d+)", text, re.M).group(1))
     row = {"monotonicNs": time.monotonic_ns(), "memAvailableKiB": field(mem, "MemAvailable"),
+           "memTotalKiB": field(mem, "MemTotal"),
            "swapUsedKiB": field(mem, "SwapTotal") - field(mem, "SwapFree"),
            "swapInPages": field(vm, "pswpin"), "swapOutPages": field(vm, "pswpout")}
     for label in ("zswpin", "zswpout", "oom_kill"):
@@ -113,6 +116,8 @@ def host_snapshot():
         row[resource + "FullAvg10"] = float(re.search(r"^full avg10=([\d.]+)", pressure, re.M).group(1))
     row.update(windows_host_snapshot(os.environ.get("TAILCACHE_WINDOWS_HOST_FILE"),
                                     os.environ.get("TAILCACHE_REQUIRE_WINDOWS_HOST") == "1"))
+    if os.environ.get("TAILCACHE_REQUIRE_WINDOWS_HOST") != "1":
+        row.update(native_host.snapshot())
     return row
 
 
@@ -133,11 +138,20 @@ def measurement_windows(directory):
 
 
 def replay_host_gate(manifest, directory, snapshots):
-    windows = measurement_windows(directory) if manifest.get("hostRuleVersion") == HOST_RULE_VERSION else None
-    return host_gate(snapshots, cpu_windows=windows or None)
+    windows = measurement_windows(directory) if manifest.get("hostRuleVersion") in SETTLING_HOST_VERSIONS else None
+    version = manifest.get("hostRuleVersion")
+    required = version in ("tailcache12-host-v3-native-cpu", HOST_RULE_VERSION) and not any(
+        row.get("windowsHostRequired") == 1 for row in snapshots)
+    reasons, fraction = host_gate(snapshots, cpu_windows=windows or None, native_required=required,
+                                 native_version=2 if version == HOST_RULE_VERSION else 1 if required else None)
+    if required:
+        reasons.extend(native_host.worker_reasons(directory, snapshots, require_allocation=version == HOST_RULE_VERSION))
+    if manifest.get("nativeEnvironmentVersion") == 1:
+        reasons.extend(native_host.environment_reasons(snapshots, manifest["nativeEnvironmentDeclaration"]))
+    return reasons, fraction
 
 
-def host_gate(snapshots, cpu_windows=None):
+def host_gate(snapshots, cpu_windows=None, native_required=False, native_version=None):
     if len(snapshots) < 2:
         return ["missing host interval samples"], None
     before, after = snapshots[0], snapshots[-1]
@@ -161,6 +175,8 @@ def host_gate(snapshots, cpu_windows=None):
             reasons.append(f"{name} changed during block")
     if any("=0" in s.get("externalPower", "") for s in snapshots):
         reasons.append("external power is disconnected")
+    if native_required or any("nativeObserverVersion" in row for row in snapshots):
+        reasons.extend(native_host.gate(snapshots, cpu_windows, native_version))
     if any(s.get("windowsHostRequired") == 1 for s in snapshots):
         if any(s.get("windowsMonitorVersion") not in (3, 4, 5) for s in snapshots):
             reasons.append("unqualified Windows observer version")
@@ -202,14 +218,26 @@ def host_gate(snapshots, cpu_windows=None):
 
 
 def invoke(attempt, manifest, label, task, properties):
+    if source_hash() != manifest["sourceSha256"]:
+        raise ValueError("Source changed before launch; use a new immutable attempt")
     controller_schedule = wait_for_launch(properties)
     run_id = attempt.name + "-" + label
     control = attempt / label
     control.mkdir()
     command = [str(ROOT / "gradlew"), "--offline", task,
                f"-Ptailcache12RunId={run_id}"]
+    if os.environ.get("TAILCACHE_REQUIRE_NATIVE_HOST") == "1":
+        command.insert(1, "--no-daemon")
     command += [f"-Ptailcache12{key}={value}" for key, value in properties.items()]
     snapshots = [host_snapshot()]
+    if os.environ.get("TAILCACHE_REQUIRE_NATIVE_HOST") == "1":
+        if "nativeEnvironmentVersion" not in manifest:
+            manifest.update(nativeEnvironmentVersion=1,
+                            nativeEnvironmentDeclaration=native_host.environment_declaration(snapshots[0]))
+            save(attempt / "manifest.json", manifest)
+        mismatches = native_host.environment_reasons(snapshots, manifest["nativeEnvironmentDeclaration"])
+        if mismatches:
+            raise ValueError("Cannot launch after native environment changed: " + "; ".join(mismatches))
     monitor_errors = []
     finished = threading.Event()
     def monitor():
@@ -337,7 +365,7 @@ def compiler_worker_values(directory):
 
 def replay(attempt):
     manifest = json.loads((attempt / "manifest.json").read_text())
-    paths = {}
+    paths, host_audits = {}, []
     for invocation in manifest["invocations"]:
         raw = raw_directory(attempt, invocation)
         for name, digest in invocation["rawSha256"].items():
@@ -349,6 +377,12 @@ def replay(attempt):
         if invocation["exitCode"] or not invocation["sourceUnchanged"]:
             raise ValueError("Failed invocation or changed source")
         paths[invocation["label"]] = raw
+        with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
+            snapshots = [decode_host_row(r) for r in csv.DictReader(stream)]
+        reasons, fraction = replay_host_gate(manifest, raw, snapshots)
+        reasons.extend(invocation.get("hostMonitorErrors", []))
+        host_audits.append(dict(label=invocation["label"], hostPass=not reasons,
+                               rejectionReasons=reasons, memoryFullStallFraction=fraction))
     if "sourceArchiveSha256" in manifest and hashlib.sha256((attempt / "source.tar.gz").read_bytes()).hexdigest() != manifest["sourceArchiveSha256"]:
         raise ValueError("Changed source snapshot")
     audit = {"reportable": False, "reconstructedFromRaw": True}
@@ -381,6 +415,14 @@ def replay(attempt):
                                  "hostPass": not reasons})
         audit["jit"] = observations
         audit["functionalPass"] = len(observations) == 8 and all(x["jitPass"] and x["hostPass"] for x in observations)
+    audit["host"] = host_audits
+    audit["hostQualityPass"] = bool(host_audits) and all(r["hostPass"] for r in host_audits)
+    if manifest.get("nativeEnvironmentVersion") == 1:
+        # Earlier functional diagnostics deliberately reported mechanical acceptance
+        # separately. Newly declared native attempts require both; old results retain
+        # their original interpretation and the separate host result remains explicit.
+        audit["mechanicalPass"] = audit["functionalPass"]
+        audit["functionalPass"] = audit["functionalPass"] and audit["hostQualityPass"]
     save(attempt / "replayed-audit.json", audit)
     print(f"replay={attempt / 'replayed-audit.json'} pass={audit['functionalPass']}")
     return 0 if audit["functionalPass"] else 1
@@ -509,6 +551,8 @@ def main():
         audits["functionalPass"] = len(observations) == 8 and all(x["jitPass"] and x["hostPass"] for x in observations)
     save(attempt / "audit.json", audits)
     print(f"audit={attempt / 'audit.json'} functionalPass={audits['functionalPass']}", flush=True)
+    if manifest.get("nativeEnvironmentVersion") == 1:
+        return replay(attempt)
     return 0 if audits["functionalPass"] else 1
 
 

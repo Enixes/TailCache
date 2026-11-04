@@ -29,7 +29,9 @@ def run_preflight(attempt, quiet_seconds=60, timeout_seconds=300):
                 quiet = []
             quiet.append(sample)
             if len(quiet) >= 2:
-                reasons, _ = evidence.host_gate(quiet)
+                native = not any(r.get("windowsHostRequired") == 1 for r in quiet)
+                reasons, _ = evidence.host_gate(quiet, native_required=native,
+                    native_version=2 if native else None)
                 if reasons:
                     rejected.append(dict(sampleIndex=len(samples) - 1, reasons=reasons))
                     quiet = [sample]
