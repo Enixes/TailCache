@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Native source-matched qualification and all ten independent floor JVMs passed/replayed with matching environment and VM. Observer coherence awaits the pilot. New64-slot both-recorder calibration declared; no primary crossover data yet.",
+  "currentBlocker": "Native calibration001 terminal compiler failure at Caffeine4096/live0 every-operation: second iteration20ms>10ms. Host/churn/occupancy passed; four accepted slots retained but full grid rejected/incomplete. Matching XML diagnostic declared before any new grid.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Collect calibrationquiet001 and native-final-calibration-20261105-001 (96 warmups; bounded native CPU/power-only replacements). Review pressure bands/churn/exposure and every rejection before pilot.",
+  "nextWork": "Run native-final-calibration-jitdiag-20261105-001 (up to3 Caffeine4096/live0 XML replicas,96/8). Diagnose compiler activity and review preparation before another calibration; no compiler replacement or endpoint-based rerun.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -116,7 +116,7 @@
   "calibrationDeclaration": {
     "attempt": "native-final-calibration-20261105-001",
     "preflight": "native-final-calibrationquiet-20261105-001",
-    "status": "prospectively_declared_not_launched",
+    "status": "terminal_compiler_failure",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 96,
@@ -137,7 +137,9 @@
     "seed": 24301,
     "repeats": 2,
     "nativeHostRetriesPerSlot": 2,
-    "nativeHostRetryBudget": 8
+    "nativeHostRetryBudget": 8,
+    "completedLogicalSlots": 4,
+    "recordedJvmAttempts": 5
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -540,6 +542,10 @@
     "floorExtraJvms": 0,
     "floorReview": "docs/TAILCACHE_12_FLOOR_REVIEW_20261105.md",
     "nextCalibration": "native-final-calibration-20261105-001",
-    "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz"
+    "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz",
+    "calibrationAttempt": "native-final-calibration-20261105-001",
+    "calibrationSelectedSlots": 4,
+    "calibrationRecordedJvms": 5,
+    "nextCompilerDiagnostic": "native-final-calibration-jitdiag-20261105-001"
   }
 }
