@@ -70,7 +70,8 @@ def replay_floors(attempt):
             config = dict(line.split("=", 1) for line in configuration.splitlines() if "=" in line)
             if (config.get("timerFloor") != "true" or config.get("validation") != "none"
                     or config.get("compilerXml") != "false" or config.get("compilerCounters") != "true"
-                    or runtime is None or config.get("jdkVersion") != runtime["jdkVersion"]):
+                    or runtime is None or any(config.get(k) != runtime[k] for k in
+                                             ("jdkVersion", "vmName", "vmVersion"))):
                 raise ValueError("Observer timer run has wrong controls")
             for flag in ("-Xms512m", "-Xmx512m", "-XX:+UseG1GC"):
                 if flag not in config["jvmArgs"]:
@@ -100,8 +101,8 @@ def replay_floors(attempt):
                      if "nativeObserverReadDurationNs" in r]
         if durations and statistics.median(durations) > RULES["nativeReadMedianCeilingMs"]:
             result["rejectionReasons"].append("Native observer median read duration exceeded 10 ms")
-        rows.append(dict(label=invocation["label"], inputs=props,
-                         accepted=not result["rejectionReasons"], **result))
+        rows.append(dict(result, label=invocation["label"], inputs=props,
+                         accepted=not result["rejectionReasons"]))
     result = dict(reportable=False, rules=RULES, observations=rows,
                   runtimeIdentity=runtime, traceSha256=trace,
                   completedBlocks=len(rows), expectedBlocks=len(expected),
