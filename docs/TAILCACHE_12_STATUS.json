@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Native source-matched qualification passed. Floor study003 stopped at3/10 for a sole 10.0795% outside-CPU upper-bound sample. New floor study004 prospectively declares bounded native CPU/power handling; no old floor data will be pooled.",
+  "currentBlocker": "Native source-matched qualification and all ten independent floor JVMs passed/replayed with matching environment and VM. Observer coherence awaits the pilot. New64-slot both-recorder calibration declared; no primary crossover data yet.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run quiet004 then independent floors004 (ten logical slots, at most18 candidates), raw-replay/review, then fresh64-slot both-recorder calibration.",
+  "nextWork": "Collect calibrationquiet001 and native-final-calibration-20261105-001 (96 warmups; bounded native CPU/power-only replacements). Review pressure bands/churn/exposure and every rejection before pilot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -114,35 +114,30 @@
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
   "measurementSourceSha256": "866e0d76f0125b716007745824d2e85949a4c78ff9c4db0ef3ba0d4ff84a9888",
   "calibrationDeclaration": {
-    "attempt": "wsl-recorder-calibration-20261028-005",
-    "preflight": "wsl-quiet-preflight-20261028-012",
-    "status": "rejected_cpu_retry_limit_exhausted",
+    "attempt": "native-final-calibration-20261105-001",
+    "preflight": "native-final-calibrationquiet-20261105-001",
+    "status": "prospectively_declared_not_launched",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
-    "hostCpuRetriesPerSlot": 2,
-    "hostCpuRetryBudget": 8,
-    "warmups": 60,
-    "measurementIterations": 8,
+    "warmups": 96,
+    "measurements": 8,
     "residents": 32768,
     "heapMiB": 512,
-    "payloadBytes": [
-      256,
-      4096
-    ],
-    "applicationLiveMiB": [
+    "churnMiBPerSecond": 32,
+    "liveMiB": [
       0,
       96,
       208,
       288
     ],
-    "churnMiBPerSecond": 32,
+    "payloadBytes": [
+      256,
+      4096
+    ],
     "seed": 24301,
     "repeats": 2,
-    "controllerAnchorUtc": "2026-10-28T15:40:06.285Z",
-    "controllerAnchorUnixSeconds": 1793202006.285,
-    "completedLogicalSlots": 12,
-    "recordedJvmAttempts": 15,
-    "extraJvmsUsed": 2
+    "nativeHostRetriesPerSlot": 2,
+    "nativeHostRetryBudget": 8
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -537,7 +532,14 @@
     "matchingCompilerScreensPassed": true,
     "qualificationSequence": "native-final-20261105-002 (screens passed; floors analyzer failed at1/10)",
     "nextFloorStudy": "native-final-floors-20261105-004",
-    "nextPreflight": "native-final-floorquiet-20261105-004",
-    "nativeFloorRetriesProspectivelyDeclared": true
+    "nextPreflight": "native-final-calibrationquiet-20261105-001",
+    "nativeFloorRetriesProspectivelyDeclared": true,
+    "floorStudy": "native-final-floors-20261105-004",
+    "floorStudyPassed": true,
+    "floorJvmAttempts": 10,
+    "floorExtraJvms": 0,
+    "floorReview": "docs/TAILCACHE_12_FLOOR_REVIEW_20261105.md",
+    "nextCalibration": "native-final-calibration-20261105-001",
+    "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz"
   }
 }
