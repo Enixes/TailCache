@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Implementation and researcher control review completed; final source-matched native qualification/floors, accepted calibration, pilot/coherence and frozen primary/robustness collection still required.",
+  "currentBlocker": "Sequence native-final-20261105-001 stopped at first every-operation fork: 11ms compiler iteration. XML identified late-warmup ApplicationChurn inner-stop unstable_if trap and measurement recompilation. Bounded-batch stop repair implemented; new source-matched sequence 002 required.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run native-final-20261105-001 sequence. Stop and inspect any failed stage; never repeat unchanged rejected work for selection. After raw qualification review, new 64-slot native calibration with prospectively bounded CPU/power replacements; then guarded pilot, coherence and protocol freeze.",
+  "nextWork": "Run native-final-20261105-002 after passed 35 Java/62 Python tests. All prior sequence001 passing blocks remain scoped to prior sources; no calibration, pilot or campaign launched.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -515,9 +515,9 @@
     "observerReview": "docs/TAILCACHE_12_NATIVE_OBSERVER_REVIEW.md",
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
-    "measurementSourceSha256": "ae21def333b8bc79e4c335b1a6fe72506034c2cd8eba536605183efc9ad0cd8a",
+    "measurementSourceSha256": "146188616e14bc8817a4de50caa7cbf8c49f2067808c48bb4592336ecf3161c4",
     "pythonTests": 62,
-    "javaTests": 34,
+    "javaTests": 35,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
     "floorStudyImplemented": true,
@@ -525,12 +525,14 @@
     "calibrationAccepted": false,
     "pilotRun": false,
     "taskComplete": false,
-    "activeBenchmarkDriver": "planned_native-final-20261105-001",
+    "activeBenchmarkDriver": "planned_native-final-20261105-002",
     "datasetExportImplemented": true,
     "nativeRetryImplemented": true,
     "implementationReview": "docs/TAILCACHE_12_CAMPAIGN_IMPLEMENTATION_REVIEW.md",
-    "nextQualificationSequence": "native-final-20261105-001",
+    "nextQualificationSequence": "native-final-20261105-002",
     "plannedPrimaryJvms": 192,
-    "plannedCampaignDiagnosticJvms": 128
+    "plannedCampaignDiagnosticJvms": 128,
+    "rejectedFinalSequence": "native-final-20261105-001",
+    "churnRepairReview": "docs/TAILCACHE_12_CHURN_REPAIR_REVIEW.md"
   }
 }

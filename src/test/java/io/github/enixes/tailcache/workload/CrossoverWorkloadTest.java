@@ -122,4 +122,24 @@ class CrossoverWorkloadTest {
             assertTrue(churn.stop().allocatedBytes() > 0);
         }
     }
+
+    @Test
+    void boundedBatchStopJoinsTheWorkerAndAllowsCleanSubsequentWindows() {
+        try (ApplicationChurn churn = new ApplicationChurn(32 * 1024 * 1024, 4096, 8)) {
+            for (int window = 0; window < 4; window++) {
+                churn.start();
+                LockSupport.parkNanos(40_000_000);
+                ApplicationChurn.Snapshot snapshot = churn.stop();
+                assertTrue(snapshot.endNs() > snapshot.startNs());
+                assertTrue(snapshot.allocatedBytes() > 0);
+                assertEquals(0, snapshot.allocatedBytes() % 4096);
+                assertTrue(snapshot.jvmAllocatedBytes() >= snapshot.allocatedBytes());
+                assertEquals(8 * 4096, snapshot.retainedPayloadBytes());
+                assertThrows(IllegalStateException.class, churn::stop);
+                assertTrue(Thread.getAllStackTraces().keySet().stream().noneMatch(
+                        t -> t.isAlive() && t.getName().equals("tailcache-application-churn")),
+                        "Stop must join its allocation worker before returning");
+            }
+        }
+    }
 }

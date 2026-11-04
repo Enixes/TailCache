@@ -72,7 +72,11 @@ public final class ApplicationChurn implements AutoCloseable {
             int batch = (int) Math.min(MAX_BATCH_OBJECTS, pending);
             droppedObjects += pending - batch;
             accounted = due; // A paused allocator does not replay an unbounded backlog.
-            for (int i = 0; i < batch && running; i++) {
+            // Finish the admitted bounded work unit before observing stop again.
+            // A per-object stop branch can remain untaken for many trials, then
+            // invalidate allocate's compiled code at a late iteration boundary.
+            // MAX_BATCH_OBJECTS bounds stop latency and no backlog is replayed.
+            for (int i = 0; i < batch; i++) {
                 byte[] object = new byte[objectBytes];
                 long ordinal = allocatedObjects++;
                 for (int j = 0; j < object.length; j++) object[j] = (byte) (ordinal * 31 + j);
