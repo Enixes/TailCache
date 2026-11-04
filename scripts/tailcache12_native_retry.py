@@ -16,7 +16,7 @@ def declare_policy(retries, budget=8, stage="calibrate"):
         raise ValueError("Native stages allow zero to two extra candidates per slot")
     if retries == 0:
         return None
-    if stage not in ("calibrate", "pilot", "campaign", "robustness"):
+    if stage not in ("calibrate", "pilot", "campaign", "robustness", "observer-floor"):
         raise ValueError("Native replacement policy does not apply to this stage")
     if type(budget) is not int or not 1 <= budget <= 8:
         raise ValueError("Native stages allow at most eight extra candidates in total")

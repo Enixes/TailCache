@@ -10,6 +10,7 @@ from types import SimpleNamespace
 
 import tailcache12 as evidence
 import tailcache12_calibrate as calibration
+import tailcache12_native_retry as native_retry
 from tailcache12_analysis import compiler_rejection_reasons, histogram, quantile
 from tailcache12_provenance import archive_measurement_source_hash, measurement_source_hash
 from tailcache12_study_analysis import between_operation_fraction, jmh_fork_summary
@@ -42,11 +43,12 @@ def replay_floors(attempt):
             or calibration.sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]):
         raise ValueError("Changed observer protocol or source archive")
     expected = floor_grid(manifest["inputs"]["warmups"])
+    policy = native_retry.verify_declaration(attempt, manifest, expected)
     if manifest["expectedBlocks"] != [label for label, _ in expected]:
         raise ValueError("Changed floor schedule")
     rows, runtime, trace = [], None, None
     for index, invocation in enumerate(manifest["invocations"]):
-        if index >= len(expected) or invocation["label"] != expected[index][0] or invocation["properties"] != expected[index][1]:
+        if not policy and (index >= len(expected) or invocation["label"] != expected[index][0] or invocation["properties"] != expected[index][1]):
             raise ValueError("Changed observer inputs or block order")
         raw = calibration.verify_invocation(attempt, invocation)
         props = invocation["properties"]
@@ -96,18 +98,38 @@ def replay_floors(attempt):
         with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
             samples = [evidence.decode_host_row(r) for r in csv.DictReader(stream)]
         host_reasons, _ = evidence.replay_host_gate(manifest, raw, samples)
-        result["rejectionReasons"].extend(host_reasons + invocation.get("hostMonitorErrors", []))
+        host_reasons.extend(invocation.get("hostMonitorErrors", []))
+        result["rejectionReasons"].extend(host_reasons)
         durations = [r["nativeObserverReadDurationNs"] / 10**6 for r in samples
                      if "nativeObserverReadDurationNs" in r]
         if durations and statistics.median(durations) > RULES["nativeReadMedianCeilingMs"]:
             result["rejectionReasons"].append("Native observer median read duration exceeded 10 ms")
-        rows.append(dict(result, label=invocation["label"], inputs=props,
+        rows.append(dict(result, label=invocation["label"], inputs=props, hostPass=not host_reasons,
+                         hostRejectionReasons=host_reasons,
+                         nativeObserverVersions=sorted({r.get("nativeObserverVersion", 0) for r in samples}),
+                         hostWindowStartNs=samples[0]["monotonicNs"], hostWindowEndNs=samples[-1]["monotonicNs"],
                          accepted=not result["rejectionReasons"]))
+    state, checks, errors = None, {}, []
+    selected = rows
+    if policy:
+        state = native_retry.select(manifest, rows)
+        checks, errors = native_retry.verify_preflights(attempt, manifest, rows, state)
+        selected = [r for r in rows if r["label"] in state["selectedLabels"]]
+        for row in rows:
+            row.update(state["attemptStatuses"][row["label"]])
+        errors += state["terminalRejectionReasons"]
+    if manifest.get("terminalDriverFailure"):
+        errors.append("Terminal floor driver failure: " + manifest["terminalDriverFailure"]["reason"])
     result = dict(reportable=False, rules=RULES, observations=rows,
                   runtimeIdentity=runtime, traceSha256=trace,
-                  completedBlocks=len(rows), expectedBlocks=len(expected),
-                  floorDataPass=len(rows) == len(expected) and all(r["accepted"] for r in rows),
+                  completedBlocks=len(selected), recordedJvmAttempts=len(rows), expectedBlocks=len(expected),
+                  missingBlocks=state["missingSlots"] if state else [k for k,v in expected if k not in {r["label"] for r in rows}],
+                  floorDataPass=len(selected) == len(expected) and not errors and all(r["accepted"] for r in selected),
+                  rejectionReasons=errors,
                   observerQualified=False, requiresIndependentPilotCoherence=True)
+    if state:
+        result.update(nativeHostRetryState=state, replayedRetryPreflights=checks,
+                      nativeRetryPreflightRejectionReasons=errors)
     evidence.save(attempt / "floors.json", result)
     print(f"floors={attempt / 'floors.json'} pass={result['floorDataPass']} blocks={len(rows)}/{len(expected)}", flush=True)
     return result
@@ -130,7 +152,8 @@ def coherence(pilot, floors):
     reasons, ratios, overhead = [], [], []
     if not p["dataCompleteAndQualityPass"] or not p["provisionalVariancePass"] or not f["floorDataPass"]:
         reasons.append("Pilot or independent floor prerequisites failed")
-    timers = [r["servicePercentilesNs"]["50"] for r in f["observations"] if r["inputs"]["Channel"] == "timer"]
+    floor_rows = [r for r in f["observations"] if r.get("selectedForAnalysis", r["accepted"])]
+    timers = [r["servicePercentilesNs"]["50"] for r in floor_rows if r["inputs"]["Channel"] == "timer"]
     if len(timers) != 2:
         reasons.append("Missing independent timer replicas")
     selected = [r for r in p["observations"] if r.get("selectedForAnalysis", r["accepted"])]
@@ -146,7 +169,7 @@ def coherence(pilot, floors):
             ratio = max(timers) / row["servicePercentilesNs"]["50"] if len(timers) == 2 else math.inf
             limit = RULES["timerMedianToEveryopMedianCeiling"]
         else:
-            supply = [r["servicePercentilesNs"]["50"] for r in f["observations"]
+            supply = [r["servicePercentilesNs"]["50"] for r in floor_rows
                       if r["inputs"].get("Backend") == props["Backend"]
                       and r["inputs"].get("Payload") == props["Payload"]
                       and r["inputs"]["Channel"] == "floor"]
@@ -189,6 +212,9 @@ def main():
     parser.add_argument("attempt_id")
     parser.add_argument("--warmups", type=int, default=96)
     parser.add_argument("--pilot")
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--native-host-retries",type=int,choices=(0,1,2),default=0)
+    parser.add_argument("--native-host-retry-budget",type=int,choices=range(1,9),default=8)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+", args.attempt_id):
         parser.error("Invalid attempt ID")
@@ -204,11 +230,21 @@ def main():
     grid = floor_grid(args.warmups)
     inputs = SimpleNamespace(stage="observer-floor", warmups=args.warmups, measurements=8,
         residents=32768, heap_mib=512, churn_mib=32, live_mib=[0], payloads=[256,4096],
-        seed=24301, repeats=2, channels=["floor","timer"], resume=False)
+        seed=24301, repeats=2, channels=["floor","timer"], resume=args.resume,
+        native_host_retries=args.native_host_retries,native_host_retry_budget=args.native_host_retry_budget)
     manifest = calibration.prepare(attempt, inputs, grid)
     manifest["observerRules"] = RULES
     evidence.save(attempt / "manifest.json", manifest)
+    if manifest.get("nativeHostRetryPolicy"):
+        result = native_retry.run_grid(attempt, manifest, replay_floors,
+            lambda p: "tailCache12SupplyFloor" if p["Channel"] == "floor" else "tailCache12EveryOperation")
+        return 0 if result["floorDataPass"] else 1
+    completed = {r["label"] for r in manifest["invocations"]}
     for label, props in grid:
+        if label in completed:
+            continue
+        if manifest["invocations"] and replay_floors(attempt)["observations"][-1]["rejectionReasons"]:
+            break
         evidence.invoke(attempt, manifest, label,
                         "tailCache12SupplyFloor" if props["Channel"] == "floor" else "tailCache12EveryOperation", props)
         if replay_floors(attempt)["observations"][-1]["rejectionReasons"]:

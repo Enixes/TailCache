@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Current measurement sources passed native functional/pause, full JMH/every-operation compiler screens and pressure96. Independent floors stopped at 1/10 for an analyzer assembly error; corrected analyzer replayed that diagnostic, new ten-JVM study 003 declared. Calibration, pilot and campaign remain uncollected.",
+  "currentBlocker": "Native source-matched qualification passed. Floor study003 stopped at3/10 for a sole 10.0795% outside-CPU upper-bound sample. New floor study004 prospectively declares bounded native CPU/power handling; no old floor data will be pooled.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run new quiet preflight and native-final-floors-20261105-003. Review floors and qualification, then new 64-slot both-recorder calibration at 96 warmups with prospectively bounded native CPU/power replacements.",
+  "nextWork": "Run quiet004 then independent floors004 (ten logical slots, at most18 candidates), raw-replay/review, then fresh64-slot both-recorder calibration.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -516,7 +516,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "146188616e14bc8817a4de50caa7cbf8c49f2067808c48bb4592336ecf3161c4",
-    "pythonTests": 63,
+    "pythonTests": 64,
     "javaTests": 35,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -536,7 +536,8 @@
     "churnRepairReview": "docs/TAILCACHE_12_CHURN_REPAIR_REVIEW.md",
     "matchingCompilerScreensPassed": true,
     "qualificationSequence": "native-final-20261105-002 (screens passed; floors analyzer failed at1/10)",
-    "nextFloorStudy": "native-final-floors-20261105-003",
-    "nextPreflight": "native-final-floorquiet-20261105-003"
+    "nextFloorStudy": "native-final-floors-20261105-004",
+    "nextPreflight": "native-final-floorquiet-20261105-004",
+    "nativeFloorRetriesProspectivelyDeclared": true
   }
 }

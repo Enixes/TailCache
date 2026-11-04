@@ -94,6 +94,15 @@ class NativeRetryTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 retry.declare_policy(retries,budget)
 
+    def test_new_floor_declaration_uses_the_same_bounded_first_pass_host_selection(self):
+        m=self.manifest()
+        m.update(stage="observer-floor",nativeHostRetryPolicy=retry.declare_policy(2,8,"observer-floor"))
+        rows=[self.row(m,0,reasons=[retry.ELIGIBLE[0]]), self.row(m,0,2), self.row(m,1)]
+        state=retry.select(m,rows)
+        self.assertTrue(state["complete"])
+        self.assertEqual(["s0-n2","s1"],state["selectedLabels"])
+        with self.assertRaises(ValueError): retry.select(m,[rows[0],rows[-1]])
+
     def test_raw_quiet_hashes_timing_and_final_target_environment_are_required(self):
         m = self.manifest()
         samples = self.samples(123)
