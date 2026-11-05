@@ -27,7 +27,7 @@ class NativeRetryTest(unittest.TestCase):
         group = "/user.slice/tailcache12-retry.scope"
         controls = {group.lstrip("/")+"/cpu.max": "max 100000", group.lstrip("/")+"/memory.max": "max"}
         return [dict(monotonicNs=(i+1)*10**9, memAvailableKiB=6*1024**2, memTotalKiB=8*1024**2,
-            memoryFullAvg10=0, memoryFullTotalUs=0, swapInPages=0, swapOutPages=0,
+            memoryFullAvg10=0, memoryFullTotalUs=0, swapInPages=0, swapOutPages=0,swapUsedKiB=0,
             governor="powersave", externalPower="AC=1", nativeObserverVersion=2,
             nativeScopeQualified=1, nativeCgroup=group, nativeScopeName="tailcache12-retry.scope",
             nativeCpuCounter="proc-stat-minus-cgroup-v2", nativeControls=json.dumps(controls),
@@ -154,6 +154,32 @@ class NativeRetryTest(unittest.TestCase):
                     replay=__import__('unittest.mock').mock.Mock(side_effect=[pending,complete])
                     retry.run_grid(root,m,replay,lambda _:"task")
                 self.assertEqual(["quiet","JVM"] if quiet_pass else ["quiet"],events)
+
+    def test_v2_empty_swap_proof_rejects_residual_or_reappearing_pages_and_keeps_v1_semantics(self):
+        for version in (1,2):
+            with self.subTest(version=version),tempfile.TemporaryDirectory() as directory:
+                root=pathlib.Path(directory); m=self.manifest(); samples=self.samples()
+                for sample in samples: sample['swapUsedKiB']=128
+                m['nativeEnvironmentDeclaration']=host.environment_declaration(samples[-1])
+                q=root/'quiet'; self.write_quiet(q,m,samples); attempt=root/'calibration'; attempt.mkdir()
+                prep=dict(version=version,sourceSha256=m['sourceSha256'],
+                    method='fsync-and-posix-fadvise-dontneed-task-files',minimumFreeKiB=3*1024**2,
+                    after=dict(MemFreeKiB=4*1024**2,SwapUsedKiB=0),errors=[],preparationPass=True,requiresEmptySwap=True)
+                (q/'host-preparation.json').write_text(json.dumps(prep))
+                with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                    m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+                    if version==1:
+                        self.assertTrue(retry.verify_initial_quiet(attempt,m,before_launch=True)['quietPass'])
+                    else:
+                        with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,before_launch=True)
+                        for sample in samples: sample['swapUsedKiB']=0
+                        with (q/'host.csv').open('w',newline='') as stream:
+                            writer=csv.DictWriter(stream,list(samples[0])); writer.writeheader(); writer.writerows(samples)
+                        m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+                        with patch('tailcache12.host_snapshot',return_value=dict(swapUsedKiB=128)):
+                            with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,before_launch=True)
+                        with patch('tailcache12.host_snapshot',return_value=dict(swapUsedKiB=0)):
+                            self.assertTrue(retry.verify_initial_quiet(attempt,m,before_launch=True)['quietPass'])
 
     def test_initial_quiet_is_frozen_source_matched_and_expires_before_first_launch(self):
         m=self.manifest()

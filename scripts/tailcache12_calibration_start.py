@@ -18,15 +18,17 @@ from tailcache12_provenance import archive_measurement_source_hash,measurement_s
 
 def memory_snapshot():
     fields=dict(line.split(':',1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())
-    return {k+'KiB':int(fields[k].split()[0]) for k in ('MemFree','MemAvailable','Cached')}
+    result={k+'KiB':int(fields[k].split()[0]) for k in ('MemFree','MemAvailable','Cached')}
+    result['SwapUsedKiB']=int(fields['SwapTotal'].split()[0])-int(fields['SwapFree'].split()[0])
+    return result
 
 
-def prepare_file_cache(report):
+def prepare_file_cache(report,require_empty_swap=True):
     """Release only clean cached pages of retained task files, outside collection."""
     if report.exists(): raise ValueError('Cache preparation evidence exists; refusing overwrite')
-    result=dict(version=1,method='fsync-and-posix-fadvise-dontneed-task-files',
+    result=dict(version=2,method='fsync-and-posix-fadvise-dontneed-task-files',
                 sourceSha256=evidence.source_hash(),before=memory_snapshot(),files=[],errors=[],
-                minimumFreeKiB=3*1024**2,preparationPass=False)
+                minimumFreeKiB=3*1024**2,requiresEmptySwap=require_empty_swap,preparationPass=False)
     for root in (evidence.REPORTS,evidence.ROOT/'evidence-archives'):
         for path in sorted(root.rglob('*')):
             if path.is_symlink() or not path.is_file() or not path.stat().st_size:
@@ -41,10 +43,11 @@ def prepare_file_cache(report):
             except OSError as error:
                 result['errors'].append(dict(path=str(path),error=str(error)))
     result['after']=memory_snapshot()
-    result['preparationPass']=not result['errors'] and result['after']['MemFreeKiB']>=result['minimumFreeKiB']
+    result['preparationPass']=(not result['errors'] and result['after']['MemFreeKiB']>=result['minimumFreeKiB']
+        and (not require_empty_swap or result['after']['SwapUsedKiB']==0))
     evidence.save(report,result)
     if not result['preparationPass']:
-        raise ValueError('Task-local file cache preparation failed or free RAM below3GiB; no JVM launched')
+        raise ValueError('Task-local preparation failed, free RAM below3GiB or residual swap remains; no JVM launched')
     return result
 
 
@@ -105,6 +108,7 @@ def main():
     parser.add_argument("quiet_id")
     parser.add_argument("--qualification-prefix",required=True)
     parser.add_argument('--everyop-reference')
+    parser.add_argument('--swap-preparation',help='Retained successful one-time residual-page recovery report ID')
     args=parser.parse_args()
     if any(not evidence.re.fullmatch(r"[A-Za-z0-9._-]+",v) for v in (args.attempt_id,args.quiet_id,args.qualification_prefix)):
         parser.error("Invalid attempt IDs")
@@ -113,11 +117,25 @@ def main():
     if attempt.exists() or quiet.exists() or preparation.exists():
         raise ValueError("Retained attempt exists; inspect it rather than duplicating or overwriting it")
     cache=prepare_file_cache(preparation)
+    reset=None
+    if args.swap_preparation:
+        if not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',args.swap_preparation):
+            raise ValueError('Invalid swap preparation reference')
+        import tailcache12_swap_prepare as swap
+        reset=json.loads((evidence.REPORTS/(args.swap_preparation+'.json')).read_text())
+        if (not reset.get('preparationPass') or not reset.get('configurationRestored')
+                or reset.get('measurementSourceSha256')!=measurement_source_hash(evidence.ROOT)
+                or swap.configuration(reset['before'])!=swap.configuration(reset['after'])
+                or swap.configuration(swap.snapshot())!=swap.configuration(reset['after'])):
+            raise ValueError('Swap preparation failed, source/policy changed or configuration not restored')
     bindings=qualification_bindings(args.qualification_prefix,args.everyop_reference)
     source=evidence.source_hash()
     result=run_preflight(quiet,120,300)
     if not result["quietPass"] or source!=evidence.source_hash():
         raise ValueError("Quiet preparation failed or source changed; no calibration launched")
+    if reset:
+        evidence.save(quiet/'swap-preparation.json',reset)
+        cache['swapPreparationSha256']=__import__('hashlib').sha256((quiet/'swap-preparation.json').read_bytes()).hexdigest()
     evidence.save(quiet/'host-preparation.json',cache)
     evidence.save(quiet/"qualification-bindings.json",dict(prefix=args.qualification_prefix,
         sourceSha256=source,qualificationRefs=bindings))

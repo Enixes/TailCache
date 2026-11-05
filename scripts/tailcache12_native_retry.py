@@ -62,6 +62,7 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
             or set(ref["sha256"]) != {"quiet.json","host.csv"}):
         raise ValueError("Invalid initial quiet declaration")
     path=attempt.parent/ref["attempt"]
+    requires_empty_swap=False
     if any(sha(path/name)!=digest for name,digest in ref["sha256"].items()):
         raise ValueError("Changed initial quiet prerequisite")
     if 'hostPreparationSha256' in ref:
@@ -69,14 +70,38 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
         if sha(prep)!=ref['hostPreparationSha256']:
             raise ValueError('Changed host cache preparation evidence')
         cache=json.loads(prep.read_text())
-        if (cache.get('version')!=1 or cache.get('sourceSha256')!=manifest['sourceSha256']
+        if (cache.get('version') not in (1,2) or cache.get('sourceSha256')!=manifest['sourceSha256']
                 or cache.get('method')!='fsync-and-posix-fadvise-dontneed-task-files'
                 or cache.get('minimumFreeKiB')!=3*1024**2 or cache.get('errors')
                 or cache.get('preparationPass') is not True
                 or cache['after']['MemFreeKiB']<cache['minimumFreeKiB']):
             raise ValueError('Invalid task-local host preparation')
+        if cache['version']==2 and (cache.get('requiresEmptySwap') is not True
+                or cache['after'].get('SwapUsedKiB')!=0):
+            raise ValueError('New benchmark preparation requires zero residual swap')
+        requires_empty_swap=cache['version']==2
+        if cache.get('swapPreparationSha256'):
+            from tailcache12_swap_prepare import configuration
+            reset=path/'swap-preparation.json'
+            if sha(reset)!=cache['swapPreparationSha256']:
+                raise ValueError('Changed residual swap recovery evidence')
+            record=json.loads(reset.read_text())
+            if (not record.get('preparationPass') or not record.get('configurationRestored')
+                    or record.get('measurementSourceSha256')!=manifest['measurementSourceSha256']
+                    or configuration(record['before'])!=configuration(record['after'])
+                    or record['after']['memory']['SwapUsedKiB']!=0):
+                raise ValueError('Residual-page recovery did not preserve the declared swap policy')
     with (path/"host.csv").open(newline="") as stream:
         samples=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
+    if requires_empty_swap:
+        if any(r.get('swapUsedKiB')!=0 for r in samples):
+            raise ValueError('Residual swap present in new initial quiet evidence')
+        if before_launch and evidence.host_snapshot().get('swapUsedKiB')!=0:
+            raise ValueError('Residual swap reappeared before first benchmark launch')
+        if rows:
+            with (attempt/rows[0]['label']/'host.csv').open(newline='') as stream:
+                if evidence.decode_host_row(next(csv.DictReader(stream))).get('swapUsedKiB')!=0:
+                    raise ValueError('Residual swap present at the first benchmark block')
     target=evidence.native_host.environment_declaration(samples[-1])
     checked=verify_quiet(path,dict(manifest,nativeEnvironmentDeclaration=target))
     if (not checked["quietPass"] or evidence.native_host.normalized_environment(target) !=

@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 89,
+    "pythonTests": 97,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "All current-source qualification stages and independent floors passed raw replay. Complete current-source calibration/pilot/coherence, campaign and robustness remain.",
+  "currentBlocker": "Calibration maintenance001 stopped on residual host swap-in at29th fork.28 earlier candidates passed; all compiler/workload checks passed. Bounded streaming archival and strict empty-swap preparation implemented; one-time identical-policy swap recovery required before a new grid.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run fresh chained maintenance calibration001 with explicit complete recorder reference002 and all unchanged quality gates, then review entire grid.",
+  "nextWork": "Verify/archive with bounded streaming, execute reviewed one-time dev-zram0.swap restart if authorized, prove identical final policy and SwapUsed0, then declare new whole calibration002.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -117,7 +117,7 @@
   "calibrationDeclaration": {
     "attempt": "native-final-maintenance-calibration-20261106-001",
     "preflight": "native-final-maintenance-calibrationquiet-20261106-001",
-    "status": "declared_not_launched",
+    "status": "terminal_residual_swapin_failure",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 120,
@@ -149,8 +149,10 @@
     "everyopReference": "native-final-maintenance-20261106-002-everyop",
     "taskLocalFileCachePreparation": true,
     "minimumPreparationFreeKiB": 3145728,
-    "completedLogicalSlots": 0,
-    "recordedJvmAttempts": 0
+    "completedLogicalSlots": 28,
+    "recordedJvmAttempts": 29,
+    "rejectedSlot": "r1-every-operation-CAFFEINE-p256-live0",
+    "pagingReason": "zswpin21to108,zswpout5199unchanged"
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -524,7 +526,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
-    "pythonTests": 89,
+    "pythonTests": 97,
     "javaTests": 40,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -552,11 +554,11 @@
     "floorJvmAttempts": 10,
     "floorExtraJvms": 0,
     "floorReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
-    "nextCalibration": "native-final-maintenance-calibration-20261106-001",
+    "nextCalibration": null,
     "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz",
-    "calibrationAttempt": "native-final-calibration-20261105-006",
-    "calibrationSelectedSlots": 64,
-    "calibrationRecordedJvms": 64,
+    "calibrationAttempt": "native-final-maintenance-calibration-20261106-001",
+    "calibrationSelectedSlots": 28,
+    "calibrationRecordedJvms": 29,
     "nextCompilerDiagnostic": null,
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
@@ -616,7 +618,8 @@
     "rejectedRecorderScreen": "native-final-maintenance-20261106-001-everyop (7forks,incomplete,CPU rejected)",
     "qualificationCompletionReview": "docs/TAILCACHE_12_QUALIFICATION_COMPLETION_REVIEW.md",
     "nextEveryopReference": "native-final-maintenance-20261106-002-everyop",
-    "maintenanceQualificationReview": "docs/TAILCACHE_12_MAINTENANCE_QUALIFICATION_REVIEW.md"
+    "maintenanceQualificationReview": "docs/TAILCACHE_12_MAINTENANCE_QUALIFICATION_REVIEW.md",
+    "pagingPreparationReview": "docs/TAILCACHE_12_PAGING_PREPARATION_REVIEW.md"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",

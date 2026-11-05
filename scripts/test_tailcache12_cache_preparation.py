@@ -20,7 +20,7 @@ class CachePreparationTest(unittest.TestCase):
             report=reports/'preparation.json'
             with patch.object(start.evidence,'ROOT',root), patch.object(start.evidence,'REPORTS',reports), \
                  patch.object(start.evidence,'source_hash',return_value='source'), \
-                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2}), \
+                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2,'SwapUsedKiB':0}), \
                  patch.object(start.os,'posix_fadvise') as advice:
                 result=start.prepare_file_cache(report)
             self.assertEqual(2,advice.call_count)
@@ -38,12 +38,23 @@ class CachePreparationTest(unittest.TestCase):
                 report=root/'preparation.json'
                 with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',root), \
                      patch.object(start.evidence,'source_hash',return_value='source'), \
-                     patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':free}), \
+                     patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':free,'SwapUsedKiB':0}), \
                      patch.object(start.os,'posix_fadvise',side_effect=error):
                     with self.assertRaises(ValueError): start.prepare_file_cache(report)
                 result=json.loads(report.read_text())
                 self.assertFalse(result['preparationPass'])
                 self.assertEqual(bool(error),bool(result['errors']))
+
+    def test_residual_swap_blocks_benchmarks_but_is_explicit_for_archival_only(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',root), \
+                 patch.object(start.evidence,'source_hash',return_value='source'), \
+                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2,'SwapUsedKiB':128}), \
+                 patch.object(start.os,'posix_fadvise'):
+                with self.assertRaises(ValueError): start.prepare_file_cache(root/'benchmark.json')
+                result=start.prepare_file_cache(root/'archive.json',require_empty_swap=False)
+            self.assertTrue(result['preparationPass']); self.assertFalse(result['requiresEmptySwap'])
 
 
 if __name__=='__main__': unittest.main()
