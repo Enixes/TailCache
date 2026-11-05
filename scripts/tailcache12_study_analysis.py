@@ -20,6 +20,62 @@ VALUE_GENERATOR = "xorshift-key-version-v1"
 JMH_SAMPLE_SECONDARIES = {"p0.00", "p0.50", "p0.90", "p0.95", "p0.99", "p0.999", "p0.9999", "p1.00"}
 
 
+def allocation_profiler_vectors(metrics,count,text,jmh_version):
+    """Align pinned GCProfiler's optional gc.time from indexed original output."""
+    required=('gc.alloc.rate','gc.alloc.rate.norm','gc.count','gc.time')
+    vectors={}
+    for name in required:
+        data=metrics[name].get('rawData',[])
+        if len(data)!=1 or any(type(v) not in (int,float) or not math.isfinite(v) or v<0 for v in data[0]):
+            raise ValueError('Invalid allocation profiler raw vector: '+name)
+        if name!='gc.time' and len(data[0])!=count:
+            raise ValueError('Incomplete allocation profiler conditioning evidence: '+name)
+        vectors[name]=list(data[0])
+    if any(v!=int(v) for v in vectors['gc.count']):
+        raise ValueError('Nonintegral GC profiler collection count')
+    times=vectors['gc.time']
+    if len(times)==count: return vectors,[]
+    if jmh_version!='1.37' or not 0<=len(times)<count:
+        raise ValueError('Unsupported sparse GC profiler vector')
+    lines=text.splitlines(); blocks=[]
+    for i,line in enumerate(lines):
+        match=re.fullmatch(r'Iteration\s+(\d+):.*',line)
+        if match:
+            block=[]
+            for following in lines[i+1:]:
+                if not following.strip(): break
+                block.append(following)
+            blocks.append((int(match[1]),block))
+    if [i for i,_ in blocks]!=list(range(1,count+1)):
+        raise ValueError('Missing, shifted or duplicate indexed GC profiler iterations')
+    def displayed(block,name,unit):
+        rows=[line for line in block if re.match(r'\s+'+re.escape(name)+':',line)]
+        if not rows: return None
+        if len(rows)!=1: raise ValueError('Duplicate indexed GC profiler metric')
+        match=re.fullmatch(r'\s+'+re.escape(name)+r':\s+(≈\s+)?([-+\d.]+)\s+'+unit+r'\s*',rows[0])
+        if not match: raise ValueError('Invalid indexed GC profiler value')
+        value=float(match[2])
+        if not math.isfinite(value) or value<0 or (match[1] and value!=0):
+            raise ValueError('Invalid rounded GC profiler value')
+        return value
+    aligned=[]; zeros=[]; cursor=0
+    for i,block in blocks:
+        collections=displayed(block,'gc.count','counts')
+        if collections!=vectors['gc.count'][i-1]:
+            raise ValueError('Indexed GC count differs from JSON order')
+        value=displayed(block,'gc.time','ms')
+        if value is None:
+            if collections!=0: raise ValueError('Missing GC time despite a recorded collection')
+            aligned.append(0); zeros.append(i)
+        else:
+            if cursor>=len(times) or abs(value-times[cursor])>.00051:
+                raise ValueError('Indexed GC time differs from sparse JSON order')
+            aligned.append(times[cursor]); cursor+=1
+    if cursor!=len(times): raise ValueError('Unmatched sparse GC profiler values')
+    vectors['gc.time']=aligned
+    return vectors,zeros
+
+
 def every_operation_fork_summary(directory, inputs, expected_trace=None,
                                  jdk_version=None, occupancy_band=None, compiler_diagnostics=False,
                                  runtime_identity=None):
@@ -273,16 +329,18 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
             if conditioning:
                 result["reportedGcProfilerIncludingConditioning"]=result["gcProfiler"]
                 result["gcProfilerAnalysisWindow"]={}
+                vectors,zeros=allocation_profiler_vectors(metrics,conditioning+inputs['Measurements'],
+                    (raw/kind/'jmh.txt').read_text(),record['jmhVersion'])
+                result['gcProfilerPhysicalVectors']=vectors
+                result['gcTimeZeroFilledIterations']=zeros
+                result['gcTimeAlignmentVersion']='jmh-gc-time-indexed-v1'
                 for name in required:
-                    data=metrics[name].get("rawData",[])
-                    if len(data)!=1 or len(data[0])!=conditioning+inputs["Measurements"]:
-                        raise ValueError("Incomplete allocation profiler conditioning evidence")
-                    tail=data[0][conditioning:]
+                    tail=vectors[name][conditioning:]
                     if any(not isinstance(v,(int,float)) or not math.isfinite(v) for v in tail):
                         raise ValueError("Invalid analysis-window allocation profiler values")
                     result["gcProfilerAnalysisWindow"][name]=sum(tail) if name in ("gc.count","gc.time") else statistics.mean(tail)
                 result["gcProfiler"]={name:dict(score=result["gcProfilerAnalysisWindow"][name],
-                    scoreUnit=metrics[name]["scoreUnit"],rawData=[metrics[name]["rawData"][0][conditioning:]],
+                    scoreUnit=metrics[name]["scoreUnit"],rawData=[vectors[name][conditioning:]],
                     derivedFromAnalysisWindows=True) for name in required}
     else:
         raise ValueError("Unsupported JMH study channel")
