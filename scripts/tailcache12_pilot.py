@@ -26,6 +26,26 @@ TASKS = {"sample": "tailCache12Sample", "every-operation": "tailCache12EveryOper
 PRIMARY = ("sample", "every-operation")
 
 
+def pilot_inputs(calibrated):
+    inputs={k:v for k,v in calibrated.items() if k not in
+            ('nativeHostRetryPolicy','calibrationHostCpuRetryPolicy','initialQuietAttempt',
+             'qualificationPrefix','highFirst')}
+    inputs['channels']=list(TASKS)
+    return inputs
+
+
+def declare_native_preparation(attempt,manifest,grid,initial_host,retries,budget,initial_id):
+    policy=native_retry.declare_policy(retries,budget,'pilot')
+    if initial_host.get('nativeScopeQualified')==1 and policy is None:
+        raise ValueError('New native pilot requires an explicit native host policy and initial quiet proof')
+    if policy:
+        if not initial_id or not re.fullmatch(r'[A-Za-z0-9._-]+',initial_id):
+            raise ValueError('New native pilot requires --initial-quiet with fresh retained evidence')
+        manifest['initialQuietRef']=native_retry.initial_quiet_reference(
+            attempt.parent/initial_id,manifest,policy,initial_host)
+    native_retry.initialize(attempt,manifest,grid,policy,initial_host)
+
+
 def verify_native_environments(manifests, current=None):
     declarations = [m.get("nativeEnvironmentDeclaration") for m in manifests]
     if any(m.get("nativeEnvironmentVersion") == 1 for m in manifests):
@@ -237,6 +257,7 @@ def main():
     parser.add_argument("--jit")
     parser.add_argument("--calibration")
     parser.add_argument("--everyop-jit")
+    parser.add_argument("--initial-quiet")
     parser.add_argument("--order-seed", type=int, default=24301)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--native-host-retries", type=int, choices=(0, 1, 2), default=0)
@@ -260,8 +281,7 @@ def main():
             parser.error("Pilot requires --functional, --jit, --everyop-jit and --calibration attempt IDs")
         refs, inputs, calibrated = qualification_refs(*(evidence.REPORTS / name for name in
             (args.functional, args.jit, args.calibration,args.everyop_jit)))
-        inputs = {k: v for k, v in inputs.items() if k not in
-                  ("nativeHostRetryPolicy", "calibrationHostCpuRetryPolicy")}
+        inputs = pilot_inputs(inputs)
         grid = schedule(inputs, args.order_seed)
         traces = {row["traceSha256"] for row in calibrated["observations"] if "traceSha256" in row}
         if len(traces) != 1 or not calibrated["runtimeIdentity"]:
@@ -277,8 +297,8 @@ def main():
                         expectedBlocks=[label for label, _ in grid],
                         schedule=[dict(label=label, properties=props) for label, props in grid])
         initial_host = evidence.host_snapshot()
-        native_retry.initialize(attempt, manifest, grid,
-            native_retry.declare_policy(args.native_host_retries, args.native_host_retry_budget, "pilot"), initial_host)
+        declare_native_preparation(attempt,manifest,grid,initial_host,
+            args.native_host_retries,args.native_host_retry_budget,args.initial_quiet)
         with tarfile.open(attempt / "source.tar.gz", "w:gz") as archive:
             for path in evidence.sources():
                 archive.add(path, arcname=str(path.relative_to(evidence.ROOT)))

@@ -5,10 +5,32 @@ import unittest
 from collections import Counter
 from unittest.mock import patch
 
-from tailcache12_pilot import PRIMARY, qualification_refs, schedule
+from tailcache12_pilot import PRIMARY,TASKS,qualification_refs,schedule,pilot_inputs,declare_native_preparation
 
 
 class PilotPlanTest(unittest.TestCase):
+    def test_stage_inputs_strip_preparation_and_keep_identical_timed_schedule(self):
+        calibrated=dict(self.inputs(),initialQuietAttempt='old',qualificationPrefix='old',highFirst=True,
+            nativeHostRetryPolicy={'stage':'calibrate'},channels=['sample-calibration','every-operation'],
+            conditioning=8,transportWarmupVersion='jmh-result-transport-v2')
+        inputs=pilot_inputs(calibrated)
+        self.assertEqual(list(TASKS),inputs['channels'])
+        self.assertFalse(set(('initialQuietAttempt','qualificationPrefix','highFirst','nativeHostRetryPolicy')) & set(inputs))
+        self.assertEqual(schedule(calibrated),schedule(inputs))
+
+    def test_native_pilot_requires_fresh_initial_quiet_before_policy_freeze(self):
+        with tempfile.TemporaryDirectory() as directory:
+            attempt=pathlib.Path(directory)/'pilot'; host={'nativeScopeQualified':1}
+            with patch('tailcache12_pilot.native_retry.initialize') as initialize, \
+                 patch('tailcache12_pilot.native_retry.initial_quiet_reference',return_value={'attempt':'quiet'}) as quiet:
+                for retries,initial in ((0,None),(2,None),(2,'../bad')):
+                    with self.assertRaises(ValueError): declare_native_preparation(attempt,{},[],host,retries,8,initial)
+                initialize.assert_not_called(); quiet.assert_not_called()
+                manifest={}; declare_native_preparation(attempt,manifest,[],host,2,8,'quiet')
+                self.assertEqual({'attempt':'quiet'},manifest['initialQuietRef'])
+                self.assertEqual(attempt.parent/'quiet',quiet.call_args.args[0])
+                initialize.assert_called_once()
+
     def inputs(self):
         return dict(liveBytes=[0, 96, 208, 288], payloads=[256, 4096], warmups=60,
                     measurements=8, residents=32768, heapMiB=512,

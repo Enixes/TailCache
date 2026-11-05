@@ -11,7 +11,7 @@
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
     "12B": "source_matched_transport_qualification_and_independent_floors_passed_pilot_coherence_pending",
-    "12C": "new_full_high_first_grid_declared_no_accepted_grid",
+    "12C": "accepted_source_matched64_slot_calibration_independent_gc_reconciliation_passed",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
     "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 38,
-    "pythonTests": 74,
+    "pythonTests": 78,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -56,10 +56,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap,N32768"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "V2 qualification passed; calibration005 rejected transient zswap. Reviewed task-local clean-file-cache preparation established4.1GiB free RAM; new full calibration006 declared, no accepted grid yet.",
+  "currentBlocker": "Calibration006 fully passed. Pilot/coherence, frozen campaign, robustness and final dataset remain.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run preparation plus fresh chained64-slot calibration006; preserve every per-fork gate and all rejected prior attempts.",
+  "nextWork": "Run fresh guarded160-slot pilot after task-local cache and quiet preparation; review source/occupancy/exposure/variance/coherence before campaign freeze.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -77,7 +77,7 @@
     "replayed": true,
     "scope": "both backends/payloads,two orders,N32768,H512,churn32,live0"
   },
-  "calibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-005/calibration.json",
+  "calibrationEvidence": "build/reports/tailcache12/native-final-calibration-20261105-006/calibration.json",
   "nextCalibrationAttempt": "native-final-calibration-20261105-006",
   "pressureDiagnosticAttempt": "wsl-observer5-pressure96-jit60-20261028-001",
   "matchingPressureDiagnostic": {
@@ -126,7 +126,7 @@
   "calibrationDeclaration": {
     "attempt": "native-final-calibration-20261105-006",
     "preflight": "native-final-calibrationquiet-20261105-006",
-    "status": "declared_not_launched",
+    "status": "complete_raw_replayed_passed",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 120,
@@ -154,8 +154,8 @@
     "initialPreflightMaxAgeSeconds": 360,
     "sourceMatchedRawInitialQuietRequired": true,
     "qualificationPrefix": "native-final-transport-v2-20261105-001",
-    "completedLogicalSlots": 0,
-    "recordedJvmAttempts": 0,
+    "completedLogicalSlots": 64,
+    "recordedJvmAttempts": 64,
     "taskLocalFileCachePreparation": true,
     "minimumPreparationFreeKiB": 3145728
   },
@@ -531,13 +531,13 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
-    "pythonTests": 74,
+    "pythonTests": 78,
     "javaTests": 38,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
     "floorStudyImplemented": true,
     "campaignImplemented": true,
-    "calibrationAccepted": false,
+    "calibrationAccepted": true,
     "pilotRun": false,
     "taskComplete": false,
     "activeBenchmarkDriver": false,
@@ -552,7 +552,7 @@
     "matchingCompilerScreensPassed": true,
     "qualificationSequence": "native-final-transport-v2-20261105-001",
     "nextFloorStudy": null,
-    "nextPreflight": "native-final-calibrationquiet-20261105-006",
+    "nextPreflight": "native-final-pilotquiet-20261105-001",
     "nativeFloorRetriesProspectivelyDeclared": true,
     "floorStudy": "native-final-transport-v2-20261105-001-floors",
     "floorStudyPassed": true,
@@ -561,9 +561,9 @@
     "floorReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
     "nextCalibration": "native-final-calibration-20261105-006",
     "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz",
-    "calibrationAttempt": "native-final-calibration-20261105-005",
-    "calibrationSelectedSlots": 0,
-    "calibrationRecordedJvms": 1,
+    "calibrationAttempt": "native-final-calibration-20261105-006",
+    "calibrationSelectedSlots": 64,
+    "calibrationRecordedJvms": 64,
     "nextCompilerDiagnostic": "native-final-chronicle208-jitxml-v2-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
@@ -600,7 +600,9 @@
     "transportQualificationReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
     "transportV2Plan": "docs/TAILCACHE_12_TRANSPORT_V2_PLAN.md",
     "transportV2Review": "docs/TAILCACHE_12_TRANSPORT_V2_REVIEW.md",
-    "transportV2DiagnosticPassed": true
+    "transportV2DiagnosticPassed": true,
+    "nextPilot": "native-final-pilot-20261105-001",
+    "pilotPreparationReview": "docs/TAILCACHE_12_PILOT_PREPARATION_REVIEW.md"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
@@ -812,5 +814,22 @@
     "recordedJvmAttempts": 1,
     "rejectedSlot": "r1-every-operation-CAFFEINE-p4096-live288",
     "pagingReason": "zswpout counter changed0to29"
+  },
+  "pilotDeclaration": {
+    "attempt": "native-final-pilot-20261105-001",
+    "preflight": "native-final-pilotquiet-20261105-001",
+    "status": "declared_not_launched",
+    "expectedLogicalSlots": 160,
+    "primaryJvms": 96,
+    "diagnosticJvms": 64,
+    "maximumJvmAttempts": 168,
+    "nativeHostRetriesPerSlot": 2,
+    "nativeHostRetryBudget": 8,
+    "calibration": "native-final-calibration-20261105-006",
+    "qualificationPrefix": "native-final-transport-v2-20261105-001",
+    "orderSeed": 24301,
+    "initialPreflightMaxAgeSeconds": 360,
+    "taskLocalFileCachePreparation": true,
+    "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87"
   }
 }
