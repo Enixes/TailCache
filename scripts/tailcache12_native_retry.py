@@ -98,6 +98,8 @@ def initialize(attempt, manifest, grid, policy, initial_host):
     declaration["declaredUtc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     if "initialQuietRef" in manifest:
         declaration["initialQuietRef"]=manifest["initialQuietRef"]
+    if "qualificationRefs" in manifest:
+        declaration["qualificationRefs"]=manifest["qualificationRefs"]
     evidence.save(attempt / "native-retry-policy.json", declaration)
     manifest["nativeRetryPolicySha256"] = sha(attempt / "native-retry-policy.json")
 
@@ -116,6 +118,8 @@ def verify_declaration(attempt, manifest, canonical=None):
     declaration = json.loads((attempt / "native-retry-policy.json").read_text())
     if declaration.get("initialQuietRef") != manifest.get("initialQuietRef"):
         raise ValueError("Changed frozen initial quiet prerequisite reference")
+    if declaration.get("qualificationRefs") != manifest.get("qualificationRefs"):
+        raise ValueError("Changed frozen qualification bindings")
     for key in ("nativeRetrySchema", "nativeHostRetryPolicy", "nativeLogicalSlots",
                 "measurementSourceSha256", "sourceSha256", "nativeEnvironmentDeclaration"):
         if declaration[key] != manifest[key]:

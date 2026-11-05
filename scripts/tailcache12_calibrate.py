@@ -51,7 +51,8 @@ def calibration_grid(inputs):
     for repeat in range(1, inputs["repeats"] + 1):
         backends = evidence.BACKENDS if repeat % 2 else tuple(reversed(evidence.BACKENDS))
         payloads = inputs["payloads"] if repeat % 2 else list(reversed(inputs["payloads"]))
-        levels = inputs["liveBytes"] if repeat % 2 else list(reversed(inputs["liveBytes"]))
+        ascending = bool(repeat % 2) != bool(inputs.get("highFirst",False))
+        levels = inputs["liveBytes"] if ascending else list(reversed(inputs["liveBytes"]))
         for live in levels:
             for payload in payloads:
                 for backend in backends:
@@ -361,6 +362,12 @@ def prepare(attempt, args, grid):
                 raise ValueError("New native calibration requires --initial-quiet with fresh retained evidence")
             manifest["initialQuietRef"]=native_retry.initial_quiet_reference(
                 attempt.parent/initial_id,manifest,native_policy,initial_host)
+            if getattr(args,"qualification_prefix",None):
+                path=attempt.parent/initial_id/"qualification-bindings.json"
+                binding=json.loads(path.read_text())
+                if binding["sourceSha256"]!=manifest["sourceSha256"] or binding["prefix"]!=args.qualification_prefix:
+                    raise ValueError("Initial preparation qualification bindings changed")
+                manifest["qualificationRefs"]=binding["qualificationRefs"]
         native_retry.initialize(attempt, manifest,
             [(label, command_properties(props)) for label, props in grid], native_policy, initial_host)
     if retry_policy:
@@ -410,6 +417,10 @@ def vars_inputs(args):
         inputs["conditioning"]=args.conditioning
     if getattr(args,"transport_warmup",False):
         inputs["transportWarmupVersion"]=evidence.TRANSPORT_WARMUP_VERSION
+    if getattr(args,"high_first",False):
+        inputs["highFirst"]=True
+    if getattr(args,"qualification_prefix",None):
+        inputs["qualificationPrefix"]=args.qualification_prefix
     return inputs
 
 
@@ -471,6 +482,7 @@ def main():
     parser.add_argument("--measurements", type=int, default=8)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
+    parser.add_argument("--high-first",action="store_true",help="Prospectively counterbalance descending-first pressure order")
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--channels", choices=CHANNELS, nargs="+")
     parser.add_argument("--resume", action="store_true")
@@ -480,6 +492,7 @@ def main():
     parser.add_argument("--native-host-retries", type=int, choices=(0, 1, 2), default=0)
     parser.add_argument("--native-host-retry-budget", type=int, choices=range(1, 9), default=8)
     parser.add_argument("--initial-quiet",help="Frozen initial quiet-preflight attempt ID for new native calibration")
+    parser.add_argument("--qualification-prefix",help="Source/environment-matched reviewed qualification sequence")
     args = parser.parse_args()
     if args.channels is None:
         args.channels = list(CHANNELS) if args.stage == "calibrate" else ["every-operation"]

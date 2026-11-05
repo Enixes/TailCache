@@ -5,10 +5,25 @@ import tempfile
 import unittest
 
 import tailcache12 as evidence
+import tailcache12_calibrate as calibration
 from tailcache12_study_analysis import jmh_fork_summary
 
 
 class ConditioningTest(unittest.TestCase):
+    def test_high_first_calibration_is_explicit_and_keeps_reversed_replica_controls(self):
+        inputs=dict(liveBytes=[0,96,208,288],payloads=[4096,256],residents=32768,heapMiB=512,
+            churnBytesPerSecond=32*1024**2,seed=24301,warmups=120,conditioning=8,
+            transportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION,measurements=8,repeats=2,
+            channels=list(calibration.CHANNELS),highFirst=True)
+        plan=calibration.calibration_grid(inputs)
+        self.assertEqual(64,len(plan))
+        self.assertEqual(288,plan[0][1]["LiveBytes"])
+        self.assertEqual(4096,plan[0][1]["Payload"])
+        self.assertEqual([p for _,p in plan[:32]],[p for _,p in reversed(plan[32:])])
+        self.assertTrue(all(p["Conditioning"]==8 and p["TransportWarmupVersion"]==evidence.TRANSPORT_WARMUP_VERSION for _,p in plan))
+        inputs.pop("highFirst")
+        self.assertEqual(0,calibration.calibration_grid(inputs)[0][1]["LiveBytes"])
+
     def test_only_predeclared_analysis_histograms_supply_endpoints_and_all_phases_validate(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory)
