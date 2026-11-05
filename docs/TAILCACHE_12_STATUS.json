@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 38,
-    "pythonTests": 71,
+    "pythonTests": 72,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Calibration004 stopped at12th fork: Chronicle4096/live208 SampleTime compiler53ms in third analysis interval; host/other gates passed.11 earlier candidates passed, no complete replicas/grid. Targeted compiler attribution required; no quality retry allowed.",
+  "currentBlocker": "Calibration004 failed compiler gate; exact-condition XML diagnostic reproduced late ObjectOutputStream.writeArray C2 compilation. Explicit v2/1024-frame setup repair implemented; diagnostic and full matching qualification required.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Retain/replay rejected calibration004, run bounded same-controls XML/compiler-event attribution before any new calibration declaration.",
+  "nextWork": "Complete source build/tests, run bounded v2 Chronicle4096/live208 diagnostic and review C2 timing; then new complete source-matched qualification/floors.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -112,7 +112,7 @@
   },
   "qualificationScope": "Current transport-prepared measurement sources passed functional14/14, pause2/2, JMH8/8, unprofiled every-operation8/8, pressure96 probes2/2 and floors10/10. Larger-pressure coverage and pilot coherence are not established.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
-  "measurementSourceSha256": "dbc90b8b7776fab6a0ec19316723208d8f48008c7d3facc06825d37dbf966bde",
+  "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
   "calibrationDeclaration": {
     "attempt": "native-final-calibration-20261105-004",
     "preflight": "native-final-calibrationquiet-20261105-004",
@@ -529,8 +529,8 @@
     "observerReview": "docs/TAILCACHE_12_NATIVE_OBSERVER_REVIEW.md",
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
-    "measurementSourceSha256": "dbc90b8b7776fab6a0ec19316723208d8f48008c7d3facc06825d37dbf966bde",
-    "pythonTests": 71,
+    "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
+    "pythonTests": 72,
     "javaTests": 38,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -548,13 +548,13 @@
     "plannedCampaignDiagnosticJvms": 128,
     "rejectedFinalSequence": "native-final-20261105-001",
     "churnRepairReview": "docs/TAILCACHE_12_CHURN_REPAIR_REVIEW.md",
-    "matchingCompilerScreensPassed": true,
+    "matchingCompilerScreensPassed": false,
     "qualificationSequence": "native-final-transport-20261105-001",
     "nextFloorStudy": null,
     "nextPreflight": "native-final-calibrationquiet-20261105-004",
     "nativeFloorRetriesProspectivelyDeclared": true,
     "floorStudy": "native-final-transport-20261105-001-floors",
-    "floorStudyPassed": true,
+    "floorStudyPassed": false,
     "floorJvmAttempts": 10,
     "floorExtraJvms": 0,
     "floorReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
@@ -563,7 +563,7 @@
     "calibrationAttempt": "native-final-calibration-20261105-004",
     "calibrationSelectedSlots": 11,
     "calibrationRecordedJvms": 12,
-    "nextCompilerDiagnostic": "native-final-jitxml-target-20261105-001",
+    "nextCompilerDiagnostic": "native-final-chronicle208-jitxml-v2-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
@@ -592,11 +592,12 @@
         20
       ]
     },
-    "transportWarmupVersion": "jmh-result-transport-v1",
-    "transportWarmupFrames": 256,
+    "transportWarmupVersion": "jmh-result-transport-v2",
+    "transportWarmupFrames": 1024,
     "transportPreparationPlan": "docs/TAILCACHE_12_TRANSPORT_PREPARATION_PLAN.md",
     "transportPreparationReview": "docs/TAILCACHE_12_TRANSPORT_PREPARATION_REVIEW.md",
-    "transportQualificationReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md"
+    "transportQualificationReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
+    "transportV2Plan": "docs/TAILCACHE_12_TRANSPORT_V2_PLAN.md"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
@@ -682,5 +683,5 @@
     "completedLogicalSlots": 1,
     "recordedJvmAttempts": 2
   },
-  "currentHarnessQualifiedForCalibration": true
+  "currentHarnessQualifiedForCalibration": false
 }

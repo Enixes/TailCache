@@ -1,0 +1,7 @@
+# Transport v2 implementation review — 5 November2026
+
+The isolated representative-graph preparation now declares jmh-result-transport-v2 and1024 scratch writes. The socket/reset/flush/receiver lifecycle and early placement before workload construction are unchanged; the existing helper hard bound remains1024 and no scratch state is retained. No ordinary warmup/conditioning/measurement duration or workload/quality threshold changed. The parser maps archived v1 to256 frames and v2 to1024, requires the actual matching JVM property/setup evidence/positive bytes, and fails unknown versions or wrong counts. Existing v1 evidence is still replayable, not retroactively upgraded.
+
+Python72 tests passed, including both version/count contracts and failed-count rejection. Gradle test/jmhClasses passed; unchanged Java unit tasks remain up to date from38 passed tests. New measurement identity2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87 invalidates older qualification for new collection. The change is deliberately limited to the diagnosed setup threshold; it is not proof that every possible JMH path is stable.
+
+Next bounded diagnostic: native-final-chronicle208-jitxml-v2-20261105-001, at most3 fresh forks at the failed Chronicle4096/live208 controls with120/8/8 and v2. Retain all and stop on first quality failure. Check writeArray C2 start/end occur before measured windows. Diagnostic success cannot substitute for the complete new qualification/floor sequence, calibration or primary dataset.

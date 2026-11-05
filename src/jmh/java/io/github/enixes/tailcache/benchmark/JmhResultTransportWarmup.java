@@ -9,8 +9,10 @@ import java.util.concurrent.TimeUnit;
 
 /** Pinned-JMH setup preparation; scratch frames never enter the real result link. */
 final class JmhResultTransportWarmup {
-    static final String VERSION = "jmh-result-transport-v1";
-    static final int FRAMES = 256;
+    static final String VERSION = "jmh-result-transport-v2";
+    // v1 stopped before writeArray reached C2; its measured count/backedge
+    // threshold is recorded in the v2 plan. Finish this before cache creation.
+    static final int FRAMES = 1024;
     private static volatile long consumed;
 
     private JmhResultTransportWarmup() { }

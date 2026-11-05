@@ -22,7 +22,7 @@ REPORTS = ROOT / "build/reports/tailcache12"
 BACKENDS = ("CAFFEINE", "CHRONICLE_IN_MEMORY")
 HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter") + native_host.STRING_FIELDS
 HOST_RULE_VERSION = "tailcache12-host-v4-native-cpu"
-TRANSPORT_WARMUP_VERSION = "jmh-result-transport-v1"
+TRANSPORT_WARMUP_VERSION = "jmh-result-transport-v2"
 SETTLING_HOST_VERSIONS = ("tailcache12-host-v2-settling", "tailcache12-host-v3-native-cpu", HOST_RULE_VERSION)
 
 

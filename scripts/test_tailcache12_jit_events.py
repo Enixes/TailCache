@@ -14,7 +14,7 @@ class JitEventTest(unittest.TestCase):
             self.assertEqual(p["Backend"],p["Backends"])
             self.assertEqual(218103808,p["LiveBytes"])
             self.assertEqual(8,p["Conditioning"])
-            self.assertEqual("jmh-result-transport-v1",p["TransportWarmupVersion"])
+            self.assertEqual("jmh-result-transport-v2",p["TransportWarmupVersion"])
             self.assertEqual((120,8),(p["Warmups"],p["Measurements"]))
 
     def test_bounded_balanced_attribution_schedule_and_start_event_semantics(self):

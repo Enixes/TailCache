@@ -187,8 +187,9 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         raise ValueError("Missing or mismatched workload fingerprint")
     if inputs.get("TransportWarmupVersion") not in (None,"none"):
         version=inputs["TransportWarmupVersion"]
-        prepared=re.search(r"transportWarmupVersion="+re.escape(version)+r" transportWarmupFrames=256 transportWarmupBytes=(\d+)",text)
-        if (version!="jmh-result-transport-v1" or not prepared or int(prepared[1])<=0
+        frames={"jmh-result-transport-v1":256,"jmh-result-transport-v2":1024}.get(version)
+        prepared=re.search(r"transportWarmupVersion="+re.escape(version)+r" transportWarmupFrames="+str(frames)+r" transportWarmupBytes=(\d+)",text)
+        if (frames is None or not prepared or int(prepared[1])<=0
                 or f"-Dtailcache12.transportWarmupVersion={version}" not in record["jvmArgs"]):
             raise ValueError("Missing or mismatched actual transport preparation evidence")
     if "[TailCache12][integrity]" not in text:
