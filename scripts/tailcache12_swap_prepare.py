@@ -25,7 +25,10 @@ def snapshot():
     settings={}
     for name in ('disksize','comp_algorithm','mem_limit','max_comp_streams'):
         path=pathlib.Path('/sys/block/zram0')/name
-        settings[name]=path.read_text().strip() if path.exists() else None
+        try: settings[name]=path.read_text().strip() if path.exists() else None
+        except OSError as error:
+            if name in ('disksize','comp_algorithm'): raise
+            settings[name]='unavailable:'+type(error).__name__
     return dict(memory=memory_snapshot(),devices=devices,unitProperties=result.stdout.strip(),zramSettings=settings,
         swappiness=pathlib.Path('/proc/sys/vm/swappiness').read_text().strip(),
         zswapEnabled=pathlib.Path('/sys/module/zswap/parameters/enabled').read_text().strip())

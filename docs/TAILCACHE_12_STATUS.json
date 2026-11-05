@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 97,
+    "pythonTests": 98,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -526,7 +526,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
-    "pythonTests": 97,
+    "pythonTests": 98,
     "javaTests": 40,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -619,7 +619,9 @@
     "qualificationCompletionReview": "docs/TAILCACHE_12_QUALIFICATION_COMPLETION_REVIEW.md",
     "nextEveryopReference": "native-final-maintenance-20261106-002-everyop",
     "maintenanceQualificationReview": "docs/TAILCACHE_12_MAINTENANCE_QUALIFICATION_REVIEW.md",
-    "pagingPreparationReview": "docs/TAILCACHE_12_PAGING_PREPARATION_REVIEW.md"
+    "pagingPreparationReview": "docs/TAILCACHE_12_PAGING_PREPARATION_REVIEW.md",
+    "nextSwapPreparation": "native-final-residual-swap-recovery-20261106-002",
+    "boundedArchive": "evidence-archives/native-final-maintenance-calibration-checkpoint-20261106-009.tar.gz"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",

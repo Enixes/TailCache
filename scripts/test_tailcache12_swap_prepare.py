@@ -10,6 +10,20 @@ import tailcache12_swap_prepare as swap
 
 
 class SwapPreparationTest(unittest.TestCase):
+    def test_optional_root_only_settings_are_recorded_but_required_settings_fail_closed(self):
+        def read(path,*args,**kwargs):
+            name=str(path)
+            if name.endswith('/mem_limit'): raise PermissionError('root-readable')
+            if name=='/proc/swaps': return 'Filename Type Size Used Priority\n/dev/zram0 partition 5968892 0 100\n/dev/sda3 partition 9227464 0 -1\n'
+            return 'configured'
+        with patch.object(pathlib.Path,'read_text',read),patch.object(pathlib.Path,'exists',return_value=True), \
+             patch.object(swap,'memory_snapshot',return_value={}), \
+             patch.object(swap.subprocess,'run',return_value=Mock(stdout='active configured units')):
+            self.assertEqual('unavailable:PermissionError',swap.snapshot()['zramSettings']['mem_limit'])
+        with patch.object(pathlib.Path,'read_text',side_effect=PermissionError('required metadata')), \
+             patch.object(swap.subprocess,'run',return_value=Mock(stdout='active configured units')):
+            with self.assertRaises(PermissionError): swap.snapshot()
+
     def state(self,used=20432):
         return dict(memory=dict(MemAvailableKiB=6*1024**2,SwapUsedKiB=used),
             devices=[dict(name='/dev/zram0',type='partition',sizeKiB=5968892,usedKiB=used,priority=100),
