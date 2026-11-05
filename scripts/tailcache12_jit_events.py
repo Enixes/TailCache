@@ -15,6 +15,7 @@ import tailcache12_calibrate as calibration
 import tailcache12_native_retry as retry
 from tailcache12_quiet import run_preflight
 from tailcache12_study_analysis import every_operation_fork_summary, jmh_fork_summary
+from tailcache12_jit_diagnose import classify_tasks
 
 TRACE="3310547f9e5d01436fb54781f8cb50f312c8b3d29079f719694026e43107dfb3"
 EVENT=re.compile(r"^\[(\d+)ns\]\[(\d+)ns\]\[debug\]\[jit,compilation\]\s+(.*)$")
@@ -30,16 +31,17 @@ def parse_events(path):
         if int(timestamp)<=0 or int(uptime)<0 or "::" not in text:
             raise ValueError("Invalid HotSpot event clock or method evidence")
         events.append(dict(line=number,timestampNs=int(timestamp),uptimeNs=int(uptime),detail=text,
-                           kind="invalidation" if "made not entrant" in text or "made zombie" in text else "compilation-completion"))
+                           kind="invalidation" if "made not entrant" in text or "made zombie" in text else
+                                "native-wrapper-event" if "(native)" in text else "compiler-task-start"))
     if not events: raise ValueError("Missing HotSpot compilation events")
     return events
 
 
-def grid():
+def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration")):
     result=[]
-    for repeat in range(1,5):
-        for payload in ((256,4096) if repeat%2 else (4096,256)):
-            for channel in (("every-operation","sample-calibration") if repeat%2 else ("sample-calibration","every-operation")):
+    for repeat in range(1,repeats+1):
+        for payload in (payloads if repeat%2 else tuple(reversed(payloads))):
+            for channel in (channels if repeat%2 else tuple(reversed(channels))):
                 props=dict(Backend="CAFFEINE",Payload=payload,Residents=32768,HeapMiB=512,LiveBytes=0,
                     ChurnBytesPerSecond=32*1024**2,Seed=24301,Warmups=120,Measurements=8,Channel=channel)
                 if channel=="every-operation": props["CompilerDiagnostics"]="false"
@@ -57,7 +59,8 @@ def analyze(attempt,manifest,invocation):
     else:
         record=json.loads((raw/channel/"results.json").read_text())[0]
         runtime={k:record[k] for k in ("jmhVersion","jdkVersion","vmName","vmVersion")}
-        summary=jmh_fork_summary(raw,channel,dict(props,ConsoleFile=str(attempt/invocation["label"]/"gradle.log")),TRACE,runtime)
+        summary=jmh_fork_summary(raw,channel,dict(props,ConsoleFile=str(attempt/invocation["label"]/"gradle.log")),TRACE,runtime,
+                                diagnostic_compiler_xml=manifest.get("diagnosticCompilerXml",False))
     with (attempt/invocation["label"]/"host.csv").open(newline="") as stream:
         host=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
     reasons,_=evidence.replay_host_gate(manifest,raw,host)
@@ -74,17 +77,36 @@ def analyze(attempt,manifest,invocation):
         inside=[e for e in events if start<=e["timestampNs"]<=end]
         near=[e for e in events if start-5_000_000<=e["timestampNs"]<=end+5_000_000 and e not in inside]
         aligned.append(dict(iteration=index,compilerMs=counter,startNs=start,endNs=end,inside=inside,near=near))
-    return dict(label=invocation["label"],inputs=props,hostPass=not reasons,
+    result=dict(label=invocation["label"],inputs=props,hostPass=not reasons,
         rejectionReasons=summary["rejectionReasons"]+reasons,
         compilerViolation=any("compiler" in reason for reason in summary["rejectionReasons"]),
         compilerPerIterationMs=summary["compilerPerIterationMs"],alignedEvents=aligned,
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
+    if manifest.get("diagnosticCompilerXml"):
+        xml=attempt/invocation["label"]/f"hotspot-compile-{metadata['pid']}.xml"
+        logs=list((raw/channel).glob("gc-*.log"))
+        if not xml.exists() or len(logs)!=1: raise ValueError("Missing targeted XML/GC evidence")
+        detail=classify_tasks(xml,logs[0],windows)
+        result["xmlAttribution"]=dict(
+            tasksOverlappingWorker=[t for t in detail["tasks"] if t["location"]=="possible-worker-overlap"],
+            guardTasks=[t for t in detail["tasks"] if "VarHandleGuards guard_LI_V" in t["method"]],
+            deoptimizationEvents=detail["deoptimizationEvents"],workerWindowsSeconds=detail["workerWindowsSeconds"],
+            alignmentUncertaintyMs=detail["alignmentUncertaintyMs"])
+    return result
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("attempt_id")
+    parser.add_argument("--xml",action="store_true")
+    parser.add_argument("--repeats",type=int,choices=range(1,5),default=4)
+    parser.add_argument("--payloads",type=int,nargs="+",choices=(256,4096),default=[256,4096])
+    parser.add_argument("--channels",nargs="+",choices=("every-operation","sample-calibration"),default=["every-operation","sample-calibration"])
     args=parser.parse_args()
+    if args.xml and args.channels!=["sample-calibration"]:
+        parser.error("Targeted XML mode requires only --channels sample-calibration")
+    if len(set(args.payloads))!=len(args.payloads) or len(set(args.channels))!=len(args.channels):
+        parser.error("Duplicate diagnostic conditions")
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.attempt_id): parser.error("Invalid attempt ID")
     attempt=evidence.REPORTS/args.attempt_id
     quiet=evidence.REPORTS/(args.attempt_id+"-quiet")
@@ -96,12 +118,12 @@ def main():
     policy=retry.declare_policy(2)
     initial=retry.initial_quiet_reference(quiet,dict(sourceSha256=source),policy,evidence.host_snapshot())
     options=SimpleNamespace(stage="jit-event-attribution",heap_mib=512,residents=32768,churn_mib=32,
-        live_mib=[0],payloads=[256,4096],seed=24301,warmups=120,measurements=8,repeats=4,
-        channels=["every-operation","sample-calibration"],resume=False)
-    plan=grid()
+        live_mib=[0],payloads=args.payloads,seed=24301,warmups=120,measurements=8,repeats=args.repeats,
+        channels=args.channels,resume=False)
+    plan=grid(args.repeats,args.payloads,args.channels)
     manifest=calibration.prepare(attempt,options,plan)
     manifest.update(initialQuietRef=initial,diagnosticOnly=True,primaryEndpointUseAllowed=False,
-        maxFreshJvms=16,nearEventMarginNs=5_000_000,
+        maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,
         schedule=[dict(label=k,properties=v) for k,v in plan],diagnosticJvmOptions={})
     evidence.save(attempt/"manifest.json",manifest)
     rows=[]
@@ -112,6 +134,8 @@ def main():
                 retry.verify_initial_quiet(attempt,dict(manifest,nativeHostRetryPolicy=policy,
                     nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(evidence.host_snapshot())),before_launch=True)
             option=f"-Xlog:jit+compilation=debug:file={attempt/label}/hotspot-jit-%p.log:timenanos,uptimenanos,level,tags"
+            if args.xml:
+                option+=f" -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:LogFile={attempt/label}/hotspot-compile-%p.xml"
             manifest["diagnosticJvmOptions"][label]=option
             evidence.save(attempt/"manifest.json",manifest)
             os.environ["JAVA_TOOL_OPTIONS"]=option
@@ -123,9 +147,10 @@ def main():
             row=analyze(attempt,manifest,manifest["invocations"][-1])
             rows.append(row)
             result=dict(diagnosticOnly=True,primaryEndpointUseAllowed=False,observations=rows,
-                completedJvms=len(rows),maximumJvms=16,compilerViolationObserved=any(r["compilerViolation"] for r in rows),
+                completedJvms=len(rows),maximumJvms=len(plan),compilerViolationObserved=any(r["compilerViolation"] for r in rows),
                 stoppedOnQualityFailure=bool(row["rejectionReasons"]),
-                limits=["Events are compilation completion/invalidation timestamps, not compiler CPU duration or worker pause time.",
+                eventInterpretationVersion=2,
+                limits=["Regular bytecode events mark compiler task start; native-wrapper/invalidation events are separate. No event is compiler CPU duration or worker pause time.",
                         "Logging can change compilation behavior; non-reproduction is inconclusive."])
             evidence.save(attempt/"attribution.json",result)
             print(f"attribution {label}: compiler={row['compilerPerIterationMs']} reasons={row['rejectionReasons']}",flush=True)

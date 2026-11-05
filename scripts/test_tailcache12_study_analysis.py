@@ -91,6 +91,26 @@ class StudyAnalysisTest(unittest.TestCase):
             result = jmh_fork_summary(raw, "sample", inputs, trace, runtime)
             self.assertTrue(result["accepted"])
             self.assertEqual(200000, result["sampleCount"])
+            record["jvmArgs"].append("-XX:+LogCompilation")
+            path.write_text(json.dumps([record]))
+            with self.assertRaises(ValueError):
+                jmh_fork_summary(raw,"sample",inputs,trace,runtime)
+            with self.assertRaises(ValueError):
+                jmh_fork_summary(raw,"sample",inputs,trace,runtime,diagnostic_compiler_xml=True)
+            import shutil
+            logged=raw/"sample-calibration"
+            shutil.copytree(sample,logged)
+            (logged/"gc-1.log").write_text("fixture")
+            gc=dict(postGcUsedHeapMedianFraction=.3,oldRegionsMedianHeapFraction=.3,maxHumongousRegionsAfter=0)
+            with patch("tailcache12_study_analysis.parse_gc",return_value={}), \
+                 patch("tailcache12_study_analysis.gc_summary",return_value=gc):
+                diagnostic=jmh_fork_summary(raw,"sample-calibration",inputs,trace,runtime,diagnostic_compiler_xml=True)
+                self.assertTrue(diagnostic["accepted"])
+                self.assertTrue(diagnostic["diagnosticCompilerXml"])
+                self.assertFalse(diagnostic["primaryEndpointUseAllowed"])
+                with self.assertRaises(ValueError):
+                    jmh_fork_summary(raw,"sample-calibration",inputs,trace,runtime)
+            record["jvmArgs"].remove("-XX:+LogCompilation")
             record["benchmark"] = "io.github.enixes.tailcache.benchmark.CrossoverBenchmark.freshSupplyFloor"
             path.write_text(json.dumps([record]))
             with self.assertRaises(ValueError):

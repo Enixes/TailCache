@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Calibration003 terminal compiler failure at second candidate: unprofiled SampleTime Caffeine256/live0 third interval11ms>10ms; other checks passed. Only one logical slot selected. No further warmup escalation; bounded lightweight HotSpot event attribution declared.",
+  "currentBlocker": "Lightweight-log diagnostic reproduced17ms compiler violation in SampleTime Caffeine4096. VarHandleGuards.guard_LI_V task start preceded rejecting window; old C1 code invalidated inside it. Corrected event-start interpretation retained separately. Targeted XML attribution declared; no new calibration.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run native-final-jitevents-20261105-001, up to16 counterbalanced Caffeine256/4096 both-channel fresh diagnostic JVMs at120 warmups, with retained lightweight compile-event logs. Stop at first quality rejection; identify method candidates before any new calibration.",
+  "nextWork": "Run native-final-jitxml-target-20261105-001: up to4 fresh Caffeine4096/live0 logged SampleTime diagnostics at120/8, event+XML logs, stop on any failed gate. Inspect method timing/deoptimizations before a code/preparation repair.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -548,14 +548,17 @@
     "calibrationAttempt": "native-final-calibration-20261105-003",
     "calibrationSelectedSlots": 1,
     "calibrationRecordedJvms": 2,
-    "nextCompilerDiagnostic": "native-final-jitevents-20261105-001",
+    "nextCompilerDiagnostic": "native-final-jitxml-target-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
     "preparation120Passed": true,
     "qualificationEveryop": "native-final-preparation120-20261105-001-everyop",
     "qualificationJmh": "native-final-preparation120-20261105-001-jit",
-    "initialQuietEnforced": true
+    "initialQuietEnforced": true,
+    "eventDiagnostic": "native-final-jitevents-20261105-001",
+    "eventDiagnosticJvms": 12,
+    "eventDiagnosticCompilerViolationMs": 17
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",

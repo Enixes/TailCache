@@ -117,13 +117,16 @@ def merged_histograms(iterations, operations):
             "histogramValueSemantics": "JMH 1.37 quantized lower bounds; stall counts bounded at straddling bins"}
 
 
-def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupancy_band=None):
+def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupancy_band=None,
+                     diagnostic_compiler_xml=False):
     """One invocation must contain exactly one condition and one fresh worker JVM."""
     raw = pathlib.Path(raw)
     records = json.loads((raw / kind / "results.json").read_text())
     if len(records) != 1:
         raise ValueError("Expected exactly one JMH condition")
     record = records[0]
+    if diagnostic_compiler_xml and (kind != "sample-calibration" or "-XX:+LogCompilation" not in record["jvmArgs"]):
+        raise ValueError("XML attribution is restricted to explicitly instrumented logged SampleTime diagnostics")
     method = "freshSupplyFloor" if kind == "floor" else "mixedWorkload"
     if record.get("benchmark") != "io.github.enixes.tailcache.benchmark.CrossoverBenchmark." + method:
         raise ValueError("JMH method differs from the declared channel")
@@ -135,7 +138,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     secondaries = set(record.get("secondaryMetrics", {}))
     allowed_secondaries = JMH_SAMPLE_SECONDARIES if kind != "throughput" else set()
     if kind in ("sample", "sample-calibration", "throughput", "floor") and (secondaries - allowed_secondaries
-            or "-XX:+LogCompilation" in record["jvmArgs"]):
+            or ("-XX:+LogCompilation" in record["jvmArgs"] and not diagnostic_compiler_xml)):
         raise ValueError("A profiled fork cannot supply an unprofiled endpoint")
     if record["forks"] != 1 or record["threads"] != 1:
         raise ValueError("Per-fork analysis requires one fresh single-worker JVM")
@@ -185,6 +188,8 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
               "jdkVersion": record["jdkVersion"], "traceSha256": expected_trace,
               "operations": sum(operations), "iterationOperations": operations,
               "compilerPerIterationMs": compiler, "rejectionReasons": reasons}
+    if diagnostic_compiler_xml:
+        result.update(diagnosticCompilerXml=True,primaryEndpointUseAllowed=False)
     if kind in ("sample", "sample-calibration", "compiler", "floor"):
         if record["mode"] != "sample" or record["primaryMetric"]["scoreUnit"] != "ns/op":
             raise ValueError("Wrong latency mode/units")
