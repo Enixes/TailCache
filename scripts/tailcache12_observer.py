@@ -22,7 +22,7 @@ RULES = dict(version="tailcache12-observer-v1", timerMedianToEveryopMedianCeilin
              betweenCallTime="Descriptive only; includes genuine pauses, no subtraction or pressure gate")
 
 
-def floor_grid(warmups,conditioning=0):
+def floor_grid(warmups,conditioning=0,transport_version=None):
     grid = []
     for order in (1, 2):
         for backend in (evidence.BACKENDS if order == 1 else tuple(reversed(evidence.BACKENDS))):
@@ -34,7 +34,7 @@ def floor_grid(warmups,conditioning=0):
         grid.append((f"b{order}-timer", dict(Backend="CAFFEINE", Payload=256, Residents=512,
                     HeapMiB=512, LiveBytes=0, ChurnBytesPerSecond=0, Seed=24301,
                     Warmups=warmups, Measurements=8, TimerFloor="true", Channel="timer", Block=order)))
-    return [(label,dict(props,Conditioning=conditioning)) for label,props in grid] if conditioning else grid
+    return calibration.preparation_controls(grid,dict(conditioning=conditioning,transportWarmupVersion=transport_version))
 
 
 def replay_floors(attempt):
@@ -42,7 +42,7 @@ def replay_floors(attempt):
     if (manifest["stage"] != "observer-floor" or manifest["observerRules"] != RULES
             or calibration.sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]):
         raise ValueError("Changed observer protocol or source archive")
-    expected = floor_grid(manifest["inputs"]["warmups"],manifest["inputs"].get("conditioning",0))
+    expected = floor_grid(manifest["inputs"]["warmups"],manifest["inputs"].get("conditioning",0),manifest["inputs"].get("transportWarmupVersion"))
     policy = native_retry.verify_declaration(attempt, manifest, expected)
     if manifest["expectedBlocks"] != [label for label, _ in expected]:
         raise ValueError("Changed floor schedule")
@@ -159,6 +159,8 @@ def coherence(pilot, floors):
         raise ValueError("Observer evidence differs from the pilot measurement source or preparation")
     if pm["inputs"].get("conditioning",0)!=fm["inputs"].get("conditioning",0):
         raise ValueError("Observer floors and pilot use different conditioning")
+    if pm["inputs"].get("transportWarmupVersion")!=fm["inputs"].get("transportWarmupVersion"):
+        raise ValueError("Observer floors and pilot use different transport preparation")
     pilot_driver.verify_native_environments([pm, fm])
     if f["runtimeIdentity"] != pm["runtimeIdentity"]:
         raise ValueError("Observer floors and pilot used different VM builds")
@@ -225,6 +227,7 @@ def main():
     parser.add_argument("attempt_id")
     parser.add_argument("--warmups", type=int, default=96)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
+    parser.add_argument("--transport-warmup",action="store_true")
     parser.add_argument("--pilot")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--native-host-retries",type=int,choices=(0,1,2),default=0)
@@ -241,12 +244,13 @@ def main():
         return 0 if replay_floors(attempt)["floorDataPass"] else 1
     if args.warmups < 12:
         parser.error("At least twelve warmups required")
-    grid = floor_grid(args.warmups,args.conditioning)
+    grid = floor_grid(args.warmups,args.conditioning,evidence.TRANSPORT_WARMUP_VERSION if args.transport_warmup else None)
     inputs = SimpleNamespace(stage="observer-floor", warmups=args.warmups, measurements=8,
         residents=32768, heap_mib=512, churn_mib=32, live_mib=[0], payloads=[256,4096],
         seed=24301, repeats=2, channels=["floor","timer"], resume=args.resume,
         native_host_retries=args.native_host_retries,native_host_retry_budget=args.native_host_retry_budget)
     inputs.conditioning=args.conditioning
+    inputs.transport_warmup=args.transport_warmup
     manifest = calibration.prepare(attempt, inputs, grid)
     manifest["observerRules"] = RULES
     evidence.save(attempt / "manifest.json", manifest)

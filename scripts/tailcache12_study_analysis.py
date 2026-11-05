@@ -185,6 +185,12 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         text += pathlib.Path(console).read_text()
     if f"traceSha256={expected_trace}" not in text or f"valueGenerator={VALUE_GENERATOR}" not in text:
         raise ValueError("Missing or mismatched workload fingerprint")
+    if inputs.get("TransportWarmupVersion") not in (None,"none"):
+        version=inputs["TransportWarmupVersion"]
+        prepared=re.search(r"transportWarmupVersion="+re.escape(version)+r" transportWarmupFrames=256 transportWarmupBytes=(\d+)",text)
+        if (version!="jmh-result-transport-v1" or not prepared or int(prepared[1])<=0
+                or f"-Dtailcache12.transportWarmupVersion={version}" not in record["jvmArgs"]):
+            raise ValueError("Missing or mismatched actual transport preparation evidence")
     if "[TailCache12][integrity]" not in text:
         raise ValueError("Missing post-trial integrity verification")
     sidecars = list((raw / kind).glob("iterations-*.csv"))

@@ -22,6 +22,7 @@ REPORTS = ROOT / "build/reports/tailcache12"
 BACKENDS = ("CAFFEINE", "CHRONICLE_IN_MEMORY")
 HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter") + native_host.STRING_FIELDS
 HOST_RULE_VERSION = "tailcache12-host-v4-native-cpu"
+TRANSPORT_WARMUP_VERSION = "jmh-result-transport-v1"
 SETTLING_HOST_VERSIONS = ("tailcache12-host-v2-settling", "tailcache12-host-v3-native-cpu", HOST_RULE_VERSION)
 
 
@@ -445,6 +446,7 @@ def main():
     parser.add_argument("--warmups", type=int, default=12)
     parser.add_argument("--residents", type=int, default=8192)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
+    parser.add_argument("--transport-warmup",action="store_true")
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+", args.attempt_id):
         parser.error("Invalid attempt id")
@@ -480,8 +482,9 @@ def main():
     audits = {"reportable": False}
     save(attempt / "manifest.json", manifest)
     if args.stage == "validate":
+        transport_props={"TransportWarmupVersion":TRANSPORT_WARMUP_VERSION} if args.transport_warmup else {}
         invoke(attempt, manifest, "smoke", "tailCache12Smoke",
-               {"Residents": 512, "LiveBytes": 8388608, "ChurnBytesPerSecond": 8388608})
+               {"Residents": 512, "LiveBytes": 8388608, "ChurnBytesPerSecond": 8388608,**transport_props})
         retention = []
         for backend in BACKENDS:
             for residents in (512, 8192):
@@ -500,7 +503,7 @@ def main():
                 audits["pauseValidation"].append(dict(pause_audit(raw, validation), backend=backend))
         sample = invoke(attempt, manifest, "observer-sample", "tailCache12Sample",
                         {"Residents": 512, "Payloads": 256, "ChurnBytesPerSecond": 0,
-                         "Warmups": 3, "Measurements": 1, "Forks": 1})
+                         "Warmups": 3, "Measurements": 1, "Forks": 1,**transport_props})
         sample_records = json.loads((sample / "sample/results.json").read_text())
         audits["observerCharacterization"] = []
         for backend in BACKENDS:
@@ -515,7 +518,7 @@ def main():
                 "qualified": False, "reason": "Short characterization, no frozen coherence rule or independent repeats"})
         invoke(attempt, manifest, "supply-floor", "tailCache12SupplyFloor",
                {"Residents": 512, "Backends": "CAFFEINE", "ChurnBytesPerSecond": 0,
-                "Warmups": 3, "Measurements": 1, "Forks": 1})
+                "Warmups": 3, "Measurements": 1, "Forks": 1,**transport_props})
         floor = invoke(attempt, manifest, "timer-floor", "tailCache12EveryOperation",
                        {"Residents": 512, "ChurnBytesPerSecond": 0, "Warmups": 3, "Measurements": 1,
                         "TimerFloor": "true"})
@@ -542,7 +545,8 @@ def main():
                                  {"Backends": backend, "Payloads": payload, "Residents": args.residents,
                                   "LiveBytes": 8388608, "ChurnBytesPerSecond": 16777216,
                                   "Warmups": args.warmups, "Measurements": 8, "Forks": 1,
-                                  "Conditioning":args.conditioning})
+                                  "Conditioning":args.conditioning,
+                                  "TransportWarmupVersion":TRANSPORT_WARMUP_VERSION if args.transport_warmup else "none"})
                     record = json.loads((raw / "compiler/results.json").read_text())[0]
                     metric = record["secondaryMetrics"]["compiler.time.profiled"]
                     total,values=compiler_profile_values(record,args.conditioning)
@@ -552,9 +556,9 @@ def main():
                                          "compilerTotalMs": total, "compilerPerIterationMs": values,
                                          "workerEnvelopeCompilerMs": worker_values,
                                          "jitPass": passed, "hostPass": manifest["invocations"][-1]["hostQualityPass"]})
-                    if not observations[-1]["hostPass"]:
+                    if not observations[-1]["hostPass"] or not passed:
                         suspended = True
-                        print("Host gate failed; remaining compiler blocks suspended.", flush=True)
+                        print("Compiler or host gate failed; remaining compiler blocks suspended.", flush=True)
         audits["jit"] = observations
         audits["jitRule"] = {"aggregateMsAtEightSeconds": 80, "perIterationMs": 10,
                              "repeats": 2, "warmups": args.warmups,"conditioningIterations":args.conditioning,

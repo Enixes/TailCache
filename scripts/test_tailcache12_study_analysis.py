@@ -91,6 +91,18 @@ class StudyAnalysisTest(unittest.TestCase):
             result = jmh_fork_summary(raw, "sample", inputs, trace, runtime)
             self.assertTrue(result["accepted"])
             self.assertEqual(200000, result["sampleCount"])
+            prepared=dict(inputs,TransportWarmupVersion="jmh-result-transport-v1")
+            with self.assertRaises(ValueError): jmh_fork_summary(raw,"sample",prepared,trace,runtime)
+            record["jvmArgs"].append("-Dtailcache12.transportWarmupVersion=jmh-result-transport-v1")
+            path.write_text(json.dumps([record]))
+            text_path=sample/"jmh.txt"
+            original=text_path.read_text()
+            text_path.write_text(original+"transportWarmupVersion=jmh-result-transport-v1 transportWarmupFrames=256 transportWarmupBytes=12345\n")
+            self.assertTrue(jmh_fork_summary(raw,"sample",prepared,trace,runtime)["accepted"])
+            text_path.write_text(original+"transportWarmupVersion=jmh-result-transport-v1 transportWarmupFrames=256 transportWarmupBytes=0\n")
+            with self.assertRaises(ValueError): jmh_fork_summary(raw,"sample",prepared,trace,runtime)
+            text_path.write_text(original)
+            record["jvmArgs"].remove("-Dtailcache12.transportWarmupVersion=jmh-result-transport-v1")
             record["jvmArgs"].append("-XX:+LogCompilation")
             path.write_text(json.dumps([record]))
             with self.assertRaises(ValueError):

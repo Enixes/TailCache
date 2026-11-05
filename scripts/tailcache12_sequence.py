@@ -19,6 +19,7 @@ def main():
     parser.add_argument("prefix")
     parser.add_argument("--warmups",type=int,default=96)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
+    parser.add_argument("--transport-warmup",action="store_true")
     args=parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.prefix): parser.error("Invalid prefix")
     names=["observer","quiet","functional","pause","jit","everyop","pressure96","floors"]
@@ -43,6 +44,9 @@ def main():
              "--backends","CAFFEINE","--payloads","4096","--live-mib","96"]),
         ("floors","tailcache12_observer.py",["floors",paths["floors"].name,"--warmups",str(args.warmups),"--conditioning",str(args.conditioning),
             "--native-host-retries","2","--native-host-retry-budget","8"])]
+    if args.transport_warmup:
+        commands=[(name,script,options+(["--transport-warmup"] if name in ("functional","jit","everyop","pressure96","floors") else []))
+                  for name,script,options in commands]
     try:
         for name,script,options in commands:
             if evidence.source_hash()!=source: raise ValueError("Source changed during qualification sequence")

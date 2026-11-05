@@ -724,6 +724,8 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
         jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
+        jvmOptions.add("-Dtailcache12.transportWarmupVersion=" +
+            providers.gradleProperty("tailcache12TransportWarmupVersion").orElse("none").get())
         jvmOptions.add("-Dtailcache12.observationDir=${directory.absolutePath}")
         if (kind in listOf("compiler", "allocation", "sample-calibration")) {
             jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0")

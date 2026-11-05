@@ -28,6 +28,17 @@ from tailcache12_provenance import archive_measurement_source_hash, measurement_
 CHANNELS = ("every-operation", "sample-calibration")
 
 
+def preparation_controls(grid,inputs):
+    result=[]
+    for label,props in grid:
+        props=dict(props)
+        if inputs.get("conditioning",0): props["Conditioning"]=inputs["conditioning"]
+        if inputs.get("transportWarmupVersion"):
+            props["TransportWarmupVersion"]=inputs["transportWarmupVersion"]
+        result.append((label,props))
+    return result
+
+
 def command_properties(props):
     result = dict(props)
     if props["Channel"] == "sample-calibration":
@@ -50,7 +61,7 @@ def calibration_grid(inputs):
                             LiveBytes=live, ChurnBytesPerSecond=inputs["churnBytesPerSecond"],
                             HeapMiB=inputs["heapMiB"], Warmups=inputs["warmups"], Measurements=inputs["measurements"],
                             Seed=inputs["seed"], Channel=channel)))
-    return [(label,dict(props,Conditioning=inputs["conditioning"])) for label,props in grid] if inputs.get("conditioning",0) else grid
+    return preparation_controls(grid,inputs)
 
 
 def verify_retry_declaration(attempt, manifest):
@@ -397,6 +408,8 @@ def vars_inputs(args):
         inputs["initialQuietAttempt"]=args.initial_quiet
     if getattr(args,"conditioning",0):
         inputs["conditioning"]=args.conditioning
+    if getattr(args,"transport_warmup",False):
+        inputs["transportWarmupVersion"]=evidence.TRANSPORT_WARMUP_VERSION
     return inputs
 
 
@@ -457,6 +470,7 @@ def main():
     parser.add_argument("--warmups", type=int, default=12)
     parser.add_argument("--measurements", type=int, default=8)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
+    parser.add_argument("--transport-warmup",action="store_true")
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--channels", choices=CHANNELS, nargs="+")
     parser.add_argument("--resume", action="store_true")
