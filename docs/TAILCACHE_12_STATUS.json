@@ -1,5 +1,5 @@
 {
-  "asOfDate": "2026-11-05",
+  "asOfDate": "2026-11-06",
   "taskComplete": false,
   "campaignReady": false,
   "reportable": false,
@@ -56,10 +56,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap,N32768"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Maintenance preparation implemented/tested/reviewed; changed measurement source requires new attribution, full qualification/floors and calibration before any pilot/campaign.",
+  "currentBlocker": "Maintenance-prepared12/12 attached diagnostics passed, max compiler5ms; direct early C2 timing check pending because attachment begins after initial setup. Full qualification/calibration/pilot still required for changed source.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run/review bounded12-fork maintenance-prepared attached diagnostic, stopping on first quality failure; then declare new source-matched qualification only if justified.",
+  "nextWork": "Run/review one predeclared XML diagnostic at Caffeine4096/live0 with maintenance preparation; then fresh full qualification/floors if direct tier timing and gates pass.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -532,7 +532,7 @@
     "calibrationAttempt": "native-final-calibration-20261105-006",
     "calibrationSelectedSlots": 64,
     "calibrationRecordedJvms": 64,
-    "nextCompilerDiagnostic": "native-final-maintenance-jitattach-20261105-001",
+    "nextCompilerDiagnostic": "native-final-maintenance-jitxml-20261106-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
@@ -583,7 +583,10 @@
     "attachedCompilerViolationMs": 53,
     "maintenancePreparationPlan": "docs/TAILCACHE_12_MAINTENANCE_PREPARATION_PLAN.md",
     "maintenanceWarmupVersion": "lifecycle-maintenance-v1",
-    "maintenancePreparationReview": "docs/TAILCACHE_12_MAINTENANCE_PREPARATION_REVIEW.md"
+    "maintenancePreparationReview": "docs/TAILCACHE_12_MAINTENANCE_PREPARATION_REVIEW.md",
+    "maintenanceDiagnosticPassed": true,
+    "maintenanceDiagnosticJvms": 12,
+    "maintenanceDiagnosticMaxCompilerMs": 5
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
