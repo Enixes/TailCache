@@ -716,11 +716,14 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         }
         val warmups = providers.gradleProperty("tailcache12Warmups").orElse(if (smoke) "1" else "12")
         val measurements = providers.gradleProperty("tailcache12Measurements").orElse(if (smoke) "1" else "8")
+        val conditioning = providers.gradleProperty("tailcache12Conditioning").orElse("0").get().toInt()
+        require(conditioning in 0..64) { "Invalid Task 12 conditioning count" }
         val forks = providers.gradleProperty("tailcache12Forks").orElse(if (smoke) "1" else "3")
         val duration = if (smoke) "300ms" else "1s"
         val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
+        jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
         jvmOptions.add("-Dtailcache12.observationDir=${directory.absolutePath}")
         if (kind in listOf("compiler", "allocation", "sample-calibration")) {
             jvmOptions.add("-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0")
@@ -735,7 +738,7 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
             "-p", "residentEntries=${tailCache12Residents.get()}",
             "-p", "applicationLiveBytes=${tailCache12LiveBytes.get()}",
             "-p", "churnBytesPerSecond=${tailCache12Churn.get()}", "-p", "seed=${tailCache12Seed.get()}",
-            "-t", "1", "-wi", warmups.get(), "-i", measurements.get(), "-f", forks.get(),
+            "-t", "1", "-wi", warmups.get(), "-i", (measurements.get().toInt() + conditioning).toString(), "-f", forks.get(),
             "-w", duration, "-r", duration,
             "-bm", if (kind in listOf("throughput", "allocation")) "thrpt" else "sample",
             "-tu", if (kind in listOf("throughput", "allocation")) "s" else "ns",
@@ -782,6 +785,7 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
         "--residents", tailCache12Residents.get(), "--application-live-bytes", tailCache12LiveBytes.get(),
         "--churn-bytes-sec", tailCache12Churn.get(), "--seed", tailCache12Seed.get(),
         "--warmup", providers.gradleProperty("tailcache12Warmups").orElse("12").get(),
+        "--conditioning", providers.gradleProperty("tailcache12Conditioning").orElse("0").get(),
         "--measure", providers.gradleProperty("tailcache12Measurements").orElse("8").get(),
         "--iteration-ms", providers.gradleProperty("tailcache12IterationMs").orElse("1000").get(),
         "--validation", providers.gradleProperty("tailcache12Validation").orElse("none").get(),

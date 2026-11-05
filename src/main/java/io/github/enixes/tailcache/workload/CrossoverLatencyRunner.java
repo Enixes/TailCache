@@ -30,6 +30,7 @@ public final class CrossoverLatencyRunner {
                 number(options, "--churn-bytes-sec", 16 * 1024 * 1024), 128);
         int warmups = integer(options, "--warmup", 12);
         int measurements = integer(options, "--measure", 8);
+        int conditioning = integer(options, "--conditioning", 0);
         long durationNs = number(options, "--iteration-ms", 1000) * 1_000_000;
         String validation = options.getOrDefault("--validation", "none");
         boolean floor = Boolean.parseBoolean(options.getOrDefault("--timer-floor", "false"));
@@ -43,18 +44,18 @@ public final class CrossoverLatencyRunner {
         if (compilerCounters && (compiler == null || !compiler.isCompilationTimeMonitoringSupported())) {
             throw new IllegalStateException("Compiler-time evidence unavailable");
         }
-        if (warmups < 0 || measurements < 1 || durationNs <= 0
+        if (warmups < 0 || measurements < 1 || conditioning < 0 || conditioning > 64 || durationNs <= 0
                 || !java.util.Set.of("none", "long-operation", "gc").contains(validation)
-                || (!validation.equals("none") && durationNs < 500_000_000)) {
+                || (!validation.equals("none") && (durationNs < 500_000_000 || conditioning != 0))) {
             throw new IllegalArgumentException("Invalid timing or validation parameters");
         }
         CrossoverLifecycleWarmup.prepare(backend, config);
         EveryOperationRecorder.warmupBranches();
         EveryOperationRecorder warmupRecorder = new EveryOperationRecorder();
-        EveryOperationRecorder[] measurementRecorders = new EveryOperationRecorder[measurements];
-        for (int i = 0; i < measurements; i++) measurementRecorders[i] = new EveryOperationRecorder();
+        EveryOperationRecorder[] measurementRecorders = new EveryOperationRecorder[conditioning + measurements];
+        for (int i = 0; i < measurementRecorders.length; i++) measurementRecorders[i] = new EveryOperationRecorder();
         // Defer formatting, histogram queries, and file output until all worker windows have ended.
-        java.util.List<Observation> observations = new java.util.ArrayList<>(warmups + measurements);
+        java.util.List<Observation> observations = new java.util.ArrayList<>(warmups + conditioning + measurements);
         try (CrossoverWorkload workload = new CrossoverWorkload(backend, config);
              ApplicationChurn churn = new ApplicationChurn(config.churnBytesPerSecond(), 4096, 128);
              BufferedWriter writer = Files.newBufferedWriter(directory.resolve("iterations.csv"))) {
@@ -72,12 +73,13 @@ public final class CrossoverLatencyRunner {
                     + "\nrecorderBranchWarmupOperations=" + EveryOperationRecorder.BRANCH_WARMUP_OPERATIONS
                     + "\ncompilerCounters=" + compilerCounters + "\ncompilerXml=" + compilerDiagnostics
                     + "\nworkerAllocationCounters=true"
+                    + "\nconditioningIterations=" + conditioning
                     + "\njvmArgs=" + runtime.getInputArguments() + "\n");
             writer.write("phase,iteration,startNs,endNs,uptimeStartMs,uptimeEndMs,operations,serviceP50Ns,serviceP99Ns,"
                     + "serviceP999Ns,serviceMaxNs,completionGapMaxNs,serviceAbove1ms,gapAbove1ms,serviceAbove10ms,gapAbove10ms,"
                     + "churnPayloadBytes,churnPayloadBytesPerSecond,churnDroppedBytes,churnLateTicks,churnRetainedBytes,"
                     + "injectionStartNs,injectionEndNs,uptimeAnchorBeforeNs,uptimeAnchorAfterNs,churnJvmAllocatedBytes,writes,compilerMs,workerJvmAllocatedBytes\n");
-            for (int i = 0; i < warmups + measurements; i++) {
+            for (int i = 0; i < warmups + conditioning + measurements; i++) {
                 boolean measured = i >= warmups;
                 int index = measured ? i - warmups + 1 : i + 1;
                 EveryOperationRecorder recorder = measured ? measurementRecorders[index - 1] : warmupRecorder;
@@ -116,7 +118,10 @@ public final class CrossoverLatencyRunner {
                 EveryOperationRecorder recorder = observation.measured()
                         ? measurementRecorders[observation.index() - 1] : null;
                 ApplicationChurn.Snapshot allocation = observation.allocation();
-                writer.write((observation.measured() ? "MEASUREMENT" : "WARMUP") + "," + observation.index()
+                boolean prepared = observation.measured() && observation.index() <= conditioning;
+                String phase = observation.measured() ? (prepared ? "CONDITIONING" : "MEASUREMENT") : "WARMUP";
+                int exportedIndex = observation.measured() && !prepared ? observation.index() - conditioning : observation.index();
+                writer.write(phase + "," + exportedIndex
                         + "," + observation.start() + "," + observation.end() + "," + observation.uptimeStart()
                         + "," + observation.uptimeEnd() + "," + observation.operations()
                         + "," + (recorder == null ? 0 : recorder.servicePercentile(50))
@@ -135,7 +140,12 @@ public final class CrossoverLatencyRunner {
                         + "," + allocation.jvmAllocatedBytes() + "," + observation.writes() + "," + observation.compilerMs()
                         + "," + observation.workerAllocatedBytes() + "\n");
             }
-            for (int i = 0; i < measurements; i++) measurementRecorders[i].export(directory, "iteration-" + (i + 1));
+            if (conditioning > 0) Files.createDirectory(directory.resolve("conditioning"));
+            for (int i = 0; i < measurementRecorders.length; i++) {
+                boolean prepared = i < conditioning;
+                measurementRecorders[i].export(prepared ? directory.resolve("conditioning") : directory,
+                        "iteration-" + (prepared ? i + 1 : i - conditioning + 1));
+            }
             Files.writeString(directory.resolve("integrity.txt"), "contentChecksum=" + workload.verifyContents()
                     + "\napplicationChecksum=" + workload.applicationChecksum() + "\noperations=" + workload.operations()
                     + "\nwrites=" + workload.writes() + "\nconsumed=" + consumed + "\n");

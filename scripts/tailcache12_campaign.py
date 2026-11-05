@@ -23,6 +23,7 @@ from tailcache12_study_analysis import hierarchical_ratio, variance_reasons
 
 VERSION = "tailcache12-campaign-v1"
 RULES = dict(version=VERSION, passes=2, primaryForksPerPass=3, measurements=8,
+    conditioningIterations=8,
     p99BetweenPassCeiling=1.25, p999BetweenPassCeiling=1.5,
     minimumTailObservations=100000, bootstrapResamples=50000,
     familyComparisons=32, familyAlpha=.05, descriptiveConfidence=.95,
@@ -59,7 +60,7 @@ def schedule(inputs, order_seed, selections=None):
                             if channel != "every-operation":
                                 props.update(Backends=backend, Payloads=payload, Forks=1)
                             grid.append((label, props))
-    return grid
+    return [(label,dict(props,Conditioning=inputs["conditioning"])) for label,props in grid] if inputs.get("conditioning",0) else grid
 
 
 def reference(path):
@@ -218,6 +219,8 @@ def freeze(attempt, args):
         raise ValueError("Replayed pilot/coherence gates must pass before protocol freeze")
     parent = json.loads((pilot_path/"manifest.json").read_text())
     inputs = parent["inputs"]
+    if inputs.get("conditioning",0)!=RULES["conditioningIterations"]:
+        raise ValueError("Campaign requires prospectively declared measurement-mode conditioning")
     pilot.verify_native_environments([parent], evidence.host_snapshot())
     source = measurement_source_hash(evidence.ROOT)
     if source != archive_measurement_source_hash(pilot_path/"source.tar.gz"):

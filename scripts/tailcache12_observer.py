@@ -22,7 +22,7 @@ RULES = dict(version="tailcache12-observer-v1", timerMedianToEveryopMedianCeilin
              betweenCallTime="Descriptive only; includes genuine pauses, no subtraction or pressure gate")
 
 
-def floor_grid(warmups):
+def floor_grid(warmups,conditioning=0):
     grid = []
     for order in (1, 2):
         for backend in (evidence.BACKENDS if order == 1 else tuple(reversed(evidence.BACKENDS))):
@@ -34,7 +34,7 @@ def floor_grid(warmups):
         grid.append((f"b{order}-timer", dict(Backend="CAFFEINE", Payload=256, Residents=512,
                     HeapMiB=512, LiveBytes=0, ChurnBytesPerSecond=0, Seed=24301,
                     Warmups=warmups, Measurements=8, TimerFloor="true", Channel="timer", Block=order)))
-    return grid
+    return [(label,dict(props,Conditioning=conditioning)) for label,props in grid] if conditioning else grid
 
 
 def replay_floors(attempt):
@@ -42,7 +42,7 @@ def replay_floors(attempt):
     if (manifest["stage"] != "observer-floor" or manifest["observerRules"] != RULES
             or calibration.sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]):
         raise ValueError("Changed observer protocol or source archive")
-    expected = floor_grid(manifest["inputs"]["warmups"])
+    expected = floor_grid(manifest["inputs"]["warmups"],manifest["inputs"].get("conditioning",0))
     policy = native_retry.verify_declaration(attempt, manifest, expected)
     if manifest["expectedBlocks"] != [label for label, _ in expected]:
         raise ValueError("Changed floor schedule")
@@ -84,8 +84,18 @@ def replay_floors(attempt):
             with (worker / "iterations.csv").open(newline="") as stream:
                 iterations = list(csv.DictReader(stream))
             measured = [r for r in iterations if r["phase"] == "MEASUREMENT"]
-            if len(iterations) != props["Warmups"] + 8 or len(measured) != 8:
+            conditioning=props.get("Conditioning",0)
+            conditioned=[r for r in iterations if r["phase"]=="CONDITIONING"]
+            if len(iterations) != props["Warmups"] + conditioning + 8 or len(measured) != 8 or len(conditioned)!=conditioning:
                 raise ValueError("Incomplete timer preparation/measurement")
+            if conditioning:
+                if (config.get("conditioningIterations")!=str(conditioning) or not re.search(
+                        r"--conditioning="+str(conditioning)+r"(?:,|\})",config["options"])
+                        or [r["phase"] for r in iterations]!=["WARMUP"]*props["Warmups"]+["CONDITIONING"]*conditioning+["MEASUREMENT"]*8):
+                    raise ValueError("Shifted or undeclared timer conditioning")
+                for row in conditioned:
+                    for channel in ("service","completion-gap"):
+                        histogram(worker/"conditioning"/f"iteration-{row['iteration']}-{channel}-bins.csv",int(row["operations"]))
             bins = {}
             for r in measured:
                 if int(r["endNs"]) - int(r["startNs"]) < 10**9:
@@ -147,6 +157,8 @@ def coherence(pilot, floors):
             != archive_measurement_source_hash(floors / "source.tar.gz")
             or pm["inputs"]["warmups"] != fm["inputs"]["warmups"]):
         raise ValueError("Observer evidence differs from the pilot measurement source or preparation")
+    if pm["inputs"].get("conditioning",0)!=fm["inputs"].get("conditioning",0):
+        raise ValueError("Observer floors and pilot use different conditioning")
     pilot_driver.verify_native_environments([pm, fm])
     if f["runtimeIdentity"] != pm["runtimeIdentity"]:
         raise ValueError("Observer floors and pilot used different VM builds")
@@ -212,6 +224,7 @@ def main():
     parser.add_argument("stage", choices=("floors", "audit", "coherence"))
     parser.add_argument("attempt_id")
     parser.add_argument("--warmups", type=int, default=96)
+    parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--pilot")
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--native-host-retries",type=int,choices=(0,1,2),default=0)
@@ -228,11 +241,12 @@ def main():
         return 0 if replay_floors(attempt)["floorDataPass"] else 1
     if args.warmups < 12:
         parser.error("At least twelve warmups required")
-    grid = floor_grid(args.warmups)
+    grid = floor_grid(args.warmups,args.conditioning)
     inputs = SimpleNamespace(stage="observer-floor", warmups=args.warmups, measurements=8,
         residents=32768, heap_mib=512, churn_mib=32, live_mib=[0], payloads=[256,4096],
         seed=24301, repeats=2, channels=["floor","timer"], resume=args.resume,
         native_host_retries=args.native_host_retries,native_host_retry_budget=args.native_host_retry_budget)
+    inputs.conditioning=args.conditioning
     manifest = calibration.prepare(attempt, inputs, grid)
     manifest["observerRules"] = RULES
     evidence.save(attempt / "manifest.json", manifest)

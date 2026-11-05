@@ -24,6 +24,8 @@ class CampaignTest(unittest.TestCase):
                     self.assertEqual({(b,f,backend) for b in (1,2) for f in (1,2,3) for backend in pilot.evidence.BACKENDS},
                                      {(r["Block"],r["ForkOrdinal"],r["Backend"]) for r in rows})
         self.assertEqual(grid,campaign.schedule(self.inputs(),24301))
+        conditioned=campaign.schedule(dict(self.inputs(),conditioning=8),24301)
+        self.assertTrue(all(p["Conditioning"]==8 for _,p in conditioned))
 
     def comparisons(self, ratios):
         return [dict(seed=24301,channel=c,payloadBytes=p,applicationLiveBytes=live,complete=True,

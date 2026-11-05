@@ -53,20 +53,40 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
                                             for k in ("jdkVersion", "vmName", "vmVersion")):
         raise ValueError("Exact every-operation VM build differs from the frozen protocol")
     options = configuration["options"]
+    conditioning=inputs.get("Conditioning",0)
+    if type(conditioning) is not int or not 0<=conditioning<=64:
+        raise ValueError("Invalid conditioning controls")
+    if conditioning and (configuration.get("conditioningIterations") != str(conditioning)
+                         or not re.search(r"--conditioning="+str(conditioning)+r"(?:,|\})",options)):
+        raise ValueError("Missing explicit every-operation conditioning controls")
     for option, expected in (("--warmup", inputs["Warmups"]), ("--measure", inputs["Measurements"]),
                              ("--iteration-ms", 1000)):
         if not re.search(re.escape(option) + "=" + str(expected) + r"(?:,|\})", options):
             raise ValueError("Every-operation timing controls differ from the protocol")
     with (worker / "iterations.csv").open(newline="") as stream:
         rows = list(csv.DictReader(stream))
-    if (len(rows) != inputs["Warmups"] + inputs["Measurements"]
+    if (len(rows) != inputs["Warmups"] + conditioning + inputs["Measurements"]
             or sum(r["phase"] == "WARMUP" for r in rows) != inputs["Warmups"]):
         raise ValueError("Incomplete warmup/measurement iteration evidence")
-    for phase, expected in (("WARMUP", inputs["Warmups"]), ("MEASUREMENT", inputs["Measurements"])):
+    for phase, expected in (("WARMUP", inputs["Warmups"]),("CONDITIONING",conditioning), ("MEASUREMENT", inputs["Measurements"])):
         if [int(r["iteration"]) for r in rows if r["phase"] == phase] != list(range(1, expected + 1)):
             raise ValueError("Missing or repeated worker iteration")
     if any(int(r["endNs"]) - int(r["startNs"]) < 1_000_000_000 or int(r["operations"]) <= 0 for r in rows):
         raise ValueError("Incomplete one-second worker interval")
+    if conditioning:
+        from tailcache12_analysis import histogram
+        phases=[r["phase"] for r in rows]
+        if phases != ["WARMUP"]*inputs["Warmups"]+["CONDITIONING"]*conditioning+["MEASUREMENT"]*inputs["Measurements"]:
+            raise ValueError("Shifted conditioning/analysis phases")
+        for row in rows:
+            if row["phase"]=="CONDITIONING":
+                for channel in ("service","completion-gap"):
+                    histogram(worker/"conditioning"/f"iteration-{row['iteration']}-{channel}-bins.csv",int(row["operations"]))
+                if (int(row["churnDroppedBytes"]) != 0 or int(row["churnJvmAllocatedBytes"])<int(row["churnPayloadBytes"])
+                        or not math.isfinite(float(row["churnPayloadBytesPerSecond"]))
+                        or abs(float(row["churnPayloadBytesPerSecond"])-inputs["ChurnBytesPerSecond"])>
+                           max(1,inputs["ChurnBytesPerSecond"]*.1)):
+                    raise ValueError("Invalid conditioning churn demand")
     integrity = dict(line.split("=", 1) for line in
                      (worker / "integrity.txt").read_text().splitlines() if "=" in line)
     for field in ("contentChecksum", "applicationChecksum", "consumed"):
@@ -146,8 +166,13 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
               "applicationLiveBytes": "LiveBytes", "churnBytesPerSecond": "ChurnBytesPerSecond", "seed": "Seed"}
     if any(str(record["params"][field]) != str(inputs[prop]) for field, prop in fields.items()):
         raise ValueError("JMH condition inputs differ from the protocol")
+    conditioning=inputs.get("Conditioning",0)
+    if type(conditioning) is not int or not 0<=conditioning<=64:
+        raise ValueError("Invalid conditioning controls")
+    if conditioning and f"-Dtailcache12.conditioningIterations={conditioning}" not in record["jvmArgs"]:
+        raise ValueError("Missing explicit JMH conditioning control")
     if (record["warmupIterations"] != inputs["Warmups"]
-            or record["measurementIterations"] != inputs["Measurements"]
+            or record["measurementIterations"] != inputs["Measurements"]+conditioning
             or record["measurementTime"] != "1 s" or record.get("warmupTime") != "1 s"):
         raise ValueError("JMH timing controls differ from the protocol")
     for flag in (f"-Xms{inputs['HeapMiB']}m", f"-Xmx{inputs['HeapMiB']}m", "-XX:+UseG1GC"):
@@ -166,7 +191,16 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     if len(sidecars) != 1:
         raise ValueError("Expected one worker sidecar")
     with sidecars[0].open(newline="") as stream:
-        rows = [r for r in csv.DictReader(stream) if r["phase"] == "MEASUREMENT"]
+        all_rows=list(csv.DictReader(stream))
+    rows = [r for r in all_rows if r["phase"] == "MEASUREMENT"]
+    conditioned=[r for r in all_rows if r["phase"]=="CONDITIONING"]
+    if len(conditioned)!=conditioning:
+        raise ValueError("Missing or unexpected JMH conditioning rows")
+    if conditioning:
+        if ([r["phase"] for r in all_rows] != ["WARMUP"]*inputs["Warmups"]+
+                ["CONDITIONING"]*conditioning+["MEASUREMENT"]*inputs["Measurements"]
+                or f"conditioningIterations={conditioning}" not in text):
+            raise ValueError("Shifted or undeclared JMH conditioning phases")
     if len(rows) != inputs["Measurements"]:
         raise ValueError("Incomplete worker iteration evidence")
     windows = [(int(r["envelopeStartNs"]), int(r["envelopeEndNs"])) for r in rows]
@@ -184,10 +218,17 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         reasons.append("churn demand was dropped")
     if any(int(r["churnJvmAllocatedBytes"]) < int(r["churnPayloadBytes"]) for r in rows):
         reasons.append("JVM allocation does not corroborate churn")
+    if conditioned and any(int(r["operations"])<=0 or int(r["churnDroppedBytes"])!=0
+            or int(r["churnJvmAllocatedBytes"])<int(r["churnPayloadBytes"])
+            or not math.isfinite(float(r["churnPayloadBytesPerSecond"]))
+            or abs(float(r["churnPayloadBytesPerSecond"])-inputs["ChurnBytesPerSecond"])>
+                   max(1,inputs["ChurnBytesPerSecond"]*.1) for r in conditioned):
+        reasons.append("invalid conditioning operations/churn demand")
     result = {"kind": kind, "inputs": {k: v for k, v in inputs.items() if k != "ConsoleFile"},
               "jdkVersion": record["jdkVersion"], "traceSha256": expected_trace,
               "operations": sum(operations), "iterationOperations": operations,
               "compilerPerIterationMs": compiler, "rejectionReasons": reasons}
+    result["conditioningIterations"]=conditioning
     if diagnostic_compiler_xml:
         result.update(diagnosticCompilerXml=True,primaryEndpointUseAllowed=False)
     if kind in ("sample", "sample-calibration", "compiler", "floor"):
@@ -196,8 +237,13 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         forks = record["primaryMetric"].get("rawDataHistogram", [])
         if len(forks) != 1:
             raise ValueError("Missing per-fork JMH histograms")
-        result.update(merged_histograms(forks[0], operations))
+        if len(forks[0])!=conditioning+inputs["Measurements"]:
+            raise ValueError("JMH raw histogram conditioning/measurement count differs")
+        if conditioning:
+            merged_histograms(forks[0],[int(r["operations"]) for r in conditioned+rows])
+        result.update(merged_histograms(forks[0][conditioning:], operations))
         result["reportedJmhPercentiles"] = record["primaryMetric"]["scorePercentiles"]
+        result["reportedJmhPercentilesIncludeConditioning"]=bool(conditioning)
         result["p999Adequate"] = result["sampleCount"] >= 100_000
         if not result["p999Adequate"] and kind != "compiler":
             reasons.append("fewer than 100000 retained observations for p99.9")
@@ -205,12 +251,32 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         if record["mode"] != "thrpt" or record["primaryMetric"]["scoreUnit"] != "ops/s":
             raise ValueError("Wrong throughput mode/units")
         result["operationsPerSecond"] = record["primaryMetric"]["score"]
+        if conditioning:
+            raw_data=record["primaryMetric"]["rawData"]
+            if len(raw_data)!=1 or len(raw_data[0])!=conditioning+inputs["Measurements"]:
+                raise ValueError("Incomplete throughput conditioning/analysis evidence")
+            result["reportedJmhOperationsPerSecondIncludingConditioning"]=result["operationsPerSecond"]
+            result["operationsPerSecond"]=statistics.mean(raw_data[0][conditioning:])
         if kind == "allocation":
             metrics = record["secondaryMetrics"]
             required = ("gc.alloc.rate", "gc.alloc.rate.norm", "gc.count", "gc.time")
             if any(name not in metrics for name in required):
                 raise ValueError("Missing allocation/GC profiler evidence")
             result["gcProfiler"] = {name: metrics[name] for name in required}
+            if conditioning:
+                result["reportedGcProfilerIncludingConditioning"]=result["gcProfiler"]
+                result["gcProfilerAnalysisWindow"]={}
+                for name in required:
+                    data=metrics[name].get("rawData",[])
+                    if len(data)!=1 or len(data[0])!=conditioning+inputs["Measurements"]:
+                        raise ValueError("Incomplete allocation profiler conditioning evidence")
+                    tail=data[0][conditioning:]
+                    if any(not isinstance(v,(int,float)) or not math.isfinite(v) for v in tail):
+                        raise ValueError("Invalid analysis-window allocation profiler values")
+                    result["gcProfilerAnalysisWindow"][name]=sum(tail) if name in ("gc.count","gc.time") else statistics.mean(tail)
+                result["gcProfiler"]={name:dict(score=result["gcProfilerAnalysisWindow"][name],
+                    scoreUnit=metrics[name]["scoreUnit"],rawData=[metrics[name]["rawData"][0][conditioning:]],
+                    derivedFromAnalysisWindows=True) for name in required}
     else:
         raise ValueError("Unsupported JMH study channel")
     if kind in ("sample-calibration", "allocation", "compiler"):
@@ -230,9 +296,13 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         if "-XX:+LogCompilation" not in record["jvmArgs"] or not list((raw / kind).glob("jit-*.xml")):
             raise ValueError("Missing method-level compiler diagnostic evidence")
         metric = record["secondaryMetrics"]["compiler.time.profiled"]
-        result["compilerTotalMs"] = metric["score"]
-        result["broadCompilerPerIterationMs"] = metric.get("rawData", [[]])[0]
-        reasons.extend(compiler_rejection_reasons(metric["score"], result["broadCompilerPerIterationMs"],
+        values=metric.get("rawData",[[]])[0]
+        if len(values)!=conditioning+inputs["Measurements"]:
+            raise ValueError("Incomplete broad compiler conditioning evidence")
+        result["compilerTotalMs"] = sum(values[conditioning:]) if conditioning else metric["score"]
+        result["reportedCompilerTotalIncludingConditioningMs"]=metric["score"]
+        result["broadCompilerPerIterationMs"] = values[conditioning:]
+        reasons.extend(compiler_rejection_reasons(result["compilerTotalMs"], result["broadCompilerPerIterationMs"],
                                                   inputs["Measurements"]))
     result["accepted"] = not reasons
     return result

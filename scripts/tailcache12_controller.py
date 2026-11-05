@@ -34,7 +34,8 @@ def wait_for_launch(properties, environ=None):
     backends = len(str(properties.get("Backends", properties.get("Backend", "one"))).split(","))
     payloads = len(str(properties.get("Payloads", properties.get("Payload", "one"))).split(","))
     forks = int(properties.get("Forks", 1)) * backends * payloads
-    duration = forks * (int(properties.get("Warmups", 60)) + int(properties.get("Measurements", 8))) + 90
+    duration = forks * (int(properties.get("Warmups", 60)) + int(properties.get("Conditioning",0))
+                        + int(properties.get("Measurements", 8))) + 90
     before = max(float(environ.get("TAILCACHE_CONTROLLER_BEFORE_SECONDS", "180")), duration)
     after = float(environ.get("TAILCACHE_CONTROLLER_AFTER_SECONDS", "120"))
     started = time.monotonic()

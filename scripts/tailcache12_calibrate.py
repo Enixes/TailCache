@@ -50,7 +50,7 @@ def calibration_grid(inputs):
                             LiveBytes=live, ChurnBytesPerSecond=inputs["churnBytesPerSecond"],
                             HeapMiB=inputs["heapMiB"], Warmups=inputs["warmups"], Measurements=inputs["measurements"],
                             Seed=inputs["seed"], Channel=channel)))
-    return grid
+    return [(label,dict(props,Conditioning=inputs["conditioning"])) for label,props in grid] if inputs.get("conditioning",0) else grid
 
 
 def verify_retry_declaration(attempt, manifest):
@@ -395,6 +395,8 @@ def vars_inputs(args):
             getattr(args, "native_host_retry_budget", 8), args.stage)
     if getattr(args,"initial_quiet",None):
         inputs["initialQuietAttempt"]=args.initial_quiet
+    if getattr(args,"conditioning",0):
+        inputs["conditioning"]=args.conditioning
     return inputs
 
 
@@ -454,6 +456,7 @@ def main():
     parser.add_argument("--seed", type=int, default=24301)
     parser.add_argument("--warmups", type=int, default=12)
     parser.add_argument("--measurements", type=int, default=8)
+    parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--repeats", type=int, default=2)
     parser.add_argument("--channels", choices=CHANNELS, nargs="+")
     parser.add_argument("--resume", action="store_true")

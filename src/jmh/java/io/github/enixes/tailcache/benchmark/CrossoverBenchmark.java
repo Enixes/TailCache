@@ -33,6 +33,7 @@ public class CrossoverBenchmark {
         private long compilerStartMs;
         private long workerAllocationStart;
         private java.nio.file.Path observationDirectory;
+        private int conditioningIterations;
         private final java.util.ArrayList<IterationObservation> observations = new java.util.ArrayList<>();
 
         private record IterationObservation(IterationType phase, long operations, long writes,
@@ -41,6 +42,11 @@ public class CrossoverBenchmark {
         @Setup(Level.Trial)
         public void setup(BenchmarkParams params) {
             if (params.getThreads() != 1) throw new IllegalArgumentException("Crossover requires one cache worker");
+            conditioningIterations = Integer.getInteger("tailcache12.conditioningIterations", 0);
+            if (conditioningIterations < 0 || conditioningIterations > 64
+                    || conditioningIterations >= params.getMeasurement().getCount()) {
+                throw new IllegalArgumentException("Invalid measurement-mode conditioning count");
+            }
             observations.ensureCapacity(params.getWarmup().getCount() + params.getMeasurement().getCount());
             observationDirectory = java.nio.file.Path.of(System.getProperty("tailcache12.observationDir",
                     "build/reports/tailcache12/unmanaged-observations"));
@@ -58,10 +64,10 @@ public class CrossoverBenchmark {
             // buffered observations only after the fork has returned its benchmark results.
             Runtime.getRuntime().addShutdownHook(new Thread(this::exportObservations, "tailcache-observation-export"));
             System.out.printf("[TailCache12] backend=%s config={%s} residents=%d payload=%d "
-                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d%n",
+                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d conditioningIterations=%d%n",
                     backend, workload.backendConfiguration(), residentEntries, payloadBytes,
                     applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE, workload.traceFingerprint(), FreshValueGenerator.VERSION,
-                    CrossoverLifecycleWarmup.TRIALS);
+                    CrossoverLifecycleWarmup.TRIALS, conditioningIterations);
         }
 
         @Setup(Level.Iteration)
@@ -94,9 +100,15 @@ public class CrossoverBenchmark {
                     java.nio.file.StandardOpenOption.CREATE_NEW)) {
                 writer.write("phase,operations,writes,churnPayloadBytes,churnPayloadBytesPerSecond,churnJvmAllocatedBytes,"
                         + "churnDroppedBytes,lateTicks,retainedRingBytes,envelopeStartNs,envelopeEndNs,workerEnvelopeCompilerMs,workerJvmAllocatedBytes\n");
+                int measuredOrdinal = 0;
                 for (IterationObservation observation : observations) {
                     ApplicationChurn.Snapshot snapshot = observation.churn();
-                    writer.write(observation.phase() + "," + observation.operations() + "," + observation.writes()
+                    // Classify only during shutdown export. No new phase switch is
+                    // introduced into timed operations or iteration teardown.
+                    String phase = observation.phase().name();
+                    if (observation.phase() == IterationType.MEASUREMENT
+                            && measuredOrdinal++ < conditioningIterations) phase = "CONDITIONING";
+                    writer.write(phase + "," + observation.operations() + "," + observation.writes()
                             + "," + snapshot.allocatedBytes() + "," + snapshot.realizedBytesPerSecond()
                             + "," + snapshot.jvmAllocatedBytes() + "," + snapshot.droppedBytes() + "," + snapshot.lateTicks()
                             + "," + snapshot.retainedPayloadBytes() + "," + snapshot.startNs() + "," + snapshot.endNs()

@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
-from tailcache12_jit_events import grid,parse_events
+from tailcache12_jit_events import grid,parse_events,worker_xml
 
 
 class JitEventTest(unittest.TestCase):
@@ -25,6 +25,21 @@ class JitEventTest(unittest.TestCase):
             self.assertEqual(4,len(grid(4,[4096],["sample-calibration"])))
             path.write_text("unexpected format\n")
             with self.assertRaises(ValueError): parse_events(path)
+
+    def test_actual_worker_xml_pid_expansion_is_unambiguous(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            legacy=root/"hotspot-compile-pid42.xml"
+            legacy.write_text("actual-worker")
+            (root/"hotspot-compile-pid99.xml").write_text("parent-is-not-worker")
+            self.assertEqual(legacy,worker_xml(root,42))
+            plain=root/"hotspot-compile-42.xml"
+            plain.write_text("ambiguous")
+            with self.assertRaises(ValueError): worker_xml(root,42)
+            legacy.unlink()
+            self.assertEqual(plain,worker_xml(root,42))
+            plain.unlink()
+            with self.assertRaises(ValueError): worker_xml(root,42)
 
 
 if __name__=="__main__": unittest.main()

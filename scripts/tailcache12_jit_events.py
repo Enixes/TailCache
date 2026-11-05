@@ -37,6 +37,13 @@ def parse_events(path):
     return events
 
 
+def worker_xml(control,pid):
+    # HotSpot's legacy LogFile %p expands to pidNNN; unified -Xlog uses NNN.
+    files=[p for p in (control/f"hotspot-compile-pid{pid}.xml",control/f"hotspot-compile-{pid}.xml") if p.exists()]
+    if len(files)!=1: raise ValueError("Missing or ambiguous actual-worker XML artifact")
+    return files[0]
+
+
 def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration")):
     result=[]
     for repeat in range(1,repeats+1):
@@ -83,7 +90,7 @@ def analyze(attempt,manifest,invocation):
         compilerPerIterationMs=summary["compilerPerIterationMs"],alignedEvents=aligned,
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
     if manifest.get("diagnosticCompilerXml"):
-        xml=attempt/invocation["label"]/f"hotspot-compile-{metadata['pid']}.xml"
+        xml=worker_xml(attempt/invocation["label"],metadata['pid'])
         logs=list((raw/channel).glob("gc-*.log"))
         if not xml.exists() or len(logs)!=1: raise ValueError("Missing targeted XML/GC evidence")
         detail=classify_tasks(xml,logs[0],windows)

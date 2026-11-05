@@ -65,7 +65,7 @@ def schedule(inputs, order_seed=24301):
                         if channel != "every-operation":
                             props.update(Backends=backend, Payloads=payload, Forks=1)
                         grid.append((label, props))
-    return grid
+    return [(label,dict(props,Conditioning=inputs["conditioning"])) for label,props in grid] if inputs.get("conditioning",0) else grid
 
 
 def qualification_refs(functional, jit, calibrated, everyop):
@@ -105,6 +105,10 @@ def qualification_refs(functional, jit, calibrated, everyop):
         if any(props[key] != manifest["inputs"][field] for key,field in
                (("Residents","residents"),("HeapMiB","heapMiB"),("ChurnBytesPerSecond","churnBytesPerSecond"))):
             raise ValueError("Every-operation qualification controls differ from calibration")
+        if props.get("Conditioning",0)!=manifest["inputs"].get("conditioning",0):
+            raise ValueError("Qualification/calibration conditioning differs")
+    if any(v["properties"].get("Conditioning",0)!=manifest["inputs"].get("conditioning",0) for v in manifests[1]["invocations"]):
+        raise ValueError("JMH qualification/calibration conditioning differs")
     verify_native_environments(manifests, evidence.host_snapshot())
     refs = {}
     for name, attempt in (("functional", functional), ("jit", jit), ("calibration", calibrated), ("everyopJit",everyop)):

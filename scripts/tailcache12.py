@@ -363,6 +363,15 @@ def compiler_worker_values(directory):
     return values
 
 
+def compiler_profile_values(record,conditioning=0,measurements=8):
+    metric=record["secondaryMetrics"]["compiler.time.profiled"]
+    values=metric.get("rawData",[[]])[0]
+    if len(values)!=conditioning+measurements:
+        raise ValueError("Incomplete compiler profiler conditioning/measurement evidence")
+    selected=values[conditioning:]
+    return (sum(selected) if conditioning else metric["score"]), selected
+
+
 def replay(attempt):
     manifest = json.loads((attempt / "manifest.json").read_text())
     paths, host_audits = {}, []
@@ -402,16 +411,17 @@ def replay(attempt):
         for invocation in manifest["invocations"]:
             record = json.loads((raw_directory(attempt, invocation) / "compiler/results.json").read_text())[0]
             metric = record["secondaryMetrics"]["compiler.time.profiled"]
-            values = metric.get("rawData", [[]])[0]
+            total,values=compiler_profile_values(record,invocation["properties"].get("Conditioning",0))
             with (attempt / invocation["label"] / "host.csv").open(newline="") as stream:
                 snapshots = [decode_host_row(r) for r in csv.DictReader(stream)]
             reasons, _ = replay_host_gate(manifest, raw_directory(attempt, invocation), snapshots)
             reasons.extend(invocation.get("hostMonitorErrors", []))
             worker_values = compiler_worker_values(raw_directory(attempt, invocation))
-            observations.append({"label": invocation["label"], "compilerTotalMs": metric["score"],
+            observations.append({"label": invocation["label"], "compilerTotalMs": total,
+                                 "reportedCompilerTotalIncludingConditioningMs":metric["score"],
                                  "compilerPerIterationMs": values,
                                  "workerEnvelopeCompilerMs": worker_values,
-                                 "jitPass": not compiler_rejection_reasons(metric["score"], values),
+                                 "jitPass": not compiler_rejection_reasons(total, values),
                                  "hostPass": not reasons})
         audit["jit"] = observations
         audit["functionalPass"] = len(observations) == 8 and all(x["jitPass"] and x["hostPass"] for x in observations)
@@ -434,6 +444,7 @@ def main():
     parser.add_argument("attempt_id")
     parser.add_argument("--warmups", type=int, default=12)
     parser.add_argument("--residents", type=int, default=8192)
+    parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+", args.attempt_id):
         parser.error("Invalid attempt id")
@@ -530,11 +541,11 @@ def main():
                     raw = invoke(attempt, manifest, f"jit-{repeat}-{backend}-{payload}", "tailCache12Compiler",
                                  {"Backends": backend, "Payloads": payload, "Residents": args.residents,
                                   "LiveBytes": 8388608, "ChurnBytesPerSecond": 16777216,
-                                  "Warmups": args.warmups, "Measurements": 8, "Forks": 1})
+                                  "Warmups": args.warmups, "Measurements": 8, "Forks": 1,
+                                  "Conditioning":args.conditioning})
                     record = json.loads((raw / "compiler/results.json").read_text())[0]
                     metric = record["secondaryMetrics"]["compiler.time.profiled"]
-                    values = metric.get("rawData", [[]])[0]
-                    total = metric["score"]
+                    total,values=compiler_profile_values(record,args.conditioning)
                     passed = not compiler_rejection_reasons(total, values)
                     worker_values = compiler_worker_values(raw)
                     observations.append({"repeat": repeat, "backend": backend, "payload": payload,
@@ -546,7 +557,8 @@ def main():
                         print("Host gate failed; remaining compiler blocks suspended.", flush=True)
         audits["jit"] = observations
         audits["jitRule"] = {"aggregateMsAtEightSeconds": 80, "perIterationMs": 10,
-                             "repeats": 2, "warmups": args.warmups}
+                             "repeats": 2, "warmups": args.warmups,"conditioningIterations":args.conditioning,
+                             "rawJmhMeasurementIterations":args.conditioning+8}
         audits["missingCompilerBlocks"] = 8 - len(observations)
         audits["functionalPass"] = len(observations) == 8 and all(x["jitPass"] and x["hostPass"] for x in observations)
     save(attempt / "audit.json", audits)

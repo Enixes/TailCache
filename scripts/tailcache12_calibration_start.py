@@ -29,7 +29,7 @@ def main():
     command=[sys.executable,str(evidence.ROOT/"scripts/tailcache12_calibrate.py"),"calibrate",args.attempt_id,
         "--initial-quiet",args.quiet_id,"--heap-mib","512","--residents","32768","--churn-mib","32",
         "--live-mib","0","96","208","288","--payloads","256","4096","--seed","24301",
-        "--warmups","120","--measurements","8","--repeats","2",
+        "--warmups","120","--conditioning","8","--measurements","8","--repeats","2",
         "--native-host-retries","2","--native-host-retry-budget","8"]
     return subprocess.run(command,cwd=evidence.ROOT).returncode
 

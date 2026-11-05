@@ -17,6 +17,8 @@ from tailcache12_provenance import archive_measurement_source_hash, measurement_
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("prefix")
+    parser.add_argument("--warmups",type=int,default=96)
+    parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     args=parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.prefix): parser.error("Invalid prefix")
     names=["observer","quiet","functional","pause","jit","everyop","pressure96","floors"]
@@ -28,17 +30,19 @@ def main():
     checkpoint=evidence.REPORTS/(args.prefix+"-sequence.json")
     if checkpoint.exists(): raise ValueError("Sequence checkpoint already exists")
     state=dict(sourceSha256=source,measurementSourceSha256=source_measurement,complete=False,
+               warmups=args.warmups,conditioning=args.conditioning,
                planned={k:p.name for k,p in paths.items()},completed=[])
     evidence.save(checkpoint,state)
     commands=[("observer","tailcache12_native_probe.py",[paths["observer"].name]),
         ("quiet","tailcache12_quiet.py",[paths["quiet"].name,"--quiet-seconds","120","--timeout-seconds","300"]),
         ("functional","tailcache12.py",["validate",paths["functional"].name]),
         ("pause","tailcache12.py",["pause",paths["pause"].name]),
-        ("jit","tailcache12.py",["jit",paths["jit"].name,"--warmups","96","--residents","32768"]),
-        ("everyop","tailcache12_everyop_jit.py",["run",paths["everyop"].name,"--warmups","96"]),
-        ("pressure96","tailcache12_everyop_jit.py",["run",paths["pressure96"].name,"--warmups","96",
+        ("jit","tailcache12.py",["jit",paths["jit"].name,"--warmups",str(args.warmups),"--conditioning",str(args.conditioning),"--residents","32768"]),
+        ("everyop","tailcache12_everyop_jit.py",["run",paths["everyop"].name,"--warmups",str(args.warmups),"--conditioning",str(args.conditioning),"--unprofiled"]),
+        ("pressure96","tailcache12_everyop_jit.py",["run",paths["pressure96"].name,"--warmups",str(args.warmups),"--conditioning",str(args.conditioning),
              "--backends","CAFFEINE","--payloads","4096","--live-mib","96"]),
-        ("floors","tailcache12_observer.py",["floors",paths["floors"].name,"--warmups","96"])]
+        ("floors","tailcache12_observer.py",["floors",paths["floors"].name,"--warmups",str(args.warmups),"--conditioning",str(args.conditioning),
+            "--native-host-retries","2","--native-host-retry-budget","8"])]
     try:
         for name,script,options in commands:
             if evidence.source_hash()!=source: raise ValueError("Source changed during qualification sequence")

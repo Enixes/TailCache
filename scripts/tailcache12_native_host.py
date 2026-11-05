@@ -265,7 +265,7 @@ def worker_reasons(directory, rows, require_allocation=False):
                         sidecar = file.parent / "iterations.csv"
                     import csv
                     with sidecar.open(newline="") as stream:
-                        measured = [r for r in csv.DictReader(stream) if r["phase"] == "MEASUREMENT"]
+                        measured = [r for r in csv.DictReader(stream) if r["phase"] in ("CONDITIONING","MEASUREMENT")]
                     if not measured:
                         return ["Missing worker allocation intervals"]
                     for row in measured:

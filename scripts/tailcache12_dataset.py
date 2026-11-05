@@ -21,6 +21,8 @@ def collect_dependencies(attempt, seen=None):
         return seen
     seen.add(attempt)
     manifest = json.loads((attempt/"manifest.json").read_text())
+    if manifest.get("initialQuietRef"):
+        seen.add(attempt.parent/manifest["initialQuietRef"]["attempt"])
     for field in ("dependencyRefs","qualificationRefs"):
         for ref in manifest.get(field,{}).values():
             collect_dependencies(attempt.parent/ref["attempt"],seen)
