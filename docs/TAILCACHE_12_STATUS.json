@@ -564,7 +564,7 @@
     "calibrationAttempt": "native-final-calibration-20261105-006",
     "calibrationSelectedSlots": 64,
     "calibrationRecordedJvms": 64,
-    "nextCompilerDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-001",
+    "nextCompilerDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-002",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
@@ -607,7 +607,8 @@
     "pilotAttempt": "native-final-pilot-20261105-002",
     "pilotCompletedSlots": 16,
     "pilotRecordedJvms": 17,
-    "allocationReplayReview": "docs/TAILCACHE_12_ALLOCATION_REPLAY_REVIEW.md"
+    "allocationReplayReview": "docs/TAILCACHE_12_ALLOCATION_REPLAY_REVIEW.md",
+    "interruptedDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-001 (quiet setup only,no benchmark JVM)"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
