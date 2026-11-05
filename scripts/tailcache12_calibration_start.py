@@ -48,7 +48,18 @@ def prepare_file_cache(report):
     return result
 
 
-def qualification_bindings(prefix):
+def validate_actual_recorder(manifest,result):
+    controls=dict(Residents=32768,HeapMiB=512,LiveBytes=0,ChurnBytesPerSecond=33554432,Seed=24301)
+    props=[v['properties'] for v in manifest['invocations']]
+    conditions=[(p['Backend'],p['Payload']) for p in props]
+    expected={(backend,payload) for backend in evidence.BACKENDS for payload in (256,4096)}
+    if (manifest.get('stage')!='everyop-jit' or result.get('qualityPass') is not True or result.get('compilerXml') is not False
+            or len(props)!=8 or set(conditions)!=expected or any(conditions.count(c)!=2 for c in expected)
+            or any(any(p.get(k)!=value for k,value in controls.items()) for p in props)):
+        raise ValueError('Recorder reference must be a complete matching actual-unprofiled two-order screen')
+
+
+def qualification_bindings(prefix,everyop_reference=None):
     """Bind the reviewed qualification to this checkout and current native boot."""
     import tailcache12_calibrate as calibration
     import tailcache12_pilot as pilot
@@ -59,7 +70,9 @@ def qualification_bindings(prefix):
             ("pause","replayed-audit.json","functionalPass"),("jit","replayed-audit.json","functionalPass"),
             ("everyop","everyop-jit.json","qualityPass"),("pressure96","everyop-jit.json","qualityPass"),
             ("floors","floors.json","floorDataPass")):
-        path=evidence.REPORTS/(prefix+"-"+name)
+        if everyop_reference and not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',everyop_reference):
+            raise ValueError('Invalid explicit recorder reference')
+        path=evidence.REPORTS/(everyop_reference if name=='everyop' and everyop_reference else prefix+"-"+name)
         manifest=json.loads((path/"manifest.json").read_text())
         result=json.loads((path/report).read_text())
         if (not result[flag] or calibration.sha(path/"source.tar.gz")!=manifest["sourceArchiveSha256"]
@@ -69,6 +82,7 @@ def qualification_bindings(prefix):
             raise ValueError("Incomplete compiler qualification reference")
         if name=="everyop" and result.get("compilerXml") is not False:
             raise ValueError("Qualification did not exercise the actual unprofiled recorder")
+        if name=='everyop': validate_actual_recorder(manifest,result)
         if name in ("jit","everyop","pressure96","floors") and any(
                 v["properties"].get("Warmups")!=120 or v["properties"].get("Conditioning")!=8
                 or v["properties"].get("TransportWarmupVersion")!=evidence.TRANSPORT_WARMUP_VERSION
@@ -90,6 +104,7 @@ def main():
     parser.add_argument("attempt_id")
     parser.add_argument("quiet_id")
     parser.add_argument("--qualification-prefix",required=True)
+    parser.add_argument('--everyop-reference')
     args=parser.parse_args()
     if any(not evidence.re.fullmatch(r"[A-Za-z0-9._-]+",v) for v in (args.attempt_id,args.quiet_id,args.qualification_prefix)):
         parser.error("Invalid attempt IDs")
@@ -98,7 +113,7 @@ def main():
     if attempt.exists() or quiet.exists() or preparation.exists():
         raise ValueError("Retained attempt exists; inspect it rather than duplicating or overwriting it")
     cache=prepare_file_cache(preparation)
-    bindings=qualification_bindings(args.qualification_prefix)
+    bindings=qualification_bindings(args.qualification_prefix,args.everyop_reference)
     source=evidence.source_hash()
     result=run_preflight(quiet,120,300)
     if not result["quietPass"] or source!=evidence.source_hash():
