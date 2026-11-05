@@ -216,7 +216,7 @@ def replay(attempt):
         result.update(nativeHostRetryState=state, replayedRetryPreflights=checks,
                       nativeRetryPreflightRejectionReasons=errors)
     evidence.save(attempt / "pilot.json", result)
-    print(f"pilot={attempt / 'pilot.json'} blocks={len(rows)}/{len(manifest['expectedBlocks'])} "
+    print(f"pilot={attempt / 'pilot.json'} slots={len(selected_rows)}/{len(manifest['expectedBlocks'])} attempts={len(rows)} "
           f"quality={result['dataCompleteAndQualityPass']} campaignReady=False", flush=True)
     return result
 

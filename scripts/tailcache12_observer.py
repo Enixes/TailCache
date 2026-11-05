@@ -131,7 +131,8 @@ def replay_floors(attempt):
         result.update(nativeHostRetryState=state, replayedRetryPreflights=checks,
                       nativeRetryPreflightRejectionReasons=errors)
     evidence.save(attempt / "floors.json", result)
-    print(f"floors={attempt / 'floors.json'} pass={result['floorDataPass']} blocks={len(rows)}/{len(expected)}", flush=True)
+    print(f"floors={attempt / 'floors.json'} pass={result['floorDataPass']} "
+          f"slots={len(selected)}/{len(expected)} attempts={len(rows)}", flush=True)
     return result
 
 
