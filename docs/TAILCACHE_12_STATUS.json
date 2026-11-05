@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Calibration004 failed compiler gate; exact-condition XML diagnostic reproduced late ObjectOutputStream.writeArray C2 compilation. Explicit v2/1024-frame setup repair implemented; diagnostic and full matching qualification required.",
+  "currentBlocker": "V2 exact-condition diagnostic3/3 passed and moved writeArray C2 into early setup. Complete source-matched qualification and independent floors pending; no accepted calibration.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Complete source build/tests, run bounded v2 Chronicle4096/live208 diagnostic and review C2 timing; then new complete source-matched qualification/floors.",
+  "nextWork": "Run/replay/review complete native-final-transport-v2-20261105-001 qualification/floors before another calibration declaration.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -539,11 +539,11 @@
     "calibrationAccepted": false,
     "pilotRun": false,
     "taskComplete": false,
-    "activeBenchmarkDriver": false,
+    "activeBenchmarkDriver": "planned_native-final-transport-v2-20261105-001",
     "datasetExportImplemented": true,
     "nativeRetryImplemented": true,
     "implementationReview": "docs/TAILCACHE_12_CAMPAIGN_IMPLEMENTATION_REVIEW.md",
-    "nextQualificationSequence": null,
+    "nextQualificationSequence": "native-final-transport-v2-20261105-001",
     "plannedPrimaryJvms": 192,
     "plannedCampaignDiagnosticJvms": 128,
     "rejectedFinalSequence": "native-final-20261105-001",
@@ -597,7 +597,9 @@
     "transportPreparationPlan": "docs/TAILCACHE_12_TRANSPORT_PREPARATION_PLAN.md",
     "transportPreparationReview": "docs/TAILCACHE_12_TRANSPORT_PREPARATION_REVIEW.md",
     "transportQualificationReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
-    "transportV2Plan": "docs/TAILCACHE_12_TRANSPORT_V2_PLAN.md"
+    "transportV2Plan": "docs/TAILCACHE_12_TRANSPORT_V2_PLAN.md",
+    "transportV2Review": "docs/TAILCACHE_12_TRANSPORT_V2_REVIEW.md",
+    "transportV2DiagnosticPassed": true
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
