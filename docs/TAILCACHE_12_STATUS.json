@@ -56,10 +56,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap,N32768"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Pilot001 stopped on an analyzer defect: JMH omits gc.time for no-change intervals. Corrected indexed reconstruction passes all35 retained forks, without changing its terminal manifest. New complete pilot002 required under immutable source rule.",
+  "currentBlocker": "Pilot002 stopped after17th fork: Caffeine4096/live0 sampled diagnostic compiler11ms in third analysis interval; host/other gates passed. No replacements eligible, no complete pilot.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run new guarded160-slot pilot002 with fresh cache/quiet preparation, identical schedule and calibrated006; do not pool pilot001 forks.",
+  "nextWork": "Run bounded exact-condition v2 XML/task-start attribution; no new pilot until compiler rejection is diagnosed/reviewed.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -564,7 +564,7 @@
     "calibrationAttempt": "native-final-calibration-20261105-006",
     "calibrationSelectedSlots": 64,
     "calibrationRecordedJvms": 64,
-    "nextCompilerDiagnostic": "native-final-chronicle208-jitxml-v2-20261105-001",
+    "nextCompilerDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
@@ -604,9 +604,9 @@
     "nextPilot": "native-final-pilot-20261105-002",
     "pilotPreparationReview": "docs/TAILCACHE_12_PILOT_PREPARATION_REVIEW.md",
     "pilotComplete": false,
-    "pilotAttempt": "native-final-pilot-20261105-001",
-    "pilotCompletedSlots": 34,
-    "pilotRecordedJvms": 35,
+    "pilotAttempt": "native-final-pilot-20261105-002",
+    "pilotCompletedSlots": 16,
+    "pilotRecordedJvms": 17,
     "allocationReplayReview": "docs/TAILCACHE_12_ALLOCATION_REPLAY_REVIEW.md"
   },
   "historicalNativeCalibration001Declaration": {
@@ -823,7 +823,7 @@
   "pilotDeclaration": {
     "attempt": "native-final-pilot-20261105-002",
     "preflight": "native-final-pilotquiet-20261105-002",
-    "status": "declared_not_launched",
+    "status": "terminal_compiler_failure",
     "expectedLogicalSlots": 160,
     "primaryJvms": 96,
     "diagnosticJvms": 64,
@@ -836,8 +836,19 @@
     "initialPreflightMaxAgeSeconds": 360,
     "taskLocalFileCachePreparation": true,
     "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
-    "completedLogicalSlots": 0,
-    "recordedJvmAttempts": 0
+    "completedLogicalSlots": 16,
+    "recordedJvmAttempts": 17,
+    "stoppedLabel": "b1-sample-calibration-p4096-live0-f1-CAFFEINE",
+    "compilerPerIterationMs": [
+      0,
+      0,
+      11,
+      1,
+      0,
+      0,
+      0,
+      0
+    ]
   },
   "historicalNativePilot001Declaration": {
     "attempt": "native-final-pilot-20261105-001",
