@@ -48,10 +48,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap; native CPU observation coverage still pending"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Source-matched functional/pause, JMH/every-operation compiler screens, pressure96 probes and independent floors passed. Full pressure calibration, pilot coherence, frozen campaign and robustness remain uncollected.",
+  "currentBlocker": "Calibration004 stopped at12th fork: Chronicle4096/live208 SampleTime compiler53ms in third analysis interval; host/other gates passed.11 earlier candidates passed, no complete replicas/grid. Targeted compiler attribution required; no quality retry allowed.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run fresh chained calibration004 with source/environment-bound qualification references and 120-second quiet preparation. Preserve all64 counterbalanced slots; stop on any noneligible quality rejection.",
+  "nextWork": "Retain/replay rejected calibration004, run bounded same-controls XML/compiler-event attribution before any new calibration declaration.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -116,7 +116,7 @@
   "calibrationDeclaration": {
     "attempt": "native-final-calibration-20261105-004",
     "preflight": "native-final-calibrationquiet-20261105-004",
-    "status": "declared_not_launched",
+    "status": "terminal_compiler_failure",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 120,
@@ -144,8 +144,19 @@
     "initialPreflightMaxAgeSeconds": 360,
     "sourceMatchedRawInitialQuietRequired": true,
     "qualificationPrefix": "native-final-transport-20261105-001",
-    "completedLogicalSlots": 0,
-    "recordedJvmAttempts": 0
+    "completedLogicalSlots": 11,
+    "recordedJvmAttempts": 12,
+    "compilerPerIterationMs": [
+      1,
+      0,
+      53,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "rejectedSlot": "r1-sample-calibration-CHRONICLE_IN_MEMORY-p4096-live208"
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -549,9 +560,9 @@
     "floorReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
     "nextCalibration": "native-final-calibration-20261105-004",
     "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz",
-    "calibrationAttempt": "native-final-calibration-20261105-003",
-    "calibrationSelectedSlots": 1,
-    "calibrationRecordedJvms": 2,
+    "calibrationAttempt": "native-final-calibration-20261105-004",
+    "calibrationSelectedSlots": 11,
+    "calibrationRecordedJvms": 12,
     "nextCompilerDiagnostic": "native-final-jitxml-target-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,

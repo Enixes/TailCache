@@ -6,6 +6,17 @@ from tailcache12_jit_events import grid,parse_events,worker_xml
 
 
 class JitEventTest(unittest.TestCase):
+    def test_targeted_pressure_diagnostic_preserves_exact_preparation_controls(self):
+        plan=grid(3,[4096],["sample-calibration"],"CHRONICLE_IN_MEMORY",208*1024**2,8,True)
+        self.assertEqual(3,len(plan))
+        for _,p in plan:
+            self.assertEqual("CHRONICLE_IN_MEMORY",p["Backend"])
+            self.assertEqual(p["Backend"],p["Backends"])
+            self.assertEqual(218103808,p["LiveBytes"])
+            self.assertEqual(8,p["Conditioning"])
+            self.assertEqual("jmh-result-transport-v1",p["TransportWarmupVersion"])
+            self.assertEqual((120,8),(p["Warmups"],p["Measurements"]))
+
     def test_bounded_balanced_attribution_schedule_and_start_event_semantics(self):
         plan=grid()
         self.assertEqual(16,len(plan))

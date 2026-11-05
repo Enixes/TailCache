@@ -44,17 +44,21 @@ def worker_xml(control,pid):
     return files[0]
 
 
-def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration")):
+def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration"),
+         backend="CAFFEINE",live_bytes=0,conditioning=0,transport_warmup=False):
     result=[]
     for repeat in range(1,repeats+1):
         for payload in (payloads if repeat%2 else tuple(reversed(payloads))):
             for channel in (channels if repeat%2 else tuple(reversed(channels))):
-                props=dict(Backend="CAFFEINE",Payload=payload,Residents=32768,HeapMiB=512,LiveBytes=0,
+                props=dict(Backend=backend,Payload=payload,Residents=32768,HeapMiB=512,LiveBytes=live_bytes,
                     ChurnBytesPerSecond=32*1024**2,Seed=24301,Warmups=120,Measurements=8,Channel=channel)
                 if channel=="every-operation": props["CompilerDiagnostics"]="false"
-                else: props.update(Backends="CAFFEINE",Payloads=payload,Forks=1)
+                else: props.update(Backends=backend,Payloads=payload,Forks=1)
                 result.append((f"r{repeat}-{channel}-p{payload}",props))
-    return result
+    inputs={}
+    if conditioning: inputs["conditioning"]=conditioning
+    if transport_warmup: inputs["transportWarmupVersion"]=evidence.TRANSPORT_WARMUP_VERSION
+    return calibration.preparation_controls(result,inputs)
 
 
 def analyze(attempt,manifest,invocation):
@@ -109,6 +113,10 @@ def main():
     parser.add_argument("--repeats",type=int,choices=range(1,5),default=4)
     parser.add_argument("--payloads",type=int,nargs="+",choices=(256,4096),default=[256,4096])
     parser.add_argument("--channels",nargs="+",choices=("every-operation","sample-calibration"),default=["every-operation","sample-calibration"])
+    parser.add_argument("--backend",choices=evidence.BACKENDS,default="CAFFEINE")
+    parser.add_argument("--live-mib",type=int,choices=(0,96,208,288),default=0)
+    parser.add_argument("--conditioning",type=int,choices=range(0,65),default=0)
+    parser.add_argument("--transport-warmup",action="store_true")
     args=parser.parse_args()
     if args.xml and args.channels!=["sample-calibration"]:
         parser.error("Targeted XML mode requires only --channels sample-calibration")
@@ -125,9 +133,10 @@ def main():
     policy=retry.declare_policy(2)
     initial=retry.initial_quiet_reference(quiet,dict(sourceSha256=source),policy,evidence.host_snapshot())
     options=SimpleNamespace(stage="jit-event-attribution",heap_mib=512,residents=32768,churn_mib=32,
-        live_mib=[0],payloads=args.payloads,seed=24301,warmups=120,measurements=8,repeats=args.repeats,
-        channels=args.channels,resume=False)
-    plan=grid(args.repeats,args.payloads,args.channels)
+        live_mib=[args.live_mib],payloads=args.payloads,seed=24301,warmups=120,measurements=8,repeats=args.repeats,
+        channels=args.channels,resume=False,conditioning=args.conditioning,transport_warmup=args.transport_warmup)
+    plan=grid(args.repeats,args.payloads,args.channels,args.backend,args.live_mib*1024**2,
+              args.conditioning,args.transport_warmup)
     manifest=calibration.prepare(attempt,options,plan)
     manifest.update(initialQuietRef=initial,diagnosticOnly=True,primaryEndpointUseAllowed=False,
         maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,
