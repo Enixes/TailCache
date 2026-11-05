@@ -35,6 +35,8 @@ def preparation_controls(grid,inputs):
         if inputs.get("conditioning",0): props["Conditioning"]=inputs["conditioning"]
         if inputs.get("transportWarmupVersion"):
             props["TransportWarmupVersion"]=inputs["transportWarmupVersion"]
+        if inputs.get('lifecycleWarmupVersion'):
+            props['LifecycleWarmupVersion']=inputs['lifecycleWarmupVersion']
         result.append((label,props))
     return result
 
@@ -417,6 +419,8 @@ def vars_inputs(args):
         inputs["conditioning"]=args.conditioning
     if getattr(args,"transport_warmup",False):
         inputs["transportWarmupVersion"]=evidence.TRANSPORT_WARMUP_VERSION
+    if getattr(args,'maintenance_warmup',False):
+        inputs['lifecycleWarmupVersion']=evidence.LIFECYCLE_WARMUP_VERSION
     if getattr(args,"high_first",False):
         inputs["highFirst"]=True
     if getattr(args,"qualification_prefix",None):
@@ -481,6 +485,7 @@ def main():
     parser.add_argument("--warmups", type=int, default=12)
     parser.add_argument("--measurements", type=int, default=8)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
+    parser.add_argument('--maintenance-warmup',action='store_true')
     parser.add_argument("--transport-warmup",action="store_true")
     parser.add_argument("--high-first",action="store_true",help="Prospectively counterbalance descending-first pressure order")
     parser.add_argument("--repeats", type=int, default=2)

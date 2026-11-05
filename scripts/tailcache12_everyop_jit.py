@@ -72,6 +72,7 @@ def main():
     parser.add_argument("--warmups",type=int,default=60)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
+    parser.add_argument('--maintenance-warmup',action='store_true')
     parser.add_argument("--residents",type=int,default=32768)
     parser.add_argument("--heap-mib",type=int,default=512)
     parser.add_argument("--live-mib",type=int,default=0)
@@ -95,6 +96,8 @@ def main():
         grid=[(label,dict(props,Conditioning=args.conditioning)) for label,props in grid]
     if args.transport_warmup:
         grid=[(label,dict(props,TransportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION)) for label,props in grid]
+    if args.maintenance_warmup:
+        grid=[(label,dict(props,LifecycleWarmupVersion=evidence.LIFECYCLE_WARMUP_VERSION)) for label,props in grid]
     args.live_mib=[args.live_mib]
     args.measurements=8
     args.channels=["every-operation"]

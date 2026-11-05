@@ -49,7 +49,7 @@ public final class CrossoverLatencyRunner {
                 || (!validation.equals("none") && (durationNs < 500_000_000 || conditioning != 0))) {
             throw new IllegalArgumentException("Invalid timing or validation parameters");
         }
-        CrossoverLifecycleWarmup.prepare(backend, config);
+        var lifecycle = CrossoverLifecycleWarmup.prepare(backend, config);
         EveryOperationRecorder.warmupBranches();
         EveryOperationRecorder warmupRecorder = new EveryOperationRecorder();
         EveryOperationRecorder[] measurementRecorders = new EveryOperationRecorder[conditioning + measurements];
@@ -70,6 +70,11 @@ public final class CrossoverLatencyRunner {
                     + "\njavaRuntimeVersion=" + System.getProperty("java.runtime.version")
                     + "\nhistogramSignificantDigits=3\nhistogramMaxNs=" + EveryOperationRecorder.MAX_NS
                     + "\nlifecycleWarmupTrials=" + CrossoverLifecycleWarmup.TRIALS
+                    + "\nlifecycleWarmupVersion=" + CrossoverLifecycleWarmup.version()
+                    + "\nlifecycleMaintenanceBatches=" + lifecycle.maintenanceBatches()
+                    + "\nlifecycleMaintenanceBatchOperations=" + lifecycle.batchOperations()
+                    + "\nlifecycleWarmupOperations=" + lifecycle.operations()
+                    + "\nlifecycleWarmupWrites=" + lifecycle.writes()
                     + "\nrecorderBranchWarmupOperations=" + EveryOperationRecorder.BRANCH_WARMUP_OPERATIONS
                     + "\ncompilerCounters=" + compilerCounters + "\ncompilerXml=" + compilerDiagnostics
                     + "\nworkerAllocationCounters=true"

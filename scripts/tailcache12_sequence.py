@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--warmups",type=int,default=96)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
+    parser.add_argument('--maintenance-warmup',action='store_true')
     args=parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.prefix): parser.error("Invalid prefix")
     names=["observer","quiet","functional","pause","jit","everyop","pressure96","floors"]
@@ -33,6 +34,7 @@ def main():
     state=dict(sourceSha256=source,measurementSourceSha256=source_measurement,complete=False,
                warmups=args.warmups,conditioning=args.conditioning,
                planned={k:p.name for k,p in paths.items()},completed=[])
+    if args.maintenance_warmup: state['lifecycleWarmupVersion']=evidence.LIFECYCLE_WARMUP_VERSION
     evidence.save(checkpoint,state)
     commands=[("observer","tailcache12_native_probe.py",[paths["observer"].name]),
         ("quiet","tailcache12_quiet.py",[paths["quiet"].name,"--quiet-seconds","120","--timeout-seconds","300"]),
@@ -46,6 +48,9 @@ def main():
             "--native-host-retries","2","--native-host-retry-budget","8"])]
     if args.transport_warmup:
         commands=[(name,script,options+(["--transport-warmup"] if name in ("functional","jit","everyop","pressure96","floors") else []))
+                  for name,script,options in commands]
+    if args.maintenance_warmup:
+        commands=[(name,script,options+(['--maintenance-warmup'] if name not in ('observer','quiet') else []))
                   for name,script,options in commands]
     try:
         for name,script,options in commands:

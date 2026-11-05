@@ -113,7 +113,7 @@ def verify_artifacts(control,artifacts):
 
 
 def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration"),
-         backend="CAFFEINE",live_bytes=0,conditioning=0,transport_warmup=False):
+         backend="CAFFEINE",live_bytes=0,conditioning=0,transport_warmup=False,maintenance_warmup=False):
     result=[]
     for repeat in range(1,repeats+1):
         for payload in (payloads if repeat%2 else tuple(reversed(payloads))):
@@ -126,6 +126,7 @@ def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calib
     inputs={}
     if conditioning: inputs["conditioning"]=conditioning
     if transport_warmup: inputs["transportWarmupVersion"]=evidence.TRANSPORT_WARMUP_VERSION
+    if maintenance_warmup: inputs['lifecycleWarmupVersion']=evidence.LIFECYCLE_WARMUP_VERSION
     return calibration.preparation_controls(result,inputs)
 
 
@@ -193,6 +194,7 @@ def main():
     parser.add_argument("--live-mib",type=int,choices=(0,96,208,288),default=0)
     parser.add_argument("--conditioning",type=int,choices=range(0,65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
+    parser.add_argument('--maintenance-warmup',action='store_true')
     args=parser.parse_args()
     if args.attach_logs and (args.xml or args.channels!=['sample-calibration']):
         parser.error('Attached logging requires only sample-calibration and no startup XML')
@@ -212,9 +214,10 @@ def main():
     initial=retry.initial_quiet_reference(quiet,dict(sourceSha256=source),policy,evidence.host_snapshot())
     options=SimpleNamespace(stage="jit-event-attribution",heap_mib=512,residents=32768,churn_mib=32,
         live_mib=[args.live_mib],payloads=args.payloads,seed=24301,warmups=120,measurements=8,repeats=args.repeats,
-        channels=args.channels,resume=False,conditioning=args.conditioning,transport_warmup=args.transport_warmup)
+        channels=args.channels,resume=False,conditioning=args.conditioning,transport_warmup=args.transport_warmup,
+        maintenance_warmup=args.maintenance_warmup)
     plan=grid(args.repeats,args.payloads,args.channels,args.backend,args.live_mib*1024**2,
-              args.conditioning,args.transport_warmup)
+              args.conditioning,args.transport_warmup,args.maintenance_warmup)
     manifest=calibration.prepare(attempt,options,plan)
     manifest.update(initialQuietRef=initial,diagnosticOnly=True,primaryEndpointUseAllowed=False,
         maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,

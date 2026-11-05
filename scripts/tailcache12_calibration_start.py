@@ -74,6 +74,10 @@ def qualification_bindings(prefix):
                 or v["properties"].get("TransportWarmupVersion")!=evidence.TRANSPORT_WARMUP_VERSION
                 for v in manifest["invocations"]):
             raise ValueError("Qualification preparation controls differ from the declared grid")
+        if name in ('jit','everyop','pressure96','floors') and any(
+                v['properties'].get('LifecycleWarmupVersion')!=evidence.LIFECYCLE_WARMUP_VERSION
+                for v in manifest['invocations']):
+            raise ValueError('Qualification lifecycle preparation differs from the declared grid')
         manifests.append(manifest)
         refs[name]=dict(attempt=path.name,manifestSha256=calibration.sha(path/"manifest.json"),
             sourceArchiveSha256=manifest["sourceArchiveSha256"],measurementSourceSha256=expected)
@@ -106,7 +110,7 @@ def main():
         "--initial-quiet",args.quiet_id,"--heap-mib","512","--residents","32768","--churn-mib","32",
         "--qualification-prefix",args.qualification_prefix,
         "--live-mib","0","96","208","288","--payloads","4096","256","--high-first","--seed","24301",
-        "--warmups","120","--conditioning","8","--transport-warmup","--measurements","8","--repeats","2",
+        "--warmups","120","--conditioning","8","--transport-warmup","--maintenance-warmup","--measurements","8","--repeats","2",
         "--native-host-retries","2","--native-host-retry-budget","8"]
     return subprocess.run(command,cwd=evidence.ROOT).returncode
 

@@ -25,6 +25,7 @@ VERSION = "tailcache12-campaign-v1"
 RULES = dict(version=VERSION, passes=2, primaryForksPerPass=3, measurements=8,
     conditioningIterations=8,
     transportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION,
+    lifecycleWarmupVersion=evidence.LIFECYCLE_WARMUP_VERSION,
     p99BetweenPassCeiling=1.25, p999BetweenPassCeiling=1.5,
     minimumTailObservations=100000, bootstrapResamples=50000,
     familyComparisons=32, familyAlpha=.05, descriptiveConfidence=.95,
@@ -224,6 +225,8 @@ def freeze(attempt, args):
         raise ValueError("Campaign requires prospectively declared measurement-mode conditioning")
     if inputs.get("transportWarmupVersion")!=RULES["transportWarmupVersion"]:
         raise ValueError("Campaign requires qualified result-transport preparation")
+    if inputs.get('lifecycleWarmupVersion')!=RULES['lifecycleWarmupVersion']:
+        raise ValueError('Campaign requires reviewed backend maintenance preparation')
     pilot.verify_native_environments([parent], evidence.host_snapshot())
     source = measurement_source_hash(evidence.ROOT)
     if source != archive_measurement_source_hash(pilot_path/"source.tar.gz"):

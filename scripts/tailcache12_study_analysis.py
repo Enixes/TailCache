@@ -20,6 +20,22 @@ VALUE_GENERATOR = "xorshift-key-version-v1"
 JMH_SAMPLE_SECONDARIES = {"p0.00", "p0.50", "p0.90", "p0.95", "p0.99", "p0.999", "p0.9999", "p1.00"}
 
 
+def validate_lifecycle_preparation(inputs,text,jvm_args):
+    version=inputs.get('LifecycleWarmupVersion','none')
+    observed=set(re.findall(r'(?:^|\s)lifecycleWarmupVersion=([^\s,]+)',text,re.M))
+    if version=='none':
+        if observed-{'none'}: raise ValueError('Undeclared lifecycle maintenance preparation')
+        return
+    if version!='lifecycle-maintenance-v1' or f'-Dtailcache12.lifecycleWarmupVersion={version}' not in jvm_args:
+        raise ValueError('Missing or unknown lifecycle preparation JVM control')
+    expected=dict(lifecycleWarmupVersion=version,lifecycleWarmupTrials='3',
+        lifecycleMaintenanceBatches='20000',lifecycleMaintenanceBatchOperations='128',
+        lifecycleWarmupOperations='7680000',lifecycleWarmupWrites='384000')
+    for key,value in expected.items():
+        values=set(re.findall(r'(?:^|\s)'+key+r'=([^\s,]+)',text,re.M))
+        if values!={value}: raise ValueError('Missing or mismatched lifecycle preparation evidence: '+key)
+
+
 def allocation_profiler_vectors(metrics,count,text,jmh_version):
     """Align pinned GCProfiler's optional gc.time from indexed original output."""
     required=('gc.alloc.rate','gc.alloc.rate.norm','gc.count','gc.time')
@@ -84,6 +100,7 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
     worker = directory / "worker"
     configuration = dict(line.split("=", 1) for line in
                          (worker / "configuration.txt").read_text().splitlines() if "=" in line)
+    validate_lifecycle_preparation(inputs,(worker/'configuration.txt').read_text(),configuration['jvmArgs'])
     if configuration["backend"] != inputs["Backend"]:
         raise ValueError("Backend identity mismatch")
     for prop, field in (("Residents", "residentEntries"), ("Payload", "payloadBytes"),
@@ -239,6 +256,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     console = inputs.get("ConsoleFile")
     if console:
         text += pathlib.Path(console).read_text()
+    validate_lifecycle_preparation(inputs,text,record['jvmArgs'])
     if f"traceSha256={expected_trace}" not in text or f"valueGenerator={VALUE_GENERATOR}" not in text:
         raise ValueError("Missing or mismatched workload fingerprint")
     if inputs.get("TransportWarmupVersion") not in (None,"none"):

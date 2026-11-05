@@ -724,6 +724,8 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
         jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
+        jvmOptions.add("-Dtailcache12.lifecycleWarmupVersion=" +
+            providers.gradleProperty("tailcache12LifecycleWarmupVersion").orElse("none").get())
         jvmOptions.add("-Dtailcache12.transportWarmupVersion=" +
             providers.gradleProperty("tailcache12TransportWarmupVersion").orElse("none").get())
         jvmOptions.add("-Dtailcache12.observationDir=${directory.absolutePath}")
@@ -777,6 +779,8 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
     }
     val compilerDiagnostics = providers.gradleProperty("tailcache12CompilerDiagnostics").orElse("false").get().toBoolean()
     val compilerCounters = providers.gradleProperty("tailcache12CompilerCounters").orElse("true").get().toBoolean()
+    jvmArgs("-Dtailcache12.lifecycleWarmupVersion=" +
+        providers.gradleProperty("tailcache12LifecycleWarmupVersion").orElse("none").get())
     jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m",
         "-Xlog:gc*,safepoint:file=${directory.resolve("gc-%p.log").absolutePath}:uptimemillis,timenanos,level,tags:filecount=0"))
     if (compilerDiagnostics) jvmArgs("-XX:+UnlockDiagnosticVMOptions", "-XX:+LogCompilation",

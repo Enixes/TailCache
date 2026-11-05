@@ -67,7 +67,7 @@ public class CrossoverBenchmark {
                 transportBytes = preparation.receivedBytes();
                 transportFrames = preparation.frames();
             }
-            CrossoverLifecycleWarmup.prepare(backend, config);
+            var lifecycle = CrossoverLifecycleWarmup.prepare(backend, config);
             workload = new CrossoverWorkload(backend, config);
             churn = new ApplicationChurn(churnBytesPerSecond, 4096, 128);
             if (compilerWindow) compiler = java.lang.management.ManagementFactory.getCompilationMXBean();
@@ -79,6 +79,9 @@ public class CrossoverBenchmark {
                     backend, workload.backendConfiguration(), residentEntries, payloadBytes,
                     applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE, workload.traceFingerprint(), FreshValueGenerator.VERSION,
                     CrossoverLifecycleWarmup.TRIALS, conditioningIterations, transportVersion, transportFrames, transportBytes);
+            System.out.printf("[TailCache12][lifecycle] lifecycleWarmupVersion=%s lifecycleMaintenanceBatches=%d lifecycleMaintenanceBatchOperations=%d lifecycleWarmupOperations=%d lifecycleWarmupWrites=%d%n",
+                    CrossoverLifecycleWarmup.version(), lifecycle.maintenanceBatches(), lifecycle.batchOperations(),
+                    lifecycle.operations(), lifecycle.writes());
         }
 
         @Setup(Level.Iteration)

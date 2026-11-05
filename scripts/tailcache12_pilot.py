@@ -129,10 +129,14 @@ def qualification_refs(functional, jit, calibrated, everyop):
             raise ValueError("Qualification/calibration conditioning differs")
         if props.get("TransportWarmupVersion")!=manifest["inputs"].get("transportWarmupVersion"):
             raise ValueError("Qualification/calibration transport preparation differs")
+        if props.get('LifecycleWarmupVersion')!=manifest['inputs'].get('lifecycleWarmupVersion'):
+            raise ValueError('Qualification/calibration lifecycle preparation differs')
     if any(v["properties"].get("Conditioning",0)!=manifest["inputs"].get("conditioning",0) for v in manifests[1]["invocations"]):
         raise ValueError("JMH qualification/calibration conditioning differs")
     if any(v["properties"].get("TransportWarmupVersion","none")!=manifest["inputs"].get("transportWarmupVersion","none") for v in manifests[1]["invocations"]):
         raise ValueError("JMH qualification/calibration transport preparation differs")
+    if any(v['properties'].get('LifecycleWarmupVersion')!=manifest['inputs'].get('lifecycleWarmupVersion') for v in manifests[1]['invocations']):
+        raise ValueError('JMH qualification/calibration lifecycle preparation differs')
     verify_native_environments(manifests, evidence.host_snapshot())
     refs = {}
     for name, attempt in (("functional", functional), ("jit", jit), ("calibration", calibrated), ("everyopJit",everyop)):

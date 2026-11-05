@@ -23,6 +23,7 @@ BACKENDS = ("CAFFEINE", "CHRONICLE_IN_MEMORY")
 HOST_STRING_FIELDS = ("governor", "externalPower", "windowsPowerScheme", "windowsCpuCounter") + native_host.STRING_FIELDS
 HOST_RULE_VERSION = "tailcache12-host-v4-native-cpu"
 TRANSPORT_WARMUP_VERSION = "jmh-result-transport-v2"
+LIFECYCLE_WARMUP_VERSION = "lifecycle-maintenance-v1"
 SETTLING_HOST_VERSIONS = ("tailcache12-host-v2-settling", "tailcache12-host-v3-native-cpu", HOST_RULE_VERSION)
 
 
@@ -219,6 +220,8 @@ def host_gate(snapshots, cpu_windows=None, native_required=False, native_version
 
 
 def invoke(attempt, manifest, label, task, properties):
+    if manifest.get('lifecycleWarmupVersion') and task!='tailCache12Retention':
+        properties=dict(properties,LifecycleWarmupVersion=manifest['lifecycleWarmupVersion'])
     if source_hash() != manifest["sourceSha256"]:
         raise ValueError("Source changed before launch; use a new immutable attempt")
     controller_schedule = wait_for_launch(properties)
@@ -447,6 +450,7 @@ def main():
     parser.add_argument("--residents", type=int, default=8192)
     parser.add_argument("--conditioning",type=int,choices=range(65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
+    parser.add_argument('--maintenance-warmup',action='store_true')
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9._-]+", args.attempt_id):
         parser.error("Invalid attempt id")
@@ -463,6 +467,8 @@ def main():
                                           capture_output=True, text=True, check=True).stdout.strip(),
                 "gitStatus": subprocess.run(["git", "status", "--short"], cwd=ROOT,
                                             capture_output=True, text=True, check=True).stdout}
+    if args.maintenance_warmup:
+        manifest['lifecycleWarmupVersion']=LIFECYCLE_WARMUP_VERSION
     with tarfile.open(attempt / "source.tar.gz", "w:gz") as archive:
         for path in sources():
             archive.add(path, arcname=str(path.relative_to(ROOT)))
