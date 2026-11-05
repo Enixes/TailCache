@@ -6,12 +6,46 @@ freezes and replays the quiet reference and enforces its 360-second deadline.
 """
 import argparse
 import json
+import os
+import pathlib
 import subprocess
 import sys
 
 import tailcache12 as evidence
 from tailcache12_quiet import run_preflight
 from tailcache12_provenance import archive_measurement_source_hash,measurement_source_hash
+
+
+def memory_snapshot():
+    fields=dict(line.split(':',1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())
+    return {k+'KiB':int(fields[k].split()[0]) for k in ('MemFree','MemAvailable','Cached')}
+
+
+def prepare_file_cache(report):
+    """Release only clean cached pages of retained task files, outside collection."""
+    if report.exists(): raise ValueError('Cache preparation evidence exists; refusing overwrite')
+    result=dict(version=1,method='fsync-and-posix-fadvise-dontneed-task-files',
+                sourceSha256=evidence.source_hash(),before=memory_snapshot(),files=[],errors=[],
+                minimumFreeKiB=3*1024**2,preparationPass=False)
+    for root in (evidence.REPORTS,evidence.ROOT/'evidence-archives'):
+        for path in sorted(root.rglob('*')):
+            if path.is_symlink() or not path.is_file() or not path.stat().st_size:
+                continue
+            if not path.resolve().is_relative_to(root.resolve()):
+                raise ValueError('Task file cache preparation escaped its declared root')
+            try:
+                with path.open('rb') as stream:
+                    os.fsync(stream.fileno())
+                    os.posix_fadvise(stream.fileno(),0,0,os.POSIX_FADV_DONTNEED)
+                result['files'].append(dict(path=str(path.relative_to(evidence.ROOT)),bytes=path.stat().st_size))
+            except OSError as error:
+                result['errors'].append(dict(path=str(path),error=str(error)))
+    result['after']=memory_snapshot()
+    result['preparationPass']=not result['errors'] and result['after']['MemFreeKiB']>=result['minimumFreeKiB']
+    evidence.save(report,result)
+    if not result['preparationPass']:
+        raise ValueError('Task-local file cache preparation failed or free RAM below3GiB; no JVM launched')
+    return result
 
 
 def qualification_bindings(prefix):
@@ -56,13 +90,16 @@ def main():
     if any(not evidence.re.fullmatch(r"[A-Za-z0-9._-]+",v) for v in (args.attempt_id,args.quiet_id,args.qualification_prefix)):
         parser.error("Invalid attempt IDs")
     attempt,quiet=(evidence.REPORTS/v for v in (args.attempt_id,args.quiet_id))
-    if attempt.exists() or quiet.exists():
+    preparation=evidence.REPORTS/(args.quiet_id+'-cache-preparation.json')
+    if attempt.exists() or quiet.exists() or preparation.exists():
         raise ValueError("Retained attempt exists; inspect it rather than duplicating or overwriting it")
+    cache=prepare_file_cache(preparation)
     bindings=qualification_bindings(args.qualification_prefix)
     source=evidence.source_hash()
     result=run_preflight(quiet,120,300)
     if not result["quietPass"] or source!=evidence.source_hash():
         raise ValueError("Quiet preparation failed or source changed; no calibration launched")
+    evidence.save(quiet/'host-preparation.json',cache)
     evidence.save(quiet/"qualification-bindings.json",dict(prefix=args.qualification_prefix,
         sourceSha256=source,qualificationRefs=bindings))
     command=[sys.executable,str(evidence.ROOT/"scripts/tailcache12_calibrate.py"),"calibrate",args.attempt_id,

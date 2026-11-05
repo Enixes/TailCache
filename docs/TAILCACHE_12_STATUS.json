@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 38,
-    "pythonTests": 72,
+    "pythonTests": 74,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -56,10 +56,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap,N32768"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Source-matched v2 qualification and independent floors passed. No accepted full calibration; pilot coherence, campaign, robustness and final dataset pending.",
+  "currentBlocker": "V2 qualification passed; calibration005 rejected transient zswap. Reviewed task-local clean-file-cache preparation established4.1GiB free RAM; new full calibration006 declared, no accepted grid yet.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run fresh chained64-slot native calibration005 with unchanged high-first order and workload/gates; source/environment-bound v2 qualification and initial quiet required.",
+  "nextWork": "Run preparation plus fresh chained64-slot calibration006; preserve every per-fork gate and all rejected prior attempts.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -78,7 +78,7 @@
     "scope": "both backends/payloads,two orders,N32768,H512,churn32,live0"
   },
   "calibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-005/calibration.json",
-  "nextCalibrationAttempt": "native-final-calibration-20261105-005",
+  "nextCalibrationAttempt": "native-final-calibration-20261105-006",
   "pressureDiagnosticAttempt": "wsl-observer5-pressure96-jit60-20261028-001",
   "matchingPressureDiagnostic": {
     "environment": "native Linux nacht",
@@ -124,8 +124,8 @@
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
   "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
   "calibrationDeclaration": {
-    "attempt": "native-final-calibration-20261105-005",
-    "preflight": "native-final-calibrationquiet-20261105-005",
+    "attempt": "native-final-calibration-20261105-006",
+    "preflight": "native-final-calibrationquiet-20261105-006",
     "status": "declared_not_launched",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
@@ -155,7 +155,9 @@
     "sourceMatchedRawInitialQuietRequired": true,
     "qualificationPrefix": "native-final-transport-v2-20261105-001",
     "completedLogicalSlots": 0,
-    "recordedJvmAttempts": 0
+    "recordedJvmAttempts": 0,
+    "taskLocalFileCachePreparation": true,
+    "minimumPreparationFreeKiB": 3145728
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -529,7 +531,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
-    "pythonTests": 72,
+    "pythonTests": 74,
     "javaTests": 38,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -550,18 +552,18 @@
     "matchingCompilerScreensPassed": true,
     "qualificationSequence": "native-final-transport-v2-20261105-001",
     "nextFloorStudy": null,
-    "nextPreflight": "native-final-calibrationquiet-20261105-005",
+    "nextPreflight": "native-final-calibrationquiet-20261105-006",
     "nativeFloorRetriesProspectivelyDeclared": true,
     "floorStudy": "native-final-transport-v2-20261105-001-floors",
     "floorStudyPassed": true,
     "floorJvmAttempts": 11,
     "floorExtraJvms": 1,
     "floorReview": "docs/TAILCACHE_12_TRANSPORT_QUALIFICATION_REVIEW.md",
-    "nextCalibration": "native-final-calibration-20261105-005",
+    "nextCalibration": "native-final-calibration-20261105-006",
     "qualificationArchive": "evidence-archives/native-final-qualification-20261105-001.tar.gz",
-    "calibrationAttempt": "native-final-calibration-20261105-004",
-    "calibrationSelectedSlots": 11,
-    "calibrationRecordedJvms": 12,
+    "calibrationAttempt": "native-final-calibration-20261105-005",
+    "calibrationSelectedSlots": 0,
+    "calibrationRecordedJvms": 1,
     "nextCompilerDiagnostic": "native-final-chronicle208-jitxml-v2-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
@@ -774,5 +776,41 @@
     "maximumCompilerIterationMs": 2,
     "replayed": true,
     "scope": "Caffeine4096B,32768 residents,96MiB ballast,512MiB heap,32MiB/s churn"
+  },
+  "historicalNativeCalibration005Declaration": {
+    "attempt": "native-final-calibration-20261105-005",
+    "preflight": "native-final-calibrationquiet-20261105-005",
+    "status": "terminal_paging_failure",
+    "expectedLogicalSlots": 64,
+    "maximumJvmAttempts": 72,
+    "warmups": 120,
+    "conditioning": 8,
+    "measurements": 8,
+    "transportWarmupVersion": "jmh-result-transport-v2",
+    "residents": 32768,
+    "heapMiB": 512,
+    "churnMiBPerSecond": 32,
+    "liveMiB": [
+      0,
+      96,
+      208,
+      288
+    ],
+    "payloadBytes": [
+      4096,
+      256
+    ],
+    "highFirst": true,
+    "seed": 24301,
+    "repeats": 2,
+    "nativeHostRetriesPerSlot": 2,
+    "nativeHostRetryBudget": 8,
+    "initialPreflightMaxAgeSeconds": 360,
+    "sourceMatchedRawInitialQuietRequired": true,
+    "qualificationPrefix": "native-final-transport-v2-20261105-001",
+    "completedLogicalSlots": 0,
+    "recordedJvmAttempts": 1,
+    "rejectedSlot": "r1-every-operation-CAFFEINE-p4096-live288",
+    "pagingReason": "zswpout counter changed0to29"
   }
 }

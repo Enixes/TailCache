@@ -172,6 +172,16 @@ class NativeRetryTest(unittest.TestCase):
                 with self.assertRaises(ValueError): retry.initial_quiet_reference(q,m,m["nativeHostRetryPolicy"],samples[-1])
                 with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,before_launch=True)
             self.assertTrue(retry.verify_initial_quiet(attempt,m,[dict(hostWindowStartNs=125*10**9)])["quietPass"])
+            prep=q/'host-preparation.json'
+            prep.write_text(json.dumps(dict(version=1,sourceSha256=m['sourceSha256'],
+                method='fsync-and-posix-fadvise-dontneed-task-files',minimumFreeKiB=3*1024**2,
+                after=dict(MemFreeKiB=4*1024**2),errors=[],preparationPass=True)))
+            with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            self.assertTrue(retry.verify_initial_quiet(attempt,m)['quietPass'])
+            original=prep.read_text(); prep.write_text(original+'\n')
+            with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m)
+            prep.write_text(original)
             for first in (100*10**9,1000*10**9):
                 with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,[dict(hostWindowStartNs=first)])
             m.update(invocations=[],hostRuleVersion=m["nativeHostRetryPolicy"]["hostRuleVersion"])

@@ -45,8 +45,11 @@ def initial_quiet_reference(path, manifest, policy, current_host):
     age=(time.monotonic_ns()-checked["lastMonotonicNs"])/1e9
     if not 0 <= age <= policy["maxQuietToBlockSeconds"]:
         raise ValueError("Initial quiet prerequisite expired before declaration")
-    return dict(version=1,attempt=path.name,maxQuietToFirstBlockSeconds=360,
+    result=dict(version=1,attempt=path.name,maxQuietToFirstBlockSeconds=360,
                 sha256={name:sha(path/name) for name in ("quiet.json","host.csv")})
+    if (path/'host-preparation.json').exists():
+        result['hostPreparationSha256']=sha(path/'host-preparation.json')
+    return result
 
 
 def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
@@ -61,6 +64,17 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
     path=attempt.parent/ref["attempt"]
     if any(sha(path/name)!=digest for name,digest in ref["sha256"].items()):
         raise ValueError("Changed initial quiet prerequisite")
+    if 'hostPreparationSha256' in ref:
+        prep=path/'host-preparation.json'
+        if sha(prep)!=ref['hostPreparationSha256']:
+            raise ValueError('Changed host cache preparation evidence')
+        cache=json.loads(prep.read_text())
+        if (cache.get('version')!=1 or cache.get('sourceSha256')!=manifest['sourceSha256']
+                or cache.get('method')!='fsync-and-posix-fadvise-dontneed-task-files'
+                or cache.get('minimumFreeKiB')!=3*1024**2 or cache.get('errors')
+                or cache.get('preparationPass') is not True
+                or cache['after']['MemFreeKiB']<cache['minimumFreeKiB']):
+            raise ValueError('Invalid task-local host preparation')
     with (path/"host.csv").open(newline="") as stream:
         samples=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
     target=evidence.native_host.environment_declaration(samples[-1])
