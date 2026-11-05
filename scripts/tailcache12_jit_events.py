@@ -7,7 +7,11 @@ import argparse
 import csv
 import json
 import os
+import pathlib
 import re
+import subprocess
+import threading
+import time
 from types import SimpleNamespace
 
 import tailcache12 as evidence
@@ -42,6 +46,70 @@ def worker_xml(control,pid):
     files=[p for p in (control/f"hotspot-compile-pid{pid}.xml",control/f"hotspot-compile-{pid}.xml") if p.exists()]
     if len(files)!=1: raise ValueError("Missing or ambiguous actual-worker XML artifact")
     return files[0]
+
+
+def worker_identity(pid):
+    path=pathlib.Path('/proc')/str(pid)
+    if b'org.openjdk.jmh.runner.ForkedMain' not in (path/'cmdline').read_bytes():
+        raise ValueError('Attachment target is not the actual JMH fork')
+    group=(path/'cgroup').read_text().strip()
+    expected=os.environ.get('TAILCACHE_NATIVE_SCOPE','')
+    if not expected or group!='0::'+group.partition('0::')[2] or not group.endswith('/'+expected):
+        raise ValueError('Attachment target escaped the declared native scope')
+    return dict(pid=pid,startTicks=(path/'stat').read_text().rsplit(')',1)[1].split()[19],cgroup=group)
+
+
+def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60):
+    """A bounded setup helper; target arguments/measurement code remain unchanged."""
+    record=dict(method='jcmd-VM.log-v1',success=False)
+    try:
+        deadline=time.monotonic()+marker_timeout
+        markers=[]
+        while time.monotonic()<deadline and not stop.is_set():
+            markers=list(raw.rglob('worker-process-*.properties'))
+            if len(markers)>1: raise ValueError('Ambiguous actual worker marker')
+            if markers: break
+            stop.wait(.2)
+        if len(markers)!=1: raise ValueError('No actual worker marker before attachment deadline')
+        metadata=dict(line.split('=',1) for line in markers[0].read_text().splitlines() if '=' in line)
+        pid=int(metadata['pid'])
+        if markers[0].name!=f'worker-process-{pid}.properties': raise ValueError('Worker PID marker mismatch')
+        identity=worker_identity(pid)
+        if stop.wait(delay): raise ValueError('Diagnostic exited before attachment')
+        if worker_identity(pid)!=identity: raise ValueError('Attachment target PID identity changed')
+        log=control/f'hotspot-jit-{pid}.log'
+        if log.exists(): raise ValueError('Refusing to overwrite diagnostic log')
+        command=[str(pathlib.Path(os.environ['JAVA_HOME'])/'bin/jcmd'),str(pid),'VM.log',
+                 'output='+str(log),'what=jit+compilation=debug',
+                 'decorators=timenanos,uptimenanos,level,tags']
+        record.update(identity=identity,pid=pid,command=command,startNs=time.monotonic_ns())
+        completed=subprocess.run(command,text=True,capture_output=True,timeout=30)
+        record.update(endNs=time.monotonic_ns(),exitCode=completed.returncode,
+                      stdout=completed.stdout,stderr=completed.stderr)
+        if completed.returncode or worker_identity(pid)!=identity or not log.exists():
+            raise ValueError('Attachment failed or target identity/log changed')
+        record['success']=True
+    except Exception as error:
+        record['error']=f'{type(error).__name__}: {error}'
+    finally:
+        control.mkdir(parents=True,exist_ok=True)
+        evidence.save(control/'attachment.json',record)
+        result.update(record)
+
+
+def verify_attachment(control,pid,windows):
+    record=__import__('json').loads((control/'attachment.json').read_text())
+    if (record.get('method')!='jcmd-VM.log-v1' or record.get('success') is not True
+            or record.get('pid')!=int(pid) or record.get('exitCode')!=0
+            or not 0<record['startNs']<=record['endNs']<=min(a for a,b in windows)-60*10**9):
+        raise ValueError('Missing, failed or late diagnostic attachment')
+    return record
+
+
+def verify_artifacts(control,artifacts):
+    if any(pathlib.Path(name).name!=name or calibration.sha(control/name)!=digest
+           for name,digest in artifacts.items()):
+        raise ValueError('Changed retained diagnostic attachment/log artifacts')
 
 
 def grid(repeats=4,payloads=(256,4096),channels=("every-operation","sample-calibration"),
@@ -81,6 +149,13 @@ def analyze(attempt,manifest,invocation):
     metadata=dict(line.split("=",1) for line in markers[0].read_text().splitlines() if "=" in line)
     events=parse_events(attempt/invocation["label"]/f"hotspot-jit-{metadata['pid']}.log")
     windows=evidence.measurement_windows(raw)
+    if manifest.get('attachmentLogging'):
+        verify_attachment(attempt/invocation['label'],metadata['pid'],windows)
+    artifacts=manifest.get('diagnosticArtifacts',{}).get(invocation['label'])
+    if manifest.get('attachmentLogging') and (not artifacts or set(artifacts)!=
+            {'attachment.json',f"hotspot-jit-{metadata['pid']}.log"}):
+        raise ValueError('Missing declared attachment artifacts')
+    if artifacts: verify_artifacts(attempt/invocation['label'],artifacts)
     if len(windows)!=len(summary["compilerPerIterationMs"]):
         raise ValueError("Compiler counter/window counts disagree")
     aligned=[]
@@ -110,7 +185,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("attempt_id")
     parser.add_argument("--xml",action="store_true")
-    parser.add_argument("--repeats",type=int,choices=range(1,5),default=4)
+    parser.add_argument("--repeats",type=int,choices=range(1,17),default=4)
+    parser.add_argument('--attach-logs',action='store_true')
     parser.add_argument("--payloads",type=int,nargs="+",choices=(256,4096),default=[256,4096])
     parser.add_argument("--channels",nargs="+",choices=("every-operation","sample-calibration"),default=["every-operation","sample-calibration"])
     parser.add_argument("--backend",choices=evidence.BACKENDS,default="CAFFEINE")
@@ -118,6 +194,8 @@ def main():
     parser.add_argument("--conditioning",type=int,choices=range(0,65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
     args=parser.parse_args()
+    if args.attach_logs and (args.xml or args.channels!=['sample-calibration']):
+        parser.error('Attached logging requires only sample-calibration and no startup XML')
     if args.xml and args.channels!=["sample-calibration"]:
         parser.error("Targeted XML mode requires only --channels sample-calibration")
     if len(set(args.payloads))!=len(args.payloads) or len(set(args.channels))!=len(args.channels):
@@ -140,7 +218,8 @@ def main():
     manifest=calibration.prepare(attempt,options,plan)
     manifest.update(initialQuietRef=initial,diagnosticOnly=True,primaryEndpointUseAllowed=False,
         maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,
-        schedule=[dict(label=k,properties=v) for k,v in plan],diagnosticJvmOptions={})
+        schedule=[dict(label=k,properties=v) for k,v in plan],diagnosticJvmOptions={},
+        attachmentLogging=args.attach_logs,diagnosticArtifacts={})
     evidence.save(attempt/"manifest.json",manifest)
     rows=[]
     try:
@@ -152,14 +231,30 @@ def main():
             option=f"-Xlog:jit+compilation=debug:file={attempt/label}/hotspot-jit-%p.log:timenanos,uptimenanos,level,tags"
             if args.xml:
                 option+=f" -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:LogFile={attempt/label}/hotspot-compile-%p.xml"
-            manifest["diagnosticJvmOptions"][label]=option
+            manifest["diagnosticJvmOptions"][label]='none; jcmd attachment only' if args.attach_logs else option
             evidence.save(attempt/"manifest.json",manifest)
-            os.environ["JAVA_TOOL_OPTIONS"]=option
+            attachment=None
+            if args.attach_logs:
+                stop=threading.Event(); attachment={}
+                helper=threading.Thread(target=attach_worker_logging,
+                    args=(attempt.parent/(attempt.name+'-'+label),attempt/label,stop,attachment),daemon=True)
+                helper.start()
+            else:
+                os.environ["JAVA_TOOL_OPTIONS"]=option
             try:
                 evidence.invoke(attempt,manifest,label,"tailCache12EveryOperation" if props["Channel"]=="every-operation"
                                 else "tailCache12SampleCalibration",props)
             finally:
-                del os.environ["JAVA_TOOL_OPTIONS"]
+                if args.attach_logs:
+                    stop.set(); helper.join(35)
+                    if helper.is_alive(): raise ValueError('Attachment helper failed to terminate')
+                else: del os.environ["JAVA_TOOL_OPTIONS"]
+            if args.attach_logs:
+                if not attachment.get('success'): raise ValueError('Diagnostic attachment failed: '+attachment.get('error','unknown'))
+                files=['attachment.json',f"hotspot-jit-{attachment['pid']}.log"]
+                manifest['diagnosticArtifacts'][label]={name:calibration.sha(attempt/label/name) for name in files}
+                manifest['diagnosticJvmOptions'][label]='none; jcmd attachment only'
+                evidence.save(attempt/'manifest.json',manifest)
             row=analyze(attempt,manifest,manifest["invocations"][-1])
             rows.append(row)
             result=dict(diagnosticOnly=True,primaryEndpointUseAllowed=False,observations=rows,

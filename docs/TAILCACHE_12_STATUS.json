@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 38,
-    "pythonTests": 81,
+    "pythonTests": 84,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -56,10 +56,10 @@
     "scope": "8MiB ballast,16MiB/s churn,512MiB heap,N32768"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Pilot002 stopped after17th fork: Caffeine4096/live0 sampled diagnostic compiler11ms in third analysis interval; host/other gates passed. No replacements eligible, no complete pilot.",
+  "currentBlocker": "Pilot002 compiler11ms rejection remains unattributed; three XML diagnostics did not reproduce. Bounded attached-event mode implemented/tested/reviewed to preserve startup argument parity.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run bounded exact-condition v2 XML/task-start attribution; no new pilot until compiler rejection is diagnosed/reviewed.",
+  "nextWork": "Run/review maximum12-fork attached compiler-event attribution; stop at first quality failure. No pilot/campaign acceptance from diagnostic passes.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -531,7 +531,7 @@
     "hostRuleVersion": "tailcache12-host-v4-native-cpu",
     "nativeObserverVersion": 2,
     "measurementSourceSha256": "2f8e051889006a03f561672c9c54187e40b60e01bce83612e96aa5f056298b87",
-    "pythonTests": 81,
+    "pythonTests": 84,
     "javaTests": 38,
     "controlledProbe": "native-v4-observer-20261105-001",
     "earlierV4Functional": "native-v4-functional-20261105-001 (14/14 host and mechanical pass; before first-byte boundary alignment)",
@@ -564,7 +564,7 @@
     "calibrationAttempt": "native-final-calibration-20261105-006",
     "calibrationSelectedSlots": 64,
     "calibrationRecordedJvms": 64,
-    "nextCompilerDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-002",
+    "nextCompilerDiagnostic": "native-final-caffeine0-jitattach-v2-20261105-001",
     "nextPreparation": "native-final-preparation120-20261105-001",
     "candidateWarmups": 120,
     "unprofiledScreenImplemented": true,
@@ -608,7 +608,8 @@
     "pilotCompletedSlots": 16,
     "pilotRecordedJvms": 17,
     "allocationReplayReview": "docs/TAILCACHE_12_ALLOCATION_REPLAY_REVIEW.md",
-    "interruptedDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-001 (quiet setup only,no benchmark JVM)"
+    "interruptedDiagnostic": "native-final-caffeine0-jitxml-v2-20261105-001 (quiet setup only,no benchmark JVM)",
+    "attachedCompilerReview": "docs/TAILCACHE_12_ATTACHED_COMPILER_REVIEW.md"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
