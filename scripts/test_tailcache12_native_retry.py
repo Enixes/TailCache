@@ -14,7 +14,7 @@ class NativeRetryTest(unittest.TestCase):
         slots = [dict(label=f"s{i}", properties=dict(Backend="CAFFEINE", Payload=256, Slot=i)) for i in range(count)]
         return dict(stage="calibrate", nativeHostRetryPolicy=retry.declare_policy(retries, budget),
                     nativeLogicalSlots=slots, expectedBlocks=[s["label"] for s in slots],
-                    sourceSha256="source-fixture", nativeRetryPreflights={})
+                    sourceSha256="source-fixture", nativeRetryPreflights={}, invocations=[])
 
     def row(self, manifest, slot, ordinal=1, reasons=(), quality=(), latency=100):
         entry = manifest["nativeLogicalSlots"][slot]
@@ -154,6 +154,32 @@ class NativeRetryTest(unittest.TestCase):
                     replay=__import__('unittest.mock').mock.Mock(side_effect=[pending,complete])
                     retry.run_grid(root,m,replay,lambda _:"task")
                 self.assertEqual(["quiet","JVM"] if quiet_pass else ["quiet"],events)
+
+    def test_initial_quiet_is_frozen_source_matched_and_expires_before_first_launch(self):
+        m=self.manifest()
+        samples=self.samples()
+        m["nativeEnvironmentDeclaration"]=host.environment_declaration(samples[-1])
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            q=root/"quiet-fixture"
+            self.write_quiet(q,m,samples)
+            attempt=root/"calibration-fixture"
+            attempt.mkdir()
+            with patch.object(retry.time,"monotonic_ns",return_value=123*10**9):
+                m["initialQuietRef"]=retry.initial_quiet_reference(q,m,m["nativeHostRetryPolicy"],samples[-1])
+                self.assertTrue(retry.verify_initial_quiet(attempt,m,before_launch=True)["quietPass"])
+            with patch.object(retry.time,"monotonic_ns",return_value=1000*10**9):
+                with self.assertRaises(ValueError): retry.initial_quiet_reference(q,m,m["nativeHostRetryPolicy"],samples[-1])
+                with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,before_launch=True)
+            self.assertTrue(retry.verify_initial_quiet(attempt,m,[dict(hostWindowStartNs=125*10**9)])["quietPass"])
+            for first in (100*10**9,1000*10**9):
+                with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,[dict(hostWindowStartNs=first)])
+            m.update(invocations=[],hostRuleVersion=m["nativeHostRetryPolicy"]["hostRuleVersion"])
+            retry.initialize(attempt,m,[(s["label"],s["properties"]) for s in m["nativeLogicalSlots"]],
+                             m["nativeHostRetryPolicy"],samples[-1])
+            self.assertIsNotNone(retry.verify_declaration(attempt,m))
+            m["initialQuietRef"]["maxQuietToFirstBlockSeconds"]=9999
+            with self.assertRaises(ValueError): retry.verify_declaration(attempt,m)
 
 
 if __name__ == "__main__":

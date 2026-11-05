@@ -218,6 +218,8 @@ def replay(attempt):
             if row["channel"] == "every-operation" and any(row.get(k) != runtime_identity[k]
                                                            for k in ("jdkVersion", "vmName", "vmVersion")):
                 raise ValueError("Calibration recorders used different exact VM builds")
+    if native_policy:
+        native_retry.verify_initial_quiet(attempt,manifest,rows)
     selection, retry_preflights, preflight_errors = None, {}, []
     selected_rows = rows
     if retry_policy:
@@ -342,6 +344,12 @@ def prepare(attempt, args, grid):
                 "gitStatus": subprocess.check_output(["git", "status", "--short"], cwd=evidence.ROOT, text=True)}
     initial_host = evidence.host_snapshot()
     if native_policy:
+        if args.stage == "calibrate":
+            initial_id=getattr(args,"initial_quiet",None)
+            if not initial_id or not re.fullmatch(r"[A-Za-z0-9._-]+",initial_id):
+                raise ValueError("New native calibration requires --initial-quiet with fresh retained evidence")
+            manifest["initialQuietRef"]=native_retry.initial_quiet_reference(
+                attempt.parent/initial_id,manifest,native_policy,initial_host)
         native_retry.initialize(attempt, manifest,
             [(label, command_properties(props)) for label, props in grid], native_policy, initial_host)
     if retry_policy:
@@ -385,6 +393,8 @@ def vars_inputs(args):
     if getattr(args, "native_host_retries", 0):
         inputs["nativeHostRetryPolicy"] = native_retry.declare_policy(args.native_host_retries,
             getattr(args, "native_host_retry_budget", 8), args.stage)
+    if getattr(args,"initial_quiet",None):
+        inputs["initialQuietAttempt"]=args.initial_quiet
     return inputs
 
 
@@ -452,6 +462,7 @@ def main():
     parser.add_argument("--host-cpu-retry-budget", type=int, choices=range(1, 9), default=8)
     parser.add_argument("--native-host-retries", type=int, choices=(0, 1, 2), default=0)
     parser.add_argument("--native-host-retry-budget", type=int, choices=range(1, 9), default=8)
+    parser.add_argument("--initial-quiet",help="Frozen initial quiet-preflight attempt ID for new native calibration")
     args = parser.parse_args()
     if args.channels is None:
         args.channels = list(CHANNELS) if args.stage == "calibrate" else ["every-operation"]

@@ -31,6 +31,50 @@ def sha(path):
     return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 
 
+def initial_quiet_reference(path, manifest, policy, current_host):
+    """Freeze a fresh initial prerequisite before a new calibration's first JVM."""
+    import tailcache12 as evidence
+    with (path/"host.csv").open(newline="") as stream:
+        samples=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
+    target=evidence.native_host.environment_declaration(samples[-1])
+    checked=verify_quiet(path,dict(sourceSha256=manifest["sourceSha256"],nativeHostRetryPolicy=policy,
+                                  nativeEnvironmentDeclaration=target))
+    if (not checked["quietPass"] or evidence.native_host.normalized_environment(target) !=
+            evidence.native_host.normalized_environment(evidence.native_host.environment_declaration(current_host))):
+        raise ValueError("Initial quiet prerequisite rejected or native target environment changed")
+    age=(time.monotonic_ns()-checked["lastMonotonicNs"])/1e9
+    if not 0 <= age <= policy["maxQuietToBlockSeconds"]:
+        raise ValueError("Initial quiet prerequisite expired before declaration")
+    return dict(version=1,attempt=path.name,maxQuietToFirstBlockSeconds=360,
+                sha256={name:sha(path/name) for name in ("quiet.json","host.csv")})
+
+
+def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
+    import tailcache12 as evidence
+    ref=manifest.get("initialQuietRef")
+    if ref is None:
+        return None
+    if (ref.get("version") != 1 or ref.get("maxQuietToFirstBlockSeconds") != 360
+            or not evidence.re.fullmatch(r"[A-Za-z0-9._-]+",ref.get("attempt",""))
+            or set(ref["sha256"]) != {"quiet.json","host.csv"}):
+        raise ValueError("Invalid initial quiet declaration")
+    path=attempt.parent/ref["attempt"]
+    if any(sha(path/name)!=digest for name,digest in ref["sha256"].items()):
+        raise ValueError("Changed initial quiet prerequisite")
+    with (path/"host.csv").open(newline="") as stream:
+        samples=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
+    target=evidence.native_host.environment_declaration(samples[-1])
+    checked=verify_quiet(path,dict(manifest,nativeEnvironmentDeclaration=target))
+    if (not checked["quietPass"] or evidence.native_host.normalized_environment(target) !=
+            evidence.native_host.normalized_environment(manifest["nativeEnvironmentDeclaration"])):
+        raise ValueError("Initial quiet prerequisite environment differs from the frozen calibration")
+    if rows or before_launch:
+        first=rows[0]["hostWindowStartNs"] if rows else time.monotonic_ns()
+        if not 0 <= (first-checked["lastMonotonicNs"])/1e9 <= ref["maxQuietToFirstBlockSeconds"]:
+            raise ValueError("Initial quiet prerequisite expired or overlaps the first block")
+    return checked
+
+
 def label_for(slot, ordinal):
     return slot if ordinal == 1 else f"{slot}-n{ordinal}"
 
@@ -52,6 +96,8 @@ def initialize(attempt, manifest, grid, policy, initial_host):
     declaration = {key: manifest[key] for key in ("nativeRetrySchema", "nativeHostRetryPolicy",
         "nativeLogicalSlots", "measurementSourceSha256", "sourceSha256", "nativeEnvironmentDeclaration")}
     declaration["declaredUtc"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    if "initialQuietRef" in manifest:
+        declaration["initialQuietRef"]=manifest["initialQuietRef"]
     evidence.save(attempt / "native-retry-policy.json", declaration)
     manifest["nativeRetryPolicySha256"] = sha(attempt / "native-retry-policy.json")
 
@@ -68,6 +114,8 @@ def verify_declaration(attempt, manifest, canonical=None):
             or sha(attempt / "native-retry-policy.json") != manifest["nativeRetryPolicySha256"]):
         raise ValueError("Changed native replacement policy")
     declaration = json.loads((attempt / "native-retry-policy.json").read_text())
+    if declaration.get("initialQuietRef") != manifest.get("initialQuietRef"):
+        raise ValueError("Changed frozen initial quiet prerequisite reference")
     for key in ("nativeRetrySchema", "nativeHostRetryPolicy", "nativeLogicalSlots",
                 "measurementSourceSha256", "sourceSha256", "nativeEnvironmentDeclaration"):
         if declaration[key] != manifest[key]:
@@ -212,6 +260,8 @@ def run_grid(attempt, manifest, replay, task_for):
             if not candidate or result.get("nativeRetryPreflightRejectionReasons") or manifest.get("terminalDriverFailure"):
                 return result
             label = candidate["label"]
+            if not manifest["invocations"]:
+                verify_initial_quiet(attempt,manifest,before_launch=True)
             if candidate["requiresQuietPreflight"]:
                 path = attempt / "native-retry-preflights" / label
                 if label not in manifest["nativeRetryPreflights"]:
