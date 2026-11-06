@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Original26ms recorder compiler failure not reproduced by12 attached diagnostics; late ForkJoinPool.reactivate C2 observed at2ms. Separate3-worker actual-recorder XML diagnostic declared.",
+  "currentBlocker": "Rare26ms unprofiled recorder compilation remains unattributed after12 attached and3 XML non-reproductions. Passive shared-PerfData diagnostic implementation planned; no benchmark running.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run bounded XML diagnostic and inspect actual-worker compiler task/deoptimization timing before any further measured-source repair or collection.",
+  "nextWork": "Implement/test/smoke the passive JVMStat helper per docs/TAILCACHE_12_PERFDATA_PLAN.md, then declare a bounded max16 actual-unprofiled recorder experiment without target logging/attachment commands.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1124,10 +1124,21 @@
   "everyopXmlDiagnostic": {
     "attempt": "native-final-conditioning16-everyop-xml-20261106-001",
     "maximumJvms": 3,
-    "status": "reviewed_launch_authorized",
+    "status": "completed3_nonreproduction",
     "warmups": 120,
     "conditioning": 16,
     "measurements": 8,
+    "diagnosticOnly": true,
+    "primaryEndpointUseAllowed": false,
+    "completedJvms": 3,
+    "hostPassingJvms": 3,
+    "maximumCompilerIntervalMs": 0,
+    "original26msFailureAttributed": false
+  },
+  "passivePerfdataDiagnostic": {
+    "status": "planned_not_implemented",
+    "plan": "docs/TAILCACHE_12_PERFDATA_PLAN.md",
+    "maximumJvms": 16,
     "diagnosticOnly": true,
     "primaryEndpointUseAllowed": false
   }
