@@ -1108,5 +1108,12 @@
     "plan": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_PLAN.md",
     "review": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_REVIEW.md",
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
+  },
+  "conditioning16CalibrationArchive": {
+    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-calibration-checkpoint-20261106-011.tar.gz",
+    "bytes": 625211063,
+    "sha256": "ed2e3728a07d1b2901902f6135b27cd138080a8f5dd622d0183b3547736a130d",
+    "verifiedMembers": 20915,
+    "hashChunkBytes": 1048576
   }
 }
