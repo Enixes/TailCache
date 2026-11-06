@@ -1,5 +1,5 @@
 {
-  "asOfDate": "2026-11-06",
+  "asOfDate": "2026-11-07",
   "taskComplete": false,
   "campaignReady": false,
   "reportable": false,
@@ -10,10 +10,10 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "current_boot_conditioning16_qualification_and_independent_floors_passed_pilot_coherence_pending",
+    "12B": "conditioning16_qualification_and_floors_passed_pilot_coherence_failed",
     "12C": "conditioning16_calibration002_complete64of64_independent_raw_gc_occupancy_reconciliation_passed",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
-    "12E": "conditioning16_160_slot_pilot_reviewed_launch_authorized_not_yet_collected",
+    "12E": "complete160_selected161_attempts_quality_variance_pass_coherence_failed",
     "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
     "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
   },
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Current calibration002 accepted64/64 with independent4665-pause reconciliation. Pilot/coherence/variance remain uncollected; pilot160-slot declaration reviewed.",
+  "currentBlocker": "Pilot160/160 selected from161 attempts passed quality/variance and floor ratios, but observer coherence failed three256B comparisons. No primary campaign authorized.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Bounded archive accepted calibration/reviews/traces, then run fresh160-slot conditioning16 pilot with unchanged gates and source/boot-matched prerequisites. Raw-review full pilot, floors/coherence and variance before campaign freeze.",
+  "nextWork": "Preserve completed pilot/coherence rejection; investigate demonstrated power-of-two sampling/40000 trace resonance. Prospectively review odd-period repair and bounded diagnostic before wholly fresh qualification/calibration/pilot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -113,7 +113,7 @@
     "sha256": "5b879abdb3dcb13848b9708a70813687bb180f7c9eea552c9ece2c790d258c6e",
     "includes": "All retained evidence through runtime-bean rejection, native history snapshot and guarded-source checkpoint; new qualification not yet run"
   },
-  "qualificationScope": "Current boot/source120/16/8 passed functional14,pause2,JMH8,actual recorder8,pressure96two and floors10; larger pressure grid and pilot coherence remain unqualified.",
+  "qualificationScope": "Source8bd current boot120/16/8 qualification/floors and calibration002 accepted; completed pilot fails cross-channel coherence. No confirmatory endpoints collected.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
   "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
   "calibrationDeclaration": {
@@ -1199,5 +1199,23 @@
     "sha256": "484b1aa5222e46eed52c611669edb0f05f9efd14928ad28f1eec6322ff1aebb7",
     "verifiedMembers": 29439,
     "hashChunkBytes": 1048576
-  }
+  },
+  "pilotOutcome": {
+    "attempt": "native-final-conditioning16-pilot-20261106-001",
+    "selectedSlots": 160,
+    "recordedJvmAttempts": 161,
+    "dataCompleteAndQualityPass": true,
+    "provisionalVariancePass": true,
+    "observerQualified": false,
+    "maximumCompilerIntervalMs": 5,
+    "rejectionReasons": [
+      "Opposite resolved channel directions at payload=256,live=0,p99",
+      "Opposite resolved channel directions at payload=256,live=0,p99.9",
+      "Opposite resolved channel directions at payload=256,live=301989888,p99.9"
+    ],
+    "excludedCandidate": "b2-compiler-p4096-live301989888-f1-CHRONICLE_IN_MEMORY",
+    "excludedReason": "Native CPU outside benchmark scope exceeded10% upper bound",
+    "floorRatiosPass": true
+  },
+  "samplingDesignDiagnostic": "build/reports/tailcache12/native-final-sampling-design-20261107-001/provenance.json"
 }
