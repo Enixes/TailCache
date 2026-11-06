@@ -211,6 +211,19 @@ def robustness_selection(primary, inputs):
     return {str(seed): {p: sorted(lives) for p,lives in selected.items()} for seed in RULES["robustnessSeeds"]}
 
 
+def declare_initial_preparation(attempt,manifest,grid,initial_host,initial_id):
+    if not initial_id or not re.fullmatch(r'[A-Za-z0-9._-]+',initial_id):
+        raise ValueError('New native campaign/robustness freeze requires --initial-quiet')
+    path=attempt.parent/initial_id
+    cache=json.loads((path/'host-preparation.json').read_text())
+    if cache.get('version')!=2 or cache.get('requiresEmptySwap') is not True:
+        raise ValueError('New campaign preparation requires current empty-swap evidence')
+    policy=native_retry.declare_policy(2,8,manifest['stage'])
+    manifest['initialQuietRef']=native_retry.initial_quiet_reference(path,manifest,policy,initial_host)
+    native_retry.initialize(attempt,manifest,grid,policy,initial_host)
+    native_retry.verify_initial_quiet(attempt,manifest,before_launch=True)
+
+
 def freeze(attempt, args):
     if attempt.exists():
         raise ValueError("Frozen attempts are immutable; use a new ID")
@@ -260,7 +273,7 @@ def freeze(attempt, args):
         runtimeIdentity=parent["runtimeIdentity"], calibrationBands=parent["calibrationBands"],
         orderSeed=args.order_seed, traceBySeed=traces, seedSelections=selections,
         expectedBlocks=[k for k,_ in grid], schedule=[dict(label=k,properties=v) for k,v in grid], invocations=[])
-    native_retry.initialize(attempt,manifest,grid,native_retry.declare_policy(2,8,stage),evidence.host_snapshot())
+    declare_initial_preparation(attempt,manifest,grid,evidence.host_snapshot(),getattr(args,'initial_quiet',None))
     with tarfile.open(attempt/"source.tar.gz","w:gz") as archive:
         for path in evidence.sources():
             archive.add(path,arcname=str(path.relative_to(evidence.ROOT)))
@@ -280,6 +293,7 @@ def main():
     parser.add_argument("--pilot")
     parser.add_argument("--floors")
     parser.add_argument("--primary")
+    parser.add_argument('--initial-quiet')
     parser.add_argument("--traces",type=evidence.pathlib.Path)
     parser.add_argument("--order-seed",type=int,default=24301)
     args = parser.parse_args()

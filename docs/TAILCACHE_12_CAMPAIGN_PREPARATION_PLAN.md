@@ -1,0 +1,9 @@
+# Campaign/robustness launch preparation — plan before implementation
+
+No primary campaign or robustness freeze is authorized by current data: current-source calibration/pilot still pending, with user sudo action needed for residual host swap. While collection is stopped, complete the remaining launch plumbing independently. Do not freeze outcome thresholds from absent pilot data or weaken any existing rule.
+
+New native campaign and robustness freezes must bind fresh retained initial quiet/cache evidence before native retry/protocol declarations. Require current v2 empty-swap preparation and120-second quiet proof; enforce the existing360-second deadline before the first JVM and replay raw hashes/zero-swap state. Keep same source/environment/prerequisite/floor/coherence/variance/trace/seed/rejection gates and320-slot campaign schedule. Historical absent-field audits retain original semantics; new freezes cannot omit preparation.
+
+Implement a chained setup controller that raw-revalidates accepted pilot/coherence (and primary/robustness prerequisites where requested), advises only task-file cache, collects fresh quiet proof and immediately freezes/runs within the same native scope. It refuses existing output/preflight IDs, changed source, failed quiet or failed freeze; no run follows a failed freeze. This keeps freeze/run scope identity equal and survives model usage interruptions. Default controller-native policy remains CPU/power-only2/8; no outlier/variance/JIT/paging replacement is introduced. No work executes against missing/failed prerequisites.
+
+Test mandatory v2 initial proof, fail-before-freeze/run behavior, command ordering and separate robustness prerequisite forwarding. Review/commit before eventual use. Actual pilot/coherence and final protocol review remain mandatory before any320-JVM campaign; this implementation alone never sets campaignReady or taskComplete.

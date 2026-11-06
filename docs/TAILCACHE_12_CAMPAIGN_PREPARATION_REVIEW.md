@@ -1,0 +1,7 @@
+# Campaign launch preparation researcher review — 6 November 2026
+
+New campaign/robustness freezes now require named retained v2 cache/empty-swap preparation and fresh raw quiet evidence. The reference is bound before immutable policy/protocol creation; full initial-proof replay validates source, hashes, preparation fields, swap state, current native environment and360-second deadline before freezing. Existing legacy absent-field audit behavior is unchanged.
+
+The new chained controller checks complete pilot/coherence/variance and, for robustness, primary replay before cache/quiet work. It retains preparation, then freezes and runs sequentially in the same native scope; failure or source change prevents launch. The actual freeze repeats source/environment/precondition/trace checks, so the controller cannot authorize missing inputs. No actual campaign is frozen: accepted current-boot calibration/pilot still absent.
+
+Python101 tests pass, covering mandatory initial ID/version/empty-swap marker, raw reference binding and pre-freeze verification, rejected prerequisites/quiet/source/existing evidence, failed-freeze suppression, and robustness primary review before successful freeze/run ordering. Measurement fingerprint remains unchanged; Java40 tests already passed for unchanged Java sources. The local recovery busy whitelist includes this controller. These are synthetic control-flow checks; real campaign integration remains unverified until upstream gates pass.

@@ -10,8 +10,8 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "source_matched_maintenance_qualification_and_independent_floors_passed_pilot_coherence_pending",
-    "12C": "new_current_source64_slot_calibration_declared_no_accepted_current_grid",
+    "12B": "prior_boot_qualification_retained_new_boot_qualification_required",
+    "12C": "prior_current_source_grid_rejected_28of64_new_boot_calibration_not_started",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
     "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 98,
+    "pythonTests": 101,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Calibration maintenance001 stopped on residual host swap-in at29th fork.28 earlier candidates passed; all compiler/workload checks passed. Bounded streaming archival and strict empty-swap preparation implemented; one-time identical-policy swap recovery required before a new grid.",
+  "currentBlocker": "Fresh postboot qualification/floors required before calibration; source/launch review complete. Swap is empty with original policy unchanged.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Verify/archive with bounded streaming, execute reviewed one-time dev-zram0.swap restart if authorized, prove identical final policy and SwapUsed0, then declare new whole calibration002.",
+  "nextWork": "Run wholly new postboot001 qualification/floors, raw-review it, then declare fresh calibration on this boot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -621,7 +621,9 @@
     "maintenanceQualificationReview": "docs/TAILCACHE_12_MAINTENANCE_QUALIFICATION_REVIEW.md",
     "pagingPreparationReview": "docs/TAILCACHE_12_PAGING_PREPARATION_REVIEW.md",
     "nextSwapPreparation": "native-final-residual-swap-recovery-20261106-002",
-    "boundedArchive": "evidence-archives/native-final-maintenance-calibration-checkpoint-20261106-009.tar.gz"
+    "boundedArchive": "evidence-archives/native-final-maintenance-calibration-checkpoint-20261106-009.tar.gz",
+    "userActionRequired": "sudo systemctl restart dev-zram0.swap",
+    "swapPreparationAttempt": "native-final-residual-swap-recovery-20261106-002 (sudo authentication required,no change)"
   },
   "historicalNativeCalibration001Declaration": {
     "attempt": "native-final-calibration-20261105-001",
@@ -707,7 +709,7 @@
     "completedLogicalSlots": 1,
     "recordedJvmAttempts": 2
   },
-  "currentHarnessQualifiedForCalibration": true,
+  "currentHarnessQualifiedForCalibration": false,
   "historicalNativeCalibration004Declaration": {
     "attempt": "native-final-calibration-20261105-004",
     "preflight": "native-final-calibrationquiet-20261105-004",
@@ -975,5 +977,19 @@
     ],
     "maximumCompilerIterationMs": 1,
     "replayed": true
+  },
+  "postbootQualificationDeclaration": {
+    "prefix": "native-final-postboot-20261106-001",
+    "status": "reviewed_launch_authorized",
+    "previousBootId": "e03d65c6-6db5-4811-a47e-6e096efae8ff",
+    "currentBootId": "f6cf39f7-44a7-467b-95f1-e8c55428bbae",
+    "swapPreparation": "native-final-residual-swap-recovery-20261106-003",
+    "swapPreparationPass": true,
+    "originalObservedSwapPolicyUnchanged": true,
+    "warmups": 120,
+    "conditioning": 8,
+    "measurements": 8,
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
+    "plan": "docs/TAILCACHE_12_POSTBOOT_PLAN.md"
   }
 }
