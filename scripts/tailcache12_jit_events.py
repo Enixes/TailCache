@@ -18,6 +18,7 @@ import tailcache12 as evidence
 import tailcache12_calibrate as calibration
 import tailcache12_native_retry as retry
 from tailcache12_quiet import run_preflight
+from tailcache12_calibration_start import prepare_file_cache
 from tailcache12_study_analysis import every_operation_fork_summary, jmh_fork_summary
 from tailcache12_jit_diagnose import classify_tasks
 
@@ -30,8 +31,8 @@ TASKS={'every-operation':'tailCache12EveryOperation','sample-calibration':'tailC
 def validate_logging_channels(channels,attach_logs,xml):
     if (not channels or len(set(channels))!=len(channels) or any(c not in TASKS for c in channels)):
         raise ValueError('Unknown or duplicate diagnostic channels')
-    if attach_logs and (xml or len(channels)!=1 or channels[0]=='every-operation'):
-        raise ValueError('Attached logging requires exactly one JMH channel and no startup XML')
+    if attach_logs and (xml or len(channels)!=1):
+        raise ValueError('Attached logging requires exactly one channel and no startup XML')
     if xml and (len(channels)!=1 or channels[0]=='every-operation'):
         raise ValueError('Targeted XML requires exactly one JMH channel')
 
@@ -65,20 +66,28 @@ def worker_gc(control,pid):
     return path
 
 
-def worker_identity(pid):
+def worker_main_class(channel):
+    if channel not in TASKS: raise ValueError('Unknown worker channel')
+    return ('io.github.enixes.tailcache.workload.CrossoverLatencyRunner' if channel=='every-operation'
+            else 'org.openjdk.jmh.runner.ForkedMain')
+
+
+def worker_identity(pid,channel='sample-calibration'):
     path=pathlib.Path('/proc')/str(pid)
-    if b'org.openjdk.jmh.runner.ForkedMain' not in (path/'cmdline').read_bytes():
-        raise ValueError('Attachment target is not the actual JMH fork')
+    main=worker_main_class(channel)
+    if main.encode() not in (path/'cmdline').read_bytes().split(b'\0'):
+        raise ValueError('Attachment target is not the declared actual worker main')
     group=(path/'cgroup').read_text().strip()
     expected=os.environ.get('TAILCACHE_NATIVE_SCOPE','')
     if not expected or group!='0::'+group.partition('0::')[2] or not group.endswith('/'+expected):
         raise ValueError('Attachment target escaped the declared native scope')
-    return dict(pid=pid,startTicks=(path/'stat').read_text().rsplit(')',1)[1].split()[19],cgroup=group)
+    return dict(pid=pid,startTicks=(path/'stat').read_text().rsplit(')',1)[1].split()[19],cgroup=group,
+                mainClass=main)
 
 
-def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60):
+def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60,channel='sample-calibration'):
     """A bounded setup helper; target arguments/measurement code remain unchanged."""
-    record=dict(method='jcmd-VM.log-v1',success=False)
+    record=dict(method='jcmd-VM.log-v2',channel=channel,success=False)
     try:
         deadline=time.monotonic()+marker_timeout
         markers=[]
@@ -91,9 +100,9 @@ def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60):
         metadata=dict(line.split('=',1) for line in markers[0].read_text().splitlines() if '=' in line)
         pid=int(metadata['pid'])
         if markers[0].name!=f'worker-process-{pid}.properties': raise ValueError('Worker PID marker mismatch')
-        identity=worker_identity(pid)
+        identity=worker_identity(pid,channel)
         if stop.wait(delay): raise ValueError('Diagnostic exited before attachment')
-        if worker_identity(pid)!=identity: raise ValueError('Attachment target PID identity changed')
+        if worker_identity(pid,channel)!=identity: raise ValueError('Attachment target PID identity changed')
         log=control/f'hotspot-jit-{pid}.log'
         if log.exists(): raise ValueError('Refusing to overwrite diagnostic log')
         command=[str(pathlib.Path(os.environ['JAVA_HOME'])/'bin/jcmd'),str(pid),'VM.log',
@@ -103,7 +112,7 @@ def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60):
         completed=subprocess.run(command,text=True,capture_output=True,timeout=30)
         record.update(endNs=time.monotonic_ns(),exitCode=completed.returncode,
                       stdout=completed.stdout,stderr=completed.stderr)
-        if completed.returncode or worker_identity(pid)!=identity or not log.exists():
+        if completed.returncode or worker_identity(pid,channel)!=identity or not log.exists():
             raise ValueError('Attachment failed or target identity/log changed')
         record['success']=True
     except Exception as error:
@@ -114,12 +123,16 @@ def attach_worker_logging(raw,control,stop,result,delay=20,marker_timeout=60):
         result.update(record)
 
 
-def verify_attachment(control,pid,windows):
+def verify_attachment(control,pid,windows,channel='sample-calibration'):
     record=__import__('json').loads((control/'attachment.json').read_text())
-    if (record.get('method')!='jcmd-VM.log-v1' or record.get('success') is not True
+    method=record.get('method')
+    if (method not in ('jcmd-VM.log-v1','jcmd-VM.log-v2') or record.get('success') is not True
             or record.get('pid')!=int(pid) or record.get('exitCode')!=0
             or not 0<record['startNs']<=record['endNs']<=min(a for a,b in windows)-60*10**9):
         raise ValueError('Missing, failed or late diagnostic attachment')
+    if (method=='jcmd-VM.log-v1' and channel=='every-operation') or (method=='jcmd-VM.log-v2' and (
+            record.get('channel')!=channel or record.get('identity',{}).get('mainClass')!=worker_main_class(channel))):
+        raise ValueError('Attachment worker channel/main identity differs')
     return record
 
 
@@ -168,7 +181,7 @@ def analyze(attempt,manifest,invocation):
     events=parse_events(attempt/invocation["label"]/f"hotspot-jit-{metadata['pid']}.log")
     windows=evidence.measurement_windows(raw)
     if manifest.get('attachmentLogging'):
-        verify_attachment(attempt/invocation['label'],metadata['pid'],windows)
+        verify_attachment(attempt/invocation['label'],metadata['pid'],windows,channel)
     artifacts=manifest.get('diagnosticArtifacts',{}).get(invocation['label'])
     if manifest.get('attachmentLogging') and (not artifacts or set(artifacts)!=
             {'attachment.json',f"hotspot-jit-{metadata['pid']}.log"}):
@@ -221,11 +234,15 @@ def main():
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.attempt_id): parser.error("Invalid attempt ID")
     attempt=evidence.REPORTS/args.attempt_id
     quiet=evidence.REPORTS/(args.attempt_id+"-quiet")
-    if attempt.exists() or quiet.exists(): raise ValueError("Diagnostic exists; no duplicate/overwrite allowed")
+    cache_path=evidence.REPORTS/(args.attempt_id+'-cache-preparation.json')
+    if any(p.exists() for p in (attempt,quiet,cache_path)): raise ValueError("Diagnostic exists; no duplicate/overwrite allowed")
     if any(key in os.environ for key in ("JAVA_TOOL_OPTIONS","JDK_JAVA_OPTIONS","_JAVA_OPTIONS")):
         raise ValueError("Diagnostic requires a clean JVM-option environment")
     source=evidence.source_hash()
-    if not run_preflight(quiet,120,300)["quietPass"]: raise ValueError("Diagnostic quiet preparation failed")
+    cache=prepare_file_cache(cache_path)
+    if not run_preflight(quiet,120,300)["quietPass"] or source!=evidence.source_hash():
+        raise ValueError("Diagnostic quiet preparation failed or source changed")
+    evidence.save(quiet/'host-preparation.json',cache)
     policy=retry.declare_policy(2)
     initial=retry.initial_quiet_reference(quiet,dict(sourceSha256=source),policy,evidence.host_snapshot())
     options=SimpleNamespace(stage="jit-event-attribution",heap_mib=512,residents=32768,churn_mib=32,
@@ -258,7 +275,8 @@ def main():
             if args.attach_logs:
                 stop=threading.Event(); attachment={}
                 helper=threading.Thread(target=attach_worker_logging,
-                    args=(attempt.parent/(attempt.name+'-'+label),attempt/label,stop,attachment),daemon=True)
+                    args=(attempt.parent/(attempt.name+'-'+label),attempt/label,stop,attachment),
+                    kwargs=dict(channel=props['Channel']),daemon=True)
                 helper.start()
             else:
                 os.environ["JAVA_TOOL_OPTIONS"]=option

@@ -11,7 +11,7 @@
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
     "12B": "current_boot_conditioning16_qualification_and_independent_floors_passed_pilot_coherence_pending",
-    "12C": "fresh_conditioning16_64_slot_grid_declared_not_yet_collected",
+    "12C": "conditioning16_grid_terminal_compiler_failure39of64_no_accepted_current_grid",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
     "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 104,
+    "pythonTests": 107,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Current conditioning16 qualification and independent floors passed; fresh64-slot calibration is declared, not yet collected. Pilot coherence and primary evidence remain absent.",
+  "currentBlocker": "Conditioning16 calibration terminal compiler failure after39selected/40attempts; final Caffeine4096/live0 every-operation interval26ms, host passes. Delayed actual-recorder attribution declared; no benchmark currently running.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Archive all retained evidence with bounded streaming, run new conditioning16 calibration under empty-swap/cache/quiet controls, then independently review full occupancy/GC/replicas before pilot.",
+  "nextWork": "Bounded archive of incomplete calibration, empty-swap/cache/quiet preparation, then max12 actual-worker Caffeine4096/live0 attachment diagnostics; inspect compiler events before any further repair or collection.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -119,7 +119,7 @@
   "calibrationDeclaration": {
     "attempt": "native-final-conditioning16-calibration-20261106-001",
     "preflight": "native-final-conditioning16-calibrationquiet-20261106-001",
-    "status": "reviewed_launch_authorized",
+    "status": "terminal_compiler_failure",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 120,
@@ -150,7 +150,20 @@
     "sourceMatchedRawInitialQuietRequired": true,
     "initialPreflightMaxAgeSeconds": 360,
     "taskLocalFileCachePreparation": true,
-    "requiresEmptySwap": true
+    "requiresEmptySwap": true,
+    "completedLogicalSlots": 39,
+    "recordedJvmAttempts": 40,
+    "rejectedSlot": "r2-every-operation-CAFFEINE-p4096-live0",
+    "compilerPerIterationMs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      26
+    ]
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -707,7 +720,7 @@
     "completedLogicalSlots": 1,
     "recordedJvmAttempts": 2
   },
-  "currentHarnessQualifiedForCalibration": true,
+  "currentHarnessQualifiedForCalibration": false,
   "historicalNativeCalibration004Declaration": {
     "attempt": "native-final-calibration-20261105-004",
     "preflight": "native-final-calibrationquiet-20261105-004",
@@ -1081,5 +1094,19 @@
     "sha256": "726dbbafd86580c3b332614469fe6fece54dde74521875722c1a41f7dcb40b95",
     "verifiedMembers": 18222,
     "hashChunkBytes": 1048576
+  },
+  "everyopAttachmentDiagnostic": {
+    "attempt": "native-final-conditioning16-everyop-attachment-20261106-001",
+    "maximumJvms": 12,
+    "status": "reviewed_launch_authorized",
+    "warmups": 120,
+    "conditioning": 16,
+    "measurements": 8,
+    "diagnosticOnly": true,
+    "primaryEndpointUseAllowed": false,
+    "attachmentVersion": "jcmd-VM.log-v2",
+    "plan": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_PLAN.md",
+    "review": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_REVIEW.md",
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   }
 }

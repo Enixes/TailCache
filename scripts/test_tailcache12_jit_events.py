@@ -18,7 +18,8 @@ class JitEventTest(unittest.TestCase):
         for channel in ('floor','sample-calibration'):
             validate_logging_channels([channel],True,False)
             validate_logging_channels([channel],False,True)
-        for channels,attach,xml in ((['every-operation'],True,False),(['floor'],True,True),
+        validate_logging_channels(['every-operation'],True,False)
+        for channels,attach,xml in ((['floor'],True,True),
                 (['floor','sample-calibration'],True,False),(['floor','floor'],False,False),
                 (['unknown'],False,False),(['every-operation'],False,True)):
             with self.assertRaises(ValueError): validate_logging_channels(channels,attach,xml)
