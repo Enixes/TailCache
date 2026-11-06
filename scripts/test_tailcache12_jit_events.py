@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
-from tailcache12_jit_events import grid,parse_events,worker_xml,worker_gc,TASKS,validate_logging_channels
+from tailcache12_jit_events import grid,parse_events,worker_xml,worker_gc,TASKS,validate_logging_channels,diagnostic_controls
 
 
 class JitEventTest(unittest.TestCase):
@@ -19,10 +19,21 @@ class JitEventTest(unittest.TestCase):
             validate_logging_channels([channel],True,False)
             validate_logging_channels([channel],False,True)
         validate_logging_channels(['every-operation'],True,False)
+        validate_logging_channels(['every-operation'],False,True)
         for channels,attach,xml in ((['floor'],True,True),
                 (['floor','sample-calibration'],True,False),(['floor','floor'],False,False),
-                (['unknown'],False,False),(['every-operation'],False,True)):
+                (['unknown'],False,False),(['every-operation','floor'],False,True)):
             with self.assertRaises(ValueError): validate_logging_channels(channels,attach,xml)
+
+    def test_recorder_xml_is_explicit_worker_instrumentation_without_mutating_unprofiled_plan(self):
+        plan=grid(3,[4096],['every-operation'],'CAFFEINE',0,16,True,True)
+        instrumented=diagnostic_controls(plan,True)
+        self.assertTrue(all(p['CompilerDiagnostics']=='true' for _,p in instrumented))
+        self.assertTrue(all(p['CompilerDiagnostics']=='false' for _,p in plan))
+        self.assertEqual(plan,diagnostic_controls(plan,False))
+        for (label,original),(newlabel,logged) in zip(plan,instrumented):
+            self.assertEqual(label,newlabel)
+            self.assertEqual(original,{**logged,'CompilerDiagnostics':'false'})
 
     def test_targeted_pressure_diagnostic_preserves_exact_preparation_controls(self):
         plan=grid(3,[4096],["sample-calibration"],"CHRONICLE_IN_MEMORY",208*1024**2,8,True)

@@ -33,8 +33,13 @@ def validate_logging_channels(channels,attach_logs,xml):
         raise ValueError('Unknown or duplicate diagnostic channels')
     if attach_logs and (xml or len(channels)!=1):
         raise ValueError('Attached logging requires exactly one channel and no startup XML')
-    if xml and (len(channels)!=1 or channels[0]=='every-operation'):
-        raise ValueError('Targeted XML requires exactly one JMH channel')
+    if xml and len(channels)!=1:
+        raise ValueError('Targeted XML requires exactly one channel')
+
+
+def diagnostic_controls(plan,xml):
+    return [(label,dict(props,CompilerDiagnostics='true') if xml and props['Channel']=='every-operation'
+             else props) for label,props in plan]
 
 
 def parse_events(path):
@@ -165,7 +170,8 @@ def analyze(attempt,manifest,invocation):
     props=invocation["properties"]
     channel=props["Channel"]
     if channel=="every-operation":
-        summary=every_operation_fork_summary(raw/channel,props,TRACE)
+        summary=every_operation_fork_summary(raw/channel,props,TRACE,
+            compiler_diagnostics=manifest.get('diagnosticCompilerXml',False))
     else:
         record=json.loads((raw/channel/"results.json").read_text())[0]
         runtime={k:record[k] for k in ("jmhVersion","jdkVersion","vmName","vmVersion")}
@@ -200,7 +206,11 @@ def analyze(attempt,manifest,invocation):
         compilerPerIterationMs=summary["compilerPerIterationMs"],alignedEvents=aligned,
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
     if manifest.get("diagnosticCompilerXml"):
-        xml=worker_xml(attempt/invocation["label"],metadata['pid'])
+        if channel=='every-operation':
+            files=list((raw/channel).glob('jit-*.xml'))
+            if len(files)!=1: raise ValueError('Missing or ambiguous actual-recorder XML')
+            xml=files[0]
+        else: xml=worker_xml(attempt/invocation["label"],metadata['pid'])
         logs=([worker_gc(attempt/invocation['label'],metadata['pid'])] if channel=='floor'
               else list((raw/channel).glob("gc-*.log")))
         if not xml.exists() or len(logs)!=1 or not logs[0].is_file(): raise ValueError("Missing targeted XML/GC evidence")
@@ -251,6 +261,7 @@ def main():
         maintenance_warmup=args.maintenance_warmup)
     plan=grid(args.repeats,args.payloads,args.channels,args.backend,args.live_mib*1024**2,
               args.conditioning,args.transport_warmup,args.maintenance_warmup)
+    plan=diagnostic_controls(plan,args.xml)
     manifest=calibration.prepare(attempt,options,plan)
     manifest.update(initialQuietRef=initial,diagnosticOnly=True,primaryEndpointUseAllowed=False,
         maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,
@@ -265,7 +276,7 @@ def main():
                 retry.verify_initial_quiet(attempt,dict(manifest,nativeHostRetryPolicy=policy,
                     nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(evidence.host_snapshot())),before_launch=True)
             option=f"-Xlog:jit+compilation=debug:file={attempt/label}/hotspot-jit-%p.log:timenanos,uptimenanos,level,tags"
-            if args.xml:
+            if args.xml and props['Channel']!='every-operation':
                 option+=f" -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:LogFile={attempt/label}/hotspot-compile-%p.xml"
                 if props['Channel']=='floor':
                     option+=f" -Xlog:gc*,safepoint:file={attempt/label}/diagnostic-gc-%p.log:uptimemillis,timenanos,level,tags:filecount=0"

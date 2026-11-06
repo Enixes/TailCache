@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 107,
+    "pythonTests": 108,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Conditioning16 calibration terminal compiler failure after39selected/40attempts; final Caffeine4096/live0 every-operation interval26ms, host passes. Delayed actual-recorder attribution declared; no benchmark currently running.",
+  "currentBlocker": "Original26ms recorder compiler failure not reproduced by12 attached diagnostics; late ForkJoinPool.reactivate C2 observed at2ms. Separate3-worker actual-recorder XML diagnostic declared.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Bounded archive of incomplete calibration, empty-swap/cache/quiet preparation, then max12 actual-worker Caffeine4096/live0 attachment diagnostics; inspect compiler events before any further repair or collection.",
+  "nextWork": "Run bounded XML diagnostic and inspect actual-worker compiler task/deoptimization timing before any further measured-source repair or collection.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1098,7 +1098,7 @@
   "everyopAttachmentDiagnostic": {
     "attempt": "native-final-conditioning16-everyop-attachment-20261106-001",
     "maximumJvms": 12,
-    "status": "reviewed_launch_authorized",
+    "status": "complete12_nonreproduction",
     "warmups": 120,
     "conditioning": 16,
     "measurements": 8,
@@ -1107,7 +1107,12 @@
     "attachmentVersion": "jcmd-VM.log-v2",
     "plan": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_PLAN.md",
     "review": "docs/TAILCACHE_12_EVERYOP_ATTACHMENT_REVIEW.md",
-    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
+    "completedJvms": 12,
+    "hostPassingJvms": 12,
+    "maximumCompilerIntervalMs": 2,
+    "measuredCandidate": "ForkJoinPool.reactivate C2 in interval7 of first diagnostic",
+    "original26msFailureAttributed": false
   },
   "conditioning16CalibrationArchive": {
     "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-calibration-checkpoint-20261106-011.tar.gz",
@@ -1115,5 +1120,15 @@
     "sha256": "ed2e3728a07d1b2901902f6135b27cd138080a8f5dd622d0183b3547736a130d",
     "verifiedMembers": 20915,
     "hashChunkBytes": 1048576
+  },
+  "everyopXmlDiagnostic": {
+    "attempt": "native-final-conditioning16-everyop-xml-20261106-001",
+    "maximumJvms": 3,
+    "status": "reviewed_launch_authorized",
+    "warmups": 120,
+    "conditioning": 16,
+    "measurements": 8,
+    "diagnosticOnly": true,
+    "primaryEndpointUseAllowed": false
   }
 }
