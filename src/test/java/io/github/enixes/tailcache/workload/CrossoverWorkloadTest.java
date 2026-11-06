@@ -41,6 +41,22 @@ class CrossoverWorkloadTest {
     }
 
     @Test
+    void reviewedLifecycleWriteContractsMatchTheActualGenerator() {
+        long[] seeds = {24301, 0xC0FFEE, 0xBADC0DE};
+        int[] expected = {383988, 383982, 383991};
+        int perTrial = CrossoverLifecycleWarmup.MAINTENANCE_BATCHES * CrossoverLifecycleWarmup.BATCH_OPERATIONS;
+        for (int s = 0; s < seeds.length; s++) {
+            WorkloadTrace trace = new DeterministicWorkloadGenerator().generate(
+                    WorkloadSpec.uniform(CrossoverWorkload.TRACE_SIZE, 32768, .95, seeds[s]));
+            int writes = 0;
+            for (int operation = 0; operation < perTrial; operation++) {
+                if (!trace.isReadAt(operation % trace.size())) writes++;
+            }
+            assertEquals(expected[s], writes * CrossoverLifecycleWarmup.TRIALS);
+        }
+    }
+
+    @Test
     void backendsHaveIdenticalFreshLogicalValuesAndStableResidents() {
         for (int payload : new int[]{256, 4096}) {
             try (CrossoverWorkload caffeine = new CrossoverWorkload(CrossoverBackend.CAFFEINE, config(payload));

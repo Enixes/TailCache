@@ -18,8 +18,8 @@
     "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
   },
   "verification": {
-    "javaTests": 41,
-    "pythonTests": 119,
+    "javaTests": 42,
+    "pythonTests": 120,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Old-source complete pilot failed coherence; odd-period repair implemented/tested/reviewed, bounded diagnostic pending. New source has no qualified prerequisites.",
+  "currentBlocker": "Odd-period probe all8 quality contracts pass but p99.9 point directions remain opposite; no primary freeze. Plan synthetic periodic-cost control before conditional generated-sampler overlay.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run exactly eight prospectively declared odd-period low256 diagnostics with no replacements, review all raw outcomes and sampling/observer directions before any fresh qualification.",
+  "nextWork": "Archive completed odd-period diagnostic/analysis corrections, run predeclared synthetic phase control, then conditionally implement and review high-bit selector overlay with fresh bounded probe. No full qualification/campaign until observer design passes.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1228,12 +1228,14 @@
     "quiet": "native-final-oddperiod-probequiet-20261107-001",
     "expectedDiagnosticJvms": 8,
     "replacements": 0,
-    "status": "implemented_tested_reviewed_not_yet_measured"
+    "status": "eight_diagnostic_forks_complete_quality_pass_discrepancy_remains"
   },
   "pilotCoherenceRejectionArchive": {
     "path": "evidence-archives/native-final-pilot-coherence-rejection-20261107-014.tar.gz",
     "bytes": 886042102,
     "sha256": "96127c57d1c4238bf31547626aa4e021217e3f5aab829c3d752c09b9382ce505",
     "verifiedMembers": 36299
-  }
+  },
+  "oddPeriodProbeReview": "docs/TAILCACHE_12_ODDPERIOD_PROBE_REVIEW.md",
+  "sampleSelectionPlan": "docs/TAILCACHE_12_SAMPLE_SELECTION_PLAN.md"
 }

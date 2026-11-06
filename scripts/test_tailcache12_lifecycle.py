@@ -38,5 +38,19 @@ class LifecyclePreparationTest(unittest.TestCase):
         inputs.pop('lifecycleWarmupVersion')
         self.assertTrue(all('LifecycleWarmupVersion' not in p for _,p in calibration.calibration_grid(inputs)))
 
+    def test_odd_period_requires_exact_seed_contract_and_complete_metadata(self):
+        args=['-Dtailcache12.lifecycleWarmupVersion=lifecycle-maintenance-v1']
+        for seed,writes in ((24301,383988),(0xC0FFEE,383982),(0xBADC0DE,383991)):
+            inputs=dict(LifecycleWarmupVersion='lifecycle-maintenance-v1',Seed=seed)
+            text=(self.metadata().replace('384000',str(writes))+
+                  ' tracePeriodVersion=odd-period-v1 traceSize=40001 traceReadCount=38001 traceWriteCount=2000')
+            validate_lifecycle_preparation(inputs,text,args)
+            for changed in (text.replace(str(writes),'384000'),text.replace('traceReadCount=38001',''),
+                    text.replace('odd-period-v1','unknown'),text.replace('traceSize=40001','traceSize=40000'),
+                    text.replace('tracePeriodVersion=odd-period-v1','')):
+                with self.assertRaises(ValueError): validate_lifecycle_preparation(inputs,changed,args)
+            with self.assertRaises(ValueError):
+                validate_lifecycle_preparation(dict(inputs,Seed=123),text,args)
+
 
 if __name__=='__main__': unittest.main()

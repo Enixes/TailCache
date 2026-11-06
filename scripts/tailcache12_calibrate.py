@@ -185,7 +185,10 @@ def replay(attempt):
             if f"-Xms{props['HeapMiB']}m" not in config["jvmArgs"] or f"-Xmx{props['HeapMiB']}m" not in config["jvmArgs"]:
                 raise ValueError("Fixed heap evidence missing")
             identity = (config["traceSha256"], config["valueGenerator"])
-            summary["jdkVersion"] = config["jdkVersion"]
+            # Lightweight diagnostic summaries omit VM fields. Compare the
+            # actual retained configuration, rather than treating absent
+            # summary fields as a different installed VM in mixed probes.
+            summary.update({key: config[key] for key in ("jdkVersion", "vmName", "vmVersion") if key in config})
         elif channel == "sample-calibration":
             record = json.loads((raw / channel / "results.json").read_text())[0]
             current_runtime = {key: record[key] for key in ("jmhVersion", "jdkVersion", "vmName", "vmVersion")}

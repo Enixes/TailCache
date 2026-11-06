@@ -18,6 +18,9 @@ from tailcache12_analysis import (compiler_rejection_reasons, every_operation_su
 
 VALUE_GENERATOR = "xorshift-key-version-v1"
 JMH_SAMPLE_SECONDARIES = {"p0.00", "p0.50", "p0.90", "p0.95", "p0.99", "p0.999", "p0.9999", "p1.00"}
+# Exact setup-only Java generator exports, independently checked by the Java
+# generator regression. Arbitrary new seeds require a reviewed contract first.
+ODD_PERIOD_LIFECYCLE_WRITES = {24301: 383988, 0xC0FFEE: 383982, 0xBADC0DE: 383991}
 
 
 def validate_lifecycle_preparation(inputs,text,jvm_args):
@@ -28,9 +31,21 @@ def validate_lifecycle_preparation(inputs,text,jvm_args):
         return
     if version!='lifecycle-maintenance-v1' or f'-Dtailcache12.lifecycleWarmupVersion={version}' not in jvm_args:
         raise ValueError('Missing or unknown lifecycle preparation JVM control')
+    periods=set(re.findall(r'(?:^|\s)tracePeriodVersion=([^\s,]+)',text,re.M))
+    sizes=set(re.findall(r'(?:^|\s)traceSize=([^\s,]+)',text,re.M))
+    writes=384000
+    trace_contract={}
+    if periods:
+        if periods!={'odd-period-v1'} or inputs.get('Seed') not in ODD_PERIOD_LIFECYCLE_WRITES:
+            raise ValueError('Unknown trace period or unreviewed lifecycle seed')
+        writes=ODD_PERIOD_LIFECYCLE_WRITES[inputs['Seed']]
+        trace_contract=dict(tracePeriodVersion='odd-period-v1',traceSize='40001',
+                            traceReadCount='38001',traceWriteCount='2000')
+    elif sizes-{'40000'}:
+        raise ValueError('Nonlegacy trace period lacks a declared contract')
     expected=dict(lifecycleWarmupVersion=version,lifecycleWarmupTrials='3',
         lifecycleMaintenanceBatches='20000',lifecycleMaintenanceBatchOperations='128',
-        lifecycleWarmupOperations='7680000',lifecycleWarmupWrites='384000')
+        lifecycleWarmupOperations='7680000',lifecycleWarmupWrites=str(writes),**trace_contract)
     for key,value in expected.items():
         values=set(re.findall(r'(?:^|\s)'+key+r'=([^\s,]+)',text,re.M))
         if values!={value}: raise ValueError('Missing or mismatched lifecycle preparation evidence: '+key)
