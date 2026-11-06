@@ -12,7 +12,7 @@ class PilotStartTest(unittest.TestCase):
             with self.subTest(quiet_pass=quiet_pass),tempfile.TemporaryDirectory() as directory:
                 with patch.object(start.evidence,'REPORTS',pathlib.Path(directory)), \
                      patch.object(start.evidence,'source_hash',side_effect=['source','changed']), \
-                     patch.object(start,'qualification_bindings'),patch.object(start.pilot,'qualification_refs'), \
+                     patch.object(start,'qualification_bindings'),patch.object(start.pilot,'qualification_refs',return_value=({},dict(conditioning=8),{})), \
                      patch.object(start,'prepare_file_cache'), \
                      patch.object(start,'run_preflight',return_value={'quietPass':quiet_pass}), \
                      patch.object(start.subprocess,'run') as launch, \
@@ -25,7 +25,7 @@ class PilotStartTest(unittest.TestCase):
             events=[]
             with patch.object(start.evidence,'REPORTS',pathlib.Path(directory)), \
                  patch.object(start.evidence,'source_hash',return_value='source'), \
-                 patch.object(start,'qualification_bindings'),patch.object(start.pilot,'qualification_refs'), \
+                 patch.object(start,'qualification_bindings'),patch.object(start.pilot,'qualification_refs',return_value=({},dict(conditioning=8),{})), \
                  patch.object(start,'prepare_file_cache',return_value={'preparationPass':True}), \
                  patch.object(start,'run_preflight',side_effect=lambda *_:events.append('quiet') or {'quietPass':True}), \
                  patch.object(start.evidence,'save',side_effect=lambda *_:events.append('retain')), \

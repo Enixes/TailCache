@@ -17,18 +17,22 @@ def main():
     parser.add_argument('--qualification-prefix',required=True)
     parser.add_argument('--calibration',required=True)
     parser.add_argument('--everyop-reference')
+    parser.add_argument('--conditioning',type=int,choices=(8,16),default=8)
     args=parser.parse_args()
-    if any(x is not None and not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',x) for x in vars(args).values()):
+    if any(x is not None and not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',x) for x in
+           (args.attempt_id,args.quiet_id,args.qualification_prefix,args.calibration,args.everyop_reference)):
         parser.error('Invalid attempt identifier')
     attempt=evidence.REPORTS/args.attempt_id; quiet=evidence.REPORTS/args.quiet_id
     cache_path=evidence.REPORTS/(args.quiet_id+'-cache-preparation.json')
     if any(p.exists() for p in (attempt,quiet,cache_path)):
         raise ValueError('Retained pilot/preparation exists; inspect it instead of duplicating or overwriting')
     source=evidence.source_hash()
-    qualification_bindings(args.qualification_prefix,args.everyop_reference)
+    qualification_bindings(args.qualification_prefix,args.everyop_reference,args.conditioning)
     ids=[args.qualification_prefix+'-'+suffix for suffix in ('functional','jit')]
     ids.extend((args.calibration,args.everyop_reference or args.qualification_prefix+'-everyop'))
-    pilot.qualification_refs(*(evidence.REPORTS/x for x in ids))
+    _,inputs,_=pilot.qualification_refs(*(evidence.REPORTS/x for x in ids))
+    if inputs['conditioning']!=args.conditioning:
+        raise ValueError('Pilot conditioning differs from reviewed qualification')
     cache=prepare_file_cache(cache_path)
     result=run_preflight(quiet,120,300)
     if not result['quietPass'] or evidence.source_hash()!=source:

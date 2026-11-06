@@ -62,10 +62,11 @@ def validate_actual_recorder(manifest,result):
         raise ValueError('Recorder reference must be a complete matching actual-unprofiled two-order screen')
 
 
-def qualification_bindings(prefix,everyop_reference=None):
+def qualification_bindings(prefix,everyop_reference=None,conditioning=8):
     """Bind the reviewed qualification to this checkout and current native boot."""
     import tailcache12_calibrate as calibration
     import tailcache12_pilot as pilot
+    if conditioning not in (8,16): raise ValueError('Unreviewed qualification conditioning count')
     expected=measurement_source_hash(evidence.ROOT)
     manifests=[]
     refs={}
@@ -87,7 +88,7 @@ def qualification_bindings(prefix,everyop_reference=None):
             raise ValueError("Qualification did not exercise the actual unprofiled recorder")
         if name=='everyop': validate_actual_recorder(manifest,result)
         if name in ("jit","everyop","pressure96","floors") and any(
-                v["properties"].get("Warmups")!=120 or v["properties"].get("Conditioning")!=8
+                v["properties"].get("Warmups")!=120 or v["properties"].get("Conditioning")!=conditioning
                 or v["properties"].get("TransportWarmupVersion")!=evidence.TRANSPORT_WARMUP_VERSION
                 for v in manifest["invocations"]):
             raise ValueError("Qualification preparation controls differ from the declared grid")
@@ -108,6 +109,7 @@ def main():
     parser.add_argument("quiet_id")
     parser.add_argument("--qualification-prefix",required=True)
     parser.add_argument('--everyop-reference')
+    parser.add_argument('--conditioning',type=int,choices=(8,16),default=8)
     parser.add_argument('--swap-preparation',help='Retained successful one-time residual-page recovery report ID')
     args=parser.parse_args()
     if any(not evidence.re.fullmatch(r"[A-Za-z0-9._-]+",v) for v in (args.attempt_id,args.quiet_id,args.qualification_prefix)):
@@ -128,7 +130,7 @@ def main():
                 or swap.configuration(reset['before'])!=swap.configuration(reset['after'])
                 or swap.configuration(swap.snapshot())!=swap.configuration(reset['after'])):
             raise ValueError('Swap preparation failed, source/policy changed or configuration not restored')
-    bindings=qualification_bindings(args.qualification_prefix,args.everyop_reference)
+    bindings=qualification_bindings(args.qualification_prefix,args.everyop_reference,args.conditioning)
     source=evidence.source_hash()
     result=run_preflight(quiet,120,300)
     if not result["quietPass"] or source!=evidence.source_hash():
@@ -143,7 +145,7 @@ def main():
         "--initial-quiet",args.quiet_id,"--heap-mib","512","--residents","32768","--churn-mib","32",
         "--qualification-prefix",args.qualification_prefix,
         "--live-mib","0","96","208","288","--payloads","4096","256","--high-first","--seed","24301",
-        "--warmups","120","--conditioning","8","--transport-warmup","--maintenance-warmup","--measurements","8","--repeats","2",
+        "--warmups","120","--conditioning",str(args.conditioning),"--transport-warmup","--maintenance-warmup","--measurements","8","--repeats","2",
         "--native-host-retries","2","--native-host-retry-budget","8"]
     return subprocess.run(command,cwd=evidence.ROOT).returncode
 

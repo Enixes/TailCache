@@ -68,6 +68,33 @@ class CompleteRecorderReferenceTest(unittest.TestCase):
                 self.assertEqual('new-recorder',refs['everyop']['attempt'])
                 self.assertEqual('original-jit',refs['jit']['attempt'])
                 self.assertEqual(6,len(refs))
+                for file in root.glob('*/manifest.json'):
+                    m=json.loads(file.read_text())
+                    for v in m['invocations']: v['properties']['Conditioning']=16
+                    file.write_text(json.dumps(m))
+                with self.assertRaises(ValueError): start.qualification_bindings('original','new-recorder')
+                updated=start.qualification_bindings('original','new-recorder',16)
+                self.assertEqual('new-recorder',updated['everyop']['attempt'])
+                self.assertNotEqual(refs['everyop']['manifestSha256'],updated['everyop']['manifestSha256'])
+
+    def test_new_calibration_forwards_declared_conditioning_after_matching_binding(self):
+        for conditioning in (8,16):
+            with self.subTest(conditioning=conditioning),tempfile.TemporaryDirectory() as directory:
+                root=pathlib.Path(directory)
+                def quiet(path,*args): path.mkdir(); return dict(quietPass=True)
+                from unittest.mock import Mock
+                with patch.object(start.evidence,'REPORTS',root), \
+                     patch.object(start.evidence,'source_hash',return_value='source'), \
+                     patch.object(start,'prepare_file_cache',return_value={}), \
+                     patch.object(start,'qualification_bindings',return_value={}) as bindings, \
+                     patch.object(start,'run_preflight',side_effect=quiet), \
+                     patch.object(start.subprocess,'run',return_value=Mock(returncode=0)) as launch, \
+                     patch.object(start.sys,'argv',['start','calibration','quiet','--qualification-prefix','qualified',
+                                                  '--conditioning',str(conditioning)]):
+                    self.assertEqual(0,start.main())
+                    bindings.assert_called_once_with('qualified',None,conditioning)
+                    command=launch.call_args.args[0]
+                    self.assertEqual(str(conditioning),command[command.index('--conditioning')+1])
 
 
 if __name__=='__main__': unittest.main()

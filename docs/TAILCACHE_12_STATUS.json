@@ -10,7 +10,7 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "prior_boot_qualification_retained_new_boot_qualification_required",
+    "12B": "conditioning8_current_boot_workload_screens_passed_floor_rejected_fresh_conditioning16_qualification_required",
     "12C": "prior_current_source_grid_rejected_28of64_new_boot_calibration_not_started",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 102,
+    "pythonTests": 104,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Original floor11ms compiler failure not reproduced by6 delayed-attachment diagnostics. A3-fork XML diagnostic is declared to inspect task/deoptimization timing; qualification remains incomplete.",
+  "currentBlocker": "Prospective16-conditioning qualification required after observed late infrastructure compilation; original11ms floor event remains unattributed. No primary evidence exists.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run bounded XML floor attribution, inspect retained compiler tasks, then declare a prospective stability repair only if supported.",
+  "nextWork": "Run wholly new conditioning16 qualification/floors, raw-review it, then declare conditioning16 calibration on the same boot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1015,8 +1015,25 @@
   "postbootFloorXmlDiagnostic": {
     "attempt": "native-final-postboot-floor-xml-20261106-001",
     "maximumJvms": 3,
-    "status": "declared",
+    "status": "terminal_analysis_bug_after1_worker_separate_offline_replay_preserved",
     "diagnosticOnly": true,
-    "primaryEndpointUseAllowed": false
+    "primaryEndpointUseAllowed": false,
+    "completedJvms": 1,
+    "offlineReplay": "build/reports/tailcache12/native-final-postboot-floor-xml-20261106-001/offline-replay.json",
+    "compilerMaximumMs": 0,
+    "hostPass": true,
+    "originalFailureAttributed": false
+  },
+  "conditioning16QualificationDeclaration": {
+    "prefix": "native-final-conditioning16-20261106-001",
+    "status": "reviewed_launch_authorized",
+    "warmups": 120,
+    "conditioning": 16,
+    "measurements": 8,
+    "transportWarmupVersion": "jmh-result-transport-v2",
+    "lifecycleWarmupVersion": "lifecycle-maintenance-v1",
+    "plan": "docs/TAILCACHE_12_CONDITIONING16_PLAN.md",
+    "review": "docs/TAILCACHE_12_CONDITIONING16_REVIEW.md",
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   }
 }

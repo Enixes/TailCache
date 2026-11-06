@@ -25,23 +25,27 @@ class ConditioningTest(unittest.TestCase):
         self.assertEqual(0,calibration.calibration_grid(inputs)[0][1]["LiveBytes"])
 
     def test_only_predeclared_analysis_histograms_supply_endpoints_and_all_phases_validate(self):
+        for conditioning in (8,16):
+            with self.subTest(conditioning=conditioning): self.assert_conditioning(conditioning)
+
+    def assert_conditioning(self,conditioning):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory)
             sample=root/"sample"
             sample.mkdir()
             inputs=dict(Backend="CAFFEINE",Payload=256,Residents=8192,LiveBytes=0,ChurnBytesPerSecond=1024,
-                        Seed=24301,Warmups=12,Conditioning=8,Measurements=8,HeapMiB=512)
+                        Seed=24301,Warmups=12,Conditioning=conditioning,Measurements=8,HeapMiB=512)
             runtime=dict(jmhVersion="1.37",jdkVersion="21",vmName="VM",vmVersion="build")
             record=dict(runtime,benchmark="io.github.enixes.tailcache.benchmark.CrossoverBenchmark.mixedWorkload",
-                forks=1,threads=1,mode="sample",warmupIterations=12,measurementIterations=16,warmupTime="1 s",measurementTime="1 s",
-                jvmArgs=["-Xms512m","-Xmx512m","-XX:+UseG1GC","-Dtailcache12.conditioningIterations=8"],
+                forks=1,threads=1,mode="sample",warmupIterations=12,measurementIterations=conditioning+8,warmupTime="1 s",measurementTime="1 s",
+                jvmArgs=["-Xms512m","-Xmx512m","-XX:+UseG1GC",f"-Dtailcache12.conditioningIterations={conditioning}"],
                 params=dict(backend="CAFFEINE",payloadBytes="256",residentEntries="8192",applicationLiveBytes="0",
                             churnBytesPerSecond="1024",seed="24301"),secondaryMetrics={},
-                primaryMetric=dict(scoreUnit="ns/op",rawDataHistogram=[[[[10240,12500]]]*8+[[[100,12500]]]*8],scorePercentiles={"99.9":10240}))
+                primaryMetric=dict(scoreUnit="ns/op",rawDataHistogram=[[[[10240,12500]]]*conditioning+[[[100,12500]]]*8],scorePercentiles={"99.9":10240}))
             trace="a"*64
-            (sample/"jmh.txt").write_text(f"traceSha256={trace} valueGenerator=xorshift-key-version-v1 conditioningIterations=8\n[TailCache12][integrity]\n")
+            (sample/"jmh.txt").write_text(f"traceSha256={trace} valueGenerator=xorshift-key-version-v1 conditioningIterations={conditioning}\n[TailCache12][integrity]\n")
             rows=[]
-            for phase,count in (("WARMUP",12),("CONDITIONING",8),("MEASUREMENT",8)):
+            for phase,count in (("WARMUP",12),("CONDITIONING",conditioning),("MEASUREMENT",8)):
                 for _ in range(count):
                     i=len(rows)+1
                     rows.append(dict(phase=phase,envelopeStartNs=i*10**9,envelopeEndNs=(i+1)*10**9,operations=100000,
@@ -61,14 +65,14 @@ class ConditioningTest(unittest.TestCase):
             with self.assertRaises(ValueError): jmh_fork_summary(root,"sample",dict(inputs,Conditioning=0),trace,runtime)
             record["measurementIterations"]=8;write()
             with self.assertRaises(ValueError): analyze()
-            record["measurementIterations"]=16
+            record["measurementIterations"]=conditioning+8
             rows[12]["operations"]=100;write()
             with self.assertRaises(ValueError): analyze()
             rows[12]["operations"]=100000
-            rows[12]["phase"],rows[20]["phase"]=rows[20]["phase"],rows[12]["phase"];write()
+            rows[12]["phase"],rows[12+conditioning]["phase"]=rows[12+conditioning]["phase"],rows[12]["phase"];write()
             with self.assertRaises(ValueError): analyze()
-            rows[12]["phase"],rows[20]["phase"]=rows[20]["phase"],rows[12]["phase"]
-            rows[20]["workerEnvelopeCompilerMs"]=11;write()
+            rows[12]["phase"],rows[12+conditioning]["phase"]=rows[12+conditioning]["phase"],rows[12]["phase"]
+            rows[12+conditioning]["workerEnvelopeCompilerMs"]=11;write()
             self.assertFalse(analyze()["accepted"])
 
     def test_broad_compiler_gate_uses_fixed_analysis_count_and_preserves_legacy_count(self):

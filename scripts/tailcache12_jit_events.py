@@ -59,6 +59,12 @@ def worker_xml(control,pid):
     return files[0]
 
 
+def worker_gc(control,pid):
+    path=control/f'diagnostic-gc-{int(pid)}.log'
+    if not path.is_file(): raise ValueError('Missing actual-worker diagnostic GC clock')
+    return path
+
+
 def worker_identity(pid):
     path=pathlib.Path('/proc')/str(pid)
     if b'org.openjdk.jmh.runner.ForkedMain' not in (path/'cmdline').read_bytes():
@@ -182,8 +188,9 @@ def analyze(attempt,manifest,invocation):
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
     if manifest.get("diagnosticCompilerXml"):
         xml=worker_xml(attempt/invocation["label"],metadata['pid'])
-        logs=list((attempt/invocation['label']).glob('diagnostic-gc-*.log')) if channel=='floor' else list((raw/channel).glob("gc-*.log"))
-        if not xml.exists() or len(logs)!=1: raise ValueError("Missing targeted XML/GC evidence")
+        logs=([worker_gc(attempt/invocation['label'],metadata['pid'])] if channel=='floor'
+              else list((raw/channel).glob("gc-*.log")))
+        if not xml.exists() or len(logs)!=1 or not logs[0].is_file(): raise ValueError("Missing targeted XML/GC evidence")
         detail=classify_tasks(xml,logs[0],windows)
         result["xmlAttribution"]=dict(
             tasksOverlappingWorker=[t for t in detail["tasks"] if t["location"]=="possible-worker-overlap"],

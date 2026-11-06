@@ -17,7 +17,7 @@ from tailcache12_quiet import run_preflight
 from tailcache12_study_analysis import jmh_fork_summary
 
 
-def validate_completed(prefix):
+def validate_completed(prefix,conditioning=8):
     expected=measurement_source_hash(evidence.ROOT); manifests=[]; refs={}
     for name in ('functional','pause','jit'):
         path=evidence.REPORTS/(prefix+'-'+name); manifest=json.loads((path/'manifest.json').read_text())
@@ -31,7 +31,7 @@ def validate_completed(prefix):
         if name=='jit':
             for invocation in manifest['invocations']:
                 p=invocation['properties']
-                expected_controls=dict(Warmups=120,Conditioning=8,Residents=32768,
+                expected_controls=dict(Warmups=120,Conditioning=conditioning,Residents=32768,
                     TransportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION,
                     LifecycleWarmupVersion=evidence.LIFECYCLE_WARMUP_VERSION)
                 if any(p.get(k)!=v for k,v in expected_controls.items()):
@@ -67,8 +67,10 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('completion_id'); parser.add_argument('--prefix',required=True)
     parser.add_argument('--everyop-reference',required=True)
+    parser.add_argument('--conditioning',type=int,choices=(8,16),default=8)
     args=parser.parse_args()
-    if any(not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',x) for x in vars(args).values()):
+    if any(not evidence.re.fullmatch(r'[A-Za-z0-9._-]+',x) for x in
+           (args.completion_id,args.prefix,args.everyop_reference)):
         parser.error('Invalid evidence identifier')
     checkpoint=evidence.REPORTS/(args.completion_id+'-sequence.json')
     quiet=evidence.REPORTS/(args.completion_id+'-quiet')
@@ -77,7 +79,7 @@ def main():
         pressure96=evidence.REPORTS/(args.prefix+'-pressure96'),floors=evidence.REPORTS/(args.prefix+'-floors'))
     if any(p.exists() for p in (checkpoint,quiet,cache_path,*paths.values())):
         raise ValueError('Completion evidence exists; inspect instead of overwriting or duplicating')
-    source=evidence.source_hash(); refs=validate_completed(args.prefix)
+    source=evidence.source_hash(); refs=validate_completed(args.prefix,args.conditioning)
     state=dict(complete=False,sourceSha256=source,measurementSourceSha256=measurement_source_hash(evidence.ROOT),
         reusedCompleteStageRefs=refs,completed=[],planned={k:p.name for k,p in paths.items()})
     evidence.save(checkpoint,state)
@@ -85,7 +87,7 @@ def main():
         cache=prepare_file_cache(cache_path)
         if not run_preflight(quiet,120,300)['quietPass']: raise ValueError('Fresh quiet prerequisite failed')
         evidence.save(quiet/'host-preparation.json',cache)
-        common=['--warmups','120','--conditioning','8','--transport-warmup','--maintenance-warmup']
+        common=['--warmups','120','--conditioning',str(args.conditioning),'--transport-warmup','--maintenance-warmup']
         commands=[('everyop','tailcache12_everyop_jit.py',['run',paths['everyop'].name,*common,'--unprofiled']),
             ('pressure96','tailcache12_everyop_jit.py',['run',paths['pressure96'].name,*common,
                 '--backends','CAFFEINE','--payloads','4096','--live-mib','96']),
@@ -99,7 +101,7 @@ def main():
             if not result['floorDataPass' if name=='floors' else 'qualityPass']:
                 raise ValueError('Raw stage replay rejected')
             state['completed'].append(name); evidence.save(checkpoint,state)
-        state['qualificationRefs']=qualification_bindings(args.prefix,args.everyop_reference)
+        state['qualificationRefs']=qualification_bindings(args.prefix,args.everyop_reference,args.conditioning)
         state['complete']=True; evidence.save(checkpoint,state)
         print('Complete qualification prerequisites passed; calibration/pilot/campaign remain.',flush=True)
     except Exception as error:

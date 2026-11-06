@@ -2,7 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
-from tailcache12_jit_events import grid,parse_events,worker_xml,TASKS,validate_logging_channels
+from tailcache12_jit_events import grid,parse_events,worker_xml,worker_gc,TASKS,validate_logging_channels
 
 
 class JitEventTest(unittest.TestCase):
@@ -68,6 +68,14 @@ class JitEventTest(unittest.TestCase):
             self.assertEqual(plain,worker_xml(root,42))
             plain.unlink()
             with self.assertRaises(ValueError): worker_xml(root,42)
+
+    def test_diagnostic_gc_clock_selects_actual_worker_among_parent_logs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            for pid in (12,42,99): (root/f'diagnostic-gc-{pid}.log').write_text('clock')
+            self.assertEqual(root/'diagnostic-gc-42.log',worker_gc(root,'42'))
+            (root/'diagnostic-gc-42.log').unlink()
+            with self.assertRaises(ValueError): worker_gc(root,'42')
 
 
 if __name__=="__main__": unittest.main()

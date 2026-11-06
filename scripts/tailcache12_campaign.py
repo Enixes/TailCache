@@ -21,9 +21,9 @@ import tailcache12_pilot as pilot
 from tailcache12_provenance import archive_measurement_source_hash, measurement_source_hash
 from tailcache12_study_analysis import hierarchical_ratio, variance_reasons
 
-VERSION = "tailcache12-campaign-v1"
+VERSION = "tailcache12-campaign-v2"
 RULES = dict(version=VERSION, passes=2, primaryForksPerPass=3, measurements=8,
-    conditioningIterations=8,
+    conditioningIterations=16,
     transportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION,
     lifecycleWarmupVersion=evidence.LIFECYCLE_WARMUP_VERSION,
     p99BetweenPassCeiling=1.25, p999BetweenPassCeiling=1.5,
