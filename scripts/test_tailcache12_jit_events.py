@@ -2,10 +2,27 @@ import pathlib
 import tempfile
 import unittest
 
-from tailcache12_jit_events import grid,parse_events,worker_xml
+from tailcache12_jit_events import grid,parse_events,worker_xml,TASKS,validate_logging_channels
 
 
 class JitEventTest(unittest.TestCase):
+    def test_floor_diagnostic_uses_real_task_and_same_controls_without_relaxing_logging(self):
+        build=(pathlib.Path(__file__).resolve().parents[1]/'build.gradle.kts').read_text()
+        self.assertIn('registerTailCache12Jmh("'+TASKS['floor']+'", "floor")',build)
+        plan=grid(6,[4096],['floor'],'CAFFEINE',0,8,True,True)
+        self.assertEqual(6,len(plan))
+        for _,p in plan:
+            self.assertEqual(('floor','CAFFEINE',4096,0,120,8,8),
+                tuple(p[k] for k in ('Channel','Backend','Payload','LiveBytes','Warmups','Conditioning','Measurements')))
+            self.assertEqual('lifecycle-maintenance-v1',p['LifecycleWarmupVersion'])
+        for channel in ('floor','sample-calibration'):
+            validate_logging_channels([channel],True,False)
+            validate_logging_channels([channel],False,True)
+        for channels,attach,xml in ((['every-operation'],True,False),(['floor'],True,True),
+                (['floor','sample-calibration'],True,False),(['floor','floor'],False,False),
+                (['unknown'],False,False),(['every-operation'],False,True)):
+            with self.assertRaises(ValueError): validate_logging_channels(channels,attach,xml)
+
     def test_targeted_pressure_diagnostic_preserves_exact_preparation_controls(self):
         plan=grid(3,[4096],["sample-calibration"],"CHRONICLE_IN_MEMORY",208*1024**2,8,True)
         self.assertEqual(3,len(plan))

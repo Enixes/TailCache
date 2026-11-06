@@ -23,6 +23,17 @@ from tailcache12_jit_diagnose import classify_tasks
 
 TRACE="3310547f9e5d01436fb54781f8cb50f312c8b3d29079f719694026e43107dfb3"
 EVENT=re.compile(r"^\[(\d+)ns\]\[(\d+)ns\]\[debug\]\[jit,compilation\]\s+(.*)$")
+TASKS={'every-operation':'tailCache12EveryOperation','sample-calibration':'tailCache12SampleCalibration',
+       'floor':'tailCache12SupplyFloor'}
+
+
+def validate_logging_channels(channels,attach_logs,xml):
+    if (not channels or len(set(channels))!=len(channels) or any(c not in TASKS for c in channels)):
+        raise ValueError('Unknown or duplicate diagnostic channels')
+    if attach_logs and (xml or len(channels)!=1 or channels[0]=='every-operation'):
+        raise ValueError('Attached logging requires exactly one JMH channel and no startup XML')
+    if xml and (len(channels)!=1 or channels[0]=='every-operation'):
+        raise ValueError('Targeted XML requires exactly one JMH channel')
 
 
 def parse_events(path):
@@ -189,17 +200,15 @@ def main():
     parser.add_argument("--repeats",type=int,choices=range(1,17),default=4)
     parser.add_argument('--attach-logs',action='store_true')
     parser.add_argument("--payloads",type=int,nargs="+",choices=(256,4096),default=[256,4096])
-    parser.add_argument("--channels",nargs="+",choices=("every-operation","sample-calibration"),default=["every-operation","sample-calibration"])
+    parser.add_argument("--channels",nargs="+",choices=tuple(TASKS),default=["every-operation","sample-calibration"])
     parser.add_argument("--backend",choices=evidence.BACKENDS,default="CAFFEINE")
     parser.add_argument("--live-mib",type=int,choices=(0,96,208,288),default=0)
     parser.add_argument("--conditioning",type=int,choices=range(0,65),default=0)
     parser.add_argument("--transport-warmup",action="store_true")
     parser.add_argument('--maintenance-warmup',action='store_true')
     args=parser.parse_args()
-    if args.attach_logs and (args.xml or args.channels!=['sample-calibration']):
-        parser.error('Attached logging requires only sample-calibration and no startup XML')
-    if args.xml and args.channels!=["sample-calibration"]:
-        parser.error("Targeted XML mode requires only --channels sample-calibration")
+    try: validate_logging_channels(args.channels,args.attach_logs,args.xml)
+    except ValueError as error: parser.error(str(error))
     if len(set(args.payloads))!=len(args.payloads) or len(set(args.channels))!=len(args.channels):
         parser.error("Duplicate diagnostic conditions")
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.attempt_id): parser.error("Invalid attempt ID")
@@ -245,8 +254,7 @@ def main():
             else:
                 os.environ["JAVA_TOOL_OPTIONS"]=option
             try:
-                evidence.invoke(attempt,manifest,label,"tailCache12EveryOperation" if props["Channel"]=="every-operation"
-                                else "tailCache12SampleCalibration",props)
+                evidence.invoke(attempt,manifest,label,TASKS[props['Channel']],props)
             finally:
                 if args.attach_logs:
                     stop.set(); helper.join(35)

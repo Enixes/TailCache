@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 101,
+    "pythonTests": 102,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Fresh postboot qualification/floors required before calibration; source/launch review complete. Swap is empty with original policy unchanged.",
+  "currentBlocker": "Postboot floor-specific late compiler activity; bounded attached floor attribution declared. No collection active until diagnostic launch.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run wholly new postboot001 qualification/floors, raw-review it, then declare fresh calibration on this boot.",
+  "nextWork": "Run at most6 Caffeine4096 floor JVMs with delayed actual-worker compilation logging; inspect attribution before prospective repair or stability protocol.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -980,7 +980,7 @@
   },
   "postbootQualificationDeclaration": {
     "prefix": "native-final-postboot-20261106-001",
-    "status": "reviewed_launch_authorized",
+    "status": "terminal_floor_compiler_failure",
     "previousBootId": "e03d65c6-6db5-4811-a47e-6e096efae8ff",
     "currentBootId": "f6cf39f7-44a7-467b-95f1-e8c55428bbae",
     "swapPreparation": "native-final-residual-swap-recovery-20261106-003",
@@ -990,6 +990,23 @@
     "conditioning": 8,
     "measurements": 8,
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
-    "plan": "docs/TAILCACHE_12_POSTBOOT_PLAN.md"
+    "plan": "docs/TAILCACHE_12_POSTBOOT_PLAN.md",
+    "completedStages": [
+      "observer",
+      "quiet",
+      "functional",
+      "pause",
+      "jit",
+      "everyop",
+      "pressure96"
+    ],
+    "floorFailure": "Caffeine4096 analysed interval5 compiler11ms against10ms; host passed. Entire floor screen incomplete1selected/2attempts."
+  },
+  "postbootFloorDiagnostic": {
+    "attempt": "native-final-postboot-floor-attachment-20261106-001",
+    "maximumJvms": 6,
+    "status": "declared",
+    "diagnosticOnly": true,
+    "primaryEndpointUseAllowed": false
   }
 }
