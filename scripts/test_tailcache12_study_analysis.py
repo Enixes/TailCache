@@ -130,6 +130,14 @@ class StudyAnalysisTest(unittest.TestCase):
                 self.assertFalse(diagnostic["primaryEndpointUseAllowed"])
                 with self.assertRaises(ValueError):
                     jmh_fork_summary(raw,"sample-calibration",inputs,trace,runtime)
+            floor=raw/'floor'
+            shutil.copytree(sample,floor)
+            floor_record=dict(record,benchmark='io.github.enixes.tailcache.benchmark.CrossoverBenchmark.freshSupplyFloor')
+            (floor/'results.json').write_text(json.dumps([floor_record]))
+            diagnostic=jmh_fork_summary(raw,'floor',inputs,trace,runtime,diagnostic_compiler_xml=True)
+            self.assertTrue(diagnostic['accepted'])
+            self.assertFalse(diagnostic['primaryEndpointUseAllowed'])
+            with self.assertRaises(ValueError): jmh_fork_summary(raw,'floor',inputs,trace,runtime)
             record["jvmArgs"].remove("-XX:+LogCompilation")
             record["benchmark"] = "io.github.enixes.tailcache.benchmark.CrossoverBenchmark.freshSupplyFloor"
             path.write_text(json.dumps([record]))

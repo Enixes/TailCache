@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Postboot floor-specific late compiler activity; bounded attached floor attribution declared. No collection active until diagnostic launch.",
+  "currentBlocker": "Original floor11ms compiler failure not reproduced by6 delayed-attachment diagnostics. A3-fork XML diagnostic is declared to inspect task/deoptimization timing; qualification remains incomplete.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run at most6 Caffeine4096 floor JVMs with delayed actual-worker compilation logging; inspect attribution before prospective repair or stability protocol.",
+  "nextWork": "Run bounded XML floor attribution, inspect retained compiler tasks, then declare a prospective stability repair only if supported.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1005,6 +1005,16 @@
   "postbootFloorDiagnostic": {
     "attempt": "native-final-postboot-floor-attachment-20261106-001",
     "maximumJvms": 6,
+    "status": "completed_nonreproduction_6of6",
+    "diagnosticOnly": true,
+    "primaryEndpointUseAllowed": false,
+    "maximumCompilerIterationMs": 4,
+    "hostPassingJvms": 6,
+    "originalFailureAttributed": false
+  },
+  "postbootFloorXmlDiagnostic": {
+    "attempt": "native-final-postboot-floor-xml-20261106-001",
+    "maximumJvms": 3,
     "status": "declared",
     "diagnosticOnly": true,
     "primaryEndpointUseAllowed": false

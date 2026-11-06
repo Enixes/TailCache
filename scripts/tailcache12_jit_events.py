@@ -182,7 +182,7 @@ def analyze(attempt,manifest,invocation):
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
     if manifest.get("diagnosticCompilerXml"):
         xml=worker_xml(attempt/invocation["label"],metadata['pid'])
-        logs=list((raw/channel).glob("gc-*.log"))
+        logs=list((attempt/invocation['label']).glob('diagnostic-gc-*.log')) if channel=='floor' else list((raw/channel).glob("gc-*.log"))
         if not xml.exists() or len(logs)!=1: raise ValueError("Missing targeted XML/GC evidence")
         detail=classify_tasks(xml,logs[0],windows)
         result["xmlAttribution"]=dict(
@@ -243,6 +243,8 @@ def main():
             option=f"-Xlog:jit+compilation=debug:file={attempt/label}/hotspot-jit-%p.log:timenanos,uptimenanos,level,tags"
             if args.xml:
                 option+=f" -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:LogFile={attempt/label}/hotspot-compile-%p.xml"
+                if props['Channel']=='floor':
+                    option+=f" -Xlog:gc*,safepoint:file={attempt/label}/diagnostic-gc-%p.log:uptimemillis,timenanos,level,tags:filecount=0"
             manifest["diagnosticJvmOptions"][label]='none; jcmd attachment only' if args.attach_logs else option
             evidence.save(attempt/"manifest.json",manifest)
             attachment=None
@@ -265,6 +267,11 @@ def main():
                 files=['attachment.json',f"hotspot-jit-{attachment['pid']}.log"]
                 manifest['diagnosticArtifacts'][label]={name:calibration.sha(attempt/label/name) for name in files}
                 manifest['diagnosticJvmOptions'][label]='none; jcmd attachment only'
+                evidence.save(attempt/'manifest.json',manifest)
+            elif args.xml:
+                files=[p for p in (attempt/label).iterdir()
+                       if p.name.startswith(('hotspot-jit-','hotspot-compile-','diagnostic-gc-'))]
+                manifest['diagnosticArtifacts'][label]={p.name:calibration.sha(p) for p in files}
                 evidence.save(attempt/'manifest.json',manifest)
             row=analyze(attempt,manifest,manifest["invocations"][-1])
             rows.append(row)

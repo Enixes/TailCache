@@ -218,7 +218,7 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     if len(records) != 1:
         raise ValueError("Expected exactly one JMH condition")
     record = records[0]
-    if diagnostic_compiler_xml and (kind != "sample-calibration" or "-XX:+LogCompilation" not in record["jvmArgs"]):
+    if diagnostic_compiler_xml and (kind not in ("sample-calibration","floor") or "-XX:+LogCompilation" not in record["jvmArgs"]):
         raise ValueError("XML attribution is restricted to explicitly instrumented logged SampleTime diagnostics")
     method = "freshSupplyFloor" if kind == "floor" else "mixedWorkload"
     if record.get("benchmark") != "io.github.enixes.tailcache.benchmark.CrossoverBenchmark." + method:
