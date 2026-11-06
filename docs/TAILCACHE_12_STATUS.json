@@ -1192,5 +1192,12 @@
     "hashChunkBytes": 1048576
   },
   "calibrationResearcherReview": "build/reports/tailcache12/native-final-conditioning16-calibration-20261106-002/researcher-review.json",
-  "datasetArchiveReview": "docs/TAILCACHE_12_DATASET_ARCHIVE_REVIEW.md"
+  "datasetArchiveReview": "docs/TAILCACHE_12_DATASET_ARCHIVE_REVIEW.md",
+  "acceptedCalibrationArchive": {
+    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-calibration-accepted-20261106-013.tar.gz",
+    "bytes": 726936823,
+    "sha256": "484b1aa5222e46eed52c611669edb0f05f9efd14928ad28f1eec6322ff1aebb7",
+    "verifiedMembers": 29439,
+    "hashChunkBytes": 1048576
+  }
 }
