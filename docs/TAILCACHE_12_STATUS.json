@@ -11,7 +11,7 @@
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
     "12B": "current_boot_conditioning16_qualification_and_independent_floors_passed_pilot_coherence_pending",
-    "12C": "conditioning16_grid_terminal_compiler_failure39of64_no_accepted_current_grid",
+    "12C": "first_conditioning16_grid_rejected39of64_one_independent_whole_grid002_declared",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "guarded_counterbalanced_pilot_driver_implemented_not_run",
     "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Original26ms unprofiled recorder compiler event remains unattributed. Passive shared-PerfData observer implemented/tested/smoked; bounded16-worker diagnostic declared, not yet launched.",
+  "currentBlocker": "Rare26ms compiler event remains unexplained after bounded diagnostics. Exactly one fresh64-slot unchanged-controls exploratory validation is declared; no prior fork reused.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run source-frozen passive actual-recorder diagnostic, stop on first quality failure, review compiler-counter/method transitions before any source repair or further calibration. No target logging/attach commands; preserve all prior incomplete evidence.",
+  "nextWork": "Archive bounded diagnostics/rejections, fresh empty-swap/cache/quiet, then whole calibration002; stop on noneligible failure without further unchanged-controls grid retries. If complete, independently reconcile GC/occupancy/replicas before pilot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -72,7 +72,7 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "calibrationEvidence": "build/reports/tailcache12/native-final-calibration-20261105-006/calibration.json",
-  "nextCalibrationAttempt": "native-final-conditioning16-calibration-20261106-001",
+  "nextCalibrationAttempt": "native-final-conditioning16-calibration-20261106-002",
   "pressureDiagnosticAttempt": "wsl-observer5-pressure96-jit60-20261028-001",
   "matchingPressureDiagnostic": {
     "evidence": "build/reports/tailcache12/native-final-conditioning16-20261106-001-pressure96/everyop-jit.json",
@@ -117,9 +117,9 @@
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
   "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
   "calibrationDeclaration": {
-    "attempt": "native-final-conditioning16-calibration-20261106-001",
-    "preflight": "native-final-conditioning16-calibrationquiet-20261106-001",
-    "status": "terminal_compiler_failure",
+    "attempt": "native-final-conditioning16-calibration-20261106-002",
+    "preflight": "native-final-conditioning16-calibrationquiet-20261106-002",
+    "status": "single_independent_whole_grid_reviewed_launch_authorized",
     "expectedLogicalSlots": 64,
     "maximumJvmAttempts": 72,
     "warmups": 120,
@@ -151,19 +151,9 @@
     "initialPreflightMaxAgeSeconds": 360,
     "taskLocalFileCachePreparation": true,
     "requiresEmptySwap": true,
-    "completedLogicalSlots": 39,
-    "recordedJvmAttempts": 40,
-    "rejectedSlot": "r2-every-operation-CAFFEINE-p4096-live0",
-    "compilerPerIterationMs": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      26
-    ]
+    "completedLogicalSlots": 0,
+    "recordedJvmAttempts": 0,
+    "plan": "docs/TAILCACHE_12_INDEPENDENT_CALIBRATION_PLAN.md"
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
@@ -720,7 +710,7 @@
     "completedLogicalSlots": 1,
     "recordedJvmAttempts": 2
   },
-  "currentHarnessQualifiedForCalibration": false,
+  "currentHarnessQualifiedForCalibration": true,
   "historicalNativeCalibration004Declaration": {
     "attempt": "native-final-calibration-20261105-004",
     "preflight": "native-final-calibrationquiet-20261105-004",
@@ -1136,7 +1126,7 @@
     "original26msFailureAttributed": false
   },
   "passivePerfdataDiagnostic": {
-    "status": "implemented_tested_smoked_reviewed_launch_authorized",
+    "status": "bounded_complete15valid1_host_cpu_reject",
     "plan": "docs/TAILCACHE_12_PERFDATA_PLAN.md",
     "maximumJvms": 16,
     "diagnosticOnly": true,
@@ -1147,6 +1137,60 @@
     "warmups": 120,
     "conditioning": 16,
     "measurements": 8,
-    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
+    "recordedJvms": 16,
+    "validHostAndWorkloadJvms": 15,
+    "original26msReproduced": false,
+    "finalRejectedHostUpperPercent": 11.70557081347576,
+    "researcherReplay": "build/reports/tailcache12/native-final-conditioning16-everyop-perfdata-20261106-001/researcher-replay.json"
+  },
+  "historicalConditioning16Calibration001": {
+    "attempt": "native-final-conditioning16-calibration-20261106-001",
+    "preflight": "native-final-conditioning16-calibrationquiet-20261106-001",
+    "status": "terminal_compiler_failure",
+    "expectedLogicalSlots": 64,
+    "maximumJvmAttempts": 72,
+    "warmups": 120,
+    "conditioning": 16,
+    "measurements": 8,
+    "transportWarmupVersion": "jmh-result-transport-v2",
+    "lifecycleWarmupVersion": "lifecycle-maintenance-v1",
+    "residents": 32768,
+    "heapMiB": 512,
+    "churnMiBPerSecond": 32,
+    "liveMiB": [
+      0,
+      96,
+      208,
+      288
+    ],
+    "payloadBytes": [
+      4096,
+      256
+    ],
+    "highFirst": true,
+    "seed": 24301,
+    "repeats": 2,
+    "nativeHostRetriesPerSlot": 2,
+    "nativeHostRetryBudget": 8,
+    "qualificationPrefix": "native-final-conditioning16-20261106-001",
+    "swapPreparation": "native-final-residual-swap-recovery-20261106-003",
+    "sourceMatchedRawInitialQuietRequired": true,
+    "initialPreflightMaxAgeSeconds": 360,
+    "taskLocalFileCachePreparation": true,
+    "requiresEmptySwap": true,
+    "completedLogicalSlots": 39,
+    "recordedJvmAttempts": 40,
+    "rejectedSlot": "r2-every-operation-CAFFEINE-p4096-live0",
+    "compilerPerIterationMs": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      26
+    ]
   }
 }
