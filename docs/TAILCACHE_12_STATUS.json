@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 40,
-    "pythonTests": 108,
+    "pythonTests": 115,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Rare26ms unprofiled recorder compilation remains unattributed after12 attached and3 XML non-reproductions. Passive shared-PerfData diagnostic implementation planned; no benchmark running.",
+  "currentBlocker": "Original26ms unprofiled recorder compiler event remains unattributed. Passive shared-PerfData observer implemented/tested/smoked; bounded16-worker diagnostic declared, not yet launched.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Implement/test/smoke the passive JVMStat helper per docs/TAILCACHE_12_PERFDATA_PLAN.md, then declare a bounded max16 actual-unprofiled recorder experiment without target logging/attachment commands.",
+  "nextWork": "Run source-frozen passive actual-recorder diagnostic, stop on first quality failure, review compiler-counter/method transitions before any source repair or further calibration. No target logging/attach commands; preserve all prior incomplete evidence.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1136,10 +1136,17 @@
     "original26msFailureAttributed": false
   },
   "passivePerfdataDiagnostic": {
-    "status": "planned_not_implemented",
+    "status": "implemented_tested_smoked_reviewed_launch_authorized",
     "plan": "docs/TAILCACHE_12_PERFDATA_PLAN.md",
     "maximumJvms": 16,
     "diagnosticOnly": true,
-    "primaryEndpointUseAllowed": false
+    "primaryEndpointUseAllowed": false,
+    "attempt": "native-final-conditioning16-everyop-perfdata-20261106-001",
+    "review": "docs/TAILCACHE_12_PERFDATA_REVIEW.md",
+    "smoke": "build/reports/tailcache12/native-final-perfdata-smoke-20261106-002/result.json",
+    "warmups": 120,
+    "conditioning": 16,
+    "measurements": 8,
+    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   }
 }

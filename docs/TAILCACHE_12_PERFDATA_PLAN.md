@@ -13,3 +13,5 @@ Primary implementation references (OpenJDK21u; review against installed21.0.12.1
 - https://github.com/openjdk/jdk21u/blob/master/src/java.base/share/classes/jdk/internal/perf/Perf.java
 - https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/compiler/compileBroker.cpp
 - https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/runtime/perfData.cpp
+
+Implementation freeze: final disposable smoke002 confirms28 global counters and required units. No per-thread counters are available/claimed. Emit changes plus100ms heartbeat and force a final snapshot; actual-window attribution must have≤50ms read brackets and≤250ms emitted gaps. Preserve a full helper receipt and private compiled/source hash inventory. Declare native-final-conditioning16-everyop-perfdata-20261106-001 with16 maximum fresh unprofiled Caffeine4096/live0 workers; same120/16/8 controls, no target logging or attach command, first quality failure stops. No timing/lifecycle repair is proposed by this observer implementation.

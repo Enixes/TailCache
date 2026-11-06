@@ -21,6 +21,7 @@ from tailcache12_quiet import run_preflight
 from tailcache12_calibration_start import prepare_file_cache
 from tailcache12_study_analysis import every_operation_fork_summary, jmh_fork_summary
 from tailcache12_jit_diagnose import classify_tasks
+import tailcache12_perfdata as perfdata
 
 TRACE="3310547f9e5d01436fb54781f8cb50f312c8b3d29079f719694026e43107dfb3"
 EVENT=re.compile(r"^\[(\d+)ns\]\[(\d+)ns\]\[debug\]\[jit,compilation\]\s+(.*)$")
@@ -184,7 +185,8 @@ def analyze(attempt,manifest,invocation):
     markers=list(raw.rglob("worker-process-*.properties"))
     if len(markers)!=1: raise ValueError("Expected one actual worker PID")
     metadata=dict(line.split("=",1) for line in markers[0].read_text().splitlines() if "=" in line)
-    events=parse_events(attempt/invocation["label"]/f"hotspot-jit-{metadata['pid']}.log")
+    passive=manifest.get('passivePerfdata',False)
+    events=[] if passive else parse_events(attempt/invocation["label"]/f"hotspot-jit-{metadata['pid']}.log")
     windows=evidence.measurement_windows(raw)
     if manifest.get('attachmentLogging'):
         verify_attachment(attempt/invocation['label'],metadata['pid'],windows,channel)
@@ -192,6 +194,9 @@ def analyze(attempt,manifest,invocation):
     if manifest.get('attachmentLogging') and (not artifacts or set(artifacts)!=
             {'attachment.json',f"hotspot-jit-{metadata['pid']}.log"}):
         raise ValueError('Missing declared attachment artifacts')
+    if passive and (not artifacts or set(artifacts)!=
+            {'perfdata-receipt.json','perfdata.jsonl','perfdata.stdout','perfdata.stderr'}):
+        raise ValueError('Missing declared passive PerfData artifacts')
     if artifacts: verify_artifacts(attempt/invocation['label'],artifacts)
     if len(windows)!=len(summary["compilerPerIterationMs"]):
         raise ValueError("Compiler counter/window counts disagree")
@@ -205,6 +210,9 @@ def analyze(attempt,manifest,invocation):
         compilerViolation=any("compiler" in reason for reason in summary["rejectionReasons"]),
         compilerPerIterationMs=summary["compilerPerIterationMs"],alignedEvents=aligned,
         workerPid=int(metadata["pid"]),eventCount=len(events),primaryEndpointUseAllowed=False)
+    if passive:
+        perfdata.verify_build(manifest['perfdataBuild'],attempt/'perfdata-helper')
+        result['passivePerfdata']=perfdata.verify_sampler(attempt/invocation['label'],metadata['pid'],windows,channel)
     if manifest.get("diagnosticCompilerXml"):
         if channel=='every-operation':
             files=list((raw/channel).glob('jit-*.xml'))
@@ -229,6 +237,7 @@ def main():
     parser.add_argument("--xml",action="store_true")
     parser.add_argument("--repeats",type=int,choices=range(1,17),default=4)
     parser.add_argument('--attach-logs',action='store_true')
+    parser.add_argument('--perfdata',action='store_true')
     parser.add_argument("--payloads",type=int,nargs="+",choices=(256,4096),default=[256,4096])
     parser.add_argument("--channels",nargs="+",choices=tuple(TASKS),default=["every-operation","sample-calibration"])
     parser.add_argument("--backend",choices=evidence.BACKENDS,default="CAFFEINE")
@@ -239,6 +248,8 @@ def main():
     args=parser.parse_args()
     try: validate_logging_channels(args.channels,args.attach_logs,args.xml)
     except ValueError as error: parser.error(str(error))
+    if args.perfdata and (args.attach_logs or args.xml or args.channels!=['every-operation']):
+        parser.error('Passive PerfData requires only the actual unprofiled recorder and no target logging')
     if len(set(args.payloads))!=len(args.payloads) or len(set(args.channels))!=len(args.channels):
         parser.error("Duplicate diagnostic conditions")
     if not re.fullmatch(r"[A-Za-z0-9._-]+",args.attempt_id): parser.error("Invalid attempt ID")
@@ -249,6 +260,7 @@ def main():
     if any(key in os.environ for key in ("JAVA_TOOL_OPTIONS","JDK_JAVA_OPTIONS","_JAVA_OPTIONS")):
         raise ValueError("Diagnostic requires a clean JVM-option environment")
     source=evidence.source_hash()
+    build=perfdata.compile_helper() if args.perfdata else None
     cache=prepare_file_cache(cache_path)
     if not run_preflight(quiet,120,300)["quietPass"] or source!=evidence.source_hash():
         raise ValueError("Diagnostic quiet preparation failed or source changed")
@@ -267,6 +279,8 @@ def main():
         maxFreshJvms=len(plan),nearEventMarginNs=5_000_000,diagnosticCompilerXml=args.xml,
         schedule=[dict(label=k,properties=v) for k,v in plan],diagnosticJvmOptions={},
         attachmentLogging=args.attach_logs,diagnosticArtifacts={})
+    if args.perfdata:
+        manifest.update(passivePerfdata=True,perfdataBuild=perfdata.freeze_build(build,attempt))
     evidence.save(attempt/"manifest.json",manifest)
     rows=[]
     try:
@@ -280,29 +294,32 @@ def main():
                 option+=f" -XX:+UnlockDiagnosticVMOptions -XX:+LogCompilation -XX:LogFile={attempt/label}/hotspot-compile-%p.xml"
                 if props['Channel']=='floor':
                     option+=f" -Xlog:gc*,safepoint:file={attempt/label}/diagnostic-gc-%p.log:uptimemillis,timenanos,level,tags:filecount=0"
-            manifest["diagnosticJvmOptions"][label]='none; jcmd attachment only' if args.attach_logs else option
+            manifest["diagnosticJvmOptions"][label]=('none; external shared PerfData only' if args.perfdata
+                else 'none; jcmd attachment only' if args.attach_logs else option)
             evidence.save(attempt/"manifest.json",manifest)
             attachment=None
-            if args.attach_logs:
+            if args.attach_logs or args.perfdata:
                 stop=threading.Event(); attachment={}
-                helper=threading.Thread(target=attach_worker_logging,
+                helper=threading.Thread(target=perfdata.sample_worker if args.perfdata else attach_worker_logging,
                     args=(attempt.parent/(attempt.name+'-'+label),attempt/label,stop,attachment),
-                    kwargs=dict(channel=props['Channel']),daemon=True)
+                    kwargs=dict(channel=props['Channel'],**({'build':manifest['perfdataBuild']} if args.perfdata else {})),daemon=True)
                 helper.start()
             else:
                 os.environ["JAVA_TOOL_OPTIONS"]=option
             try:
                 evidence.invoke(attempt,manifest,label,TASKS[props['Channel']],props)
             finally:
-                if args.attach_logs:
+                if args.attach_logs or args.perfdata:
                     stop.set(); helper.join(35)
                     if helper.is_alive(): raise ValueError('Attachment helper failed to terminate')
                 else: del os.environ["JAVA_TOOL_OPTIONS"]
-            if args.attach_logs:
+            if args.attach_logs or args.perfdata:
                 if not attachment.get('success'): raise ValueError('Diagnostic attachment failed: '+attachment.get('error','unknown'))
-                files=['attachment.json',f"hotspot-jit-{attachment['pid']}.log"]
+                files=(['perfdata-receipt.json','perfdata.jsonl','perfdata.stdout','perfdata.stderr'] if args.perfdata
+                       else ['attachment.json',f"hotspot-jit-{attachment['pid']}.log"])
                 manifest['diagnosticArtifacts'][label]={name:calibration.sha(attempt/label/name) for name in files}
-                manifest['diagnosticJvmOptions'][label]='none; jcmd attachment only'
+                manifest['diagnosticJvmOptions'][label]=('none; external shared PerfData only' if args.perfdata
+                                                        else 'none; jcmd attachment only')
                 evidence.save(attempt/'manifest.json',manifest)
             elif args.xml:
                 files=[p for p in (attempt/label).iterdir()
@@ -317,6 +334,10 @@ def main():
                 eventInterpretationVersion=2,
                 limits=["Regular bytecode events mark compiler task start; native-wrapper/invalidation events are separate. No event is compiler CPU duration or worker pause time.",
                         "Logging can change compilation behavior; non-reproduction is inconclusive."])
+            if args.perfdata:
+                result['limits']=['Existing shared PerfData sampled externally without target logging/AttachListener commands.',
+                    'Non-atomic global counters/method strings can miss fast tasks and do not assign method CPU or pause duration.',
+                    'External sampling can perturb scheduling; these are diagnostic results only.']
             evidence.save(attempt/"attribution.json",result)
             print(f"attribution {label}: compiler={row['compilerPerIterationMs']} reasons={row['rejectionReasons']}",flush=True)
             if row["rejectionReasons"]: break
