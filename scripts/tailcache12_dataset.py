@@ -6,13 +6,14 @@ comparisons remain unresolved in the export. No rejected candidate is pooled.
 """
 import argparse
 import csv
+import fcntl
 import json
 import pathlib
 import tarfile
 
 import tailcache12 as evidence
-import tailcache12_calibrate as calibration
 import tailcache12_campaign as campaign
+from tailcache12_archive import file_digest,stream_digest,advise
 
 
 def collect_dependencies(attempt, seen=None):
@@ -31,7 +32,48 @@ def collect_dependencies(attempt, seen=None):
     return seen
 
 
-def export(primary_path, robustness_path, destination):
+def archive_reports(archive_path,required):
+    root=evidence.REPORTS.resolve()
+    if archive_path.resolve().is_relative_to(root):raise ValueError('Dataset archive must be outside report tree')
+    if any(not path.is_dir() or path.is_symlink() or not path.resolve().is_relative_to(root) for path in required):
+        raise ValueError('Missing or external primary/robustness evidence dependency')
+    files=sorted(path for path in evidence.REPORTS.rglob('*') if path.is_file() and not path.is_symlink()
+                 and path!=evidence.REPORTS/'native-benchmark.lock')
+    inventory=[]
+    with tarfile.open(archive_path,'x:gz',compresslevel=1,dereference=True) as archive:
+        for path in files:
+            if not path.resolve().is_relative_to(root):raise ValueError('Evidence inventory escaped report tree')
+            name=path.relative_to(evidence.ROOT).as_posix()
+            inventory.append(dict(path=name,bytes=path.stat().st_size,sha256=file_digest(path)))
+            archive.add(path,arcname=name,recursive=False);advise(path)
+    advise(archive_path)
+    entries={r['path']:r for r in inventory};seen=set()
+    if len(entries)!=len(inventory):raise ValueError('Duplicate export inventory')
+    with tarfile.open(archive_path,'r:gz') as archive:
+        for member in archive:
+            if not member.isfile() or member.name in seen or member.name not in entries:
+                raise ValueError('Unexpected or duplicate export archive member')
+            entry=entries[member.name]
+            with archive.extractfile(member) as stream:
+                if member.size!=entry['bytes'] or stream_digest(stream)!=entry['sha256']:
+                    raise ValueError('Export archive checksum/size mismatch')
+            seen.add(member.name)
+    if seen!=set(entries):raise ValueError('Missing export archive members')
+    result=dict(path=archive_path.name,bytes=archive_path.stat().st_size,sha256=file_digest(archive_path),
+                verifiedMembers=len(inventory),historicalEvidencePooled=False,hashChunkBytes=1024*1024)
+    advise(archive_path)
+    return inventory,result
+
+
+def export(primary_path,robustness_path,destination):
+    if destination.exists():raise ValueError('Retained dataset exists; refusing overwrite')
+    with (evidence.REPORTS/'native-benchmark.lock').open('a') as lock:
+        try:fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:raise ValueError('Benchmark/controller/export active; dataset export refused')
+        return export_locked(primary_path,robustness_path,destination)
+
+
+def export_locked(primary_path, robustness_path, destination):
     primary = campaign.replay(primary_path)
     robustness = campaign.replay(robustness_path)
     pm = json.loads((primary_path/"manifest.json").read_text())
@@ -68,32 +110,12 @@ def export(primary_path, robustness_path, destination):
     for name,path in (("primary",primary_path),("robustness",robustness_path)):
         (destination/(name+"-protocol.json")).write_bytes((path/"protocol.json").read_bytes())
     paths=collect_dependencies(primary_path)|collect_dependencies(robustness_path)
-    # Explicitly include every historical sibling attempt as retained context, without
-    # adding any of its observations to either primary or robustness statistics.
-    paths.update(p for p in evidence.REPORTS.iterdir() if p.is_dir() and (p/"manifest.json").is_file())
+    # The unique report-tree inventory also preserves all available historical raw
+    # siblings, not just their control manifests. Their observations are never pooled.
     archive_path=destination/"raw-sources.tar.gz"
-    inventory=[]
-    with tarfile.open(archive_path,"x:gz") as archive:
-        for path in sorted(paths):
-            if not path.is_dir():
-                raise ValueError("Missing retained evidence directory")
-            for file in sorted(path.rglob("*")):
-                if file.is_file():
-                    name=str(file.relative_to(evidence.ROOT))
-                    inventory.append(dict(path=name,bytes=file.stat().st_size,sha256=calibration.sha(file)))
-                    archive.add(file,arcname=name,recursive=False)
+    inventory,archive_result=archive_reports(archive_path,paths)
     evidence.save(destination/"archive-inventory.json",inventory)
-    # Read back every archive member; a launched compression process is not a verified archive.
-    with tarfile.open(archive_path,"r:gz") as archive:
-        members=archive.getmembers()
-        if [m.name for m in members] != [r["path"] for r in inventory]:
-            raise ValueError("Archive member coverage differs from inventory")
-        import hashlib
-        for member,entry in zip(members,inventory):
-            if hashlib.sha256(archive.extractfile(member).read()).hexdigest()!=entry["sha256"]:
-                raise ValueError("Archive content checksum mismatch")
-    evidence.save(destination/"archive.json",dict(path=archive_path.name,bytes=archive_path.stat().st_size,
-        sha256=calibration.sha(archive_path),verifiedMembers=len(inventory),historicalEvidencePooled=False))
+    evidence.save(destination/"archive.json",archive_result)
     (destination/"README.md").write_text(
         "# TailCache Task 12 dataset\n\nPrimary and separate seed-robustness observations, all candidate decisions and immutable protocols are in dataset.json and coverage.csv. "
         "Raw/source dependencies and historical attempts are retained in the verified archive; historical and rejected data are never pooled. "

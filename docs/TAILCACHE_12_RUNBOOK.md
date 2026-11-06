@@ -1,98 +1,72 @@
-# Task 12 — running on another machine
+# TailCache Task12 native research runbook
 
-Use branch `tailcache-12-crossover`. Task 12A and functional pause capture are implemented. This branch also supplies GC occupancy/exposure analysis and exploratory calibration. **Host/JIT qualification, observer coherence, the pilot and the reportable crossover campaign remain open.** A larger machine still needs to pass the JIT screen.
+Use the local tailcache-12-crossover checkout. Check docs/TAILCACHE_12_STATUS.json, live processes, retained manifests and the latest researcher reviews first. A partial or launched job is never completion. Historical WSL/migration instructions are retained in [the legacy runbook](TAILCACHE_12_LEGACY_WSL_RUNBOOK.md); they do not authorize current native runs.
 
-## Prepare a Linux host
+Current native controls are one worker, uniform periodic40000-operation trace,95/5 reads/updates,seed24301,residents32768,fixed512MiBG1,common retained application inputs0/96/208/288MiB,payload256/4096 and independently offered32MiB/s churn. Normal warmup120×1s, fixed measurement-mode conditioning16×1s, analysed8×1s. Retain all24 physical measurement-mode intervals. Use result-transport-v2 and lifecycle-maintenance-v1. No percentile floor subtraction, post-hoc window movement or retained Chronicle payload bank. Both backends receive the same per-operation application demand; achieved throughput and intrinsic materialization allocation may differ.
 
-Requirements: a Java 21 JDK (including `jcmd`), Python 3.10 or newer, Git, and network access for the initial dependency download. The scripts use Linux `/proc` and available power/governor information. They call Gradle and Git directly; RTK is not required on the benchmark machine.
+## Host and source prerequisites
 
-```sh
-git clone --branch tailcache-12-crossover https://github.com/Enixes/TailCache.git
-cd TailCache
-java -version
-./gradlew test jmhClasses resultToolsClasses
-python3 -m unittest discover -s scripts -p 'test_tailcache12*.py' -v
-```
+Java21 (including javac/jcmd),Python3,Git,systemd user scopes and cgroup-v2 are required. On nacht the pinned JDK is /usr/lib/jvm/java-21-openjdk, exact VM21.0.12.1+1. Finish builds/downloads before collection. Keep AC/governor/resource controls stable and inspect host metadata, temperatures, PSI and paging. The native wrapper changes no affinity, quota or priority; it locks out competing Task12 controllers and accounts actual worker descendants. Rebooting changes the qualified environment: collect fresh qualification on the new boot.
 
-The first Gradle command populates dependencies; evidence scripts then run Gradle offline. Confirm Gradle can locate Java 21 with `./gradlew -q javaToolchains`. Keep the same exact JDK build for paired conditions. Use AC power, a stable power mode and a quiet host. Complete downloads/builds before collecting benchmark evidence.
-
-All attempt IDs below must be new. Output directories are immutable. Preserve every rejected attempt and its reasons. Never run two benchmark drivers concurrently.
-
-## Validate and qualify
+Commands below are templates: replace NEW with a unique identifier and never reuse an existing attempt or preflight. Use RTK prefixes on this checkout. Set JAVA_HOME to the reviewed Java21 installation (examples show nacht's path). Do not run tests, builds, archives or analysis during timed collection.
 
 ```sh
-python3 scripts/tailcache12.py validate machine-b-functional-001
-python3 scripts/tailcache12.py pause machine-b-pause-001
-python3 scripts/tailcache12.py jit machine-b-jit-001 --warmups 60
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew --offline test jmhClasses resultToolsClasses
+rtk proxy python3 -m unittest discover -s scripts -p 'test_tailcache12*.py'
 ```
 
-`validate` checks adapters, retained payload ownership, pause capture, histogram counts and observer floors. Its short observer comparison is characterization; it does not qualify observer coherence. `pause` verifies a deliberately induced full-GC pause against worker evidence. Both are explicitly non-reportable, even if functional checks pass.
+Every new benchmark preparation requires at least3GiB free RAM and zero residual swap, followed by a fresh120-second quiet proof (300-second timeout,360-second first-JVM deadline). Release only clean task-file cache through the reviewed preparation helper; never disable swap or change policy during a campaign. If residual swap needs recovery, use a separately retained reviewed receipt and verify unchanged configuration. Do not repeat a privileged action that requires unavailable local authentication. Existing per-block host/compiler/GC/heap/churn/integrity gates remain mandatory.
 
-`jit` checks both backends/payloads in two orders with eight measured iterations per fresh JVM. The existing limits remain 80 ms total compiler time and 10 ms per iteration. It records narrower worker-envelope counters as supporting evidence and requires their complete per-fork sidecars. On host failure it suspends remaining blocks. Inspect `audit.json`, `manifest.json`, `host.csv`, raw compiler XML and GC logs. A successful Gradle exit does not establish qualification.
-
-JIT probes use 8,192 residents, 8 MiB application data, a 512 MiB heap and 16 MiB/s churn as exploratory controls. A passing low-pressure JIT probe does not qualify the larger calibration grid or every campaign fork. Verify the eventual calibrated conditions before the pilot.
-
-## Check the GC analysis, then calibrate
-
-A short functional probe exercises both backends with identical controls:
+## Qualification and calibration
 
 ```sh
-python3 scripts/tailcache12_calibrate.py probe machine-b-gc-probe-001 --heap-mib 256 --residents 8192 --payloads 4096 --live-mib 64 --churn-mib 32 --warmups 3 --measurements 3 --repeats 1
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk python3 scripts/tailcache12_native.py qualification-NEW scripts/tailcache12_sequence.py native-final-qualification-NEW --warmups 120 --conditioning 16 --transport-warmup --maintenance-warmup
 ```
 
-`probe` never sets `calibrationReady=true`. Its zero exit means the diagnostic completed, not that host or research quality passed. Read `calibration.json` for rejection reasons, raw GC pauses, clipped measurement overlap, occupancy, rates and histogram-derived percentiles.
-
-The candidate full calibration is (use the independently qualified warmup duration):
+Prepare clean task-file cache and verify zero swap before this source-frozen sequence. It collects controlled CPU-observer proof, quiet, functional14 blocks,pause2,JMH8 complete forks,actual unprofiled recorder8,pressure96two and independent floors10. XML/profiled diagnostics cannot replace the actual recorder qualification. Raw-replay all sources/environment/contracts and independently review before calibration. Complete screens may be referenced only as whole source/control/boot-matched units; incomplete/rejected screens are excluded.
 
 ```sh
-python3 scripts/tailcache12_calibrate.py calibrate machine-b-calibration-001 --warmups 60
-python3 scripts/tailcache12_calibrate.py audit machine-b-calibration-001
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk python3 scripts/tailcache12_native.py calibration-NEW scripts/tailcache12_calibration_start.py native-final-calibration-NEW native-final-calibrationquiet-NEW --qualification-prefix native-final-qualification-NEW --conditioning 16
+rtk proxy python3 scripts/tailcache12_calibrate.py audit native-final-calibration-NEW
 ```
 
-Defaults are a fixed 512 MiB heap, 32,768 residents, both payloads, 32 MiB/s offered non-cache churn and application live-set inputs of 0/96/208/288 MiB. Two counterbalanced passes now calibrate **both recorders independently: 64 fresh worker JVMs**. Every-operation timing and separately logged SampleTime retain different harness footprints; their occupancy bands remain separate. The SampleTime calibration adds G1 logs and no JMH profiler. Unprofiled primary SampleTime remains separate. These are candidate inputs, not a frozen protocol. Sixty warmups passed the revised WSL harness's complete independent compiler screens in both channels; actual larger-pressure forks still require their own counters and quality checks. The CLI default of 12 is the plan's minimum, not a qualification decision. Requalify a different host or changed measurement harness.
+The chained launcher verifies matching qualification, prepares task cache/empty swap, binds fresh quiet evidence and starts the64-slot grid: two reversed orders, both recorders, common inputs and distinct resulting backend/channel occupancy bands. Calibration is diagnostic, never primary latency evidence. Require independent raw GC/worker-window reconciliation, occupancy replication, monotone pressure and sustainable high coverage before the pilot. Post-GC used space is not an exact live-object census; GC/safepoint totals overlap and must not be added.
 
-The audit requires complete paired fingerprints, fixed heap evidence, matching histogram counts, measured post-GC occupancy, old/humongous-region evidence, achieved churn within ±10%, zero dropped demand, no host monitor failure and passing host screens. Independent occupancy replicas must stay within ±5 percentage points; adjacent levels must separate by at least five points. The 4-KiB Caffeine anchor must span low used heap (≤40%) through severe sustainable used heap (80–95%). Adjust candidate inputs in a **new attempt** if calibration fails; preserve the failed grid. Occupancy bands are backend-specific outcomes; both backends receive identical inputs.
+Native replacement policy is prospectively frozen: only sole competing-CPU/power failures may receive at most2 extra attempts per logical slot and8 total per grid, after retained120-second quiet proofs. Select the first quality pass without endpoint rankings. All rejected candidates stay retained. JIT,paging,churn,integrity,missing exposure or variance failures cannot be replaced as outliers. Never resume a terminal rejected grid or import its passed forks into another cohort. A whole-grid repeat needs a separate bounded researcher declaration; there is no run-until-pass policy. Historical Windows retry semantics remain separate.
 
-Post-collection used heap and old-region capacity are not an exact live-object census. The parser excludes setup collections and concurrent-cycle durations from pause totals. It retains whole pause duration separately from pause time overlapping actual worker windows; GC and safepoint totals must not be added.
-
-An interrupted calibration can resume completed blocks only when the source and all input arguments are unchanged:
+## Pilot and coherence
 
 ```sh
-python3 scripts/tailcache12_calibrate.py calibrate machine-b-calibration-001 --warmups 60 --resume
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk python3 scripts/tailcache12_native.py pilot-NEW scripts/tailcache12_pilot_start.py native-final-pilot-NEW native-final-pilotquiet-NEW --qualification-prefix native-final-qualification-NEW --calibration native-final-calibration-NEW --conditioning 16
+rtk proxy python3 scripts/tailcache12_pilot.py audit native-final-pilot-NEW
+rtk proxy python3 scripts/tailcache12_observer.py coherence native-final-qualification-NEW-floors --pilot native-final-pilot-NEW
 ```
 
-Resumption verifies prior hashes and refuses to overwrite a partial existing block. A host-rejected grid remains suspended; use a new attempt after restoring a quiet host. Audit reconstructs decisions from raw data and exits nonzero for incomplete/rejected grids. Full calibration also checks actual timing, per-iteration compiler counters, runtime/workload identity and post-trial totals. Even a passing calibration keeps `campaignReady=false` until JIT/observer qualification and the eight-cell pilot pass.
+Pilot schedules160 slots:96 primary (unprofiled SampleTime/every-operation) plus64 supporting throughput,allocation/GC,logged SampleTime and compiler forks. Eight low/high backend/payload conditions have two counterbalanced passes and three independent primary forks per pass. Floor ratios, direction coherence, pause capture, exposure and predeclared p99/p99.9 variation must pass raw review before campaign freeze. Timing channels need not have equal absolute percentiles. Pilot observations never enter confirmatory statistics.
 
-Prospective CPU-only retry support is explicit opt-in for a **new** calibration: `--host-cpu-retries 2 --host-cpu-retry-budget 8`. Read [the calibration retry protocol](TAILCACHE_12_CALIBRATION_RETRY_PROTOCOL.md) before use. It keeps 64 logical slots and all raw candidates, with at most 72 total JVM attempts. Only a sole Windows root-CPU rejection may receive a bounded replacement after a separately retained/replayed quiet preflight; other failures and exhausted budgets stop collection. First quality-passing selection never compares latency. The hashed declaration and candidate order are audited, and old attempts cannot acquire this policy retrospectively. The default remains stop-at-failure. Copy the complete attempt, including nested `retry-preflights/`, plus its manifest-linked raw sibling directories. This is calibration-only; primary retry rules remain to be frozen after pilot review.
+## Frozen campaign and separate robustness
 
-## Run the guarded pilot
-
-`scripts/tailcache12_pilot.py` supplies a paired, counterbalanced eight-cell pilot. It requires passing functional, complete two-order JIT and both-recorder calibration attempts with matching measurement sources and warmup duration. Measurement identity covers Java workload/JMH sources, Gradle build/wrapper, the core driver and native host observer. Analysis, tests and documentation may evolve; full snapshots and replay hashes remain retained. Resuming an individual attempt still requires its complete source hash to remain unchanged. The launcher refuses a missing or failed prerequisite, retains immutable source/qualification references and stops on a quality failure.
+Generate deterministic fingerprints for primary and predeclared robustness seeds before collection, using compiled matching main classes. Save output to a new file outside source paths and retain its source/runtime provenance:
 
 ```sh
-python3 scripts/tailcache12_everyop_jit.py run machine-b-everyop-jit-001 --warmups 60
-python3 scripts/tailcache12_pilot.py pilot machine-b-pilot-001 --functional machine-b-functional-001 --jit machine-b-jit-001 --everyop-jit machine-b-everyop-jit-001 --calibration machine-b-calibration-001
-python3 scripts/tailcache12_pilot.py audit machine-b-pilot-001
+rtk proxy /usr/lib/jvm/java-21-openjdk/bin/java -cp build/classes/java/main scripts/TailCache12Trace.java 32768
 ```
 
-The pilot schedules 160 fresh worker JVMs: two orders, three forks per primary channel/condition and one supporting diagnostic fork per order/condition. The primary channels are unprofiled SampleTime and every-operation timing. Throughput, allocation/GC, separately logged SampleTime pressure checks and compiler diagnostics remain descriptive support. Audit reconstructs fork percentiles, paired ratios and provisional variance screens. It always keeps `campaignReady=false`: observer coherence, exposure, variance and retry rules must be reviewed and frozen before implementing/running the confirmatory campaign. Pilot data cannot enter that campaign.
-
-Every-operation compiler qualification uses eight separate XML-enabled JVMs, both payloads/backends in two orders, matching the calibrated resident count, heap and churn controls. These diagnostic forks cannot supply primary latency endpoints. The pilot requires this complete repeated screen in addition to JMH's compiler screen and actual per-fork counters. `tailcache12_everyop_jit.py audit <attempt-id>` replays its source/artifact, timing, workload, histogram, GC, churn, host and compiler checks.
-
-For WSL, keep `TAILCACHE_REQUIRE_WINDOWS_HOST=1` and `TAILCACHE_WINDOWS_HOST_FILE` pointed at the session's append-only native monitor history. `scripts/windows_host_monitor.ps1` is the native observer; `windows_cpu_diagnostic.ps1` is separate process attribution and must not run alongside primary evidence collection. `python3 scripts/tailcache12_quiet.py machine-b-quiet-001` records a bounded preflight requiring 60 consecutive seconds under the full host screen. A preflight pass never replaces per-block monitoring. Do not disable system services to force acceptance.
-
-Observer v5 appends authoritative history before attempting the optional atomic snapshot. A reader blocking snapshot replacement (sharing/lock errors 32/33) produces a warning while fresh history continues; other I/O errors remain fatal. Native diagnostic readers permit read/write/delete sharing. `scripts/test_windows_host_monitor.ps1 -OutputDirectory <new-absolute-folder>` verifies continued fresh history under a forced snapshot lock, recovery and clean shutdown. Check the append-only history for freshness; a stale optional snapshot alone is not evidence that the authoritative observer died. V5 changes measurement-source identity and needs fresh matched qualification; historical v3/v4 evidence retains its original rules and decisions.
-
-The optional controller launch guard uses `TAILCACHE_CONTROLLER_ANCHOR_UNIX_SECONDS` and a default 900-second period. It waits outside each block's host sampler until at least 120 seconds after a planned check-in and avoids starting within at least 180 seconds before the next one (expanded for estimated invocation duration). Retained invocation metadata includes the anchor, guard windows, estimated duration, actual launch and wait. Keep the same schedule for all conditions and preserve the declared order. This prospective procedure leaves host/compiler limits unchanged; an actual overlap or noise still rejects the block. The helper is part of measurement-source identity v2, so earlier v1 archives cannot qualify a guarded run. Record the anchor and complete documentation/automation work before a fresh quiet preflight. Do not perform coordination during timing.
-
-## Preserve and return evidence
-
-Each attempt retains a source archive, Git identity/dirty state, commands, host samples and artifact hashes under `build/reports/tailcache12/`. Derived JSON/CSV can be replayed from raw inputs. Copy the entire attempt plus its manifest-linked sibling run directories before `clean` or moving machines. They are ignored by Git and are not included in this branch push.
+After complete raw-replayed pilot/coherence/variance and researcher protocol review, use the chained campaign controller so freeze/run share a native scope and fresh initial quiet/cache proof:
 
 ```sh
-mkdir -p evidence-archives
-tar -czf evidence-archives/task12-machine-b-001.tar.gz build/reports/tailcache12
-sha256sum evidence-archives/task12-machine-b-001.tar.gz
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk python3 scripts/tailcache12_native.py campaign-NEW scripts/tailcache12_campaign_start.py native-final-campaign-NEW native-final-campaignquiet-NEW --pilot native-final-pilot-NEW --floors native-final-qualification-NEW-floors --traces /absolute/path/to/retained-traces.json
+rtk proxy python3 scripts/tailcache12_campaign.py audit native-final-campaign-NEW
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk python3 scripts/tailcache12_native.py robustness-NEW scripts/tailcache12_campaign_start.py native-final-robustness-NEW native-final-robustnessquiet-NEW --pilot native-final-pilot-NEW --floors native-final-qualification-NEW-floors --traces /absolute/path/to/retained-traces.json --primary native-final-campaign-NEW
 ```
 
-Use a new archive filename each time and store a copy outside the checkout. Bring back the JIT audit and calibration evidence before freezing the pilot/campaign protocol. See [the research plan](TAILCACHE_12_PLAN.md) for the remaining acceptance gates.
+Campaign-v2 requires16 conditioning intervals. Primary schedule has320 slots (192 primary plus128 supporting),16 backend/payload/pressure conditions,2 passes and3 primary forks per pass. Robustness uses the separately frozen seeds0xC0FFEE/0xBADC0DE and its declared endpoint/crossing-neighbor selection; never pool seeds, pilot or rejected candidates. Retain valid noisy forks. Unresolved/unstable/missing comparisons cannot support a resolved or global no-crossover claim. Paired fork/pass bootstrap uses50000 resamples with descriptive95% and nominal32-family Bonferroni intervals; only two outer passes give coarse conditional uncertainty.
+
+## Preservation and final acceptance
+
+```sh
+rtk proxy python3 scripts/tailcache12_archive.py native-final-checkpoint-NEW.tar.gz
+rtk proxy python3 scripts/tailcache12_dataset.py --primary native-final-campaign-NEW --robustness native-final-robustness-NEW --output /absolute/path/outside/build/task12-dataset-NEW
+```
+
+Archive only while collection is stopped. Both tools refuse existing outputs, use the exclusive benchmark lock and bounded1MiB hashing, and read back every archived member. The native checkpoint stores all available native evidence under evidence-archives; the final export includes all available report-tree files, sources, protocols, quiet/helper data and historical raw siblings once. Historical/rejected data is retained as context and excluded from primary/robustness statistics. Keep older external archives and hashes separately; do not clean build before preservation. Final export remains taskComplete=false until a separate researcher acceptance review verifies coverage, source/protocol hashes, uncertainty, RQ1/RQ2 claim limits and all rejection dispositions. Stop tailcache12-recovery.timer only after true task completion.
