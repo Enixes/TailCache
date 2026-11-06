@@ -2,7 +2,9 @@
 
 Use the local tailcache-12-crossover checkout. Check docs/TAILCACHE_12_STATUS.json, live processes, retained manifests and the latest researcher reviews first. A partial or launched job is never completion. Historical WSL/migration instructions are retained in [the legacy runbook](TAILCACHE_12_LEGACY_WSL_RUNBOOK.md); they do not authorize current native runs.
 
-Current native controls are one worker, uniform periodic40000-operation trace,95/5 reads/updates,seed24301,residents32768,fixed512MiBG1,common retained application inputs0/96/208/288MiB,payload256/4096 and independently offered32MiB/s churn. Normal warmup120×1s, fixed measurement-mode conditioning16×1s, analysed8×1s. Retain all24 physical measurement-mode intervals. Use result-transport-v2 and lifecycle-maintenance-v1. No percentile floor subtraction, post-hoc window movement or retained Chronicle payload bank. Both backends receive the same per-operation application demand; achieved throughput and intrinsic materialization allocation may differ.
+Current native controls are one worker, uniform periodic40001-operation trace,exactly38001 reads/2000 updates per period (rounded nominal95/5),seed24301,residents32768,fixed512MiBG1,common retained application inputs0/96/208/288MiB,payload256/4096 and independently offered32MiB/s churn. Normal warmup120×1s, fixed measurement-mode conditioning16×1s, analysed8×1s. Retain all24 physical measurement-mode intervals. Use result-transport-v2 and lifecycle-maintenance-v1. No percentile floor subtraction, post-hoc window movement or retained Chronicle payload bank. Both backends receive the same per-operation application demand; achieved throughput and intrinsic materialization allocation may differ.
+
+Current Task12 JMH tasks use the explicitly modified generated sampler murmur-finalizer-lcg-v1 with stock JMH core1.37. The mixed selector removes direct low-LCG-bit periodic selection; it is deterministic pseudorandom sampling, not independent Bernoulli sampling. Only the two Task12 generated sample stubs are overlaid. Each worker verifies and retains actual loaded class bytes/origin/hashes and exact original/overlay sources; stale or missing overlays fail. Other benchmark task classpaths and installed JMH jars are unchanged. Source-matched qualification, floors and pilot coherence must be repeated after this repair; previous passing prerequisites do not authorize current collection. See TAILCACHE_12_SAMPLE_SELECTION_PLAN.md and the latest selector implementation review.
 
 ## Host and source prerequisites
 
@@ -11,7 +13,7 @@ Java21 (including javac/jcmd),Python3,Git,systemd user scopes and cgroup-v2 are 
 Commands below are templates: replace NEW with a unique identifier and never reuse an existing attempt or preflight. Use RTK prefixes on this checkout. Set JAVA_HOME to the reviewed Java21 installation (examples show nacht's path). Do not run tests, builds, archives or analysis during timed collection.
 
 ```sh
-rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew --offline test jmhClasses resultToolsClasses
+rtk proxy env JAVA_HOME=/usr/lib/jvm/java-21-openjdk ./gradlew --offline test compileTailCache12SampleOverlay resultToolsClasses
 rtk proxy python3 -m unittest discover -s scripts -p 'test_tailcache12*.py'
 ```
 

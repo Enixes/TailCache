@@ -692,6 +692,52 @@ val tailCache12LiveBytes = providers.gradleProperty("tailcache12LiveBytes").orEl
 val tailCache12Churn = providers.gradleProperty("tailcache12ChurnBytesPerSecond").orElse("16777216")
 val tailCache12Seed = providers.gradleProperty("tailcache12Seed").orElse("24301")
 
+// Only Task12 uses this explicit generated-harness overlay. JMH jars, original
+// generated classes and all other benchmark task classpaths stay untouched.
+val tailCache12SamplerVersion = "murmur-finalizer-lcg-v1"
+val tailCache12OriginalSources = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/jmh").get().asFile
+val tailCache12OverlaySources = layout.buildDirectory.dir("generated/tailcache12-sampler").get().asFile
+val tailCache12OverlayClasses = layout.buildDirectory.dir("classes/java/tailcache12-sampler")
+val tailCache12SamplerMethods = listOf("mixedWorkload", "freshSupplyFloor")
+val tailCache12SamplerPackage = "io/github/enixes/tailcache/benchmark/jmh_generated"
+val prepareTailCache12SampleOverlay = tasks.register("prepareTailCache12SampleOverlay") {
+    val originalRoot = tailCache12OriginalSources
+    val overlayRoot = tailCache12OverlaySources
+    val methods = tailCache12SamplerMethods
+    val packagePath = tailCache12SamplerPackage
+    val samplerVersion = tailCache12SamplerVersion
+    dependsOn(jmh.compileJavaTaskName)
+    inputs.dir(tailCache12OriginalSources)
+    inputs.property("sampleSelectionVersion", tailCache12SamplerVersion)
+    outputs.dir(tailCache12OverlaySources)
+    doLast {
+        for (method in methods) {
+            val name = "CrossoverBenchmark_${method}_jmhTest"
+            val original = originalRoot.resolve("$packagePath/$name.java").readText()
+            val oldSelector = "boolean sample = (rnd & rndMask) == 0;"
+            val declaration = "public final class $name {"
+            require(original.windowed(oldSelector.length).count { it == oldSelector } == 1
+                    && original.windowed(declaration.length).count { it == declaration } == 1) {
+                "Unexpected generated JMH selector/class; refusing an unreviewed overlay"
+            }
+            val patched = original.replace(oldSelector,
+                "boolean sample = io.github.enixes.tailcache.workload.JmhSampleSelector.select(rnd, rndMask);")
+                .replace(declaration, declaration + "\n    public static final String TAILCACHE_SAMPLE_SELECTION_VERSION = \"$samplerVersion\";")
+            val output = overlayRoot.resolve("$packagePath/$name.java")
+            output.parentFile.mkdirs()
+            output.writeText(patched)
+        }
+    }
+}
+val compileTailCache12SampleOverlay = tasks.register<JavaCompile>("compileTailCache12SampleOverlay") {
+    dependsOn(prepareTailCache12SampleOverlay)
+    javaCompiler.set(javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(21) })
+    source(tailCache12OverlaySources)
+    classpath = jmh.compileClasspath + jmh.output
+    destinationDirectory.set(tailCache12OverlayClasses)
+    options.compilerArgs.add("-proc:none")
+}
+
 fun tailCache12Directory(kind: String): File {
     require(tailCache12RunId.get().matches(Regex("[A-Za-z0-9._-]+"))) { "Invalid Task 12 run id" }
     require(tailCache12Heap.get().toInt() >= 64) { "Task 12 heap must be at least 64 MiB" }
@@ -702,17 +748,31 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
     tasks.register<JavaExec>(taskName) {
         group = "benchmark"
         description = "Task 12 crossover $kind channel; calibration/pilot gates still required."
-        dependsOn(jmh.classesTaskName)
-        classpath = jmh.runtimeClasspath
+        dependsOn(jmh.classesTaskName, compileTailCache12SampleOverlay)
+        classpath = files(tailCache12OverlayClasses) + jmh.runtimeClasspath
         mainClass.set("org.openjdk.jmh.Main")
         javaLauncher.set(java21Launcher)
         jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
         val directory = tailCache12Directory(kind)
+        val samplerMethods = tailCache12SamplerMethods
+        val samplerPackage = tailCache12SamplerPackage
+        val originalSources = tailCache12OriginalSources
+        val overlaySources = tailCache12OverlaySources
         doFirst {
             if (directory.exists() && directory.listFiles()?.isNotEmpty() == true) {
                 throw GradleException("Refusing existing Task 12 results: ${directory.absolutePath}")
             }
             directory.mkdirs()
+            // Retain both exact generated inputs and the overlay for raw replay.
+            val sources = directory.resolve("sample-selection-source")
+            sources.mkdirs()
+            for (method in samplerMethods) {
+                val name = "CrossoverBenchmark_${method}_jmhTest.java"
+                originalSources.resolve("$samplerPackage/$name")
+                    .copyTo(sources.resolve("original-$name"), overwrite = false)
+                overlaySources.resolve("$samplerPackage/$name")
+                    .copyTo(sources.resolve("overlay-$name"), overwrite = false)
+            }
         }
         val warmups = providers.gradleProperty("tailcache12Warmups").orElse(if (smoke) "1" else "12")
         val measurements = providers.gradleProperty("tailcache12Measurements").orElse(if (smoke) "1" else "8")
@@ -723,6 +783,7 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
+        jvmOptions.add("-Dtailcache12.sampleSelectionVersion=$tailCache12SamplerVersion")
         jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
         jvmOptions.add("-Dtailcache12.lifecycleWarmupVersion=" +
             providers.gradleProperty("tailcache12LifecycleWarmupVersion").orElse("none").get())

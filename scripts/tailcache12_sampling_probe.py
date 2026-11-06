@@ -16,6 +16,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('attempt_id')
     parser.add_argument('quiet_id')
+    parser.add_argument('--plan', choices=('odd-period', 'mixed-selector'), default='odd-period')
     args = parser.parse_args()
     if any(not re.fullmatch(r'[A-Za-z0-9._-]+', v) for v in (args.attempt_id, args.quiet_id)):
         parser.error('Invalid attempt IDs')
@@ -35,7 +36,8 @@ def main():
             measurementSourceSha256=measurement_source_hash(evidence.ROOT),
             expectedJvmAttempts=8, replacements=0, reportable=False,
             primaryEndpointUseAllowed=False, quiet=args.quiet_id,
-            plan='docs/TAILCACHE_12_SAMPLING_DESIGN_PLAN.md'), stream, indent=2)
+            plan=('docs/TAILCACHE_12_SAMPLING_DESIGN_PLAN.md' if args.plan == 'odd-period'
+                  else 'docs/TAILCACHE_12_SAMPLE_SELECTION_PLAN.md')), stream, indent=2)
     cache = prepare_file_cache(preparation)
     result = run_preflight(quiet, 120, 300)
     evidence.save(quiet / 'host-preparation.json', cache)

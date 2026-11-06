@@ -272,6 +272,8 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     if console:
         text += pathlib.Path(console).read_text()
     validate_lifecycle_preparation(inputs,text,record['jvmArgs'])
+    from tailcache12_sample_selection import verify as verify_sample_selection
+    sample_selection = verify_sample_selection(raw / kind, record['jvmArgs'], text, method)
     if f"traceSha256={expected_trace}" not in text or f"valueGenerator={VALUE_GENERATOR}" not in text:
         raise ValueError("Missing or mismatched workload fingerprint")
     if inputs.get("TransportWarmupVersion") not in (None,"none"):
@@ -325,6 +327,8 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
               "operations": sum(operations), "iterationOperations": operations,
               "compilerPerIterationMs": compiler, "rejectionReasons": reasons}
     result["conditioningIterations"]=conditioning
+    if sample_selection is not None:
+        result['sampleSelection']=sample_selection
     if diagnostic_compiler_xml:
         result.update(diagnosticCompilerXml=True,primaryEndpointUseAllowed=False)
     if kind in ("sample", "sample-calibration", "compiler", "floor"):

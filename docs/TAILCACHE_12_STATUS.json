@@ -18,8 +18,8 @@
     "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
   },
   "verification": {
-    "javaTests": 42,
-    "pythonTests": 120,
+    "javaTests": 44,
+    "pythonTests": 122,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Odd-period probe all8 quality contracts pass but p99.9 point directions remain opposite; no primary freeze. Plan synthetic periodic-cost control before conditional generated-sampler overlay.",
+  "currentBlocker": "Odd-period probe remains discrepant; synthetic-qualified mixed sampler overlay implemented/tested/reviewed. Its fresh bounded cache probe remains pending.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Archive completed odd-period diagnostic/analysis corrections, run predeclared synthetic phase control, then conditionally implement and review high-bit selector overlay with fresh bounded probe. No full qualification/campaign until observer design passes.",
+  "nextWork": "Run exactly eight mixed-selector low256 diagnostics with zero replacements, raw-review all contracts/directions before any fresh qualification/floors/calibration/pilot. No primary freeze.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -115,7 +115,7 @@
   },
   "qualificationScope": "All8bd source qualification/calibration remain preserved historical; currentd0e2 source not yet qualified. No primary campaign authorized.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
-  "measurementSourceSha256": "d0e2f1b7ac40dee5b15125e904fc835ec01a99cc4d2cb81fa35b2fa0cfc8a582",
+  "measurementSourceSha256": "dfcd7335986f6ca03a3b0332d05b5788569ab42430ff9e821681451eb2cbdc9d",
   "calibrationDeclaration": {
     "attempt": "native-final-conditioning16-calibration-20261106-002",
     "preflight": "native-final-conditioning16-calibrationquiet-20261106-002",
@@ -1237,5 +1237,23 @@
     "verifiedMembers": 36299
   },
   "oddPeriodProbeReview": "docs/TAILCACHE_12_ODDPERIOD_PROBE_REVIEW.md",
-  "sampleSelectionPlan": "docs/TAILCACHE_12_SAMPLE_SELECTION_PLAN.md"
+  "sampleSelectionPlan": "docs/TAILCACHE_12_SAMPLE_SELECTION_PLAN.md",
+  "sampleSelection": {
+    "version": "murmur-finalizer-lcg-v1",
+    "review": "docs/TAILCACHE_12_SAMPLE_SELECTION_IMPLEMENTATION_REVIEW.md",
+    "syntheticQualified": true,
+    "actualLoadedClassProof": true,
+    "probe": "native-final-mixedselector-probe-20261107-001",
+    "quiet": "native-final-mixedselector-probequiet-20261107-001",
+    "expectedDiagnosticJvms": 8,
+    "status": "implemented_tested_reviewed_probe_pending",
+    "stockJmhCore": "1.37",
+    "modifiedGeneratedSampler": true
+  },
+  "oddPeriodArchive": {
+    "path": "evidence-archives/native-final-oddperiod-probe-checkpoint-20261107-015.tar.gz",
+    "sha256": "bc9d9b321acf9be4e525b4564ee289b74909967f8399ae783d738b632a7810f6",
+    "bytes": 892219937,
+    "verifiedMembers": 36865
+  }
 }

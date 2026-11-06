@@ -52,6 +52,11 @@ public class CrossoverBenchmark {
                     "build/reports/tailcache12/unmanaged-observations"));
             try { java.nio.file.Files.createDirectories(observationDirectory); }
             catch (java.io.IOException failure) { throw new java.io.UncheckedIOException(failure); }
+            String harness = "io.github.enixes.tailcache.benchmark.jmh_generated.CrossoverBenchmark_"
+                    + (params.getBenchmark().endsWith("freshSupplyFloor") ? "freshSupplyFloor" : "mixedWorkload")
+                    + "_jmhTest";
+            try { JmhSampleSelectionEvidence.write(observationDirectory, Class.forName(harness)); }
+            catch (ClassNotFoundException failure) { throw new IllegalStateException("Missing generated sample harness", failure); }
             WorkerProcessEvidence.write(observationDirectory, backend, payloadBytes,
                     params.getBenchmark().endsWith("freshSupplyFloor") ? "supply-floor" : "workload");
             CrossoverConfig config = new CrossoverConfig(residentEntries, payloadBytes, seed,
