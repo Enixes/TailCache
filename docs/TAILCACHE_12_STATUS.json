@@ -1074,5 +1074,12 @@
     "recordedJvmAttempts": 29,
     "rejectedSlot": "r1-every-operation-CAFFEINE-p256-live0",
     "pagingReason": "zswpin21to108,zswpout5199unchanged"
+  },
+  "conditioning16QualificationArchive": {
+    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-qualification-20261106-010.tar.gz",
+    "bytes": 590378881,
+    "sha256": "726dbbafd86580c3b332614469fe6fece54dde74521875722c1a41f7dcb40b95",
+    "verifiedMembers": 18222,
+    "hashChunkBytes": 1048576
   }
 }
