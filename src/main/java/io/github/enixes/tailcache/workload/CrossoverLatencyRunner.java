@@ -61,6 +61,9 @@ public final class CrossoverLatencyRunner {
              BufferedWriter writer = Files.newBufferedWriter(directory.resolve("iterations.csv"))) {
             Files.writeString(directory.resolve("configuration.txt"), "backend=" + backend + "\nconfig=" + config
                     + "\nbackendConfig=" + workload.backendConfiguration() + "\ntraceSize=" + CrossoverWorkload.TRACE_SIZE
+                    + "\ntraceReadCount=" + CrossoverWorkload.TRACE_READ_COUNT
+                    + "\ntraceWriteCount=" + CrossoverWorkload.TRACE_WRITE_COUNT
+                    + "\ntracePeriodVersion=" + CrossoverWorkload.TRACE_PERIOD_VERSION
                     + "\ntraceSha256=" + workload.traceFingerprint()
                     + "\nvalueGenerator=" + FreshValueGenerator.VERSION + "\nvalidation=" + validation
                     + "\ntimerFloor=" + floor + "\npid=" + ProcessHandle.current().pid()

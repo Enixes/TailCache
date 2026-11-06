@@ -1,4 +1,5 @@
 import io.github.enixes.tailcache.workload.DeterministicWorkloadGenerator;
+import io.github.enixes.tailcache.workload.CrossoverWorkload;
 import io.github.enixes.tailcache.workload.WorkloadSpec;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -13,7 +14,7 @@ class TailCache12Trace {
         System.out.println("{");
         for (int s = 0; s < seeds.length; s++) {
             var trace = new DeterministicWorkloadGenerator().generate(
-                    WorkloadSpec.uniform(40_000, residents, .95, seeds[s]));
+                    WorkloadSpec.uniform(CrossoverWorkload.TRACE_SIZE, residents, .95, seeds[s]));
             var digest = MessageDigest.getInstance("SHA-256");
             var key = ByteBuffer.allocate(Long.BYTES);
             for (int i = 0; i < trace.size(); i++) {

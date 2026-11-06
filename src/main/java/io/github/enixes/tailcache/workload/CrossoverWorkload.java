@@ -11,7 +11,12 @@ import java.util.HexFormat;
 
 /** Single cache worker shared by JMH and every-operation channels; no retained payload bank. */
 public final class CrossoverWorkload implements AutoCloseable {
-    public static final int TRACE_SIZE = 40_000;
+    // JMH SampleTime selects low LCG bits with a power-of-two mask. An even
+    // period permanently excludes trace phases within each fixed-mask segment.
+    public static final int TRACE_SIZE = 40_001;
+    public static final int TRACE_READ_COUNT = (int) Math.round(TRACE_SIZE * 0.95);
+    public static final int TRACE_WRITE_COUNT = TRACE_SIZE - TRACE_READ_COUNT;
+    public static final String TRACE_PERIOD_VERSION = "odd-period-v1";
     private final CrossoverConfig config;
     private final CacheAdapter cache;
     private final Long[] keys;

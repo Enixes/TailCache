@@ -75,9 +75,11 @@ public class CrossoverBenchmark {
             // buffered observations only after the fork has returned its benchmark results.
             Runtime.getRuntime().addShutdownHook(new Thread(this::exportObservations, "tailcache-observation-export"));
             System.out.printf("[TailCache12] backend=%s config={%s} residents=%d payload=%d "
-                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d conditioningIterations=%d transportWarmupVersion=%s transportWarmupFrames=%d transportWarmupBytes=%d%n",
+                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceReadCount=%d traceWriteCount=%d tracePeriodVersion=%s traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d conditioningIterations=%d transportWarmupVersion=%s transportWarmupFrames=%d transportWarmupBytes=%d%n",
                     backend, workload.backendConfiguration(), residentEntries, payloadBytes,
-                    applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE, workload.traceFingerprint(), FreshValueGenerator.VERSION,
+                    applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE,
+                    CrossoverWorkload.TRACE_READ_COUNT, CrossoverWorkload.TRACE_WRITE_COUNT,
+                    CrossoverWorkload.TRACE_PERIOD_VERSION, workload.traceFingerprint(), FreshValueGenerator.VERSION,
                     CrossoverLifecycleWarmup.TRIALS, conditioningIterations, transportVersion, transportFrames, transportBytes);
             System.out.printf("[TailCache12][lifecycle] lifecycleWarmupVersion=%s lifecycleMaintenanceBatches=%d lifecycleMaintenanceBatchOperations=%d lifecycleWarmupOperations=%d lifecycleWarmupWrites=%d%n",
                     CrossoverLifecycleWarmup.version(), lifecycle.maintenanceBatches(), lifecycle.batchOperations(),

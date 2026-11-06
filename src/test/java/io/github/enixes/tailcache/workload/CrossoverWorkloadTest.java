@@ -17,11 +17,27 @@ class CrossoverWorkloadTest {
         try (CrossoverWorkload workload = new CrossoverWorkload(CrossoverBackend.CAFFEINE, config(256))) {
             for (int i = 0; i < CrossoverWorkload.TRACE_SIZE; i++) workload.executeNext();
             assertEquals(2_000, workload.writes());
-            assertEquals(38_000, workload.reads());
+            assertEquals(38_001, workload.reads());
+            assertEquals(CrossoverWorkload.TRACE_WRITE_COUNT, workload.writes());
+            assertEquals(CrossoverWorkload.TRACE_READ_COUNT, workload.reads());
             workload.verifyContents();
         }
         assertThrows(IllegalArgumentException.class, () ->
                 new CrossoverConfig(32_769, 256, 0, 0, 4096, 0, 128));
+    }
+
+    @Test
+    void jmhPowerOfTwoSamplingCanVisitEveryTracePosition() {
+        // Replay the generated JMH1.37 recurrence, independently of workload
+        // execution. A40000 period would visit only625 positions at stride256.
+        int stride = 256;
+        int[] visits = new int[CrossoverWorkload.TRACE_SIZE];
+        int random = 123456789;
+        for (int operation = 0; operation < visits.length * stride; operation++) {
+            random = random * 1664525 + 1013904223;
+            if ((random & (stride - 1)) == 0) visits[operation % visits.length]++;
+        }
+        for (int count : visits) assertEquals(1, count, "Permanently excluded or repeated trace phase");
     }
 
     @Test
