@@ -1192,5 +1192,12 @@
       0,
       26
     ]
+  },
+  "compilerDiagnosticsArchive": {
+    "path": "/home/y/TailCache/evidence-archives/native-final-compiler-diagnostics-checkpoint-20261106-012.tar.gz",
+    "bytes": 666007015,
+    "sha256": "4091e552b73ff9c84c22fdc184cab05d9d2c4c91f5c015010b38ea0d486be613",
+    "verifiedMembers": 25004,
+    "hashChunkBytes": 1048576
   }
 }
