@@ -2,7 +2,7 @@ package io.github.enixes.tailcache.workload;
 
 /** Task12 generated-harness selector; work occurs outside the service boundary. */
 public final class JmhSampleSelector {
-    public static final String VERSION = "murmur-finalizer-lcg-v1";
+    public static final String VERSION = "fixed-mixed-lcg-mask15-v1";
 
     private JmhSampleSelector() { }
 

@@ -7,26 +7,26 @@ import tailcache12_sample_selection as selection
 
 
 class SampleSelectionReplayTest(unittest.TestCase):
-    def fixture(self, directory):
+    def fixture(self, directory,version=selection.VERSION):
         source = directory / 'sample-selection-source'
         source.mkdir()
         for method in ('mixedWorkload', 'freshSupplyFloor'):
             name = 'CrossoverBenchmark_' + method + '_jmhTest'
             declaration = 'public final class ' + name + ' {'
-            original = declaration + '\nlong before=System.nanoTime();\n' + selection.OLD + '\nlong after=System.nanoTime();\n}'
+            original = declaration + '\nint rndMask = startRndMask;\nlong before=System.nanoTime();\n' + selection.OLD + '\nlong after=System.nanoTime();\n'+selection.ADAPTIVE+'\n}'
             (source / ('original-' + name + '.java')).write_text(original)
             (source / ('overlay-' + name + '.java')).write_text(
-                original.replace(selection.OLD, selection.NEW).replace(declaration, declaration + selection.MARKER))
+                selection.transform(original,declaration,version))
         values = {}
         for part, data in (('harness', b'\xca\xfe\xba\xbeJmhSampleSelector'),
-                           ('selector', b'\xca\xfe\xba\xbe' + selection.VERSION.encode())):
+                           ('selector', b'\xca\xfe\xba\xbe' + version.encode())):
             (directory / ('sample-' + part + '-123.class')).write_bytes(data)
             values[part] = hashlib.sha256(data).hexdigest()
-        props = ('sampleSelectionVersion=' + selection.VERSION + '\nharnessClass=' + selection.PACKAGE
+        props = ('sampleSelectionVersion=' + version + '\nharnessClass=' + selection.PACKAGE
                  + 'CrossoverBenchmark_mixedWorkload_jmhTest\nharnessOrigin=file:/host/classes/tailcache12-sampler/\n'
                  + 'harnessSha256=' + values['harness'] + '\nselectorSha256=' + values['selector'] + '\n')
         (directory / 'sample-selection-123.properties').write_text(props)
-        return (' sampleSelectionVersion=' + selection.VERSION + ' sampleHarnessSha256=' + values['harness']
+        return (' sampleSelectionVersion=' + version + ' sampleHarnessSha256=' + values['harness']
                 + ' sampleSelectorSha256=' + values['selector'])
 
     def test_actual_record_bytes_and_only_declared_source_diff_required(self):
@@ -54,6 +54,21 @@ class SampleSelectionReplayTest(unittest.TestCase):
             self.assertIsNone(selection.verify(directory, [], 'original JMH', 'mixedWorkload'))
             with self.assertRaises(ValueError):
                 selection.verify(directory, ['-Dtailcache12.sampleSelectionVersion=' + selection.VERSION], '', 'mixedWorkload')
+
+    def test_historical_adaptive_overlay_still_replays_and_fixed_mask_cannot_adapt(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory=pathlib.Path(temporary)
+            text=self.fixture(directory,selection.LEGACY_VERSION)
+            row=selection.verify(directory,['-Dtailcache12.sampleSelectionVersion='+selection.LEGACY_VERSION],text,'mixedWorkload')
+            self.assertTrue(row['adaptiveDecimation'])
+        for mutation in ('mask','half'):
+            with self.subTest(mutation=mutation),tempfile.TemporaryDirectory() as temporary:
+                directory=pathlib.Path(temporary);text=self.fixture(directory)
+                path=directory/'sample-selection-source/overlay-CrossoverBenchmark_mixedWorkload_jmhTest.java'
+                content=path.read_text()
+                content=content.replace('int rndMask = 15;','int rndMask = 31;') if mutation=='mask' else content.replace('long after=System.nanoTime();','long after=System.nanoTime();buffer.half();')
+                path.write_text(content)
+                with self.assertRaises(ValueError):selection.verify(directory,['-Dtailcache12.sampleSelectionVersion='+selection.VERSION],text,'mixedWorkload')
 
 
 if __name__ == '__main__':

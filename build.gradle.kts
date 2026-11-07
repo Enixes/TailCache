@@ -704,7 +704,7 @@ fun tailCache12FlightOptions(directory: File): List<String> = if (!tailCache12Fl
 
 // Only Task12 uses this explicit generated-harness overlay. JMH jars, original
 // generated classes and all other benchmark task classpaths stay untouched.
-val tailCache12SamplerVersion = "murmur-finalizer-lcg-v1"
+val tailCache12SamplerVersion = "fixed-mixed-lcg-mask15-v1"
 val tailCache12OriginalSources = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/jmh").get().asFile
 val tailCache12OverlaySources = layout.buildDirectory.dir("generated/tailcache12-sampler").get().asFile
 val tailCache12OverlayClasses = layout.buildDirectory.dir("classes/java/tailcache12-sampler")
@@ -725,13 +725,23 @@ val prepareTailCache12SampleOverlay = tasks.register("prepareTailCache12SampleOv
             val name = "CrossoverBenchmark_${method}_jmhTest"
             val original = originalRoot.resolve("$packagePath/$name.java").readText()
             val oldSelector = "boolean sample = (rnd & rndMask) == 0;"
+            val oldMask = "int rndMask = startRndMask;"
+            val adaptive = "                if (currentStride++ > targetSamples) {\n" +
+                "                    buffer.half();\n" +
+                "                    currentStride = 0;\n" +
+                "                    rndMask = (rndMask << 1) + 1;\n" +
+                "                }"
             val declaration = "public final class $name {"
             require(original.windowed(oldSelector.length).count { it == oldSelector } == 1
+                    && original.windowed(oldMask.length).count { it == oldMask } == 1
+                    && original.windowed(adaptive.length).count { it == adaptive } == 1
                     && original.windowed(declaration.length).count { it == declaration } == 1) {
                 "Unexpected generated JMH selector/class; refusing an unreviewed overlay"
             }
             val patched = original.replace(oldSelector,
                 "boolean sample = io.github.enixes.tailcache.workload.JmhSampleSelector.select(rnd, rndMask);")
+                .replace(oldMask, "int rndMask = 15;")
+                .replace(adaptive, "                // Fixed sampling: retain every selected observation without decimation.")
                 .replace(declaration, declaration + "\n    public static final String TAILCACHE_SAMPLE_SELECTION_VERSION = \"$samplerVersion\";")
             val output = overlayRoot.resolve("$packagePath/$name.java")
             output.parentFile.mkdirs()

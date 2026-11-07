@@ -10,6 +10,8 @@ import os
 import pathlib
 import subprocess
 import sys
+from contextlib import nullcontext
+import hashlib
 
 import tailcache12 as evidence
 from tailcache12_quiet import run_preflight
@@ -23,10 +25,35 @@ def memory_snapshot():
     return result
 
 
-def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=False):
+def verify_cache_inventory(directory,receipt):
+    name=receipt.get('inventoryFile','')
+    if not evidence.re.fullmatch(r'[A-Za-z0-9._-]+\.inventory\.jsonl',name):
+        raise ValueError('Invalid private cache inventory reference')
+    path=directory/name
+    if path.is_symlink():raise ValueError('Cache inventory is a symlink')
+    digest=hashlib.sha256();count=total=0;seen=set()
+    with path.open('rb') as stream:
+        while line:=stream.readline(65537):
+            if len(line)>65536 or not line.endswith(b'\n'):raise ValueError('Oversized/truncated inventory row')
+            digest.update(line);row=json.loads(line);relative=pathlib.PurePosixPath(row['path'])
+            if (set(row)!={'path','bytes'} or relative.is_absolute() or '..' in relative.parts
+                    or relative.as_posix()!=row['path'] or not relative.parts
+                    or relative.parts[0] not in ('build','evidence-archives','.gradle')
+                    or type(row['bytes']) is not int or row['bytes']<=0 or row['path'] in seen):
+                raise ValueError('Invalid/duplicate private inventory row')
+            seen.add(row['path']);count+=1;total+=row['bytes']
+    if (digest.hexdigest()!=receipt.get('inventorySha256') or count!=receipt.get('inventoryCount')
+            or total!=receipt.get('inventoryBytes')):raise ValueError('Private cache inventory changed/incomplete')
+    return dict(files=count,bytes=total)
+
+
+def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=False,stream_inventory=False):
     """Release only clean cached pages of retained task files, outside collection."""
     if report.exists(): raise ValueError('Cache preparation evidence exists; refusing overwrite')
-    result=dict(version=3 if include_build_outputs else 2,method='fsync-and-posix-fadvise-dontneed-task-files',
+    if stream_inventory and not include_build_outputs:raise ValueError('Streaming preparation requires private roots')
+    inventory=report.with_suffix('.inventory.jsonl')
+    if stream_inventory and inventory.exists():raise ValueError('Preparation inventory exists; refusing overwrite')
+    result=dict(version=4 if stream_inventory else 3 if include_build_outputs else 2,method='fsync-and-posix-fadvise-dontneed-task-files',
                 sourceSha256=evidence.source_hash(),before=memory_snapshot(),files=[],errors=[],
                 minimumFreeKiB=3*1024**2,requiresEmptySwap=require_empty_swap,preparationPass=False)
     roots=(evidence.ROOT/'build',evidence.ROOT/'evidence-archives',evidence.ROOT/'.gradle') if include_build_outputs else (
@@ -39,19 +66,32 @@ def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=Fals
         if result['errors']:
             evidence.save(report,result)
             raise ValueError('Private cache preparation root escaped its declaration; no advice applied')
-    for root in roots:
-        for path in sorted(root.rglob('*')):
-            if path.is_symlink() or not path.is_file() or not path.stat().st_size:
-                continue
-            if not path.resolve().is_relative_to(root.resolve()):
-                raise ValueError('Task file cache preparation escaped its declared root')
-            try:
-                with path.open('rb') as stream:
-                    os.fsync(stream.fileno())
-                    os.posix_fadvise(stream.fileno(),0,0,os.POSIX_FADV_DONTNEED)
-                result['files'].append(dict(path=str(path.relative_to(evidence.ROOT)),bytes=path.stat().st_size))
-            except OSError as error:
-                result['errors'].append(dict(path=str(path),error=str(error)))
+    digest=hashlib.sha256();count=total=0
+    if stream_inventory:result.pop('files')
+    with (inventory.open('xb') if stream_inventory else nullcontext()) as output:
+        for root in roots:
+            for path in (root.rglob('*') if stream_inventory else sorted(root.rglob('*'))):
+                if stream_inventory and path==inventory:continue
+                if path.is_symlink() or not path.is_file() or not path.stat().st_size:
+                    continue
+                if not path.resolve().is_relative_to(root.resolve()):
+                    raise ValueError('Task file cache preparation escaped its declared root')
+                try:
+                    with path.open('rb') as stream:
+                        os.fsync(stream.fileno())
+                        os.posix_fadvise(stream.fileno(),0,0,os.POSIX_FADV_DONTNEED)
+                    record=dict(path=str(path.relative_to(evidence.ROOT)),bytes=path.stat().st_size)
+                    if stream_inventory:
+                        line=(json.dumps(record,separators=(',',':'))+'\n').encode();output.write(line);digest.update(line)
+                        count+=1;total+=record['bytes']
+                    else:result['files'].append(record)
+                except OSError as error:
+                    result['errors'].append(dict(path=str(path),error=str(error)))
+        if stream_inventory:
+            output.flush();os.fsync(output.fileno())
+            os.posix_fadvise(output.fileno(),0,0,os.POSIX_FADV_DONTNEED)
+    if stream_inventory:
+        result.update(inventoryFile=inventory.name,inventorySha256=digest.hexdigest(),inventoryCount=count,inventoryBytes=total)
     result['after']=memory_snapshot()
     result['preparationPass']=(not result['errors'] and result['after']['MemFreeKiB']>=result['minimumFreeKiB']
         and (not require_empty_swap or result['after']['SwapUsedKiB']==0))

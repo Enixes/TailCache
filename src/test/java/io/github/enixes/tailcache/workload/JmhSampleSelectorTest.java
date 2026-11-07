@@ -17,7 +17,7 @@ class JmhSampleSelectorTest {
 
     @Test
     void actualSelectorPassesPredeclaredPeriodicControlAndWiderMask() {
-        for (int mask : new int[]{255, 1023}) {
+        for (int mask : new int[]{15, 255, 1023}) {
             int phases = 512;
             int operations = 65536 * (mask + 1);
             for (int initial : new int[]{0, 1, -1}) {

@@ -8,6 +8,27 @@ import tailcache12_calibration_start as start
 
 
 class CachePreparationTest(unittest.TestCase):
+    def test_streaming_private_inventory_is_bound_and_bytes_preserved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)
+            raw=reports/'raw';raw.write_bytes(b'preserved')
+            with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',reports), \
+                 patch.object(start.evidence,'source_hash',return_value='source'), \
+                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2,'SwapUsedKiB':0}), \
+                 patch.object(start.os,'posix_fadvise') as advice:
+                receipt=start.prepare_file_cache(reports/'prep.json',include_build_outputs=True,stream_inventory=True)
+                self.assertEqual(advice.call_count,2)  # raw file plus completed inventory itself
+                with self.assertRaises(ValueError):start.prepare_file_cache(reports/'prep.json',include_build_outputs=True,stream_inventory=True)
+            self.assertEqual(receipt['version'],4);self.assertNotIn('files',receipt)
+            self.assertEqual(start.verify_cache_inventory(reports,receipt),dict(files=1,bytes=9))
+            self.assertEqual(raw.read_bytes(),b'preserved')
+            inventory=reports/receipt['inventoryFile'];original=inventory.read_bytes()
+            for changed in (original+original,original[:-1],original.replace(b'build/',b'/etc/')):
+                inventory.write_bytes(changed)
+                with self.assertRaises(ValueError):start.verify_cache_inventory(reports,receipt)
+            inventory.write_bytes(original)
+            with self.assertRaises(ValueError):start.verify_cache_inventory(reports,dict(receipt,inventoryFile='../elsewhere'))
+
     def test_private_cache_symlink_root_is_refused_before_any_advice(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)

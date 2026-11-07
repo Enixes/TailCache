@@ -8,7 +8,7 @@ import tailcache12_sampling_probe as probe
 
 class SamplingProbePreparationTest(unittest.TestCase):
     def test_diagnostic_modes_refuse_inherited_vm_override(self):
-        for mode in ('opaque-operation','tlab-debug'):
+        for mode in ('opaque-operation','tlab-debug','fixed-buffer'):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
                 with (patch.object(probe.evidence, 'REPORTS', pathlib.Path(directory)),
                       patch('sys.argv', ['probe','new-probe','new-quiet','--plan',mode]),

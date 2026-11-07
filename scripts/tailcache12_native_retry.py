@@ -70,18 +70,21 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
         if sha(prep)!=ref['hostPreparationSha256']:
             raise ValueError('Changed host cache preparation evidence')
         cache=json.loads(prep.read_text())
-        if (cache.get('version') not in (1,2,3) or cache.get('sourceSha256')!=manifest['sourceSha256']
+        if (cache.get('version') not in (1,2,3,4) or cache.get('sourceSha256')!=manifest['sourceSha256']
                 or cache.get('method')!='fsync-and-posix-fadvise-dontneed-task-files'
                 or cache.get('minimumFreeKiB')!=3*1024**2 or cache.get('errors')
                 or cache.get('preparationPass') is not True
                 or cache['after']['MemFreeKiB']<cache['minimumFreeKiB']):
             raise ValueError('Invalid task-local host preparation')
-        if cache['version']==3 and cache.get('roots')!=['build','evidence-archives','.gradle']:
+        if cache['version'] in (3,4) and cache.get('roots')!=['build','evidence-archives','.gradle']:
             raise ValueError('Private build-cache preparation roots differ from the declaration')
-        if cache['version'] in (2,3) and (cache.get('requiresEmptySwap') is not True
+        if cache['version']==4:
+            from tailcache12_calibration_start import verify_cache_inventory
+            verify_cache_inventory(attempt.parent,cache)
+        if cache['version'] in (2,3,4) and (cache.get('requiresEmptySwap') is not True
                 or cache['after'].get('SwapUsedKiB')!=0):
             raise ValueError('New benchmark preparation requires zero residual swap')
-        requires_empty_swap=cache['version'] in (2,3)
+        requires_empty_swap=cache['version'] in (2,3,4)
         if cache.get('swapPreparationSha256'):
             from tailcache12_swap_prepare import configuration
             reset=path/'swap-preparation.json'

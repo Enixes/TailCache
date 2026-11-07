@@ -156,7 +156,7 @@ class NativeRetryTest(unittest.TestCase):
                 self.assertEqual(["quiet","JVM"] if quiet_pass else ["quiet"],events)
 
     def test_v2_empty_swap_proof_rejects_residual_or_reappearing_pages_and_keeps_v1_semantics(self):
-        for version in (1,2,3):
+        for version in (1,2,3,4):
             with self.subTest(version=version),tempfile.TemporaryDirectory() as directory:
                 root=pathlib.Path(directory); m=self.manifest(); samples=self.samples()
                 for sample in samples: sample['swapUsedKiB']=128
@@ -165,7 +165,11 @@ class NativeRetryTest(unittest.TestCase):
                 prep=dict(version=version,sourceSha256=m['sourceSha256'],
                     method='fsync-and-posix-fadvise-dontneed-task-files',minimumFreeKiB=3*1024**2,
                     after=dict(MemFreeKiB=4*1024**2,SwapUsedKiB=0),errors=[],preparationPass=True,requiresEmptySwap=True)
-                if version==3:prep['roots']=['build','evidence-archives','.gradle']
+                if version in (3,4):prep['roots']=['build','evidence-archives','.gradle']
+                if version==4:
+                    inventory=root/'prep.inventory.jsonl';inventory.write_bytes(b'{"path":"build/raw","bytes":4}\n')
+                    prep.update(inventoryFile=inventory.name,inventoryCount=1,inventoryBytes=4,
+                        inventorySha256=retry.sha(inventory))
                 (q/'host-preparation.json').write_text(json.dumps(prep))
                 with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
                     m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
@@ -181,7 +185,11 @@ class NativeRetryTest(unittest.TestCase):
                             with self.assertRaises(ValueError): retry.verify_initial_quiet(attempt,m,before_launch=True)
                         with patch('tailcache12.host_snapshot',return_value=dict(swapUsedKiB=0)):
                             self.assertTrue(retry.verify_initial_quiet(attempt,m,before_launch=True)['quietPass'])
-                        if version==3:
+                        if version==4:
+                            inventory.write_bytes(b'{"path":"build/raw","bytes":5}\n')
+                            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+                            inventory.write_bytes(b'{"path":"build/raw","bytes":4}\n')
+                        if version in (3,4):
                             prep['roots']=['build','/shared-cache']
                             (q/'host-preparation.json').write_text(json.dumps(prep))
                             m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])

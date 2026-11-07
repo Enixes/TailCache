@@ -10,7 +10,7 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "conditioning16_qualification_and_floors_passed_pilot_coherence_failed",
+    "12B": "observer_coherence_failed_supported_sample_buffer_bias_fixed_unprofiled_validation_pending",
     "12C": "conditioning16_calibration002_complete64of64_independent_raw_gc_occupancy_reconciliation_passed",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "complete160_selected161_attempts_quality_variance_pass_coherence_failed",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 45,
-    "pythonTests": 136,
+    "pythonTests": 141,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Observer discrepancy unresolved. JFR001 preparation stopped before any cache JVM at11MiB below fixed free-memory floor; opt-in private-cache v3 repair reviewed for fresh002, no gate relaxation.",
+  "currentBlocker": "Supported JMH SampleBuffer singleton-retention bias reproduced offline. Fixed mask15/no-decimation repair implemented/tested; unprofiled eight-fork validation and entirely fresh source-matched prerequisites remain.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run only fresh4-worker profile002 with private-cache v3, unchanged3GiB/zero-swap gates and fresh quiet; then raw recording/clock/quality and worker-stack review. Preserve001 rejected preparation; no primary campaign authorized.",
+  "nextWork": "Verify archive021; checkpoint fixed-buffer implementation; run declared fresh native-final-fixedbuffer-probe-20261107-001 with streaming-v4 preparation and fresh120s quiet, eight forks/zero replacements; review raw outcomes before full requalification/calibration/pilot.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -113,9 +113,9 @@
     "sha256": "5b879abdb3dcb13848b9708a70813687bb180f7c9eea552c9ece2c790d258c6e",
     "includes": "All retained evidence through runtime-bean rejection, native history snapshot and guarded-source checkpoint; new qualification not yet run"
   },
-  "qualificationScope": "All8bd source qualification/calibration remain preserved historical; currentd0e2 source not yet qualified. No primary campaign authorized.",
+  "qualificationScope": "All prior qualification/calibration/pilot are preserved historical/source scoped; fixed-mixed-lcg-mask15-v1 source has not been qualified. No primary campaign authorized.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
-  "measurementSourceSha256": "f9cac0800df055284da89c298aff1cb0eae0b2169006286cbff51a40c370e370",
+  "measurementSourceSha256": "bd778331dc044e30fa4e795e16b65bd9f6df57041cee45e6b4da0ac0c60d5af4",
   "calibrationDeclaration": {
     "attempt": "native-final-conditioning16-calibration-20261106-002",
     "preflight": "native-final-conditioning16-calibrationquiet-20261106-002",
@@ -1297,7 +1297,7 @@
   "tlabObservationOutcomeReview": "docs/TAILCACHE_12_TLAB_OBSERVATION_REVIEW.md",
   "workerProfilePlan": "docs/TAILCACHE_12_JFR_PROFILE_PLAN.md",
   "workerProfileImplementation": {
-    "status": "private_cache_v3_repair_tested_reviewed_new002_collection_pending",
+    "status": "complete4_profile_clock_quality_and_streamed_worker_site_review_pass_diagnostic_only",
     "review": "docs/TAILCACHE_12_JFR_PROFILE_IMPLEMENTATION_REVIEW.md",
     "attempt": "native-final-jfrprofile-20261107-002",
     "quiet": "native-final-jfrprofilequiet-20261107-002",
@@ -1310,9 +1310,11 @@
     "maximumHeldOutSmokeResidualNs": 12515.248543947935,
     "primaryEndpointUseAllowed": false,
     "firstPreparationRejected": true,
-    "cacheJvmsCollected": 0,
+    "cacheJvmsCollected": 4,
     "cachePreparationVersion": 3,
-    "privatePreparationReview": "docs/TAILCACHE_12_PRIVATE_CACHE_PREPARATION_REVIEW.md"
+    "privatePreparationReview": "docs/TAILCACHE_12_PRIVATE_CACHE_PREPARATION_REVIEW.md",
+    "evidence": "build/reports/tailcache12/native-final-jfrprofile-20261107-002/profile-review-001/review.json",
+    "outcomeReview": "docs/TAILCACHE_12_JFR_PROFILE_OUTCOME_REVIEW.md"
   },
   "tlabObservationArchive": {
     "path": "evidence-archives/native-final-tlabdebug-checkpoint-20261107-018.tar.gz",
@@ -1329,5 +1331,25 @@
     "swapUsedKiB": 0,
     "evidence": "evidence-archives/native-final-jfr-preparation-rejection-20261107-001.json",
     "sha256": "f68d66642b5ec4b6fd3353d970800af5007a1538f49a6feb8d979e44d779a9f9"
+  },
+  "fixedBufferRepair": {
+    "plan": "docs/TAILCACHE_12_BUFFER_DECIMATION_PLAN.md",
+    "implementationReview": "docs/TAILCACHE_12_FIXED_BUFFER_IMPLEMENTATION_REVIEW.md",
+    "status": "implemented_reviewed_tests_and_archive_pass_probe_pending",
+    "attempt": "native-final-fixedbuffer-probe-20261107-001",
+    "quiet": "native-final-fixedbuffer-probequiet-20261107-001",
+    "samplerVersion": "fixed-mixed-lcg-mask15-v1",
+    "fixedMask": 15,
+    "adaptiveDecimation": false,
+    "expectedFreshJvms": 8,
+    "replacements": 0,
+    "primaryEndpointUseAllowed": false,
+    "cachePreparationVersion": 4
+  },
+  "jfrBufferArchive": {
+    "path": "evidence-archives/native-final-jfr-buffer-checkpoint-20261107-021.tar.gz",
+    "bytes": 932462621,
+    "sha256": "ac3180b334d594b23cf180f5b9c9bec13f2d5a9d922cef9680c94343efc1d344",
+    "verifiedMembers": 39018
   }
 }

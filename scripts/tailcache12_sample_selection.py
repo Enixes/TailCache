@@ -2,11 +2,31 @@
 import hashlib
 import re
 
-VERSION = 'murmur-finalizer-lcg-v1'
+LEGACY_VERSION = 'murmur-finalizer-lcg-v1'
+VERSION = 'fixed-mixed-lcg-mask15-v1'
 PACKAGE = 'io.github.enixes.tailcache.benchmark.jmh_generated.'
 OLD = 'boolean sample = (rnd & rndMask) == 0;'
 NEW = 'boolean sample = io.github.enixes.tailcache.workload.JmhSampleSelector.select(rnd, rndMask);'
 MARKER = '\n    public static final String TAILCACHE_SAMPLE_SELECTION_VERSION = "' + VERSION + '";'
+ADAPTIVE = ('                if (currentStride++ > targetSamples) {\n'
+            '                    buffer.half();\n'
+            '                    currentStride = 0;\n'
+            '                    rndMask = (rndMask << 1) + 1;\n'
+            '                }')
+
+
+def transform(original, declaration, version):
+    if version not in (VERSION,LEGACY_VERSION):raise ValueError('Unknown sampler version')
+    if original.count(OLD)!=1 or original.count(declaration)!=1:
+        raise ValueError('Unexpected original JMH generated source')
+    result=original.replace(OLD,NEW).replace(declaration,declaration+
+        '\n    public static final String TAILCACHE_SAMPLE_SELECTION_VERSION = "'+version+'";')
+    if version==VERSION:
+        if original.count('int rndMask = startRndMask;')!=1 or original.count(ADAPTIVE)!=1:
+            raise ValueError('Unexpected original JMH adaptation')
+        result=result.replace('int rndMask = startRndMask;','int rndMask = 15;').replace(ADAPTIVE,
+            '                // Fixed sampling: retain every selected observation without decimation.')
+    return result
 
 
 def verify(directory, jvm_args, text, method):
@@ -16,7 +36,9 @@ def verify(directory, jvm_args, text, method):
     source = directory / 'sample-selection-source'
     if not flags and not versions and not records and not source.exists():
         return None  # Original unmodified generated sampler, never relabelled.
-    if flags != ['-Dtailcache12.sampleSelectionVersion=' + VERSION] or versions != {VERSION} or len(records) != 1:
+    if len(versions)!=1:raise ValueError('Missing or mixed sampler versions')
+    version=next(iter(versions))
+    if version not in (VERSION,LEGACY_VERSION) or flags != ['-Dtailcache12.sampleSelectionVersion=' + version] or len(records) != 1:
         raise ValueError('Missing, mixed or unknown generated sample selection declaration')
     path = records[0]
     match = re.fullmatch(r'sample-selection-(\d+)\.properties', path.name)
@@ -28,7 +50,7 @@ def verify(directory, jvm_args, text, method):
         raise ValueError('Incomplete or duplicate sample-selection evidence')
     props = dict(lines)
     expected_class = PACKAGE + 'CrossoverBenchmark_' + method + '_jmhTest'
-    if (props['sampleSelectionVersion'] != VERSION or props['harnessClass'] != expected_class
+    if (props['sampleSelectionVersion'] != version or props['harnessClass'] != expected_class
             or not props['harnessOrigin'].startswith('file:')
             or not props['harnessOrigin'].endswith('/tailcache12-sampler/')):
         raise ValueError('Loaded harness was not the declared Task12-only overlay')
@@ -37,7 +59,7 @@ def verify(directory, jvm_args, text, method):
         if (not data.startswith(bytes.fromhex('cafebabe'))
                 or hashlib.sha256(data).hexdigest() != props[field]):
             raise ValueError('Actual sampler class bytes/hash differ')
-        token = b'JmhSampleSelector' if part == 'harness' else VERSION.encode()
+        token = b'JmhSampleSelector' if part == 'harness' else version.encode()
         if token not in data:
             raise ValueError('Loaded class lacks the declared selector linkage/version')
     if ({m[1] for m in re.finditer(r'sampleHarnessSha256=([0-9a-f]{64})', text)} != {props['harnessSha256']}
@@ -50,12 +72,11 @@ def verify(directory, jvm_args, text, method):
         expected_names.update((original_name, overlay_name))
         original = (source / original_name).read_text()
         declaration = 'public final class ' + class_name + ' {'
-        if original.count(OLD) != 1 or original.count(declaration) != 1:
-            raise ValueError('Unexpected original JMH generated source')
-        expected = original.replace(OLD, NEW).replace(declaration, declaration + MARKER)
+        expected = transform(original,declaration,version)
         if (source / overlay_name).read_text() != expected:
-            raise ValueError('Overlay changed more than selector expression/version marker')
+            raise ValueError('Overlay differs from the exact versioned sampling transformation')
     if {p.name for p in source.iterdir()} != expected_names:
         raise ValueError('Unexpected or missing generated sampler source')
     return dict(props, stockJmhCoreVersion='1.37', modifiedGeneratedSampler=True,
+                samplingMask=15 if version==VERSION else 'adaptive',adaptiveDecimation=version!=VERSION,
                 interpretation='Deterministic mixed LCG selection; not independent Bernoulli sampling')
