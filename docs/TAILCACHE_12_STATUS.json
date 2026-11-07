@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 175,
+    "pythonTests": 187,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "User requested finishing Task12; bounded common-observer004 is reviewed and pending fresh collection with approved available-RAM rule. Primary observer regime/replicated protocol remains to be frozen after outcome review.",
+  "currentBlocker": "Original joint-observer protocol remains unqualified. User-authorized finite observer-conditional final protocol implemented/reviewed; fresh402-invocation batch pending, no primary old-protocol acceptance claimed.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run observer004 once, review all12 outcomes, then freeze and execute a bounded source-matched final research protocol through qualification/calibration/pilot/campaign/robustness/export. No historical fork reuse or criteria tuning.",
+  "nextWork": "Run native-final-conditional-20261107-001 once through all9 frozen stages, actual raw audits/verified export; then independently reconcile endpoints/GC and review all stages and original-versus-conditional acceptance. Set taskComplete only after delivered final review, then stop recovery timer.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1379,7 +1379,7 @@
     "implementationReview": "docs/TAILCACHE_12_COMMON_OBSERVER_IMPLEMENTATION_REVIEW.md",
     "attempt": "native-final-commonobserver-probe-20261107-004",
     "quiet": "native-final-commonobserver-probequiet-20261107-004",
-    "status": "v5_preparation_and_offline_hdr_reviewed_004_pending",
+    "status": "complete12_quality_pass_comparison_criteria_failed_no_adoption",
     "expectedFreshJvms": 12,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
@@ -1411,7 +1411,12 @@
       "swapUsedKiB": 0,
       "preservedAt": "evidence-archives/native-final-commonobserver003-preparation-rejection-20261107-001"
     },
-    "currentImplementationReview": "docs/TAILCACHE_12_OBSERVER004_REVIEW.md"
+    "currentImplementationReview": "docs/TAILCACHE_12_OBSERVER004_REVIEW.md",
+    "collectedFreshJvms": 12,
+    "qualityPass": true,
+    "diagnosticCriteriaPass": false,
+    "outcomeReview": "docs/TAILCACHE_12_OBSERVER004_OUTCOME_REVIEW.md",
+    "checkpoint": "evidence-archives/native-final-commonobserver004-checkpoint-20261107-001"
   },
   "caffeineProfileArchive": {
     "path": "evidence-archives/native-final-caffeine-profile-checkpoint-20261107-025.tar.gz",
@@ -1456,5 +1461,32 @@
     "independentOccupancySamples": 2291,
     "completedUtc": "2026-11-07T10:37:34.265074+00:00"
   },
-  "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md"
+  "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md",
+  "conditionalFinalStudy": {
+    "version": "tailcache12-final-observer-conditional-v1",
+    "status": "implemented_reviewed_pending_collection",
+    "prefix": "native-final-conditional-20261107-001",
+    "expectedInvocations": 402,
+    "stages": {
+      "functional": 14,
+      "pause": 2,
+      "compiler-diagnostic": 8,
+      "qualification": 16,
+      "floors": 10,
+      "calibration": 64,
+      "pilot": 32,
+      "campaign": 192,
+      "robustness": 64
+    },
+    "campaignFreshWorkerJvms": 192,
+    "replacements": 0,
+    "warmups": 30,
+    "conditioning": 8,
+    "measurements": 8,
+    "originalPrimaryProtocolQualified": false,
+    "plan": "docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md",
+    "implementationReview": "docs/TAILCACHE_12_CONDITIONAL_FINAL_IMPLEMENTATION_REVIEW.md",
+    "output": "evidence-archives/native-final-conditional-dataset-20261107-001",
+    "liveState": "build/reports/tailcache12/native-final-conditional-20261107-001/state.json"
+  }
 }
