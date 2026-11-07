@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 173,
+    "pythonTests": 175,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "First exploratory end-to-end dataset complete42/42, exported/verified/reviewed; primary crossover experiment remains unqualified because observer dependence/replication/robustness are unresolved.",
+  "currentBlocker": "User requested finishing Task12; bounded common-observer004 is reviewed and pending fresh collection with approved available-RAM rule. Primary observer regime/replicated protocol remains to be frozen after outcome review.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Use completed exploratory evidence to predeclare a bounded observer-regime/replication study. Do not rerun exploratory001, reuse its forks as primary, or treat exploratory completion as Task12 primary completion.",
+  "nextWork": "Run observer004 once, review all12 outcomes, then freeze and execute a bounded source-matched final research protocol through qualification/calibration/pilot/campaign/robustness/export. No historical fork reuse or criteria tuning.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1377,9 +1377,9 @@
   "commonObserverDiagnostic": {
     "plan": "docs/TAILCACHE_12_COMMON_OBSERVER_PLAN.md",
     "implementationReview": "docs/TAILCACHE_12_COMMON_OBSERVER_IMPLEMENTATION_REVIEW.md",
-    "attempt": "native-final-commonobserver-probe-20261107-003",
-    "quiet": "native-final-commonobserver-probequiet-20261107-003",
-    "status": "deferred_by_user_requested_exploratory_e2e_no_adoption",
+    "attempt": "native-final-commonobserver-probe-20261107-004",
+    "quiet": "native-final-commonobserver-probequiet-20261107-004",
+    "status": "v5_preparation_and_offline_hdr_reviewed_004_pending",
     "expectedFreshJvms": 12,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
@@ -1410,7 +1410,8 @@
       "memAvailableKiB": 6580100,
       "swapUsedKiB": 0,
       "preservedAt": "evidence-archives/native-final-commonobserver003-preparation-rejection-20261107-001"
-    }
+    },
+    "currentImplementationReview": "docs/TAILCACHE_12_OBSERVER004_REVIEW.md"
   },
   "caffeineProfileArchive": {
     "path": "evidence-archives/native-final-caffeine-profile-checkpoint-20261107-025.tar.gz",
@@ -1454,5 +1455,6 @@
     "independentPercentilesChecked": 168,
     "independentOccupancySamples": 2291,
     "completedUtc": "2026-11-07T10:37:34.265074+00:00"
-  }
+  },
+  "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md"
 }
