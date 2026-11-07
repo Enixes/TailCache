@@ -280,17 +280,20 @@ def replay_cold_launch(path,source,first_host):
         raise ValueError('Cold-host thermal readiness clock/age mismatch')
 
 
-def replay_settled_thermal(manifest,directory,snapshots,readiness):
+def replay_settled_thermal(manifest,directory,snapshots,readiness,read_bracket_ms=50):
+    if type(read_bracket_ms) is not int or read_bracket_ms not in (50,250):
+        raise ValueError('Unknown thermal read bracket policy')
     replay_cold_launch(readiness,manifest['sourceSha256'],snapshots[0])
     windows=measurement_windows(directory)
     original,_=replay_host_gate(manifest,directory,snapshots)
     values=[thermal_values(r) for r in snapshots]
     cutoff=min(a for a,b in windows)-20e9 if windows else None
-    first_counts,first_times=values[0];used=False;max_count=max_time=0
+    first_counts,first_times=values[0];used=False;max_count=max_time=max_read_ms=0
     for row,(counts,times) in zip(snapshots,values):
         if set(counts)!=set(first_counts) or set(times)!=set(first_times):raise ValueError('Thermal sensor set changed')
         begin,end=row['nativeThermalSampleStartNs'],row['nativeThermalSampleEndNs']
-        if not 0<=end-begin<=50e6:raise ValueError('Invalid thermal read bracket')
+        if not 0<=end-begin<=read_bracket_ms*1e6:raise ValueError('Invalid thermal read bracket')
+        max_read_ms=max(max_read_ms,(end-begin)/1e6)
         if cutoff is not None and end>=cutoff and max(cpu_temperatures(row))>90000:
             raise ValueError('CPU temperature exceeds90C in settling/analysis')
         for key,n in counts.items():
@@ -315,6 +318,8 @@ def replay_settled_thermal(manifest,directory,snapshots,readiness):
     normalized=[dict(row,nativeThrottleCounts=json.dumps(first_counts,sort_keys=True)) for row in snapshots]
     effective,_=replay_host_gate(manifest,directory,normalized)
     return dict(originalReasons=original,effectiveReasons=effective,startupExceptionUsed=used,
+        thermalReadBracketCeilingMs=read_bracket_ms,maximumThermalReadBracketMs=max_read_ms,
+        wideThermalReadUsed=max_read_ms>50,
         maximumStartupCountIncrement=max_count,maximumStartupDurationMs=max_time,settlingSeconds=20,
         durationObservationLimit='Cumulative kernel duration is updated on exit; zero duration does not prove instantaneous inactivity.')
 

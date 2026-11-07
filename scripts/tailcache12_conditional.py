@@ -27,11 +27,12 @@ from tailcache12_provenance import measurement_source_hash,archive_measurement_s
 from tailcache12_quiet import run_preflight
 from tailcache12_analysis import CHURN_DROP_BUDGET_VERSION
 
-VERSION='tailcache12-final-observer-conditional-v4-qualification-evidence'
+VERSION='tailcache12-final-observer-conditional-v5-thermal-read-latency'
 CHURN_DROP_WARNING='Minor churn loss within predeclared32KiB/0.1% budget'
+THERMAL_READ_WARNING='Slow thermal-counter read within predeclared250ms bound'
 STAGES=('functional','pause','compiler-diagnostic','qualification','floors','calibration','pilot','campaign','robustness')
 COUNTS={'functional':14,'pause':2,'compiler-diagnostic':8,'qualification':16,'floors':10,'calibration':64,'pilot':32,'campaign':192,'robustness':64}
-RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL_STARTUP_WARNING,CHURN_DROP_WARNING],outsideCpuUpperCeilingPercent=25,
+RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL_STARTUP_WARNING,CHURN_DROP_WARNING,THERMAL_READ_WARNING],outsideCpuUpperCeilingPercent=25,
     warmups=30,conditioning=8,measurements=8,passes=2,primaryForksPerPass=3,replacements=0,
     liveMiB=[0,96,208,288],payloads=[256,4096],residents=32768,heapMiB=512,churnMiBPerSecond=32,
     seed=24301,orderSeed=0x1207,robustnessSeeds=[0xC0FFEE,0xBADC0DE],robustnessPasses=1,robustnessForksPerCell=1,
@@ -42,7 +43,7 @@ RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL
     floorRules={k:FLOOR_RULES[k] for k in ('version','timerMedianToEveryopMedianCeiling',
         'supplyMedianToSampleMedianCeiling','nativeReadMedianCeilingMs','floorReplicas')},initialMemoryReadinessRule=AVAILABLE_MEMORY_RULE,
     claimScope='conditional-on-recording-regime',coherence='Report disagreement; prohibit a pooled/unconditional claim',
-    stageInvocationCounts=COUNTS,thermalRule=evidence.THERMAL_STARTUP_RULE,
+    stageInvocationCounts=COUNTS,thermalRule=evidence.THERMAL_STARTUP_RULE,thermalReadBracketCeilingMs=250,
     churnDropBudget=dict(version=CHURN_DROP_BUDGET_VERSION,maximumPerWindowBytes=32768,maximumDemandFraction=.001))
 
 
@@ -99,7 +100,7 @@ def declaration():
     return dict(rules=copy.deepcopy(RULES),stages={s:[dict(label=k,properties=p) for k,p in grid(s)] for s in STAGES},
         plan='docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md',
         amendments=['docs/TAILCACHE_12_STARTUP_THERMAL_PLAN.md','docs/TAILCACHE_12_CHURN_BUDGET_PLAN.md',
-            'docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_PLAN.md'])
+            'docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_PLAN.md','docs/TAILCACHE_12_THERMAL_READ_LATENCY_PLAN.md'])
 
 
 def native_control_reference(identifier,current):
@@ -160,7 +161,8 @@ def verify_master(master,state,source):
 def host_facts(attempt,manifest,inv):
     raw=calibration.verify_invocation(attempt,inv)
     with (attempt/inv['label']/'host.csv').open() as stream:hosts=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
-    thermal=evidence.replay_settled_thermal(manifest,raw,hosts,attempt/inv['label']/'thermal-readiness.json')
+    thermal=evidence.replay_settled_thermal(manifest,raw,hosts,attempt/inv['label']/'thermal-readiness.json',
+        read_bracket_ms=RULES['thermalReadBracketCeilingMs'])
     original=list(thermal['originalReasons'])+inv.get('hostMonitorErrors',[])
     reasons=list(thermal['effectiveReasons'])+inv.get('hostMonitorErrors',[])
     windows=evidence.measurement_windows(raw);intervals=evidence.native_host.cpu_intervals(hosts)
@@ -168,6 +170,8 @@ def host_facts(attempt,manifest,inv):
     if not selected:raise ValueError('Missing final-study CPU intervals')
     upper=max(r['outsideUpperPercent'] for r in selected);warnings,fatal=facts.classify(reasons,upper)
     if thermal['startupExceptionUsed']:warnings.append(evidence.THERMAL_STARTUP_WARNING)
+    if thermal['wideThermalReadUsed']:
+        original.append('Original50ms thermal read bracket exceeded');warnings.append(THERMAL_READ_WARNING)
     return dict(label=inv['label'],inputs=inv['properties'],strictReasons=original,effectiveReasons=reasons,thermalReview=thermal,warnings=warnings,
         fatalReasons=fatal,finalPolicyUsable=not fatal,primaryEndpointUseAllowed=False,
         outsideCpuUpperPercent=upper,hostWindowStartNs=hosts[0]['monotonicNs'],hostWindowEndNs=hosts[-1]['monotonicNs'])
@@ -219,6 +223,7 @@ def read_row(path,manifest,inv,runtime,trace,helper):
     host=host_facts(path,manifest,inv);reasons=list(summary['rejectionReasons'])+host['effectiveReasons']+overhead
     warnings,fatal=facts.classify(reasons,host['outsideCpuUpperPercent'])
     if host['thermalReview']['startupExceptionUsed']:warnings.append(evidence.THERMAL_STARTUP_WARNING)
+    if host['thermalReview'].get('wideThermalReadUsed'):warnings.append(THERMAL_READ_WARNING)
     budget=summary.get('churnDropBudgetSummary',{});original_drops=[]
     if budget.get('totalDroppedBytes',0):
         warnings.append(CHURN_DROP_WARNING)

@@ -18,11 +18,36 @@ def rows(change=5,count_delta=1,time_delta=5):
 
 
 class StartupThermalTest(unittest.TestCase):
-    def assess(self,samples,gate=None):
+    def assess(self,samples,gate=None,**kwargs):
         if gate is None:gate=lambda *args:([],None)
         with patch.object(evidence,'replay_cold_launch'),patch.object(evidence,'measurement_windows',return_value=[(50*10**9,58*10**9)]), \
              patch.object(evidence,'replay_host_gate',side_effect=gate):
-            return evidence.replay_settled_thermal({'sourceSha256':'source'},pathlib.Path('/raw'),samples,pathlib.Path('/cold'))
+            return evidence.replay_settled_thermal({'sourceSha256':'source'},pathlib.Path('/raw'),samples,pathlib.Path('/cold'),**kwargs)
+
+    def test_read_bracket_budget_is_explicit_bounded_and_preserves_raw(self):
+        samples=rows();samples[20]['nativeThermalSampleEndNs']=samples[20]['nativeThermalSampleStartNs']+100_000_000
+        original=copy.deepcopy(samples)
+        with self.assertRaisesRegex(ValueError,'read bracket'):self.assess(samples)
+        proof=self.assess(samples,read_bracket_ms=250)
+        self.assertTrue(proof['wideThermalReadUsed']);self.assertEqual(proof['maximumThermalReadBracketMs'],100)
+        self.assertEqual(proof['thermalReadBracketCeilingMs'],250);self.assertEqual(samples,original)
+        for limit in (50,250):
+            samples[20]['nativeThermalSampleEndNs']=samples[20]['nativeThermalSampleStartNs']+limit*1_000_000
+            self.assess(samples,read_bracket_ms=limit)
+            samples[20]['nativeThermalSampleEndNs']+=1
+            with self.assertRaisesRegex(ValueError,'read bracket'):self.assess(samples,read_bracket_ms=limit)
+        for invalid in (51,100,251,250.0,True):
+            with self.assertRaisesRegex(ValueError,'policy'):self.assess(rows(),read_bracket_ms=invalid)
+
+    def test_wider_bracket_never_moves_a_late_change_before_settling(self):
+        samples=rows(change=29)
+        samples[29]['nativeThermalSampleStartNs']=29_900_000_000
+        samples[29]['nativeThermalSampleEndNs']=30_050_000_000
+        with self.assertRaisesRegex(ValueError,'changed in settling'):
+            self.assess(samples,read_bracket_ms=250)
+        for change in (31,50):
+            with self.assertRaisesRegex(ValueError,'changed in settling'):
+                self.assess(rows(change=change),read_bracket_ms=250)
 
     def test_bounded_startup_exception_keeps_raw_and_exposes_masked_cpu_failure(self):
         samples=rows();original=copy.deepcopy(samples)
