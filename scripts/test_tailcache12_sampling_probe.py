@@ -7,6 +7,16 @@ import tailcache12_sampling_probe as probe
 
 
 class SamplingProbePreparationTest(unittest.TestCase):
+    def test_opaque_diagnostic_refuses_inherited_vm_override(self):
+        with tempfile.TemporaryDirectory() as directory:
+            with (patch.object(probe.evidence, 'REPORTS', pathlib.Path(directory)),
+                  patch('sys.argv', ['probe','new-probe','new-quiet','--plan','opaque-operation']),
+                  patch.dict(probe.os.environ, {'JAVA_TOOL_OPTIONS':'-Xmx42m'}),
+                  patch.object(probe, 'prepare_file_cache') as prepare):
+                with self.assertRaises(ValueError): probe.main()
+                prepare.assert_not_called()
+                self.assertFalse(list(pathlib.Path(directory).iterdir()))
+
     def test_failed_quiet_or_changed_source_cannot_launch(self):
         for quiet, hashes in ((False, ['same', 'same']), (True, ['before', 'after'])):
             with self.subTest(quiet=quiet), tempfile.TemporaryDirectory() as directory:

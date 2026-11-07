@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 44,
-    "pythonTests": 122,
+    "pythonTests": 123,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -1257,5 +1257,16 @@
     "verifiedMembers": 36865
   },
   "mixedSelectorProbeReview": "docs/TAILCACHE_12_MIXEDSELECTOR_PROBE_REVIEW.md",
-  "opaqueOperationPlan": "docs/TAILCACHE_12_OPAQUE_OPERATION_PLAN.md"
+  "opaqueOperationPlan": "docs/TAILCACHE_12_OPAQUE_OPERATION_PLAN.md",
+  "opaqueOperationDiagnostic": {
+    "plan": "docs/TAILCACHE_12_OPAQUE_OPERATION_PLAN.md",
+    "review": "docs/TAILCACHE_12_OPAQUE_OPERATION_IMPLEMENTATION_REVIEW.md",
+    "attempt": "native-final-opaqueoperation-probe-20261107-001",
+    "quiet": "native-final-opaqueoperation-probequiet-20261107-001",
+    "expectedJvmAttempts": 8,
+    "replacements": 0,
+    "status": "launcher_reviewed_vm_syntax_accepted_collection_pending",
+    "primaryEndpointUseAllowed": false,
+    "measurementSourceSha256": "dfcd7335986f6ca03a3b0332d05b5788569ab42430ff9e821681451eb2cbdc9d"
+  }
 }
