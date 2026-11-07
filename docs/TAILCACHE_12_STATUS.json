@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 44,
-    "pythonTests": 123,
+    "pythonTests": 125,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -1285,6 +1285,13 @@
     "expectedJvmAttempts": 8,
     "replacements": 0,
     "status": "launcher_reviewed_logger_syntax_accepted_collection_pending",
-    "primaryEndpointUseAllowed": false
+    "primaryEndpointUseAllowed": false,
+    "parserSmokePassed": true
+  },
+  "opaqueOperationArchive": {
+    "path": "evidence-archives/native-final-opaqueoperation-checkpoint-20261107-017.tar.gz",
+    "bytes": 904839689,
+    "sha256": "26fe0b3b87221965ab5a277bb689b9bd0b9371786477399121cbfd50c35fa0c0",
+    "verifiedMembers": 38043
   }
 }
