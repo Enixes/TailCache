@@ -691,6 +691,16 @@ val tailCache12Residents = providers.gradleProperty("tailcache12Residents").orEl
 val tailCache12LiveBytes = providers.gradleProperty("tailcache12LiveBytes").orElse("0")
 val tailCache12Churn = providers.gradleProperty("tailcache12ChurnBytesPerSecond").orElse("16777216")
 val tailCache12Seed = providers.gradleProperty("tailcache12Seed").orElse("24301")
+val tailCache12FlightRecorder = providers.gradleProperty("tailcache12FlightRecorder").orElse("false").get().toBoolean()
+require(!tailCache12FlightRecorder || providers.gradleProperty("tailcache12DiagnosticOnly").orElse("false").get() == "true") {
+    "Flight Recorder requires an explicit Task12 diagnostic-only declaration"
+}
+val tailCache12FlightSettings = file("src/main/resources/tailcache12-observer-profile.jfc")
+
+fun tailCache12FlightOptions(directory: File): List<String> = if (!tailCache12FlightRecorder) emptyList() else listOf(
+    "-XX:FlightRecorderOptions=maxchunksize=256m,stackdepth=64",
+    "-XX:StartFlightRecording=name=TailCache12Observer,settings=${directory.resolve("flight-recorder.jfc").absolutePath}," +
+        "filename=${directory.resolve("jfr/worker.jfr").absolutePath},disk=true,dumponexit=true,maxsize=512m")
 
 // Only Task12 uses this explicit generated-harness overlay. JMH jars, original
 // generated classes and all other benchmark task classpaths stay untouched.
@@ -758,11 +768,27 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val samplerPackage = tailCache12SamplerPackage
         val originalSources = tailCache12OriginalSources
         val overlaySources = tailCache12OverlaySources
+        val flightRecorder = tailCache12FlightRecorder
+        val flightSettings = tailCache12FlightSettings
+        if (flightRecorder) {
+            require(kind == "sample-calibration" && providers.gradleProperty("tailcache12Forks").orElse("3").get() == "1") {
+                "Worker profiles require one explicitly logged diagnostic fork"
+            }
+            require(listOf(tailCache12Backends.get(), tailCache12Payloads.get(), tailCache12Residents.get(),
+                tailCache12LiveBytes.get(), tailCache12Churn.get(), tailCache12Seed.get()).all { !it.contains(',') }) {
+                "Worker profiles require one condition; recordings cannot be reused across parameter cases"
+            }
+            inputs.file(flightSettings)
+        }
         doFirst {
             if (directory.exists() && directory.listFiles()?.isNotEmpty() == true) {
                 throw GradleException("Refusing existing Task 12 results: ${directory.absolutePath}")
             }
             directory.mkdirs()
+            if (flightRecorder) {
+                directory.resolve("jfr").mkdirs()
+                flightSettings.copyTo(directory.resolve("flight-recorder.jfc"), overwrite = false)
+            }
             // Retain both exact generated inputs and the overlay for raw replay.
             val sources = directory.resolve("sample-selection-source")
             sources.mkdirs()
@@ -784,6 +810,7 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
         jvmOptions.add("-Dtailcache12.sampleSelectionVersion=$tailCache12SamplerVersion")
+        jvmOptions.addAll(tailCache12FlightOptions(directory))
         jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
         jvmOptions.add("-Dtailcache12.lifecycleWarmupVersion=" +
             providers.gradleProperty("tailcache12LifecycleWarmupVersion").orElse("none").get())
@@ -812,6 +839,7 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
             "-o", directory.resolve("jmh.txt").absolutePath, "-foe", "true"
         )
         if (kind == "compiler") args("-prof", "comp")
+        if (flightRecorder) args("-wf", "0")
         if (kind == "allocation") args("-prof", "gc")
     }
 
@@ -832,14 +860,22 @@ tasks.register<JavaExec>("tailCache12EveryOperation") {
     mainClass.set("io.github.enixes.tailcache.workload.CrossoverLatencyRunner")
     javaLauncher.set(java21Launcher)
     val directory = tailCache12Directory("every-operation")
+    val flightRecorder = tailCache12FlightRecorder
+    val flightSettings = tailCache12FlightSettings
+    if (flightRecorder) inputs.file(flightSettings)
     doFirst {
         if (directory.exists() && directory.listFiles()?.isNotEmpty() == true) {
             throw GradleException("Refusing existing Task 12 results: ${directory.absolutePath}")
         }
         directory.mkdirs()
+        if (flightRecorder) {
+            directory.resolve("jfr").mkdirs()
+            flightSettings.copyTo(directory.resolve("flight-recorder.jfc"), overwrite = false)
+        }
     }
     val compilerDiagnostics = providers.gradleProperty("tailcache12CompilerDiagnostics").orElse("false").get().toBoolean()
     val compilerCounters = providers.gradleProperty("tailcache12CompilerCounters").orElse("true").get().toBoolean()
+    jvmArgs(tailCache12FlightOptions(directory))
     jvmArgs("-Dtailcache12.lifecycleWarmupVersion=" +
         providers.gradleProperty("tailcache12LifecycleWarmupVersion").orElse("none").get())
     jvmArgs(chronicleJvmArgs + listOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m",

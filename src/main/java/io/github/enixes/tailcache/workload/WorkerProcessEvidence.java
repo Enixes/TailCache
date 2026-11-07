@@ -22,10 +22,14 @@ public final class WorkerProcessEvidence {
                 throw new IllegalStateException("Worker escaped its declared native accounting scope: " + group);
             }
             long pid = ProcessHandle.current().pid();
+            Thread worker = Thread.currentThread();
+            String osThreadId = Path.of("/proc/thread-self").toRealPath().getFileName().toString();
             WorkerAllocationCounter.currentBytes();
             Files.writeString(directory.resolve("worker-process-" + pid + ".properties"),
                     "pid=" + pid + "\ncgroup=" + group + "\nbackend=" + backend
                             + "\npayloadBytes=" + payloadBytes + "\nmode=" + mode
+                            + "\njavaThreadId=" + worker.threadId() + "\nosThreadId=" + osThreadId
+                            + "\njavaThreadName=" + worker.getName()
                             + "\nworkerAllocationCounters=true\n",
                     StandardOpenOption.CREATE_NEW);
         } catch (IOException failure) {

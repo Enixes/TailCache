@@ -78,6 +78,14 @@ def sources():
                 yield file
 
 
+def file_sha(path):
+    digest = hashlib.sha256()
+    with pathlib.Path(path).open('rb') as stream:
+        while chunk := stream.read(1024 * 1024):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def source_hash():
     digest = hashlib.sha256()
     for path in sources():
@@ -268,13 +276,13 @@ def invoke(attempt, manifest, label, task, properties):
     host_reasons, fraction = replay_host_gate(manifest, raw, snapshots)
     if monitor_errors:
         host_reasons.append("host monitor failed: " + "; ".join(monitor_errors))
-    artifact_hashes = {str(p.relative_to(raw)): hashlib.sha256(p.read_bytes()).hexdigest()
+    artifact_hashes = {str(p.relative_to(raw)): file_sha(p)
                        for p in sorted(raw.rglob("*")) if p.is_file()} if raw.exists() else {}
     record = {"label": label, "command": command, "exitCode": code, "rawDirectory": str(raw),
               "rawSha256": artifact_hashes, "sourceUnchanged": started_source == source_hash() == manifest["sourceSha256"],
               "properties": properties,
               "controllerQuietSchedule": controller_schedule,
-              "controlSha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+              "controlSha256": {p.name: file_sha(p)
                                 for p in control.iterdir() if p.is_file()},
               "hostQualityPass": not host_reasons, "hostRejectionReasons": host_reasons,
               "hostMonitorErrors": monitor_errors,
@@ -382,10 +390,10 @@ def replay(attempt):
     for invocation in manifest["invocations"]:
         raw = raw_directory(attempt, invocation)
         for name, digest in invocation["rawSha256"].items():
-            if hashlib.sha256((raw / name).read_bytes()).hexdigest() != digest:
+            if file_sha(raw / name) != digest:
                 raise ValueError(f"Changed raw artifact: {raw / name}")
         for name, digest in invocation.get("controlSha256", {}).items():
-            if hashlib.sha256((attempt / invocation["label"] / name).read_bytes()).hexdigest() != digest:
+            if file_sha(attempt / invocation["label"] / name) != digest:
                 raise ValueError(f"Changed control artifact: {name}")
         if invocation["exitCode"] or not invocation["sourceUnchanged"]:
             raise ValueError("Failed invocation or changed source")
@@ -396,7 +404,7 @@ def replay(attempt):
         reasons.extend(invocation.get("hostMonitorErrors", []))
         host_audits.append(dict(label=invocation["label"], hostPass=not reasons,
                                rejectionReasons=reasons, memoryFullStallFraction=fraction))
-    if "sourceArchiveSha256" in manifest and hashlib.sha256((attempt / "source.tar.gz").read_bytes()).hexdigest() != manifest["sourceArchiveSha256"]:
+    if "sourceArchiveSha256" in manifest and file_sha(attempt / "source.tar.gz") != manifest["sourceArchiveSha256"]:
         raise ValueError("Changed source snapshot")
     audit = {"reportable": False, "reconstructedFromRaw": True}
     if manifest["stage"] == "validate":
@@ -472,7 +480,7 @@ def main():
     with tarfile.open(attempt / "source.tar.gz", "w:gz") as archive:
         for path in sources():
             archive.add(path, arcname=str(path.relative_to(ROOT)))
-    manifest["sourceArchiveSha256"] = hashlib.sha256((attempt / "source.tar.gz").read_bytes()).hexdigest()
+    manifest["sourceArchiveSha256"] = file_sha(attempt / "source.tar.gz")
     environment = {}
     for label, command in (("uname", ["uname", "-a"]), ("cpu", ["lscpu"]),
                            ("java", ["java", "-version"]),

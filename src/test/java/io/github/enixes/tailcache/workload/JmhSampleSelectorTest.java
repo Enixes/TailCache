@@ -66,4 +66,13 @@ class JmhSampleSelectorTest {
             else System.setProperty("tailcache12.sampleSelectionVersion", previous);
         }
     }
+
+    @Test
+    void actualWorkerMarkerContainsJavaAndOsThreadIdentity(@TempDir Path directory) throws Exception {
+        WorkerProcessEvidence.write(directory, CrossoverBackend.CAFFEINE, 256, "test");
+        String marker = Files.readString(directory.resolve("worker-process-" + ProcessHandle.current().pid() + ".properties"));
+        assertTrue(marker.contains("javaThreadId=" + Thread.currentThread().threadId() + "\n"));
+        assertTrue(marker.contains("javaThreadName=" + Thread.currentThread().getName() + "\n"));
+        assertTrue(marker.contains("osThreadId=" + Path.of("/proc/thread-self").toRealPath().getFileName() + "\n"));
+    }
 }

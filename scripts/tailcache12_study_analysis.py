@@ -109,12 +109,14 @@ def allocation_profiler_vectors(metrics,count,text,jmh_version):
 
 def every_operation_fork_summary(directory, inputs, expected_trace=None,
                                  jdk_version=None, occupancy_band=None, compiler_diagnostics=False,
-                                 runtime_identity=None):
+                                 runtime_identity=None, diagnostic_flight_recording=False):
     """Validate actual controls as well as the worker's measured quality evidence."""
     directory = pathlib.Path(directory)
     worker = directory / "worker"
     configuration = dict(line.split("=", 1) for line in
                          (worker / "configuration.txt").read_text().splitlines() if "=" in line)
+    from tailcache12_jfr import validate_instrumentation
+    validate_instrumentation(configuration['jvmArgs'], inputs, diagnostic_flight_recording)
     validate_lifecycle_preparation(inputs,(worker/'configuration.txt').read_text(),configuration['jvmArgs'])
     if configuration["backend"] != inputs["Backend"]:
         raise ValueError("Backend identity mismatch")
@@ -226,13 +228,15 @@ def merged_histograms(iterations, operations):
 
 
 def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupancy_band=None,
-                     diagnostic_compiler_xml=False):
+                     diagnostic_compiler_xml=False, diagnostic_flight_recording=False):
     """One invocation must contain exactly one condition and one fresh worker JVM."""
     raw = pathlib.Path(raw)
     records = json.loads((raw / kind / "results.json").read_text())
     if len(records) != 1:
         raise ValueError("Expected exactly one JMH condition")
     record = records[0]
+    from tailcache12_jfr import validate_instrumentation
+    validate_instrumentation(record['jvmArgs'], inputs, diagnostic_flight_recording)
     if diagnostic_compiler_xml and (kind not in ("sample-calibration","floor") or "-XX:+LogCompilation" not in record["jvmArgs"]):
         raise ValueError("XML attribution is restricted to explicitly instrumented logged SampleTime diagnostics")
     method = "freshSupplyFloor" if kind == "floor" else "mixedWorkload"

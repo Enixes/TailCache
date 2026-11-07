@@ -18,8 +18,8 @@
     "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
   },
   "verification": {
-    "javaTests": 44,
-    "pythonTests": 126,
+    "javaTests": 45,
+    "pythonTests": 134,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Observer tail discrepancy persists; TLAB aggregates similar forChronicle, no allocator tuning justified. Primary campaign remains blocked.",
+  "currentBlocker": "Observer discrepancy unresolved; worker-only JFR diagnostic implemented/tested/reviewed, no new source-qualified prerequisites or primary evidence.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Implement/review only the predeclared worker-only4-fork JFR diagnostic with explicit ordinary-endpoint exclusion, minimal source-controlled settings and recording/clock/data-loss validation. Archive completed TLAB observation before collection.",
+  "nextWork": "Collect only the predeclared4-fork worker JFR profile after fresh native cache/empty-swap/quiet preparation. Verify recordings/clocks/quality, then review actual worker stacks/allocation sites; no primary campaign authorized.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -115,7 +115,7 @@
   },
   "qualificationScope": "All8bd source qualification/calibration remain preserved historical; currentd0e2 source not yet qualified. No primary campaign authorized.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
-  "measurementSourceSha256": "dfcd7335986f6ca03a3b0332d05b5788569ab42430ff9e821681451eb2cbdc9d",
+  "measurementSourceSha256": "f9cac0800df055284da89c298aff1cb0eae0b2169006286cbff51a40c370e370",
   "calibrationDeclaration": {
     "attempt": "native-final-conditioning16-calibration-20261106-002",
     "preflight": "native-final-conditioning16-calibrationquiet-20261106-002",
@@ -1295,5 +1295,25 @@
     "verifiedMembers": 38043
   },
   "tlabObservationOutcomeReview": "docs/TAILCACHE_12_TLAB_OBSERVATION_REVIEW.md",
-  "workerProfilePlan": "docs/TAILCACHE_12_JFR_PROFILE_PLAN.md"
+  "workerProfilePlan": "docs/TAILCACHE_12_JFR_PROFILE_PLAN.md",
+  "workerProfileImplementation": {
+    "status": "implemented_tested_reviewed_collection_pending",
+    "review": "docs/TAILCACHE_12_JFR_PROFILE_IMPLEMENTATION_REVIEW.md",
+    "attempt": "native-final-jfrprofile-20261107-001",
+    "quiet": "native-final-jfrprofilequiet-20261107-001",
+    "expectedFreshJvms": 4,
+    "replacements": 0,
+    "ordinaryEndpointExclusion": true,
+    "constantClockModelRejected": true,
+    "affineClockSmokePass": true,
+    "maximumSmokeResidualNs": 13766.895448446274,
+    "maximumHeldOutSmokeResidualNs": 12515.248543947935,
+    "primaryEndpointUseAllowed": false
+  },
+  "tlabObservationArchive": {
+    "path": "evidence-archives/native-final-tlabdebug-checkpoint-20261107-018.tar.gz",
+    "bytes": 911332328,
+    "sha256": "f4ab8e908ee0f8a06516c43e474bc348ce00506e03b6c3af08b36a790dc1219a",
+    "verifiedMembers": 38629
+  }
 }

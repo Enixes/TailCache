@@ -137,7 +137,7 @@ def verify_retry_preflights(attempt, manifest, rows, selection):
 
 
 def sha(path):
-    return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
+    return evidence.file_sha(path)
 
 
 def verify_invocation(attempt, invocation):
