@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Final004 rejected77.87641ms thermal acquisition bracket versus50ms; source-matched v5 native control then all402 fresh005/export/raw review pending.",
+  "currentBlocker": "All402 fresh005 invocations/export/raw review pending; actual7f0313 cold/inside/outside control002 passed and reviewed.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run fresh native control002 at7f0313 selected identity; review actual results, then launch final005.250ms read ceiling is explicit, >50ms warned; raw timestamps and settling/late-event protection unchanged. No prior forks reused.",
+  "nextWork": "Launch final005 once, no historical reuse; keep selected/source files frozen. Slow50\u2013250ms thermal metadata reads retain original quality failure/warning. Full export/raw/researcher review before completion.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1464,7 +1464,7 @@
   "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md",
   "conditionalFinalStudy": {
     "version": "tailcache12-final-observer-conditional-v5-thermal-read-latency",
-    "status": "v5_verified200_fresh_native_control_pending",
+    "status": "v5_verified200_actual_native_control_passed_005_pending",
     "prefix": "native-final-conditional-20261107-005",
     "expectedInvocations": 402,
     "stages": {
@@ -1505,7 +1505,14 @@
     "qualificationEvidencePlan": "docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_PLAN.md",
     "qualificationPolicy": "Keep80ms total/10ms interval failures; collect all finite-JIT-warning cells, reject matching resolved claims across every pressure and robustness seed.",
     "thermalReadLatencyPlan": "docs/TAILCACHE_12_THERMAL_READ_LATENCY_PLAN.md",
-    "thermalReadBracketCeilingMs": 250
+    "thermalReadBracketCeilingMs": 250,
+    "nativeControlReviewed": {
+      "attempt": "native-final-startup-thermal-control-20261107-002",
+      "passed": true,
+      "insideOutsideCpuUpperPercent": 3.7470162975206613,
+      "outsideOutsideCpuUpperPercent": 28.526192371475954,
+      "measurementSourceSha256": "7f0313004a2f6bcc3eb4b107e564113733947516139331096f22f4cc79b0a52a"
+    }
   },
   "previousConditionalFinalAttempts": [
     {
