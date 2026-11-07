@@ -13,7 +13,7 @@ import time
 
 VERSION = "tailcache12-native-cgroup-v2"
 STRING_FIELDS = ("nativeCgroup", "nativeScopeName", "nativeCpuCounter", "nativeControls",
-                 "nativeTemperatures", "nativeThrottleCounts", "nativeBootId", "nativeKernelRelease")
+                 "nativeTemperatures", "nativeThrottleCounts", "nativeThrottleTimesMs", "nativeBootId", "nativeKernelRelease")
 ENVIRONMENT_FIELDS = ("nativeCgroup", "nativeScopeName", "nativeCpuCounter", "nativeControls",
                       "nativeObserverVersion", "nativeLogicalCpus", "nativeAffinityCpus",
                       "nativeClockTicksPerSecond", "nativeBootId", "nativeKernelRelease",
@@ -75,9 +75,13 @@ def snapshot():
             return int(path.read_text())
         except (OSError, ValueError):
             return None
+    thermal_start=time.monotonic_ns()
     throttle = {str(p): optional_int(p) for p in thermal}
+    throttle_times={str(p.with_name(p.name.removesuffix('_count')+'_total_time_ms')):
+        optional_int(p.with_name(p.name.removesuffix('_count')+'_total_time_ms')) for p in thermal}
     temps = {str(p): dict(milliC=optional_int(p), criticalMilliC=optional_int(
         p.with_name(p.name.replace("_input", "_crit")))) for p in temperatures}
+    thermal_end=time.monotonic_ns()
     freq = [value for p in frequencies if (value := optional_int(p)) is not None]
     pressure = pathlib.Path("/proc/pressure/cpu").read_text()
     load = [float(x) for x in pathlib.Path("/proc/loadavg").read_text().split()[:3]]
@@ -92,6 +96,8 @@ def snapshot():
                 nativeControls=json.dumps(read_controls(group), sort_keys=True),
                 nativeTemperatures=json.dumps(temps, sort_keys=True),
                 nativeThrottleCounts=json.dumps(throttle, sort_keys=True),
+                nativeThrottleTimesMs=json.dumps(throttle_times,sort_keys=True),
+                nativeThermalSampleStartNs=thermal_start,nativeThermalSampleEndNs=thermal_end,
                 nativeFrequencyMinKHz=min(freq, default=-1), nativeFrequencyMaxKHz=max(freq, default=-1),
                 nativeCpuSomeTotalUs=int(re.search(r"^some .*total=(\d+)", pressure, re.M).group(1)),
                 nativeCpuSomeAvg10=float(re.search(r"^some avg10=([\d.]+)", pressure, re.M).group(1)),

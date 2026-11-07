@@ -25,6 +25,10 @@ HOST_RULE_VERSION = "tailcache12-host-v4-native-cpu"
 TRANSPORT_WARMUP_VERSION = "jmh-result-transport-v2"
 LIFECYCLE_WARMUP_VERSION = "lifecycle-maintenance-v1"
 SETTLING_HOST_VERSIONS = ("tailcache12-host-v2-settling", "tailcache12-host-v3-native-cpu", HOST_RULE_VERSION)
+THERMAL_STARTUP_RULE=dict(version='tailcache12-startup-thermal-v1',minimumIdleSeconds=15,coldWindowSeconds=5,
+    coldCpuMilliC=70000,timeoutSeconds=120,settlingSeconds=20,settledCpuMilliC=90000,
+    maximumStartupCountIncrement=1,maximumStartupDurationMs=100)
+THERMAL_STARTUP_WARNING='Bounded startup-only thermal event; settling/analysis counters stable'
 
 
 def decode_host_row(row):
@@ -227,6 +231,94 @@ def host_gate(snapshots, cpu_windows=None, native_required=False, native_version
     return reasons, fraction
 
 
+def thermal_values(row):
+    counts=json.loads(row['nativeThrottleCounts']);durations=json.loads(row['nativeThrottleTimesMs'])
+    if (not counts or set(durations)!={k.removesuffix('_count')+'_total_time_ms' for k in counts}
+            or any(type(v) is not int or v<0 for v in [*counts.values(),*durations.values()])):
+        raise ValueError('Missing/invalid thermal count/duration metadata')
+    return counts,durations
+
+
+def cpu_temperatures(row):
+    values=[v['milliC'] for v in json.loads(row['nativeTemperatures']).values() if v['criticalMilliC'] is not None]
+    if not values or any(type(v) is not int for v in values):raise ValueError('Missing critical CPU temperature metadata')
+    return values
+
+
+def cold_window_pass(samples):
+    if len(samples)<6 or samples[-1]['monotonicNs']-samples[-6]['monotonicNs']<5e9:return False
+    window=samples[-6:]
+    if any(max(cpu_temperatures(r))>THERMAL_STARTUP_RULE['coldCpuMilliC'] for r in window):return False
+    values=[thermal_values(r) for r in window]
+    if any(v!=values[0] for v in values):return False
+    return not host_gate(window,native_required=True,native_version=2)[0]
+
+
+def prepare_cold_launch(path,source):
+    started=time.monotonic();samples=[];passed=False;failure=None
+    try:
+        while time.monotonic()-started<THERMAL_STARTUP_RULE['timeoutSeconds']:
+            samples.append(host_snapshot())
+            if time.monotonic()-started>=15 and cold_window_pass(samples):passed=True;break
+            time.sleep(1)
+    except Exception as error:failure=f'{type(error).__name__}: {error}'
+    record=dict(rule=THERMAL_STARTUP_RULE,sourceSha256=source,samples=samples,elapsedSeconds=time.monotonic()-started,
+        passed=passed,failure=failure)
+    save(path,record)
+    if not passed:raise ValueError('Cold-host thermal readiness failed; no JVM launched')
+    return record
+
+
+def replay_cold_launch(path,source,first_host):
+    record=json.loads(path.read_text())
+    if (record.get('rule')!=THERMAL_STARTUP_RULE or record.get('sourceSha256')!=source or record.get('passed') is not True
+            or record.get('failure') or not 15<=record.get('elapsedSeconds',0)<122 or not cold_window_pass(record['samples'])):
+        raise ValueError('Invalid cold-host thermal readiness proof')
+    samples=record['samples'];span=(samples[-1]['monotonicNs']-samples[0]['monotonicNs'])/1e9
+    age=(first_host['monotonicNs']-samples[-1]['monotonicNs'])/1e9
+    if not 14<=span<=record['elapsedSeconds']+.1 or not 0<=age<=5:
+        raise ValueError('Cold-host thermal readiness clock/age mismatch')
+
+
+def replay_settled_thermal(manifest,directory,snapshots,readiness):
+    replay_cold_launch(readiness,manifest['sourceSha256'],snapshots[0])
+    windows=measurement_windows(directory)
+    original,_=replay_host_gate(manifest,directory,snapshots)
+    values=[thermal_values(r) for r in snapshots]
+    cutoff=min(a for a,b in windows)-20e9 if windows else None
+    first_counts,first_times=values[0];used=False;max_count=max_time=0
+    for row,(counts,times) in zip(snapshots,values):
+        if set(counts)!=set(first_counts) or set(times)!=set(first_times):raise ValueError('Thermal sensor set changed')
+        begin,end=row['nativeThermalSampleStartNs'],row['nativeThermalSampleEndNs']
+        if not 0<=end-begin<=50e6:raise ValueError('Invalid thermal read bracket')
+        if cutoff is not None and end>=cutoff and max(cpu_temperatures(row))>90000:
+            raise ValueError('CPU temperature exceeds90C in settling/analysis')
+        for key,n in counts.items():
+            delta=n-first_counts[key];duration=times[key.removesuffix('_count')+'_total_time_ms']-first_times[key.removesuffix('_count')+'_total_time_ms']
+            if delta<0 or duration<0:raise ValueError('Thermal counter reset')
+            if delta>1 or duration>100:raise ValueError('Startup thermal activity exceeds declared bounds')
+            max_count=max(max_count,delta);max_time=max(max_time,duration)
+    for index,(previous,current) in enumerate(zip(values,values[1:]),1):
+        before,after=snapshots[index-1],snapshots[index]
+        if (after['nativeThermalSampleStartNs']<=before['nativeThermalSampleEndNs']
+                or after['nativeThermalSampleEndNs']-before['nativeThermalSampleStartNs']>2.5e9):
+            raise ValueError('Nonadvancing/stale thermal sampling')
+        if any(current[d][k]<previous[d][k] for d in (0,1) for k in current[d]):raise ValueError('Thermal counter reset')
+        if current!=previous:
+            if cutoff is None or after['nativeThermalSampleEndNs']>=cutoff:
+                raise ValueError('Thermal activity changed in settling/analysis or no-window diagnostic')
+            used=True
+    if used and snapshots[0]['nativeThermalSampleEndNs']>=cutoff:
+        raise ValueError('Missing complete20s thermal settling coverage')
+    # Preserve raw data; neutralize only the explicitly validated early count variation,
+    # then run all original accounting/CPU/critical/worker/other safety checks again.
+    normalized=[dict(row,nativeThrottleCounts=json.dumps(first_counts,sort_keys=True)) for row in snapshots]
+    effective,_=replay_host_gate(manifest,directory,normalized)
+    return dict(originalReasons=original,effectiveReasons=effective,startupExceptionUsed=used,
+        maximumStartupCountIncrement=max_count,maximumStartupDurationMs=max_time,settlingSeconds=20,
+        durationObservationLimit='Cumulative kernel duration is updated on exit; zero duration does not prove instantaneous inactivity.')
+
+
 def invoke(attempt, manifest, label, task, properties):
     if manifest.get('lifecycleWarmupVersion') and task!='tailCache12Retention':
         properties=dict(properties,LifecycleWarmupVersion=manifest['lifecycleWarmupVersion'])
@@ -236,6 +328,10 @@ def invoke(attempt, manifest, label, task, properties):
     run_id = attempt.name + "-" + label
     control = attempt / label
     control.mkdir()
+    if os.environ.get('TAILCACHE_THERMAL_READINESS'):
+        if os.environ['TAILCACHE_THERMAL_READINESS']!=THERMAL_STARTUP_RULE['version']:
+            raise ValueError('Unknown thermal readiness policy')
+        prepare_cold_launch(control/'thermal-readiness.json',manifest['sourceSha256'])
     command = [str(ROOT / "gradlew"), "--offline", task,
                f"-Ptailcache12RunId={run_id}"]
     if os.environ.get("TAILCACHE_REQUIRE_NATIVE_HOST") == "1":

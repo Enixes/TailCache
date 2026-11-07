@@ -26,10 +26,10 @@ from tailcache12_observer import floor_grid,RULES as FLOOR_RULES
 from tailcache12_provenance import measurement_source_hash,archive_measurement_source_hash
 from tailcache12_quiet import run_preflight
 
-VERSION='tailcache12-final-observer-conditional-v1'
+VERSION='tailcache12-final-observer-conditional-v2-startup-thermal'
 STAGES=('functional','pause','compiler-diagnostic','qualification','floors','calibration','pilot','campaign','robustness')
 COUNTS={'functional':14,'pause':2,'compiler-diagnostic':8,'qualification':16,'floors':10,'calibration':64,'pilot':32,'campaign':192,'robustness':64}
-RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS),outsideCpuUpperCeilingPercent=25,
+RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL_STARTUP_WARNING],outsideCpuUpperCeilingPercent=25,
     warmups=30,conditioning=8,measurements=8,passes=2,primaryForksPerPass=3,replacements=0,
     liveMiB=[0,96,208,288],payloads=[256,4096],residents=32768,heapMiB=512,churnMiBPerSecond=32,
     seed=24301,orderSeed=0x1207,robustnessSeeds=[0xC0FFEE,0xBADC0DE],robustnessPasses=1,robustnessForksPerCell=1,
@@ -39,7 +39,7 @@ RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS),outsideCpuUpperCe
     floorRules={k:FLOOR_RULES[k] for k in ('version','timerMedianToEveryopMedianCeiling',
         'supplyMedianToSampleMedianCeiling','nativeReadMedianCeilingMs','floorReplicas')},initialMemoryReadinessRule=AVAILABLE_MEMORY_RULE,
     claimScope='conditional-on-recording-regime',coherence='Report disagreement; prohibit a pooled/unconditional claim',
-    stageInvocationCounts=COUNTS)
+    stageInvocationCounts=COUNTS,thermalRule=evidence.THERMAL_STARTUP_RULE)
 
 
 def options(stage):
@@ -92,6 +92,26 @@ def declaration():
         plan='docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md')
 
 
+def native_control_reference(identifier,current):
+    path=evidence.REPORTS/identifier;result=json.loads((path/'result.json').read_text())
+    expected=measurement_source_hash(evidence.ROOT)
+    if (result.get('passed') is not True or result.get('sourceUnchanged') is not True
+            or evidence.file_sha(path/'source.tar.gz')!=result['sourceArchiveSha256']
+            or archive_measurement_source_hash(path/'source.tar.gz')!=expected
+            or result.get('measurementSourceSha256')!=expected):raise ValueError('Native control source/acceptance changed')
+    for name,wanted in (('inside',[]),('outside',['Native CPU outside benchmark scope exceeded 10% upper bound'])):
+        with (path/(name+'.csv')).open() as stream:rows=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
+        if evidence.host_gate(rows,native_required=True,native_version=2)[0]!=wanted:raise ValueError('Native control raw gate changed')
+        if evidence.native_host.normalized_environment(evidence.native_host.environment_declaration(rows[0]))!=evidence.native_host.normalized_environment(evidence.native_host.environment_declaration(current)):
+            raise ValueError('Native control host environment changed')
+        for row in rows:evidence.thermal_values(row)
+    cold=evidence.REPORTS/(identifier+'-cold-readiness.json')
+    record=json.loads(cold.read_text());evidence.replay_cold_launch(cold,result['sourceSha256'],record['samples'][-1])
+    names=['result.json','source.tar.gz','inside.csv','outside.csv']
+    return dict(attempt=identifier,sha256={n:evidence.file_sha(path/n) for n in names},
+        coldReadiness=cold.name,coldReadinessSha256=evidence.file_sha(cold),measurementSourceSha256=expected)
+
+
 def reference(path):
     return dict(attempt=path.name,manifestSha256=evidence.file_sha(path/'manifest.json'),
         sourceArchiveSha256=evidence.file_sha(path/'source.tar.gz'),resultSha256=evidence.file_sha(path/'conditional-review.json'))
@@ -118,17 +138,27 @@ def verify_master(master,state,source):
             or evidence.file_sha(master/'source.tar.gz')!=manifest['sourceArchiveSha256']
             or archive_measurement_source_hash(master/'source.tar.gz')!=protocol['measurementSourceSha256']):
         raise ValueError('Changed frozen final master protocol/source')
+    if protocol.get('nativeControlRef')!=manifest.get('nativeControlRef'):
+        raise ValueError('Changed frozen native control binding')
+    if protocol.get('nativeControlRef'):
+        ref=protocol['nativeControlRef'];path=master.parent/ref['attempt']
+        if (any(evidence.file_sha(path/name)!=value for name,value in ref['sha256'].items())
+                or evidence.file_sha(master.parent/ref['coldReadiness'])!=ref['coldReadinessSha256']):
+            raise ValueError('Changed native control artifacts')
 
 
 def host_facts(attempt,manifest,inv):
     raw=calibration.verify_invocation(attempt,inv)
     with (attempt/inv['label']/'host.csv').open() as stream:hosts=[evidence.decode_host_row(r) for r in csv.DictReader(stream)]
-    reasons,_=evidence.replay_host_gate(manifest,raw,hosts);reasons+=inv.get('hostMonitorErrors',[])
+    thermal=evidence.replay_settled_thermal(manifest,raw,hosts,attempt/inv['label']/'thermal-readiness.json')
+    original=list(thermal['originalReasons'])+inv.get('hostMonitorErrors',[])
+    reasons=list(thermal['effectiveReasons'])+inv.get('hostMonitorErrors',[])
     windows=evidence.measurement_windows(raw);intervals=evidence.native_host.cpu_intervals(hosts)
     selected=[r for r in intervals if not windows or any(r['endNs']>=a-10_000_000_000 and r['startNs']<=b for a,b in windows)]
     if not selected:raise ValueError('Missing final-study CPU intervals')
     upper=max(r['outsideUpperPercent'] for r in selected);warnings,fatal=facts.classify(reasons,upper)
-    return dict(label=inv['label'],inputs=inv['properties'],strictReasons=reasons,warnings=warnings,
+    if thermal['startupExceptionUsed']:warnings.append(evidence.THERMAL_STARTUP_WARNING)
+    return dict(label=inv['label'],inputs=inv['properties'],strictReasons=original,effectiveReasons=reasons,thermalReview=thermal,warnings=warnings,
         fatalReasons=fatal,finalPolicyUsable=not fatal,primaryEndpointUseAllowed=False,
         outsideCpuUpperPercent=upper,hostWindowStartNs=hosts[0]['monotonicNs'],hostWindowEndNs=hosts[-1]['monotonicNs'])
 
@@ -157,22 +187,28 @@ def allocation_summary(raw,channel):
 
 
 def read_row(path,manifest,inv,runtime,trace,helper):
-    if inv['properties']['Channel']!='compiler':return facts.audit_row(path,dict(manifest,hdrVerifier=helper),inv,runtime,trace)
-    raw=calibration.verify_invocation(path,inv);p=inv['properties']
-    record=json.loads((raw/'compiler/results.json').read_text())[0]
-    actual={k:record[k] for k in ('jmhVersion','jdkVersion','vmName','vmVersion')}
-    if runtime is None:runtime=actual
-    text=(raw/'compiler/jmh.txt').read_text()+(path/inv['label']/'gradle.log').read_text()
-    traces=set(evidence.re.findall(r'traceSha256=([0-9a-f]{64})',text))
-    if len(traces)!=1:raise ValueError('Missing compiler diagnostic trace')
-    actual_trace=next(iter(traces))
-    if trace is not None and trace!=actual_trace:raise ValueError('Compiler diagnostic trace changed')
-    summary=facts.jmh_fork_summary(raw,'compiler',dict(p,ConsoleFile=str(path/inv['label']/'gradle.log')),actual_trace,runtime)
-    host=host_facts(path,manifest,inv);reasons=list(summary['rejectionReasons'])+host['strictReasons']
+    if inv['properties']['Channel']!='compiler':
+        summary,runtime,trace=facts.audit_row(path,dict(manifest,hdrVerifier=helper),inv,runtime,trace)
+        overhead=[r for r in summary['strictReasons'] if r=='Native observer median read duration exceeded 10 ms']
+    else:
+        raw=calibration.verify_invocation(path,inv);p=inv['properties']
+        record=json.loads((raw/'compiler/results.json').read_text())[0]
+        actual={k:record[k] for k in ('jmhVersion','jdkVersion','vmName','vmVersion')}
+        if runtime is None:runtime=actual
+        text=(raw/'compiler/jmh.txt').read_text()+(path/inv['label']/'gradle.log').read_text()
+        traces=set(evidence.re.findall(r'traceSha256=([0-9a-f]{64})',text))
+        if len(traces)!=1:raise ValueError('Missing compiler diagnostic trace')
+        actual_trace=next(iter(traces))
+        if trace is not None and trace!=actual_trace:raise ValueError('Compiler diagnostic trace changed')
+        trace=actual_trace
+        summary=facts.jmh_fork_summary(raw,'compiler',dict(p,ConsoleFile=str(path/inv['label']/'gradle.log')),trace,runtime)
+        summary['diagnosticCompilerXml']=True;overhead=[]
+    host=host_facts(path,manifest,inv);reasons=list(summary['rejectionReasons'])+host['effectiveReasons']+overhead
     warnings,fatal=facts.classify(reasons,host['outsideCpuUpperPercent'])
-    row=dict(summary,**host);row.update(strictReasons=reasons,warnings=warnings,fatalReasons=fatal,finalPolicyUsable=not fatal,
-        diagnosticCompilerXml=True,primaryEndpointUseAllowed=False)
-    return row,runtime,actual_trace
+    if host['thermalReview']['startupExceptionUsed']:warnings.append(evidence.THERMAL_STARTUP_WARNING)
+    row=dict(summary,**host);row.update(strictReasons=list(summary['rejectionReasons'])+host['strictReasons']+overhead,
+        effectiveReasons=reasons,warnings=warnings,fatalReasons=fatal,finalPolicyUsable=not fatal,primaryEndpointUseAllowed=False)
+    return row,runtime,trace
 
 
 def audit_stage(path,stage,helper):
@@ -228,6 +264,9 @@ def pressure_bands(rows):
                         (r['inputs']['Channel'],r['inputs']['Backend'],r['inputs']['Payload'],r['inputs']['LiveBytes'])==
                         (channel,backend,payload,live*1024**2)]
                     issues=[];valid=[v for v in values if v is not None]
+                    supporting=[r for r in rows if (r['inputs']['Channel'],r['inputs']['Backend'],r['inputs']['Payload'],r['inputs']['LiveBytes'])==
+                        (channel,backend,payload,live*1024**2)]
+                    issues += [r['label']+': calibration warning: '+w for r in supporting for w in r['warnings']]
                     median=statistics.median(valid) if valid else None
                     if len(valid)!=2:issues.append('Missing independent occupancy exposure')
                     if len(valid)==2 and max(valid)-min(valid)>.05:issues.append('Occupancy replicas differ by more than5 percentage points')
@@ -405,6 +444,8 @@ def export(master,results,destination):
                 writer.writerow(dict(zip(columns,values)))
     roots=[master,master.parent/protocol['hdrVerifier']['setup']]
     extras=set()
+    roots.append(master.parent/protocol['nativeControlRef']['attempt'])
+    extras.add(master.parent/protocol['nativeControlRef']['coldReadiness'])
     for stage in STAGES:
         p=master.parent/(master.name+'-'+stage);m=json.loads((p/'manifest.json').read_text());f=json.loads((p/'final-declaration.json').read_text())
         quiet=master.parent/f['initialQuietRef']['attempt'];roots.extend([p,quiet])
@@ -420,7 +461,7 @@ def export(master,results,destination):
     return dataset,receipt
 
 
-def run(prefix,output):
+def run(prefix,output,native_control):
     master=evidence.REPORTS/prefix;setup=evidence.REPORTS/(prefix+'-setup')
     paths=[evidence.REPORTS/(prefix+'-'+s) for s in STAGES]
     if any(p.exists() for p in [master,setup,*paths]) or output.exists():raise ValueError('Retained final study exists; inspect, do not duplicate')
@@ -428,9 +469,12 @@ def run(prefix,output):
     host=evidence.host_snapshot()
     if os.environ.get('TAILCACHE_REQUIRE_NATIVE_HOST')!='1' or host.get('nativeScopeQualified')!=1:raise ValueError('Require exclusive native scope')
     if shutil.disk_usage(evidence.ROOT).free<4*1024**3:raise ValueError('Require4GiB disk')
+    control_ref=native_control_reference(native_control,host)
+    os.environ['TAILCACHE_THERMAL_READINESS']=evidence.THERMAL_STARTUP_RULE['version']
     source=evidence.source_hash();helper=facts.compile_verifier(setup)
-    calibration.prepare(master,options('conditional-master'),[])
-    protocol=dict(declaration=declaration(),sourceSha256=source,measurementSourceSha256=measurement_source_hash(evidence.ROOT),hdrVerifier=helper)
+    master_manifest=calibration.prepare(master,options('conditional-master'),[])
+    master_manifest['nativeControlRef']=control_ref;evidence.save(master/'manifest.json',master_manifest)
+    protocol=dict(declaration=declaration(),sourceSha256=source,measurementSourceSha256=measurement_source_hash(evidence.ROOT),hdrVerifier=helper,nativeControlRef=control_ref)
     evidence.save(master/'protocol.json',protocol)
     state=dict(complete=False,taskComplete=False,protocolSha256=evidence.file_sha(master/'protocol.json'),completedStages={},currentStage=None)
     evidence.save(master/'state.json',state);results={}
@@ -496,9 +540,10 @@ def run(prefix,output):
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('prefix');parser.add_argument('--output',type=pathlib.Path,required=True)
+    parser.add_argument('--native-control',required=True)
     args=parser.parse_args()
-    if not evidence.re.fullmatch('[A-Za-z0-9._-]+',args.prefix):parser.error('Invalid final-study prefix')
-    run(args.prefix,args.output.resolve())
+    if any(not evidence.re.fullmatch('[A-Za-z0-9._-]+',x) for x in (args.prefix,args.native_control)):parser.error('Invalid final-study prefix')
+    run(args.prefix,args.output.resolve(),args.native_control)
 
 
 if __name__=='__main__':main()
