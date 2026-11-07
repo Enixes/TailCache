@@ -1268,5 +1268,11 @@
     "status": "launcher_reviewed_vm_syntax_accepted_collection_pending",
     "primaryEndpointUseAllowed": false,
     "measurementSourceSha256": "dfcd7335986f6ca03a3b0332d05b5788569ab42430ff9e821681451eb2cbdc9d"
+  },
+  "mixedSelectorArchive": {
+    "path": "evidence-archives/native-final-mixedselector-probe-checkpoint-20261107-016.tar.gz",
+    "bytes": 898586592,
+    "sha256": "04f05fd98e670c347173407892c7084ff11f938423845fbaa302708f47dae1fc",
+    "verifiedMembers": 37464
   }
 }
