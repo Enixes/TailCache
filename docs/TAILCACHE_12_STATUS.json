@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Primary observer coherence unresolved; user requested a separate lenient exploratory end-to-end matrix. New4GiB available initial gate implemented/reviewed;42-slot exploratory collection pending own preparation/quiet.",
+  "currentBlocker": "First exploratory end-to-end dataset complete42/42, exported/verified/reviewed; primary crossover experiment remains unqualified because observer dependence/replication/robustness are unresolved.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run native-final-exploratory-e2e-20261107-001 once under frozen42-slot protocol and explicit warning policy, then complete actual raw replay, verified outside-build dataset export and researcher outcome review. Do not mark primary Task12 complete.",
+  "nextWork": "Use completed exploratory evidence to predeclare a bounded observer-regime/replication study. Do not rerun exploratory001, reuse its forks as primary, or treat exploratory completion as Task12 primary completion.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1431,7 +1431,7 @@
     "implementationReview": "docs/TAILCACHE_12_AVAILABLE_MEMORY_REVIEW.md"
   },
   "exploratoryEndToEnd": {
-    "status": "implemented_reviewed_pending_collection",
+    "status": "complete_raw_replayed_export_verified_researcher_reviewed",
     "attempt": "native-final-exploratory-e2e-20261107-001",
     "quiet": "native-final-exploratory-e2equiet-20261107-001",
     "expectedFreshJvms": 42,
@@ -1442,6 +1442,17 @@
     "primaryEndpointUseAllowed": false,
     "plan": "docs/TAILCACHE_12_EXPLORATORY_E2E_PLAN.md",
     "implementationReview": "docs/TAILCACHE_12_EXPLORATORY_E2E_REVIEW.md",
-    "output": "evidence-archives/native-final-exploratory-e2e-dataset-20261107-001"
+    "output": "evidence-archives/native-final-exploratory-e2e-dataset-20261107-001",
+    "completedFreshJvms": 42,
+    "strictPerForkChecksPassed": 41,
+    "exploratoryWarnings": 1,
+    "hardRejections": 0,
+    "outcomeReview": "docs/TAILCACHE_12_EXPLORATORY_E2E_OUTCOME_REVIEW.md",
+    "archiveSha256": "951d4ad5d4e5f4677ead19c28b2bc5bec9592c69bffd001a48408873b014fa9e",
+    "archiveBytes": 17713692,
+    "verifiedMembers": 1948,
+    "independentPercentilesChecked": 168,
+    "independentOccupancySamples": 2291,
+    "completedUtc": "2026-11-07T10:37:34.265074+00:00"
   }
 }
