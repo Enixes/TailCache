@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 197,
+    "pythonTests": 198,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Final001 startup-thermal and002 conditioning-loss rejections preserved. Prospective v3 verified197 and raw reader control; all402 fresh003 invocations/export/review pending.",
+  "currentBlocker": "Final003 rejected on16ms qualification interval versus10ms. V4 preserves the failure as propagated qualification evidence; all402 fresh004 collection/export/raw review pending.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Launch final003 once with source-matched mandatory native control. Keep source immutable during402 fresh invocations. Full raw/export/researcher review required; no prior fork reused.",
+  "nextWork": "Launch final004 once with mandatory native control; finite qualification JIT warning does not abort mechanical collection or become passing qualification. All matching pressure/seed claims remain unresolved. Source frozen, no prior fork reused. Full audit/review required.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1463,9 +1463,9 @@
   },
   "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md",
   "conditionalFinalStudy": {
-    "version": "tailcache12-final-observer-conditional-v3-bounded-churn",
-    "status": "v3_verified197_reader_control_passed_003_pending",
-    "prefix": "native-final-conditional-20261107-003",
+    "version": "tailcache12-final-observer-conditional-v4-qualification-evidence",
+    "status": "v4_verified198_004_pending",
+    "prefix": "native-final-conditional-20261107-004",
     "expectedInvocations": 402,
     "stages": {
       "functional": 14,
@@ -1485,9 +1485,9 @@
     "measurements": 8,
     "originalPrimaryProtocolQualified": false,
     "plan": "docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md",
-    "implementationReview": "docs/TAILCACHE_12_CHURN_BUDGET_IMPLEMENTATION_REVIEW.md",
-    "output": "evidence-archives/native-final-conditional-dataset-20261107-003",
-    "liveState": "build/reports/tailcache12/native-final-conditional-20261107-003/state.json",
+    "implementationReview": "docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_IMPLEMENTATION_REVIEW.md",
+    "output": "evidence-archives/native-final-conditional-dataset-20261107-004",
+    "liveState": "build/reports/tailcache12/native-final-conditional-20261107-004/state.json",
     "completedPrerequisiteInvocations": 0,
     "pilotInvocations": 0,
     "campaignInvocations": 0,
@@ -1501,7 +1501,9 @@
       "version": "bounded-churn-drops-v1",
       "maximumPerWindowBytes": 32768,
       "maximumDemandFraction": 0.001
-    }
+    },
+    "qualificationEvidencePlan": "docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_PLAN.md",
+    "qualificationPolicy": "Keep80ms total/10ms interval failures; collect all finite-JIT-warning cells, reject matching resolved claims across every pressure and robustness seed."
   },
   "previousConditionalFinalAttempts": [
     {
@@ -1573,6 +1575,49 @@
       "qualificationInvocations": 13,
       "failureUtc": "2026-11-07T16:38:23.995122+00:00",
       "checkpoint": "evidence-archives/native-final-conditional002-churn-rejection-20261107-001"
+    },
+    {
+      "version": "tailcache12-final-observer-conditional-v3-bounded-churn",
+      "status": "terminal_qualification_jit_rejection_incomplete",
+      "prefix": "native-final-conditional-20261107-003",
+      "expectedInvocations": 402,
+      "stages": {
+        "functional": 14,
+        "pause": 2,
+        "compiler-diagnostic": 8,
+        "qualification": 16,
+        "floors": 10,
+        "calibration": 64,
+        "pilot": 32,
+        "campaign": 192,
+        "robustness": 64
+      },
+      "campaignFreshWorkerJvms": 192,
+      "replacements": 0,
+      "warmups": 30,
+      "conditioning": 8,
+      "measurements": 8,
+      "originalPrimaryProtocolQualified": false,
+      "plan": "docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md",
+      "implementationReview": "docs/TAILCACHE_12_CHURN_BUDGET_IMPLEMENTATION_REVIEW.md",
+      "output": "evidence-archives/native-final-conditional-dataset-20261107-003",
+      "liveState": "build/reports/tailcache12/native-final-conditional-20261107-003/state.json",
+      "completedPrerequisiteInvocations": 24,
+      "pilotInvocations": 0,
+      "campaignInvocations": 0,
+      "robustnessInvocations": 0,
+      "thermalReview": "docs/TAILCACHE_12_STARTUP_THERMAL_IMPLEMENTATION_REVIEW.md",
+      "nativeControl": "native-final-startup-thermal-control-20261107-001",
+      "estimatedHours": "7\u20139",
+      "qualificationInvocations": 10,
+      "churnDropBudgetPlan": "docs/TAILCACHE_12_CHURN_BUDGET_PLAN.md",
+      "churnDropBudget": {
+        "version": "bounded-churn-drops-v1",
+        "maximumPerWindowBytes": 32768,
+        "maximumDemandFraction": 0.001
+      },
+      "failureUtc": "2026-11-07T17:32:40.511791+00:00",
+      "checkpoint": "evidence-archives/native-final-conditional003-jit-rejection-20261107-001"
     }
   ]
 }

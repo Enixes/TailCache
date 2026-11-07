@@ -27,7 +27,7 @@ from tailcache12_provenance import measurement_source_hash,archive_measurement_s
 from tailcache12_quiet import run_preflight
 from tailcache12_analysis import CHURN_DROP_BUDGET_VERSION
 
-VERSION='tailcache12-final-observer-conditional-v3-bounded-churn'
+VERSION='tailcache12-final-observer-conditional-v4-qualification-evidence'
 CHURN_DROP_WARNING='Minor churn loss within predeclared32KiB/0.1% budget'
 STAGES=('functional','pause','compiler-diagnostic','qualification','floors','calibration','pilot','campaign','robustness')
 COUNTS={'functional':14,'pause':2,'compiler-diagnostic':8,'qualification':16,'floors':10,'calibration':64,'pilot':32,'campaign':192,'robustness':64}
@@ -35,7 +35,8 @@ RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL
     warmups=30,conditioning=8,measurements=8,passes=2,primaryForksPerPass=3,replacements=0,
     liveMiB=[0,96,208,288],payloads=[256,4096],residents=32768,heapMiB=512,churnMiBPerSecond=32,
     seed=24301,orderSeed=0x1207,robustnessSeeds=[0xC0FFEE,0xBADC0DE],robustnessPasses=1,robustnessForksPerCell=1,
-    qualificationCompilerCeilingsHard=True,minimumSamples=100000,occupancyReplicaTolerance=.05,
+    qualificationCompilerCeilingsHard=False,qualificationCompilerTotalCeilingMs=80,qualificationCompilerIntervalCeilingMs=10,
+    qualificationWarningsBlockMatchingClaims=True,minimumSamples=100000,occupancyReplicaTolerance=.05,
     occupancyBandTolerance=.05,lowCaffeine4kCeiling=.40,highCaffeine4kFloor=.75,highCaffeine4kCeiling=.95,
     p99BetweenPassCeiling=1.25,p999BetweenPassCeiling=1.5,bootstrapResamples=50000,familyComparisons=32,familyAlpha=.05,descriptiveConfidence=.95,
     floorRules={k:FLOOR_RULES[k] for k in ('version','timerMedianToEveryopMedianCeiling',
@@ -96,7 +97,9 @@ def grid(stage):
 
 def declaration():
     return dict(rules=copy.deepcopy(RULES),stages={s:[dict(label=k,properties=p) for k,p in grid(s)] for s in STAGES},
-        plan='docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md')
+        plan='docs/TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md',
+        amendments=['docs/TAILCACHE_12_STARTUP_THERMAL_PLAN.md','docs/TAILCACHE_12_CHURN_BUDGET_PLAN.md',
+            'docs/TAILCACHE_12_QUALIFICATION_EVIDENCE_PLAN.md'])
 
 
 def native_control_reference(identifier,current):
@@ -173,9 +176,12 @@ def host_facts(attempt,manifest,inv):
 def apply_policy(original,stage):
     row=copy.deepcopy(original)
     if stage=='qualification':
-        row['fatalReasons'] += [r for r in row['strictReasons'] if r in
+        row['qualificationCompilerReasons']=[r for r in row['strictReasons'] if r in
             ('compiler total exceeds 80 ms','compiler iteration exceeds 10 ms')]
+        row['qualificationCompilerPass']=not row['qualificationCompilerReasons']
     row['finalPolicyUsable']=not row['fatalReasons'];row['conditionalEndpointUseAllowed']=row['finalPolicyUsable']
+    if stage=='qualification':
+        row['conditionalEndpointUseAllowed'] &= not row['strictReasons'] and not row['warnings']
     return row
 
 
@@ -262,8 +268,39 @@ def audit_stage(path,stage,helper):
         observations=rows,initialQuietReplay=quiet,warningCounts=dict(collections.Counter(w for r in rows for w in r['warnings'])),
         primaryEndpointUseAllowed=False,conditionalEndpointUseAllowed=bool(complete))
     if stage=='calibration':result['pressureBands']=pressure_bands(rows)
+    if stage=='qualification':
+        result['qualificationEvidence']=qualification_evidence(rows)
+        result['jitQualified']=all(r['compilerQualified'] for r in result['qualificationEvidence'])
+        result['conditionalEndpointUseAllowed']=bool(complete) and all(r['conditionalQualified'] for r in result['qualificationEvidence'])
     if stage=='pilot' and len(rows)==len(expected):result['betweenPassVariation']=pilot_variation(rows)
     return result
+
+
+def qualification_evidence(rows):
+    result=[]
+    for channel in ('sample-calibration','every-operation'):
+        for backend in evidence.BACKENDS:
+            for payload in (256,4096):
+                chosen=[r for r in rows if (r['inputs']['Channel'],r['inputs']['Backend'],r['inputs']['Payload'])==(channel,backend,payload)]
+                complete=len(chosen)==2 and {r['inputs']['Block'] for r in chosen}=={1,2}
+                issues=[] if complete else ['Missing independent two-pass qualification evidence']
+                for r in chosen:
+                    issues.extend(r['label']+': qualification: '+x for x in dict.fromkeys(r['strictReasons']+r['warnings']+r['fatalReasons']))
+                compiler_reasons=[x for r in chosen for x in r['strictReasons'] if x in
+                    ('compiler total exceeds 80 ms','compiler iteration exceeds 10 ms')]
+                result.append(dict(channel=channel,backend=backend,payloadBytes=payload,complete=complete,
+                    originalCompilerTotalCeilingMs=80,originalCompilerIntervalCeilingMs=10,
+                    compilerQualified=complete and not compiler_reasons,conditionalQualified=complete and not issues,
+                    invocations=[r['label'] for r in chosen],compilerRejectionReasons=compiler_reasons,
+                    claimLimitations=list(dict.fromkeys(issues))))
+    return result
+
+
+def qualification_limitations(qualification,channel,payload):
+    selected=[r for r in qualification if r['channel']==channel and r['payloadBytes']==payload]
+    if len(selected)!=2 or {r['backend'] for r in selected}!=set(evidence.BACKENDS):
+        raise ValueError('Missing qualification comparison cell')
+    return [r['backend']+': '+issue for r in selected for issue in r['claimLimitations']]
 
 
 def pressure_bands(rows):
@@ -292,7 +329,8 @@ def pressure_bands(rows):
     return result
 
 
-def analyse_campaign(rows,bands,floor_rows):
+def analyse_campaign(rows,bands,floor_rows,qualification_rows):
+    qualification=qualification_evidence(qualification_rows)
     converted=[dict(r,accepted=r['finalPolicyUsable'],inputs=dict(r['inputs'],Channel='sample' if r['inputs']['Channel']=='sample-calibration'
         else r['inputs']['Channel'])) for r in rows]
     selections={'24301':{str(p):[n*1024**2 for n in RULES['liveMiB']] for p in (256,4096)}}
@@ -317,7 +355,8 @@ def analyse_campaign(rows,bands,floor_rows):
         channel='sample-calibration' if comp['channel']=='sample' else comp['channel']
         chosen=[r for r in rows if r['inputs']['Channel']==channel and r['inputs']['Payload']==comp['payloadBytes']
             and r['inputs']['LiveBytes']==comp['applicationLiveBytes']]
-        issues=[r['label']+': '+w for r in chosen for w in r['warnings']]
+        issues=qualification_limitations(qualification,channel,comp['payloadBytes'])
+        issues += [r['label']+': '+w for r in chosen for w in r['warnings']]
         for backend in evidence.BACKENDS:
             b=next(b for b in bands if (b['channel'],b['backend'],b['payloadBytes'],b['liveMiB'])==
                 (channel,backend,comp['payloadBytes'],comp['applicationLiveBytes']//1024**2))
@@ -357,7 +396,8 @@ def analyse_campaign(rows,bands,floor_rows):
             'Recording regimes and robustness seeds are not pooled; no unconditional crossover claim.'])
 
 
-def robustness_summary(rows):
+def robustness_summary(rows,qualification_rows):
+    qualification=qualification_evidence(qualification_rows)
     result=[]
     for seed in RULES['robustnessSeeds']:
         for payload in (256,4096):
@@ -366,9 +406,12 @@ def robustness_summary(rows):
                     chosen={r['inputs']['Backend']:r for r in rows if (r['inputs']['Seed'],r['inputs']['Payload'],
                         r['inputs']['LiveBytes'],r['inputs']['Channel'])==(seed,payload,live*1024**2,channel)}
                     if set(chosen)!=set(evidence.BACKENDS):raise ValueError('Missing robustness cell')
+                    limits=qualification_limitations(qualification,channel,payload)
                     result.append(dict(seed=seed,payloadBytes=payload,liveMiB=live,channel=channel,
                         chronicleToCaffeine={p:chosen['CHRONICLE_IN_MEMORY']['servicePercentilesNs'][p]/chosen['CAFFEINE']['servicePercentilesNs'][p]
-                            for p in ('99','99.9')},warnings={b:r['warnings'] for b,r in chosen.items()},confidenceInterval=None))
+                            for p in ('99','99.9')},warnings={b:r['warnings'] for b,r in chosen.items()},
+                        qualificationLimitations=limits,conditionalSensitivityUsable=not limits and not any(r['warnings'] for r in chosen.values()),
+                        confidenceInterval=None))
     return result
 
 
@@ -434,14 +477,18 @@ def export(master,results,destination):
     results={stage:audit_stage(master.parent/(master.name+'-'+stage),stage,protocol['hdrVerifier']) for stage in STAGES}
     if any(not r['complete'] for r in results.values()):raise ValueError('Fresh raw replay rejects final export')
     bands=pressure_bands(results['calibration']['observations'])
-    analysis=analyse_campaign(results['campaign']['observations'],bands,results['floors']['observations'])
+    qualification_rows=results['qualification']['observations']
+    qualification=qualification_evidence(qualification_rows)
+    analysis=analyse_campaign(results['campaign']['observations'],bands,results['floors']['observations'],qualification_rows)
     dataset=dict(schemaVersion=VERSION,taskComplete=False,requiresResearcherReview=True,analysisReady=True,
         reportingScope=RULES['claimScope'],originalPrimaryProtocolQualified=False,stages=results,pressureBands=bands,
         campaign=analysis,primaryConditionAcceptance=condition_acceptance(analysis['comparisons']),
-        robustness=robustness_summary(results['robustness']['observations']),rules=RULES,
+        qualificationEvidence=qualification,qualificationJitQualified=all(r['compilerQualified'] for r in qualification),
+        robustness=robustness_summary(results['robustness']['observations'],qualification_rows),rules=RULES,
         limits=['Coarse uncertainty from two outer passes; nominal32-comparison correction.',
             'Single robustness fork per cell/seed is descriptive sensitivity only.',
             'Warning/variance/exposure-limited comparisons are unresolved; no pooled cross-regime claim.',
+            'Qualification compiler thresholds remain80ms total/10ms interval; failures block every matching pressure/seed claim, not mechanical collection.',
             'Single worker, periodic uniform95/5, fixed512MiB G1 and in-memory Chronicle; no persisted cold/open claim.'])
     destination.mkdir(parents=True);evidence.save(destination/'dataset.json',dataset)
     shutil.copyfile(master/'protocol.json',destination/'protocol.json')
