@@ -17,6 +17,9 @@ import tailcache12 as evidence
 from tailcache12_quiet import run_preflight
 from tailcache12_provenance import archive_measurement_source_hash,measurement_source_hash
 
+AVAILABLE_MEMORY_RULE=dict(version='tailcache12-initial-memory-v2-available',
+    metric='MemAvailableKiB',minimumKiB=4*1024**2)
+
 
 def memory_snapshot():
     fields=dict(line.split(':',1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())
@@ -47,15 +50,45 @@ def verify_cache_inventory(directory,receipt):
     return dict(files=count,bytes=total)
 
 
-def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=False,stream_inventory=False):
+def verify_memory_readiness(cache,source):
+    version=cache.get('version')
+    if (type(version) is not int or version not in (1,2,3,4,5) or cache.get('sourceSha256')!=source
+            or cache.get('method')!='fsync-and-posix-fadvise-dontneed-task-files'
+            or cache.get('errors') or cache.get('preparationPass') is not True):
+        raise ValueError('Invalid task-local host preparation')
+    if version==5:
+        if (cache.get('memoryReadinessRule')!=AVAILABLE_MEMORY_RULE or 'minimumFreeKiB' in cache
+                or type(cache['memoryReadinessRule'].get('minimumKiB')) is not int):
+            raise ValueError('Changed available-memory readiness rule')
+        for phase in ('before','after'):
+            values=cache.get(phase,{})
+            if any(type(values.get(k)) is not int or values[k]<0 for k in
+                    ('MemFreeKiB','MemAvailableKiB','CachedKiB','SwapUsedKiB')):
+                raise ValueError('Missing/invalid available-memory preparation snapshot')
+        if cache['after']['MemAvailableKiB']<AVAILABLE_MEMORY_RULE['minimumKiB']:
+            raise ValueError('Available RAM below4GiB')
+    elif (cache.get('minimumFreeKiB')!=3*1024**2 or 'memoryReadinessRule' in cache
+            or cache['after']['MemFreeKiB']<cache['minimumFreeKiB']):
+        raise ValueError('Invalid legacy free-memory preparation')
+    if version in (2,3,4,5) and (cache.get('requiresEmptySwap') is not True or cache['after'].get('SwapUsedKiB')!=0):
+        raise ValueError('New benchmark preparation requires zero residual swap')
+    return True
+
+
+def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=False,stream_inventory=False,
+                       available_memory=False):
     """Release only clean cached pages of retained task files, outside collection."""
     if report.exists(): raise ValueError('Cache preparation evidence exists; refusing overwrite')
     if stream_inventory and not include_build_outputs:raise ValueError('Streaming preparation requires private roots')
+    if available_memory and (not stream_inventory or not include_build_outputs or not require_empty_swap):
+        raise ValueError('Available-memory readiness requires streaming private roots and empty swap')
     inventory=report.with_suffix('.inventory.jsonl')
     if stream_inventory and inventory.exists():raise ValueError('Preparation inventory exists; refusing overwrite')
-    result=dict(version=4 if stream_inventory else 3 if include_build_outputs else 2,method='fsync-and-posix-fadvise-dontneed-task-files',
+    result=dict(version=5 if available_memory else 4 if stream_inventory else 3 if include_build_outputs else 2,method='fsync-and-posix-fadvise-dontneed-task-files',
                 sourceSha256=evidence.source_hash(),before=memory_snapshot(),files=[],errors=[],
                 minimumFreeKiB=3*1024**2,requiresEmptySwap=require_empty_swap,preparationPass=False)
+    if available_memory:
+        result.pop('minimumFreeKiB');result['memoryReadinessRule']=dict(AVAILABLE_MEMORY_RULE)
     roots=(evidence.ROOT/'build',evidence.ROOT/'evidence-archives',evidence.ROOT/'.gradle') if include_build_outputs else (
         evidence.REPORTS,evidence.ROOT/'evidence-archives')
     if include_build_outputs:result['roots']=['build','evidence-archives','.gradle']
@@ -93,11 +126,14 @@ def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=Fals
     if stream_inventory:
         result.update(inventoryFile=inventory.name,inventorySha256=digest.hexdigest(),inventoryCount=count,inventoryBytes=total)
     result['after']=memory_snapshot()
-    result['preparationPass']=(not result['errors'] and result['after']['MemFreeKiB']>=result['minimumFreeKiB']
+    ready=(result['after']['MemAvailableKiB']>=AVAILABLE_MEMORY_RULE['minimumKiB'] if available_memory
+           else result['after']['MemFreeKiB']>=result['minimumFreeKiB'])
+    result['preparationPass']=(not result['errors'] and ready
         and (not require_empty_swap or result['after']['SwapUsedKiB']==0))
     evidence.save(report,result)
     if not result['preparationPass']:
-        raise ValueError('Task-local preparation failed, free RAM below3GiB or residual swap remains; no JVM launched')
+        raise ValueError('Task-local preparation failed, '+('available RAM below4GiB' if available_memory else 'free RAM below3GiB')
+                         +' or residual swap/advice failure; no JVM launched')
     return result
 
 

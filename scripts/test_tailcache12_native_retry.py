@@ -255,6 +255,32 @@ class NativeRetryTest(unittest.TestCase):
             record['sourceSha256']=m['sourceSha256'];prep['after']['MemFreeKiB']=2*1024**2;freeze()
             with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
 
+    def test_available_memory_readiness_requires_matching_frozen_rule_and_raw_inventory(self):
+        from tailcache12_calibration_start import AVAILABLE_MEMORY_RULE
+        m=self.manifest();samples=self.samples()
+        for sample in samples:sample['swapUsedKiB']=0
+        m['nativeEnvironmentDeclaration']=host.environment_declaration(samples[-1])
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);q=root/'quiet';self.write_quiet(q,m,samples);attempt=root/'attempt';attempt.mkdir()
+            inventory=root/'prep.inventory.jsonl';inventory.write_bytes(b'{"path":"build/raw","bytes":4}\n')
+            snapshot=dict(MemFreeKiB=2*1024**2,MemAvailableKiB=6*1024**2,CachedKiB=4*1024**2,SwapUsedKiB=0)
+            prep=dict(version=5,sourceSha256=m['sourceSha256'],method='fsync-and-posix-fadvise-dontneed-task-files',
+                memoryReadinessRule=dict(AVAILABLE_MEMORY_RULE),before=snapshot,after=snapshot,errors=[],preparationPass=True,
+                requiresEmptySwap=True,roots=['build','evidence-archives','.gradle'],inventoryFile=inventory.name,
+                inventoryCount=1,inventoryBytes=4,inventorySha256=retry.sha(inventory))
+            def freeze():
+                (q/'host-preparation.json').write_text(json.dumps(prep))
+                with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                    m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            m['initialMemoryReadinessRule']=dict(AVAILABLE_MEMORY_RULE)
+            self.assertTrue(retry.verify_initial_quiet(attempt,m)['quietPass'])
+            prep['memoryReadinessRule']['minimumKiB']-=1;freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            prep['memoryReadinessRule']=dict(AVAILABLE_MEMORY_RULE);prep['after']=dict(snapshot,MemAvailableKiB=4*1024**2-1);freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+
     def test_initial_quiet_is_frozen_source_matched_and_expires_before_first_launch(self):
         m=self.manifest()
         samples=self.samples()

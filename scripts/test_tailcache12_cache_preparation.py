@@ -1,4 +1,5 @@
 import json
+import copy
 import pathlib
 import tempfile
 import unittest
@@ -8,6 +9,54 @@ import tailcache12_calibration_start as start
 
 
 class CachePreparationTest(unittest.TestCase):
+    def test_available_memory_is_explicit_versioned_and_legacy_default_still_rejects(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)
+            (reports/'raw').write_bytes(b'preserved')
+            snapshot=dict(MemFreeKiB=2*1024**2,MemAvailableKiB=6*1024**2,CachedKiB=4*1024**2,SwapUsedKiB=0)
+            with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',reports), \
+                 patch.object(start.evidence,'source_hash',return_value='source'), \
+                 patch.object(start,'memory_snapshot',return_value=snapshot),patch.object(start.os,'posix_fadvise'):
+                with self.assertRaises(ValueError):
+                    start.prepare_file_cache(reports/'legacy.json',include_build_outputs=True,stream_inventory=True)
+                legacy=json.loads((reports/'legacy.json').read_text());self.assertEqual(legacy['version'],4)
+                with self.assertRaises(ValueError):start.verify_memory_readiness(legacy,'source')
+                receipt=start.prepare_file_cache(reports/'available.json',include_build_outputs=True,
+                    stream_inventory=True,available_memory=True)
+                self.assertEqual(receipt['version'],5);self.assertNotIn('minimumFreeKiB',receipt)
+                self.assertTrue(start.verify_memory_readiness(receipt,'source'))
+                start.verify_cache_inventory(reports,receipt)
+                for mutate in ('metric','threshold','version','source','legacy-field','available','swap','missing','nan'):
+                    bad=copy.deepcopy(receipt)
+                    if mutate=='metric':bad['memoryReadinessRule']['metric']='MemFreeKiB'
+                    elif mutate=='threshold':bad['memoryReadinessRule']['minimumKiB']-=1
+                    elif mutate=='version':bad['version']=4
+                    elif mutate=='source':bad['sourceSha256']='other'
+                    elif mutate=='legacy-field':bad['minimumFreeKiB']=3*1024**2
+                    elif mutate=='available':bad['after']['MemAvailableKiB']=4*1024**2-1
+                    elif mutate=='swap':bad['after']['SwapUsedKiB']=1
+                    elif mutate=='missing':bad['before'].pop('MemFreeKiB')
+                    else:bad['after']['MemAvailableKiB']=float('nan')
+                    with self.assertRaises(ValueError):start.verify_memory_readiness(bad,'source')
+
+    def test_available_threshold_and_swap_failure_are_retained_without_worker(self):
+        for available,swap in ((4*1024**2-1,0),(6*1024**2,1)):
+            with tempfile.TemporaryDirectory() as directory:
+                root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)
+                snapshot=dict(MemFreeKiB=2*1024**2,MemAvailableKiB=available,CachedKiB=4*1024**2,SwapUsedKiB=swap)
+                with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',reports), \
+                     patch.object(start.evidence,'source_hash',return_value='source'), \
+                     patch.object(start,'memory_snapshot',return_value=snapshot),patch.object(start.os,'posix_fadvise'):
+                    with self.assertRaises(ValueError):start.prepare_file_cache(reports/'rejected.json',
+                        include_build_outputs=True,stream_inventory=True,available_memory=True)
+                self.assertFalse(json.loads((reports/'rejected.json').read_text())['preparationPass'])
+
+    def test_available_mode_refuses_unsupported_preparation_combinations_before_advice(self):
+        for options in ({},{'include_build_outputs':True},{'include_build_outputs':True,'stream_inventory':True,'require_empty_swap':False}):
+            with tempfile.TemporaryDirectory() as directory,patch.object(start.os,'posix_fadvise') as advice:
+                with self.assertRaises(ValueError):start.prepare_file_cache(pathlib.Path(directory)/'new.json',available_memory=True,**options)
+                advice.assert_not_called()
+
     def test_streaming_private_inventory_is_bound_and_bytes_preserved(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)

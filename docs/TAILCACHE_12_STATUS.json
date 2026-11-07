@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 163,
+    "pythonTests": 173,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Common observer003 rejected initial readiness before any cache JVM:3057192KiB MemFree<3145728 despite6580100KiB available,swap0. Three zero-fork rejections preserved. Awaiting decision on prospectively replacing initial free-page metric; no unchanged retries/expanded cleanup.",
+  "currentBlocker": "Primary observer coherence unresolved; user requested a separate lenient exploratory end-to-end matrix. New4GiB available initial gate implemented/reviewed;42-slot exploratory collection pending own preparation/quiet.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Resolve docs/TAILCACHE_12_MEMORY_READINESS_DECISION.md before any new attempt. Keep existing gate unless user accepts prospective versioned4GiB MemAvailable alternative; implement/test/review only after acceptance, then fresh004 with all other gates unchanged.",
+  "nextWork": "Run native-final-exploratory-e2e-20261107-001 once under frozen42-slot protocol and explicit warning policy, then complete actual raw replay, verified outside-build dataset export and researcher outcome review. Do not mark primary Task12 complete.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1379,7 +1379,7 @@
     "implementationReview": "docs/TAILCACHE_12_COMMON_OBSERVER_IMPLEMENTATION_REVIEW.md",
     "attempt": "native-final-commonobserver-probe-20261107-003",
     "quiet": "native-final-commonobserver-probequiet-20261107-003",
-    "status": "third_preparation_rejected_zero_cache_forks_waiting_memory_protocol_decision",
+    "status": "deferred_by_user_requested_exploratory_e2e_no_adoption",
     "expectedFreshJvms": 12,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
@@ -1421,12 +1421,27 @@
     "parentSha256": "abc915a69303b3ac71bb6911001314c821a271fbe6ab75fcc543d4e402752c41"
   },
   "memoryReadinessDecision": {
-    "status": "awaiting_user_decision",
+    "status": "accepted_implemented_reviewed",
     "document": "docs/TAILCACHE_12_MEMORY_READINESS_DECISION.md",
     "existingMetric": "MemFreeKiB",
     "existingMinimumKiB": 3145728,
     "proposedMetric": "MemAvailableKiB",
     "proposedMinimumKiB": 4194304,
-    "proposalActive": false
+    "proposalActive": true,
+    "implementationReview": "docs/TAILCACHE_12_AVAILABLE_MEMORY_REVIEW.md"
+  },
+  "exploratoryEndToEnd": {
+    "status": "implemented_reviewed_pending_collection",
+    "attempt": "native-final-exploratory-e2e-20261107-001",
+    "quiet": "native-final-exploratory-e2equiet-20261107-001",
+    "expectedFreshJvms": 42,
+    "replacements": 0,
+    "warmups": 30,
+    "conditioning": 8,
+    "measurements": 8,
+    "primaryEndpointUseAllowed": false,
+    "plan": "docs/TAILCACHE_12_EXPLORATORY_E2E_PLAN.md",
+    "implementationReview": "docs/TAILCACHE_12_EXPLORATORY_E2E_REVIEW.md",
+    "output": "evidence-archives/native-final-exploratory-e2e-dataset-20261107-001"
   }
 }

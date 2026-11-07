@@ -70,21 +70,16 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
         if sha(prep)!=ref['hostPreparationSha256']:
             raise ValueError('Changed host cache preparation evidence')
         cache=json.loads(prep.read_text())
-        if (cache.get('version') not in (1,2,3,4) or cache.get('sourceSha256')!=manifest['sourceSha256']
-                or cache.get('method')!='fsync-and-posix-fadvise-dontneed-task-files'
-                or cache.get('minimumFreeKiB')!=3*1024**2 or cache.get('errors')
-                or cache.get('preparationPass') is not True
-                or cache['after']['MemFreeKiB']<cache['minimumFreeKiB']):
-            raise ValueError('Invalid task-local host preparation')
-        if cache['version'] in (3,4) and cache.get('roots')!=['build','evidence-archives','.gradle']:
+        from tailcache12_calibration_start import verify_memory_readiness
+        verify_memory_readiness(cache,manifest['sourceSha256'])
+        if cache['version']==5 and manifest.get('initialMemoryReadinessRule')!=cache['memoryReadinessRule']:
+            raise ValueError('Available-memory rule differs from frozen declaration')
+        if cache['version'] in (3,4,5) and cache.get('roots')!=['build','evidence-archives','.gradle']:
             raise ValueError('Private build-cache preparation roots differ from the declaration')
-        if cache['version']==4:
+        if cache['version'] in (4,5):
             from tailcache12_calibration_start import verify_cache_inventory
             verify_cache_inventory(attempt.parent,cache)
-        if cache['version'] in (2,3,4) and (cache.get('requiresEmptySwap') is not True
-                or cache['after'].get('SwapUsedKiB')!=0):
-            raise ValueError('New benchmark preparation requires zero residual swap')
-        requires_empty_swap=cache['version'] in (2,3,4)
+        requires_empty_swap=cache['version'] in (2,3,4,5)
         if cache.get('toolCachePreparationSha256'):
             from tailcache12_tool_cache import verify as verify_tool_cache
             tool=path/'tool-cache-preparation.json'

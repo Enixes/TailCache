@@ -6,7 +6,7 @@ Commonobserver001,002 and003 each stopped at preparation, before quiet collectio
 
 No unchanged retry or further cleanup expansion is planned. A prerequisite failure is not a result about cache latency. The host has considerable reclaimable file cache; treating all cached pages as unavailable confuses unused RAM with potential allocation headroom. Conversely, Linux's MemAvailable is an estimate, not reserved memory, and changing the metric genuinely changes the acceptance contract. It must not be silently applied to old failures or passed off as satisfying the existing free-page gate.
 
-## Concrete prospective alternative, not active
+## Accepted prospective rule
 
 For new attempts only, version initial cache-preparation receipts/replay and require MemAvailable>=4194304KiB (4GiB), zero residual swap and unchanged fresh120s quiet/360s first-block deadline. Explicitly record metric, threshold, both MemFree/MemAvailable and the new protocol version. Legacy receipts still require their original3GiB MemFree rule and remain rejected. Ordinary launch defaults retain the old rule until this change is accepted, implemented and reviewed.
 
@@ -16,4 +16,4 @@ The4GiB availability proposal is a conservative startup-headroom choice, not a m
 
 Before activation, implement default-off versioned metric selection, strict raw-replay validation and old-rule preservation; test forged metric/threshold/source, availability below threshold, residual swap, unsupported combinations, default legacy behavior and normal quiet binding. Rerun the relevant full Python suite, inspect actual native preparation, and write an implementation review. Measurement fingerprint must remain unchanged unless measured code/control changes; any adoption of the common-observation regime still needs its own source/protocol review and wholly fresh qualification/calibration/pilot/frozen campaign/robustness.
 
-This is a user decision because the recovery instruction explicitly forbids bypassing gates and this alternative replaces a predeclared readiness metric. Existing authorization to run unattended does not establish acceptance of that replacement. Until decided, taskComplete/campaignReady/reportable/currentHarnessQualified remain false and no cache benchmark is launched. The recovery timer remains enabled; no source/benchmark work is represented as complete.
+The user explicitly accepted this alternative on7 November2026, then requested additional leniency to obtain an end-to-end run. Version5 implementation/testing/review is in TAILCACHE_12_AVAILABLE_MEMORY_REVIEW.md. The separate exploratory scope and warning policy are in TAILCACHE_12_EXPLORATORY_E2E_PLAN.md and its implementation review. Legacy defaults/rejections remain unchanged. The new gate applies only to explicitly declared fresh version5 attempts; primary taskComplete/campaignReady/reportable/currentHarnessQualified remain false. The recovery timer remains enabled; a launch or partial job is not completion.
