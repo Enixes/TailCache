@@ -56,6 +56,16 @@ class WorkerProfileTest(unittest.TestCase):
             self.assertEqual(props['FlightRecorder'],'true')
             self.assertEqual(props['DiagnosticOnly'],'true')
 
+    def test_caffeine_profile_is_explicit_and_reversed_without_relabelling_default(self):
+        slots=grid('CAFFEINE')
+        self.assertEqual(len(slots),4)
+        self.assertEqual([p['Channel'] for _,p in slots],
+            ['sample-calibration','every-operation','every-operation','sample-calibration'])
+        self.assertTrue(all(p['Backend']=='CAFFEINE' and p['Backends']=='CAFFEINE' for _,p in slots))
+        self.assertTrue(all('CAFFEINE' in label for label,_ in slots))
+        self.assertTrue(all(p['Backend']=='CHRONICLE_IN_MEMORY' for _,p in grid()))
+        with self.assertRaises(ValueError):grid('PERSISTED')
+
     def test_recording_identity_loss_clock_and_full_window_coverage_fail_closed(self):
         def stamp(ns):
             return datetime.datetime.fromtimestamp(ns//10**9,datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%S')+f'.{ns%10**9:09d}Z'

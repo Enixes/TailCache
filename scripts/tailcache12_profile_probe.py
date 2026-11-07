@@ -25,25 +25,30 @@ from tailcache12_jfr import print_events, recording_file, verify_metadata, verif
 SETTINGS = 'src/main/resources/tailcache12-observer-profile.jfc'
 
 
-def grid():
+def grid(backend='CHRONICLE_IN_MEMORY'):
+    if backend not in evidence.BACKENDS:raise ValueError('Unknown diagnostic backend')
     slots=[]
     for block in (1,2):
         for channel in (('sample-calibration','every-operation') if block==1 else ('every-operation','sample-calibration')):
-            props=dict(Backend='CHRONICLE_IN_MEMORY',Backends='CHRONICLE_IN_MEMORY',Payload=256,Payloads=256,
+            props=dict(Backend=backend,Backends=backend,Payload=256,Payloads=256,
                 Residents=32768,HeapMiB=512,LiveBytes=0,ChurnBytesPerSecond=33554432,Seed=24301,
                 Warmups=120,Conditioning=16,Measurements=8,Forks=1,Channel=channel,
                 TransportWarmupVersion=evidence.TRANSPORT_WARMUP_VERSION,LifecycleWarmupVersion=evidence.LIFECYCLE_WARMUP_VERSION,
                 FlightRecorder='true',DiagnosticOnly='true')
-            slots.append((f'r{block}-{channel}-CHRONICLE_IN_MEMORY-p256-live0',props))
+            slots.append((f'r{block}-{channel}-{backend}-p256-live0',props))
     return slots
 
 
 def replay(attempt, review_id):
     manifest=json.loads((attempt/'manifest.json').read_text())
-    expected=grid()
+    backend=manifest.get('profileBackend','CHRONICLE_IN_MEMORY')
+    if 'profileBackend' in manifest and backend!='CAFFEINE':
+        raise ValueError('Streaming profile declaration is scoped to the Caffeine diagnostic')
+    expected=grid(backend)
+    preparation_version=4 if 'profileBackend' in manifest else 3
     if (manifest.get('schemaVersion')!='tailcache12-worker-profile-v1'
             or manifest.get('stage')!='observer-profile' or not manifest.get('diagnosticOnly')
-            or manifest.get('cachePreparationVersion')!=3
+            or manifest.get('cachePreparationVersion')!=preparation_version
             or manifest.get('primaryEndpointUseAllowed') is not False or manifest['expectedBlocks']!=[k for k,v in expected]
             or calibration.sha(attempt/'source.tar.gz')!=manifest['sourceArchiveSha256']):
         raise ValueError('Changed worker-profile declaration/source')
@@ -55,7 +60,7 @@ def replay(attempt, review_id):
         raise ValueError('Profile measurement-source identity changed')
     native_retry.verify_initial_quiet(attempt,dict(manifest,nativeHostRetryPolicy=native_retry.declare_policy(2)))
     preparation=json.loads((attempt.parent/manifest['initialQuietRef']['attempt']/'host-preparation.json').read_text())
-    if preparation.get('version')!=3:raise ValueError('Profile requires its declared private-cache preparation')
+    if preparation.get('version')!=preparation_version:raise ValueError('Profile requires its declared private-cache preparation')
     destination=attempt/review_id;destination.mkdir()
     rows=[];runtime=None;trace=None
     for index,invocation in enumerate(manifest['invocations']):
@@ -127,6 +132,8 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('stage',choices=('run','audit'))
     parser.add_argument('attempt_id');parser.add_argument('--quiet-id');parser.add_argument('--review-id',default='profile-review-001')
+    parser.add_argument('--backend',choices=evidence.BACKENDS,default='CHRONICLE_IN_MEMORY')
+    parser.add_argument('--streaming-preparation',action='store_true')
     args=parser.parse_args()
     if any(not re.fullmatch(r'[A-Za-z0-9._-]+',x) for x in (args.attempt_id,args.review_id)):
         parser.error('Invalid identifiers')
@@ -134,28 +141,36 @@ def main():
     if args.stage=='audit':return 0 if replay(attempt,args.review_id)['profileAndQualityPass'] else 1
     if not args.quiet_id or not re.fullmatch(r'[A-Za-z0-9._-]+',args.quiet_id):parser.error('Require distinct quiet identifier')
     quiet=evidence.REPORTS/args.quiet_id;cache_path=evidence.REPORTS/(args.quiet_id+'-cache-preparation.json')
+    if args.backend=='CAFFEINE' and not args.streaming_preparation:
+        raise ValueError('New Caffeine profiles require declared streaming preparation')
+    if args.streaming_preparation and args.backend!='CAFFEINE':
+        raise ValueError('New streaming profile collection is scoped to Caffeine')
     if any(p.exists() for p in (attempt,quiet,cache_path)):raise ValueError('Retained profile/preparation exists; no duplicate')
     if any(os.environ.get(k) for k in ('JAVA_TOOL_OPTIONS','JDK_JAVA_OPTIONS','_JAVA_OPTIONS')):
         raise ValueError('Worker profiles require a clean parent JVM-option environment')
     if shutil.disk_usage(evidence.ROOT).free<4*1024**3:
         raise ValueError('Require4GiB free disk for bounded recordings/review/preservation')
-    source=evidence.source_hash();cache=prepare_file_cache(cache_path,include_build_outputs=True)
-    if cache.get('version')!=3:raise ValueError('Unexpected profile cache preparation version')
+    source=evidence.source_hash();cache=prepare_file_cache(cache_path,include_build_outputs=True,
+        stream_inventory=args.streaming_preparation)
+    preparation_version=4 if args.streaming_preparation else 3
+    if cache.get('version')!=preparation_version:raise ValueError('Unexpected profile cache preparation version')
     if not run_preflight(quiet,120,300)['quietPass'] or source!=evidence.source_hash():
         raise ValueError('Profile preparation failed or source changed')
     evidence.save(quiet/'host-preparation.json',cache)
     options=SimpleNamespace(stage='observer-profile',heap_mib=512,residents=32768,churn_mib=32,
         live_mib=[0],payloads=[256],seed=24301,warmups=120,measurements=8,repeats=2,
         channels=['sample-calibration','every-operation'],conditioning=16,transport_warmup=True,maintenance_warmup=True,resume=False)
-    slots=grid();manifest=calibration.prepare(attempt,options,slots)
+    slots=grid(args.backend);manifest=calibration.prepare(attempt,options,slots)
     current=evidence.host_snapshot()
     if os.environ.get('TAILCACHE_REQUIRE_NATIVE_HOST')!='1' or current.get('nativeScopeQualified')!=1:
         raise ValueError('Worker profile requires its exclusive native accounting scope')
     manifest.update(schemaVersion='tailcache12-worker-profile-v1',diagnosticOnly=True,primaryEndpointUseAllowed=False,maxFreshJvms=4,
-        replacements=0,cachePreparationVersion=3,nativeEnvironmentVersion=1,nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(current),
+        replacements=0,cachePreparationVersion=preparation_version,nativeEnvironmentVersion=1,nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(current),
         measurementSourceSha256=measurement_source_hash(evidence.ROOT),
         profileSettingsSha256=calibration.sha(evidence.ROOT/SETTINGS),
         plan='docs/TAILCACHE_12_JFR_PROFILE_PLAN.md')
+    if args.streaming_preparation:
+        manifest.update(profileBackend=args.backend,plan='docs/TAILCACHE_12_CAFFEINE_PROFILE_PLAN.md')
     # Reuse only quiet-validation fields; this creates no replacement policy or retry slots.
     manifest['initialQuietRef']=native_retry.initial_quiet_reference(quiet,manifest,native_retry.declare_policy(2),current)
     evidence.save(attempt/'manifest.json',manifest)

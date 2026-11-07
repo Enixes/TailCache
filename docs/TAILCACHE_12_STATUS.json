@@ -10,7 +10,7 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "observer_coherence_failed_supported_sample_buffer_bias_fixed_unprofiled_validation_pending",
+    "12B": "sampler_decimation_bias_repaired_diagnostic8_quality_pass_Caffeine_observer_coherence_unresolved",
     "12C": "conditioning16_calibration002_complete64of64_independent_raw_gc_occupancy_reconciliation_passed",
     "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
     "12E": "complete160_selected161_attempts_quality_variance_pass_coherence_failed",
@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 45,
-    "pythonTests": 141,
+    "pythonTests": 142,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Supported JMH SampleBuffer singleton-retention bias reproduced offline. Fixed mask15/no-decimation repair implemented/tested; unprofiled eight-fork validation and entirely fresh source-matched prerequisites remain.",
+  "currentBlocker": "Fixed-buffer repair supported and8/8 unprofiled quality pass; Chronicle tails now align, but Caffeine every-operation p999 remains2.21-2.33us versus sampled0.93-1.01us. Opposite backend ordering persists; campaign blocked.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Verify archive021; checkpoint fixed-buffer implementation; run declared fresh native-final-fixedbuffer-probe-20261107-001 with streaming-v4 preparation and fresh120s quiet, eight forks/zero replacements; review raw outcomes before full requalification/calibration/pilot.",
+  "nextWork": "Run only the declared fresh4-fork Caffeine fixed-sampler worker profile001 under exclusive native scope, own v4 preparation/zero swap/fresh120s quiet and unchanged gates; then raw/clock/quality and actual worker/maintenance-site review before any next causal intervention.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1335,7 +1335,7 @@
   "fixedBufferRepair": {
     "plan": "docs/TAILCACHE_12_BUFFER_DECIMATION_PLAN.md",
     "implementationReview": "docs/TAILCACHE_12_FIXED_BUFFER_IMPLEMENTATION_REVIEW.md",
-    "status": "implemented_reviewed_tests_and_archive_pass_probe_pending",
+    "status": "complete8_quality_pass_Chronicle_alignment_supported_Caffeine_observer_discrepancy_remains",
     "attempt": "native-final-fixedbuffer-probe-20261107-001",
     "quiet": "native-final-fixedbuffer-probequiet-20261107-001",
     "samplerVersion": "fixed-mixed-lcg-mask15-v1",
@@ -1344,12 +1344,32 @@
     "expectedFreshJvms": 8,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
-    "cachePreparationVersion": 4
+    "cachePreparationVersion": 4,
+    "outcomeReview": "docs/TAILCACHE_12_FIXED_BUFFER_PROBE_REVIEW.md",
+    "qualityPass": true,
+    "collectedFreshJvms": 8
   },
   "jfrBufferArchive": {
     "path": "evidence-archives/native-final-jfr-buffer-checkpoint-20261107-021.tar.gz",
     "bytes": 932462621,
     "sha256": "ac3180b334d594b23cf180f5b9c9bec13f2d5a9d922cef9680c94343efc1d344",
     "verifiedMembers": 39018
+  },
+  "caffeineProfile": {
+    "plan": "docs/TAILCACHE_12_CAFFEINE_PROFILE_PLAN.md",
+    "attempt": "native-final-caffeine-fixedprofile-20261107-001",
+    "quiet": "native-final-caffeine-fixedprofilequiet-20261107-001",
+    "expectedFreshJvms": 4,
+    "replacements": 0,
+    "status": "implemented_reviewed_legacy_replay_and_archive_pass_collection_pending",
+    "cachePreparationVersion": 4,
+    "primaryEndpointUseAllowed": false,
+    "implementationReview": "docs/TAILCACHE_12_CAFFEINE_PROFILE_IMPLEMENTATION_REVIEW.md"
+  },
+  "fixedBufferArchive": {
+    "path": "evidence-archives/native-final-fixedbuffer-checkpoint-20261107-023.tar.gz",
+    "bytes": 939343525,
+    "sha256": "abc915a69303b3ac71bb6911001314c821a271fbe6ab75fcc543d4e402752c41",
+    "verifiedMembers": 39617
   }
 }
