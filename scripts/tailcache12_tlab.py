@@ -11,7 +11,7 @@ FIELDS = ('gcId', 'allocatingThreads', 'refills', 'maxThreadRefills', 'slowAlloc
           'refillWasteBytes', 'maxThreadRefillWasteBytes')
 
 
-def parse(text, worker_pid):
+def parse(text, worker_pid, framing_repairs=None):
     records = {}
     for line in text.splitlines():
         if 'TLAB totals:' not in line:
@@ -21,6 +21,14 @@ def parse(text, worker_pid):
             raise ValueError('TLAB line lacks unambiguous declared clock/PID decorators')
         if int(prefix[2]) != worker_pid:
             continue
+        # Captions before the logger prefix need no repair. Only record an
+        # interruption inside the structured payload, preserving its receipt.
+        normalized = line[:prefix.end()] + re.sub(r'# Warmup Iteration +\d+: *', '', line[prefix.end():])
+        if normalized != line:
+            if framing_repairs is not None:
+                framing_repairs.append(dict(original=line, normalized=normalized))
+            line = normalized
+            prefix = PREFIX.search(line)
         values = TOTALS.fullmatch(line[prefix.end():])
         if values is None:
             raise ValueError('Unrecognized actual-worker TLAB totals')

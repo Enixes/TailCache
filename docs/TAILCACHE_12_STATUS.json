@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 44,
-    "pythonTests": 125,
+    "pythonTests": 126,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Opaque-call8/8 quality pass and activation confirmed, but tails remain discrepant/variable. Default compiler policy retained; campaign blocked.",
+  "currentBlocker": "Observer tail discrepancy persists; TLAB aggregates similar forChronicle, no allocator tuning justified. Primary campaign remains blocked.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Preserve opaque diagnostic; implement/review only the predeclared8-JVM sparse TLAB-debug observation under default allocation/compiler policy. No TLAB-size tuning or unchanged repeat authorized.",
+  "nextWork": "Implement/review only the predeclared worker-only4-fork JFR diagnostic with explicit ordinary-endpoint exclusion, minimal source-controlled settings and recording/clock/data-loss validation. Archive completed TLAB observation before collection.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1284,7 +1284,7 @@
     "quiet": "native-final-tlabdebug-probequiet-20261107-001",
     "expectedJvmAttempts": 8,
     "replacements": 0,
-    "status": "launcher_reviewed_logger_syntax_accepted_collection_pending",
+    "status": "complete8_quality_and_gc_linkage_pass_simple_refill_size_explanation_unsupported_no_policy_change",
     "primaryEndpointUseAllowed": false,
     "parserSmokePassed": true
   },
@@ -1293,5 +1293,7 @@
     "bytes": 904839689,
     "sha256": "26fe0b3b87221965ab5a277bb689b9bd0b9371786477399121cbfd50c35fa0c0",
     "verifiedMembers": 38043
-  }
+  },
+  "tlabObservationOutcomeReview": "docs/TAILCACHE_12_TLAB_OBSERVATION_REVIEW.md",
+  "workerProfilePlan": "docs/TAILCACHE_12_JFR_PROFILE_PLAN.md"
 }

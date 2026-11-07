@@ -25,5 +25,13 @@ class TlabObservationTest(unittest.TestCase):
                      self.line().replace('[7]',''),self.line().replace('max: 63','max: 90')):
             with self.assertRaises(ValueError):parse(text,7)
 
+    def test_only_known_jmh_warmup_caption_is_losslessly_removed(self):
+        original=self.line().replace('slow: 71792B','# Warmup Iteration  22: slow: 71792B')
+        receipts=[]
+        self.assertEqual(parse(original,7,receipts),parse(self.line(),7))
+        self.assertEqual(receipts,[dict(original=original,normalized=self.line())])
+        with self.assertRaises(ValueError):parse(original.replace('slow: 71792B',''),7,[])
+        with self.assertRaises(ValueError):parse(original.replace('# Warmup Iteration  22:','# unknown caption:'),7,[])
+
 
 if __name__ == '__main__':unittest.main()
