@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Odd-period probe remains discrepant; synthetic-qualified mixed sampler overlay implemented/tested/reviewed. Its fresh bounded cache probe remains pending.",
+  "currentBlocker": "Mixed-selector8/8 quality/integrity/provenance pass; opposite256B p99.9 point directions persist. No primary campaign authorized.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run exactly eight mixed-selector low256 diagnostics with zero replacements, raw-review all contracts/directions before any fresh qualification/floors/calibration/pilot. No primary freeze.",
+  "nextWork": "Preserve mixed-selector diagnostic and run only the prospectively declared8-JVM opaque-operation compiler-boundary diagnostic with explicit VM-control provenance and inlining proof. No unchanged selector probe repeat.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1246,7 +1246,7 @@
     "probe": "native-final-mixedselector-probe-20261107-001",
     "quiet": "native-final-mixedselector-probequiet-20261107-001",
     "expectedDiagnosticJvms": 8,
-    "status": "implemented_tested_reviewed_probe_pending",
+    "status": "eight_diagnostic_forks_complete_quality_pass_discrepancy_remains",
     "stockJmhCore": "1.37",
     "modifiedGeneratedSampler": true
   },
@@ -1255,5 +1255,7 @@
     "sha256": "bc9d9b321acf9be4e525b4564ee289b74909967f8399ae783d738b632a7810f6",
     "bytes": 892219937,
     "verifiedMembers": 36865
-  }
+  },
+  "mixedSelectorProbeReview": "docs/TAILCACHE_12_MIXEDSELECTOR_PROBE_REVIEW.md",
+  "opaqueOperationPlan": "docs/TAILCACHE_12_OPAQUE_OPERATION_PLAN.md"
 }
