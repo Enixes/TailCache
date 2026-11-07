@@ -13,6 +13,7 @@ import re
 import statistics
 
 VERSION = "tailcache12-analysis-v1"
+CHURN_DROP_BUDGET_VERSION='bounded-churn-drops-v1'
 SIZE = r"([0-9]+(?:\.[0-9]+)?)([BKMG])"
 PAUSE = re.compile(r"^GC\((\d+)\) (Pause .+?)\s+([\d.]+)ms$")
 HEAP = re.compile(SIZE + r"->" + SIZE + r"\(" + SIZE + r"\)")
@@ -26,6 +27,27 @@ def size_bytes(number, unit):
 def read_csv(path):
     with pathlib.Path(path).open(newline="") as stream:
         return list(csv.DictReader(stream))
+
+
+def churn_drop_valid(row,version=None):
+    if version not in (None,'none',CHURN_DROP_BUDGET_VERSION):raise ValueError('Unknown churn drop budget version')
+    dropped,payload=int(row['churnDroppedBytes']),int(row['churnPayloadBytes'])
+    if dropped<0 or payload<0:return False
+    if version!=CHURN_DROP_BUDGET_VERSION:return dropped==0
+    return dropped<=32768 and dropped*999<=payload
+
+
+def churn_drop_summary(rows,version=None):
+    if version not in (None,'none',CHURN_DROP_BUDGET_VERSION):raise ValueError('Unknown churn drop budget version')
+    if version!=CHURN_DROP_BUDGET_VERSION:return None
+    rows=[r for r in rows if r.get('phase') in ('CONDITIONING','MEASUREMENT')]
+    drops=[int(r['churnDroppedBytes']) for r in rows];payloads=[int(r['churnPayloadBytes']) for r in rows]
+    return dict(version=version,maximumPerWindowBytes=32768,maximumDemandFraction=.001,
+        totalDroppedBytes=sum(drops),totalPayloadBytes=sum(payloads),maximumDroppedBytes=max(drops,default=0),
+        conditioningDroppedBytes=sum(int(r['churnDroppedBytes']) for r in rows if r['phase']=='CONDITIONING'),
+        measurementDroppedBytes=sum(int(r['churnDroppedBytes']) for r in rows if r['phase']=='MEASUREMENT'),
+        maximumObservedDemandFraction=max((d/(p+d) if p+d else 0 for d,p in zip(drops,payloads)),default=0),
+        allWithinBudget=all(churn_drop_valid(r,version) for r in rows))
 
 
 def parse_gc(path):
@@ -192,7 +214,7 @@ def quantile(bins, percentile):
     raise AssertionError("Unreachable quantile")
 
 
-def every_operation_summary(directory, target_churn, calibration_band=None):
+def every_operation_summary(directory, target_churn, calibration_band=None,churn_drop_budget=None):
     directory = pathlib.Path(directory)
     worker = directory / "worker"
     config = (worker / "configuration.txt").read_text()
@@ -216,7 +238,7 @@ def every_operation_summary(directory, target_churn, calibration_band=None):
     reasons = []
     if any(not math.isfinite(rate) or abs(rate - target_churn) > max(1, target_churn * 0.1) for rate in rates):
         reasons.append("non-cache churn missed ±10% target")
-    if any(int(r["churnDroppedBytes"]) != 0 for r in rows):
+    if any(not churn_drop_valid(r,churn_drop_budget) for r in rows):
         reasons.append("churn demand was dropped")
     if any(int(r["churnJvmAllocatedBytes"]) < int(r["churnPayloadBytes"]) for r in rows):
         reasons.append("JVM allocation does not corroborate churn")

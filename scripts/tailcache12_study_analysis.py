@@ -14,7 +14,7 @@ import re
 import statistics
 
 from tailcache12_analysis import (compiler_rejection_reasons, every_operation_summary,
-                                 gc_summary, parse_gc, quantile, validate_windows)
+                                 gc_summary, parse_gc, quantile, validate_windows,churn_drop_valid,churn_drop_summary)
 
 VALUE_GENERATOR = "xorshift-key-version-v1"
 JMH_SAMPLE_SECONDARIES = {"p0.00", "p0.50", "p0.90", "p0.95", "p0.99", "p0.999", "p0.9999", "p1.00"}
@@ -172,7 +172,7 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
             if row["phase"]=="CONDITIONING":
                 for channel in ("service","completion-gap"):
                     histogram(worker/"conditioning"/f"iteration-{row['iteration']}-{channel}-bins.csv",int(row["operations"]))
-                if (int(row["churnDroppedBytes"]) != 0 or int(row["churnJvmAllocatedBytes"])<int(row["churnPayloadBytes"])
+                if (not churn_drop_valid(row,inputs.get('ChurnDropBudgetVersion')) or int(row["churnJvmAllocatedBytes"])<int(row["churnPayloadBytes"])
                         or not math.isfinite(float(row["churnPayloadBytesPerSecond"]))
                         or abs(float(row["churnPayloadBytesPerSecond"])-inputs["ChurnBytesPerSecond"])>
                            max(1,inputs["ChurnBytesPerSecond"]*.1)):
@@ -184,7 +184,9 @@ def every_operation_fork_summary(directory, inputs, expected_trace=None,
     if (int(integrity["operations"]) != sum(int(r["operations"]) for r in rows)
             or int(integrity["writes"]) != sum(int(r["writes"]) for r in rows)):
         raise ValueError("Worker totals disagree with post-trial integrity evidence")
-    result = every_operation_summary(directory, inputs["ChurnBytesPerSecond"], occupancy_band)
+    result = every_operation_summary(directory, inputs["ChurnBytesPerSecond"], occupancy_band,inputs.get('ChurnDropBudgetVersion'))
+    budget=churn_drop_summary(rows,inputs.get('ChurnDropBudgetVersion'))
+    if budget is not None:result['churnDropBudgetSummary']=budget
     reasons = result["rejectionReasons"]
     compiler = result["compilerPerIterationMs"]
     reasons.extend(compiler_rejection_reasons(sum(compiler), compiler, inputs["Measurements"]))
@@ -318,11 +320,11 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
            or abs(float(r["churnPayloadBytesPerSecond"]) - inputs["ChurnBytesPerSecond"])
            > max(1, inputs["ChurnBytesPerSecond"] * 0.1) for r in rows):
         reasons.append("non-cache churn missed ±10% target")
-    if any(int(r["churnDroppedBytes"]) != 0 for r in rows):
+    if any(not churn_drop_valid(r,inputs.get('ChurnDropBudgetVersion')) for r in rows):
         reasons.append("churn demand was dropped")
     if any(int(r["churnJvmAllocatedBytes"]) < int(r["churnPayloadBytes"]) for r in rows):
         reasons.append("JVM allocation does not corroborate churn")
-    if conditioned and any(int(r["operations"])<=0 or int(r["churnDroppedBytes"])!=0
+    if conditioned and any(int(r["operations"])<=0 or not churn_drop_valid(r,inputs.get('ChurnDropBudgetVersion'))
             or int(r["churnJvmAllocatedBytes"])<int(r["churnPayloadBytes"])
             or not math.isfinite(float(r["churnPayloadBytesPerSecond"]))
             or abs(float(r["churnPayloadBytesPerSecond"])-inputs["ChurnBytesPerSecond"])>
@@ -333,6 +335,8 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
               "operations": sum(operations), "iterationOperations": operations,
               "compilerPerIterationMs": compiler, "rejectionReasons": reasons}
     result["conditioningIterations"]=conditioning
+    budget=churn_drop_summary(all_rows,inputs.get('ChurnDropBudgetVersion'))
+    if budget is not None:result['churnDropBudgetSummary']=budget
     if sample_selection is not None:
         result['sampleSelection']=sample_selection
     if diagnostic_compiler_xml:

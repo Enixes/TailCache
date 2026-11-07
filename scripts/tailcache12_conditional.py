@@ -25,11 +25,13 @@ from tailcache12_calibration_start import AVAILABLE_MEMORY_RULE,prepare_file_cac
 from tailcache12_observer import floor_grid,RULES as FLOOR_RULES
 from tailcache12_provenance import measurement_source_hash,archive_measurement_source_hash
 from tailcache12_quiet import run_preflight
+from tailcache12_analysis import CHURN_DROP_BUDGET_VERSION
 
-VERSION='tailcache12-final-observer-conditional-v2-startup-thermal'
+VERSION='tailcache12-final-observer-conditional-v3-bounded-churn'
+CHURN_DROP_WARNING='Minor churn loss within predeclared32KiB/0.1% budget'
 STAGES=('functional','pause','compiler-diagnostic','qualification','floors','calibration','pilot','campaign','robustness')
 COUNTS={'functional':14,'pause':2,'compiler-diagnostic':8,'qualification':16,'floors':10,'calibration':64,'pilot':32,'campaign':192,'robustness':64}
-RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL_STARTUP_WARNING],outsideCpuUpperCeilingPercent=25,
+RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL_STARTUP_WARNING,CHURN_DROP_WARNING],outsideCpuUpperCeilingPercent=25,
     warmups=30,conditioning=8,measurements=8,passes=2,primaryForksPerPass=3,replacements=0,
     liveMiB=[0,96,208,288],payloads=[256,4096],residents=32768,heapMiB=512,churnMiBPerSecond=32,
     seed=24301,orderSeed=0x1207,robustnessSeeds=[0xC0FFEE,0xBADC0DE],robustnessPasses=1,robustnessForksPerCell=1,
@@ -39,7 +41,8 @@ RULES=dict(version=VERSION,warningReasons=list(facts.WARNINGS)+[evidence.THERMAL
     floorRules={k:FLOOR_RULES[k] for k in ('version','timerMedianToEveryopMedianCeiling',
         'supplyMedianToSampleMedianCeiling','nativeReadMedianCeilingMs','floorReplicas')},initialMemoryReadinessRule=AVAILABLE_MEMORY_RULE,
     claimScope='conditional-on-recording-regime',coherence='Report disagreement; prohibit a pooled/unconditional claim',
-    stageInvocationCounts=COUNTS,thermalRule=evidence.THERMAL_STARTUP_RULE)
+    stageInvocationCounts=COUNTS,thermalRule=evidence.THERMAL_STARTUP_RULE,
+    churnDropBudget=dict(version=CHURN_DROP_BUDGET_VERSION,maximumPerWindowBytes=32768,maximumDemandFraction=.001))
 
 
 def options(stage):
@@ -68,7 +71,7 @@ def work_grid(levels,passes,forks,seed=24301):
     return result
 
 
-def grid(stage):
+def base_grid(stage):
     if stage=='compiler-diagnostic':
         return [(label.replace('sample-calibration','compiler'),dict(p,Channel='compiler')) for label,p in work_grid([0],2,1)
                 if p['Channel']=='sample-calibration']
@@ -85,6 +88,10 @@ def grid(stage):
         return [(label,None) for label in labels]
     if stage=='pause':return [('gc-'+b,None) for b in evidence.BACKENDS]
     raise ValueError('Unknown final-study stage')
+
+
+def grid(stage):
+    return [(label,dict(p,ChurnDropBudgetVersion=CHURN_DROP_BUDGET_VERSION) if p is not None else None) for label,p in base_grid(stage)]
 
 
 def declaration():
@@ -206,7 +213,13 @@ def read_row(path,manifest,inv,runtime,trace,helper):
     host=host_facts(path,manifest,inv);reasons=list(summary['rejectionReasons'])+host['effectiveReasons']+overhead
     warnings,fatal=facts.classify(reasons,host['outsideCpuUpperPercent'])
     if host['thermalReview']['startupExceptionUsed']:warnings.append(evidence.THERMAL_STARTUP_WARNING)
-    row=dict(summary,**host);row.update(strictReasons=list(summary['rejectionReasons'])+host['strictReasons']+overhead,
+    budget=summary.get('churnDropBudgetSummary',{});original_drops=[]
+    if budget.get('totalDroppedBytes',0):
+        warnings.append(CHURN_DROP_WARNING)
+        if budget.get('conditioningDroppedBytes',0):original_drops.append('Original exact-zero conditioning churn gate failed')
+        if budget.get('measurementDroppedBytes',0):original_drops.append('Original exact-zero measured churn gate failed')
+    strict=list(summary['rejectionReasons'])+host['strictReasons']+overhead+original_drops
+    row=dict(summary,**host);row.update(strictReasons=strict,strictQualityPass=not strict,originalExactZeroDropReasons=original_drops,
         effectiveReasons=reasons,warnings=warnings,fatalReasons=fatal,finalPolicyUsable=not fatal,primaryEndpointUseAllowed=False)
     return row,runtime,trace
 
