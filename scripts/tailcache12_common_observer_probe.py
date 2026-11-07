@@ -68,6 +68,8 @@ def replay(attempt,review_id):
         raise ValueError('Missing frozen diagnostic cache preparation')
     preparation=json.loads((attempt.parent/manifest['initialQuietRef']['attempt']/'host-preparation.json').read_text())
     if preparation.get('version')!=4:raise ValueError('Diagnostic requires its declared streaming preparation')
+    if manifest.get('toolCachePreparationVersion')==1 and not preparation.get('toolCachePreparationSha256'):
+        raise ValueError('Missing declared task-tooling cache preparation')
     destination=attempt/review_id;destination.mkdir();rows=[];runtime=None;trace=None
     for invocation,(label,props) in zip(manifest['invocations'],expected):
         if invocation['label']!=label or invocation['properties']!=props:raise ValueError('Changed diagnostic order/controls')
@@ -116,20 +118,29 @@ def replay(attempt,review_id):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('stage',choices=('run','audit'))
     parser.add_argument('attempt_id');parser.add_argument('--quiet-id');parser.add_argument('--review-id',default='common-review-001')
+    parser.add_argument('--task-tool-cache',action='store_true')
     args=parser.parse_args()
     if any(not re.fullmatch(r'[A-Za-z0-9._-]+',s) for s in (args.attempt_id,args.review_id)):parser.error('Invalid IDs')
     attempt=evidence.REPORTS/args.attempt_id
     if args.stage=='audit':return 0 if replay(attempt,args.review_id)['diagnosticCriteriaPass'] else 1
     if not args.quiet_id or not re.fullmatch(r'[A-Za-z0-9._-]+',args.quiet_id):parser.error('Require fresh quiet ID')
     quiet=evidence.REPORTS/args.quiet_id;cache_path=evidence.REPORTS/(args.quiet_id+'-cache-preparation.json')
-    if any(p.exists() for p in (attempt,quiet,cache_path)):raise ValueError('Retained diagnostic exists; no duplicate')
+    tool_path=evidence.REPORTS/(args.quiet_id+'-tool-cache-preparation.json')
+    if any(p.exists() for p in (attempt,quiet,cache_path,tool_path)):raise ValueError('Retained diagnostic exists; no duplicate')
     if any(os.environ.get(k) for k in ('JAVA_TOOL_OPTIONS','JDK_JAVA_OPTIONS','_JAVA_OPTIONS')):
         raise ValueError('Diagnostic requires clean unprofiled VM options')
     if shutil.disk_usage(evidence.ROOT).free<4*1024**3:raise ValueError('Require4GiB disk before diagnostic')
-    source=evidence.source_hash();cache=prepare_file_cache(cache_path,include_build_outputs=True,stream_inventory=True)
+    source=evidence.source_hash();tool=None
+    if args.task_tool_cache:
+        from tailcache12_tool_cache import prepare as prepare_tool_cache
+        tool=prepare_tool_cache(tool_path)
+    cache=prepare_file_cache(cache_path,include_build_outputs=True,stream_inventory=True)
     if cache.get('version')!=4:raise ValueError('Wrong diagnostic preparation version')
     if not run_preflight(quiet,120,300)['quietPass'] or source!=evidence.source_hash():
         raise ValueError('Diagnostic preparation failed/source changed')
+    if tool:
+        evidence.save(quiet/'tool-cache-preparation.json',tool)
+        cache['toolCachePreparationSha256']=calibration.sha(quiet/'tool-cache-preparation.json')
     evidence.save(quiet/'host-preparation.json',cache)
     options=SimpleNamespace(stage='common-observer-probe',heap_mib=512,residents=32768,churn_mib=32,live_mib=[0],
         payloads=[256],seed=24301,warmups=120,measurements=8,repeats=2,channels=['sample-calibration','every-operation'],
@@ -141,6 +152,7 @@ def main():
         primaryEndpointUseAllowed=False,maxFreshJvms=12,replacements=0,cachePreparationVersion=4,
         nativeEnvironmentVersion=1,nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(current),
         measurementSourceSha256=measurement_source_hash(evidence.ROOT),plan='docs/TAILCACHE_12_COMMON_OBSERVER_PLAN.md')
+    if tool:manifest['toolCachePreparationVersion']=1
     policy=native_retry.declare_policy(2)
     manifest['initialQuietRef']=native_retry.initial_quiet_reference(quiet,manifest,policy,current)
     evidence.save(attempt/'manifest.json',manifest)

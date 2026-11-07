@@ -85,6 +85,12 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
                 or cache['after'].get('SwapUsedKiB')!=0):
             raise ValueError('New benchmark preparation requires zero residual swap')
         requires_empty_swap=cache['version'] in (2,3,4)
+        if cache.get('toolCachePreparationSha256'):
+            from tailcache12_tool_cache import verify as verify_tool_cache
+            tool=path/'tool-cache-preparation.json'
+            if sha(tool)!=cache['toolCachePreparationSha256']:
+                raise ValueError('Changed task-tooling cache preparation evidence')
+            verify_tool_cache(json.loads(tool.read_text()),manifest['sourceSha256'])
         if cache.get('swapPreparationSha256'):
             from tailcache12_swap_prepare import configuration
             reset=path/'swap-preparation.json'

@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 150,
+    "pythonTests": 155,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Caffeine sparse/dense observer discrepancy remains; common observer-work discriminator implemented/reviewed/tested but not yet collected. No current-source qualification or main campaign.",
+  "currentBlocker": "Common observer diagnostic uncollected:001 stopped at unchanged3GiB free-RAM preparation before any cache worker. Scoped read-only tooling-cache repair tested/reviewed for fresh002; no primary qualification/campaign.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Run only fresh12-fork commonobserver diagnostic001 under own strictv4/zero-swap/120s quiet/native scope. Review all fixed criteria/quality/count outcomes before adoption; no replacements, threshold tuning or primary chaining.",
+  "nextWork": "Run only commonobserver002 with explicit --task-tool-cache, own unchanged normalv4/zero-swap/120s quiet/360s gate. Twelve fresh modes, zero replacements; inspect any preparation failure rather than unchanged reruns. Review all outcomes before adoption.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1377,13 +1377,22 @@
   "commonObserverDiagnostic": {
     "plan": "docs/TAILCACHE_12_COMMON_OBSERVER_PLAN.md",
     "implementationReview": "docs/TAILCACHE_12_COMMON_OBSERVER_IMPLEMENTATION_REVIEW.md",
-    "attempt": "native-final-commonobserver-probe-20261107-001",
-    "quiet": "native-final-commonobserver-probequiet-20261107-001",
-    "status": "implemented_reviewed_tests_controls_archive_pass_not_launched",
+    "attempt": "native-final-commonobserver-probe-20261107-002",
+    "quiet": "native-final-commonobserver-probequiet-20261107-002",
+    "status": "first_preparation_rejected_zero_cache_forks_tooling_cache_repair_reviewed_new002_pending",
     "expectedFreshJvms": 12,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
-    "adopted": false
+    "adopted": false,
+    "toolingCachePlan": "docs/TAILCACHE_12_TOOL_CACHE_PREPARATION_REVIEW.md",
+    "firstPreparationRejected": {
+      "attempt": "native-final-commonobserver-probe-20261107-001",
+      "cacheJvmsLaunched": 0,
+      "memFreeKiB": 2744972,
+      "memAvailableKiB": 6590752,
+      "swapUsedKiB": 0,
+      "preservedAt": "evidence-archives/native-final-commonobserver001-preparation-rejection-20261107-001"
+    }
   },
   "caffeineProfileArchive": {
     "path": "evidence-archives/native-final-caffeine-profile-checkpoint-20261107-025.tar.gz",

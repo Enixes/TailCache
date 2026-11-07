@@ -195,6 +195,37 @@ class NativeRetryTest(unittest.TestCase):
                             m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
                             with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
 
+    def test_tooling_advice_is_sha_and_source_bound_without_replacing_normal_memory_gate(self):
+        import tailcache12_tool_cache as tool
+        m=self.manifest();samples=self.samples();m['nativeEnvironmentDeclaration']=host.environment_declaration(samples[-1])
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);q=root/'quiet';self.write_quiet(q,m,samples);attempt=root/'attempt';attempt.mkdir()
+            record=dict(version=1,method=tool.METHOD,sessionId=tool.SESSION,sourceSha256=m['sourceSha256'],operatorUid=1000,
+                readOnly=True,preparationPass=True,errors=[],activeBrowserPids=[],declaredTargets=list(map(str,tool.EXACT)),
+                missing=list(map(str,tool.EXACT[1:])),files=[dict(path=str(tool.EXACT[0]),device=1,inode=2,uid=1000,
+                    bytesBefore=100,bytesAfter=100,advice='POSIX_FADV_DONTNEED',regular=True)])
+            (q/'tool-cache-preparation.json').write_text(json.dumps(record))
+            prep=dict(version=1,sourceSha256=m['sourceSha256'],method='fsync-and-posix-fadvise-dontneed-task-files',
+                minimumFreeKiB=3*1024**2,after=dict(MemFreeKiB=4*1024**2),errors=[],preparationPass=True,
+                toolCachePreparationSha256=retry.sha(q/'tool-cache-preparation.json'))
+            (q/'host-preparation.json').write_text(json.dumps(prep))
+            with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            self.assertTrue(retry.verify_initial_quiet(attempt,m)['quietPass'])
+            record['sourceSha256']='changed';(q/'tool-cache-preparation.json').write_text(json.dumps(record))
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            prep['toolCachePreparationSha256']=retry.sha(q/'tool-cache-preparation.json')
+            (q/'host-preparation.json').write_text(json.dumps(prep))
+            with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            record['sourceSha256']=m['sourceSha256'];(q/'tool-cache-preparation.json').write_text(json.dumps(record))
+            prep.update(toolCachePreparationSha256=retry.sha(q/'tool-cache-preparation.json'),after=dict(MemFreeKiB=2*1024**2))
+            (q/'host-preparation.json').write_text(json.dumps(prep))
+            with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+
     def test_initial_quiet_is_frozen_source_matched_and_expires_before_first_launch(self):
         m=self.manifest()
         samples=self.samples()
