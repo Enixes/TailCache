@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Mixed-selector8/8 quality/integrity/provenance pass; opposite256B p99.9 point directions persist. No primary campaign authorized.",
+  "currentBlocker": "Opaque-call8/8 quality pass and activation confirmed, but tails remain discrepant/variable. Default compiler policy retained; campaign blocked.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Preserve mixed-selector diagnostic and run only the prospectively declared8-JVM opaque-operation compiler-boundary diagnostic with explicit VM-control provenance and inlining proof. No unchanged selector probe repeat.",
+  "nextWork": "Preserve opaque diagnostic; implement/review only the predeclared8-JVM sparse TLAB-debug observation under default allocation/compiler policy. No TLAB-size tuning or unchanged repeat authorized.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1265,7 +1265,7 @@
     "quiet": "native-final-opaqueoperation-probequiet-20261107-001",
     "expectedJvmAttempts": 8,
     "replacements": 0,
-    "status": "launcher_reviewed_vm_syntax_accepted_collection_pending",
+    "status": "complete8_quality_pass_callsite_proof_confirmed_discrepancy_not_consistently_removed_not_adopted",
     "primaryEndpointUseAllowed": false,
     "measurementSourceSha256": "dfcd7335986f6ca03a3b0332d05b5788569ab42430ff9e821681451eb2cbdc9d"
   },
@@ -1274,5 +1274,7 @@
     "bytes": 898586592,
     "sha256": "04f05fd98e670c347173407892c7084ff11f938423845fbaa302708f47dae1fc",
     "verifiedMembers": 37464
-  }
+  },
+  "opaqueOperationOutcomeReview": "docs/TAILCACHE_12_OPAQUE_OPERATION_PROBE_REVIEW.md",
+  "tlabObservationPlan": "docs/TAILCACHE_12_TLAB_OBSERVATION_PLAN.md"
 }
