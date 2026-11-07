@@ -226,6 +226,35 @@ class NativeRetryTest(unittest.TestCase):
                 m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
             with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
 
+    def test_inactive_dependency_advice_is_bound_and_cannot_replace_memory_gate(self):
+        import tailcache12_dependency_cache as dep
+        from test_tailcache12_dependency_cache import pinned
+        m=self.manifest();samples=self.samples();m['nativeEnvironmentDeclaration']=host.environment_declaration(samples[-1])
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);q=root/'quiet';self.write_quiet(q,m,samples);attempt=root/'attempt';attempt.mkdir()
+            paths=list(map(str,dep.EXACT))+[str(dep.GRADLE/'compiler.jar'),str(dep.MODULES/('g/a/1/'+40*'a'+'/a.jar'))]
+            record=dict(version=1,method=dep.METHOD,sourceSha256=m['sourceSha256'],operatorUid=1000,
+                readOnly=True,preparationPass=True,errors=[],processChecks=[[],[]],declaredTargets=paths,declarations=pinned(),
+                files=[dict(path=p,device=1,inode=i+1,uid=0 if i<2 else 1000,bytesBefore=10,bytesAfter=10,
+                    mtimeBeforeNs=1,mtimeAfterNs=1,advice='POSIX_FADV_DONTNEED',regular=True) for i,p in enumerate(paths)])
+            proof=q/'dependency-cache-preparation.json';prep_path=q/'host-preparation.json'
+            prep=dict(version=1,sourceSha256=m['sourceSha256'],method='fsync-and-posix-fadvise-dontneed-task-files',
+                minimumFreeKiB=3*1024**2,after=dict(MemFreeKiB=4*1024**2),errors=[],preparationPass=True)
+            def freeze():
+                proof.write_text(json.dumps(record));prep['dependencyCachePreparationSha256']=retry.sha(proof)
+                prep_path.write_text(json.dumps(prep))
+                with patch.object(retry.time,'monotonic_ns',return_value=123*10**9):
+                    m['initialQuietRef']=retry.initial_quiet_reference(q,m,m['nativeHostRetryPolicy'],samples[-1])
+            freeze();self.assertTrue(retry.verify_initial_quiet(attempt,m)['quietPass'])
+            record['files'][0]['mtimeAfterNs']=2;proof.write_text(json.dumps(record))
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            record['files'][0]['mtimeAfterNs']=1;record['sourceSha256']='wrong';freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+            record['sourceSha256']=m['sourceSha256'];prep['after']['MemFreeKiB']=2*1024**2;freeze()
+            with self.assertRaises(ValueError):retry.verify_initial_quiet(attempt,m)
+
     def test_initial_quiet_is_frozen_source_matched_and_expires_before_first_launch(self):
         m=self.manifest()
         samples=self.samples()

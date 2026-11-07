@@ -91,6 +91,12 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
             if sha(tool)!=cache['toolCachePreparationSha256']:
                 raise ValueError('Changed task-tooling cache preparation evidence')
             verify_tool_cache(json.loads(tool.read_text()),manifest['sourceSha256'])
+        if cache.get('dependencyCachePreparationSha256'):
+            from tailcache12_dependency_cache import verify as verify_dependency_cache
+            dependency=path/'dependency-cache-preparation.json'
+            if sha(dependency)!=cache['dependencyCachePreparationSha256']:
+                raise ValueError('Changed inactive dependency cache preparation evidence')
+            verify_dependency_cache(json.loads(dependency.read_text()),manifest['sourceSha256'])
         if cache.get('swapPreparationSha256'):
             from tailcache12_swap_prepare import configuration
             reset=path/'swap-preparation.json'
