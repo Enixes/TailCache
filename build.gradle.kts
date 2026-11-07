@@ -692,6 +692,11 @@ val tailCache12LiveBytes = providers.gradleProperty("tailcache12LiveBytes").orEl
 val tailCache12Churn = providers.gradleProperty("tailcache12ChurnBytesPerSecond").orElse("16777216")
 val tailCache12Seed = providers.gradleProperty("tailcache12Seed").orElse("24301")
 val tailCache12FlightRecorder = providers.gradleProperty("tailcache12FlightRecorder").orElse("false").get().toBoolean()
+val tailCache12DenseObserver = providers.gradleProperty("tailcache12DenseObserver").orElse("false").get().toBooleanStrict()
+require(!tailCache12DenseObserver || (!tailCache12FlightRecorder &&
+    providers.gradleProperty("tailcache12ObserverDiagnosticOnly").orElse("false").get() == "true")) {
+    "Common observer work requires an explicit unprofiled diagnostic-only declaration"
+}
 require(!tailCache12FlightRecorder || providers.gradleProperty("tailcache12DiagnosticOnly").orElse("false").get() == "true") {
     "Flight Recorder requires an explicit Task12 diagnostic-only declaration"
 }
@@ -705,6 +710,7 @@ fun tailCache12FlightOptions(directory: File): List<String> = if (!tailCache12Fl
 // Only Task12 uses this explicit generated-harness overlay. JMH jars, original
 // generated classes and all other benchmark task classpaths stay untouched.
 val tailCache12SamplerVersion = "fixed-mixed-lcg-mask15-v1"
+val tailCache12DenseSamplerVersion = "fixed-mixed-lcg-mask15-dense-v1"
 val tailCache12OriginalSources = layout.buildDirectory.dir("generated/sources/annotationProcessor/java/jmh").get().asFile
 val tailCache12OverlaySources = layout.buildDirectory.dir("generated/tailcache12-sampler").get().asFile
 val tailCache12OverlayClasses = layout.buildDirectory.dir("classes/java/tailcache12-sampler")
@@ -757,6 +763,62 @@ val compileTailCache12SampleOverlay = tasks.register<JavaCompile>("compileTailCa
     destinationDirectory.set(tailCache12OverlayClasses)
     options.compilerArgs.add("-proc:none")
 }
+val tailCache12DenseSources = layout.buildDirectory.dir("generated/tailcache12-dense-sampler").get().asFile
+val tailCache12DenseClasses = layout.buildDirectory.dir("classes/java/tailcache12-dense-sampler")
+val prepareTailCache12DenseOverlay = tasks.register("prepareTailCache12DenseOverlay") {
+    val fixedRoot = tailCache12OverlaySources
+    val outputRoot = tailCache12DenseSources
+    val methods = tailCache12SamplerMethods
+    val packagePath = tailCache12SamplerPackage
+    val sparseVersion = tailCache12SamplerVersion
+    val denseVersion = tailCache12DenseSamplerVersion
+    dependsOn(prepareTailCache12SampleOverlay)
+    inputs.dir(fixedRoot)
+    inputs.property("denseSamplerVersion", denseVersion)
+    outputs.dir(outputRoot)
+    doLast {
+        for (method in methods) {
+            val name = "CrossoverBenchmark_${method}_jmhTest"
+            var source = fixedRoot.resolve("$packagePath/$name.java").readText()
+            fun patch(old: String, replacement: String) {
+                require(source.windowed(old.length).count { it == old } == 1) {
+                    "Unexpected generated sample stub; refusing common-observer transformation"
+                }
+                source = source.replace(old, replacement)
+            }
+            patch("TAILCACHE_SAMPLE_SELECTION_VERSION = \"$sparseVersion\"", "TAILCACHE_SAMPLE_SELECTION_VERSION = \"$denseVersion\"")
+            patch("        int currentStride = 0;\n        do {",
+                "        int currentStride = 0;\n        long densePreviousEnd = System.nanoTime();\n" +
+                "        l_pressurestate1_G.beginDenseWindow(densePreviousEnd);\n        do {")
+            patch("            if (sample) {\n                time = System.nanoTime();\n            }",
+                "            time = System.nanoTime();")
+            patch("            if (sample) {\n                buffer.add((System.nanoTime() - time) / opsPerInv);\n" +
+                "                // Fixed sampling: retain every selected observation without decimation.\n            }",
+                "            long denseEnd;\n            if (sample) {\n" +
+                "                denseEnd = System.nanoTime();\n" +
+                "                buffer.add((denseEnd - time) / opsPerInv);\n            } else {\n" +
+                "                denseEnd = System.nanoTime();\n            }\n" +
+                "            l_pressurestate1_G.recordDense(time, denseEnd, densePreviousEnd);\n" +
+                "            densePreviousEnd = denseEnd;")
+            patch("        startRndMask = Math.max(startRndMask, rndMask);\n        result.realTime = realTime;\n" +
+                "        result.measuredOps = operations;",
+                "        startRndMask = Math.max(startRndMask, rndMask);\n        result.realTime = realTime;\n" +
+                "        result.measuredOps = operations;\n" +
+                "        l_pressurestate1_G.finishDenseWindow(operations, densePreviousEnd);")
+            val output = outputRoot.resolve("$packagePath/$name.java")
+            output.parentFile.mkdirs()
+            output.writeText(source)
+        }
+    }
+}
+val compileTailCache12DenseOverlay = tasks.register<JavaCompile>("compileTailCache12DenseOverlay") {
+    dependsOn(prepareTailCache12DenseOverlay)
+    javaCompiler.set(javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(21) })
+    source(tailCache12DenseSources)
+    classpath = jmh.compileClasspath + jmh.output
+    destinationDirectory.set(tailCache12DenseClasses)
+    options.compilerArgs.add("-proc:none")
+}
 
 fun tailCache12Directory(kind: String): File {
     require(tailCache12RunId.get().matches(Regex("[A-Za-z0-9._-]+"))) { "Invalid Task 12 run id" }
@@ -768,8 +830,8 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
     tasks.register<JavaExec>(taskName) {
         group = "benchmark"
         description = "Task 12 crossover $kind channel; calibration/pilot gates still required."
-        dependsOn(jmh.classesTaskName, compileTailCache12SampleOverlay)
-        classpath = files(tailCache12OverlayClasses) + jmh.runtimeClasspath
+        dependsOn(jmh.classesTaskName, if (tailCache12DenseObserver) compileTailCache12DenseOverlay else compileTailCache12SampleOverlay)
+        classpath = files(if (tailCache12DenseObserver) tailCache12DenseClasses else tailCache12OverlayClasses) + jmh.runtimeClasspath
         mainClass.set("org.openjdk.jmh.Main")
         javaLauncher.set(java21Launcher)
         jvmArgs(chronicleJvmArgs + "-Djmh.json.rawData=true")
@@ -777,7 +839,16 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val samplerMethods = tailCache12SamplerMethods
         val samplerPackage = tailCache12SamplerPackage
         val originalSources = tailCache12OriginalSources
-        val overlaySources = tailCache12OverlaySources
+        val overlaySources = if (tailCache12DenseObserver) tailCache12DenseSources else tailCache12OverlaySources
+        val denseObserver = tailCache12DenseObserver
+        val samplerVersion = if (denseObserver) tailCache12DenseSamplerVersion else tailCache12SamplerVersion
+        if (denseObserver) {
+            require(kind == "sample-calibration" && providers.gradleProperty("tailcache12Forks").orElse("3").get() == "1"
+                    && listOf(tailCache12Backends.get(), tailCache12Payloads.get(), tailCache12Residents.get(),
+                        tailCache12LiveBytes.get(), tailCache12Churn.get(), tailCache12Seed.get()).all { !it.contains(',') }) {
+                "Common observer diagnostic requires one SampleTime condition and one fresh fork"
+            }
+        }
         val flightRecorder = tailCache12FlightRecorder
         val flightSettings = tailCache12FlightSettings
         if (flightRecorder) {
@@ -819,7 +890,8 @@ fun registerTailCache12Jmh(taskName: String, kind: String, smoke: Boolean = fals
         val jvmOptions = mutableListOf("-XX:+UseG1GC", "-Xms${tailCache12Heap.get()}m", "-Xmx${tailCache12Heap.get()}m")
         // Boundary counters are retained in every fork; only compiler diagnostics enable XML/profilers.
         jvmOptions.add("-Dtailcache12.compilerWindow=true")
-        jvmOptions.add("-Dtailcache12.sampleSelectionVersion=$tailCache12SamplerVersion")
+        jvmOptions.add("-Dtailcache12.sampleSelectionVersion=$samplerVersion")
+        if (denseObserver) jvmOptions.addAll(listOf("-Dtailcache12.denseObserver=true", "-Dtailcache12.observerDiagnosticOnly=true"))
         jvmOptions.addAll(tailCache12FlightOptions(directory))
         jvmOptions.add("-Dtailcache12.conditioningIterations=$conditioning")
         jvmOptions.add("-Dtailcache12.lifecycleWarmupVersion=" +

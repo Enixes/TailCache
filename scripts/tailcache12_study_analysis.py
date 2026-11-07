@@ -228,7 +228,7 @@ def merged_histograms(iterations, operations):
 
 
 def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupancy_band=None,
-                     diagnostic_compiler_xml=False, diagnostic_flight_recording=False):
+                     diagnostic_compiler_xml=False, diagnostic_flight_recording=False,diagnostic_dense_observer=False):
     """One invocation must contain exactly one condition and one fresh worker JVM."""
     raw = pathlib.Path(raw)
     records = json.loads((raw / kind / "results.json").read_text())
@@ -278,6 +278,8 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
     validate_lifecycle_preparation(inputs,text,record['jvmArgs'])
     from tailcache12_sample_selection import verify as verify_sample_selection
     sample_selection = verify_sample_selection(raw / kind, record['jvmArgs'], text, method)
+    from tailcache12_dense_observer import validate_controls as validate_dense_controls
+    validate_dense_controls(record['jvmArgs'],inputs,sample_selection,raw/kind,diagnostic_dense_observer)
     if f"traceSha256={expected_trace}" not in text or f"valueGenerator={VALUE_GENERATOR}" not in text:
         raise ValueError("Missing or mismatched workload fingerprint")
     if inputs.get("TransportWarmupVersion") not in (None,"none"):
@@ -411,6 +413,10 @@ def jmh_fork_summary(raw, kind, inputs, expected_trace, runtime_identity, occupa
         reasons.extend(compiler_rejection_reasons(result["compilerTotalMs"], result["broadCompilerPerIterationMs"],
                                                   inputs["Measurements"]))
     result["accepted"] = not reasons
+    if diagnostic_dense_observer:
+        from tailcache12_dense_observer import replay as replay_dense
+        result.update(diagnosticDenseObserver=True,primaryEndpointUseAllowed=False,
+                      denseCapture=replay_dense(raw/kind,inputs,all_rows,result['iterationSampleCounts']))
     return result
 
 

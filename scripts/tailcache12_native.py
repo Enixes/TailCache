@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """Run a Task 12 command inside a temporary user-owned accounting scope."""
 import argparse
-import fcntl
 import os
 import pathlib
 import re
 import sys
-import subprocess
 
 
 def main():
@@ -32,12 +30,11 @@ def main():
                "--unit=" + unit, sys.executable, str(script), *args.command[1:]]
     lock_path = root / "build/reports/tailcache12/native-benchmark.lock"
     lock_path.parent.mkdir(parents=True, exist_ok=True)
-    with lock_path.open("a") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise SystemExit("Another scoped Task 12 command is running; no duplicate launched")
-        return subprocess.run(command, env=environment).returncode
+    # Keep the same BSD flock/scope lifetime without retaining a Python parent.
+    # The native flock parent waits for systemd-run and keeps the lock descriptor.
+    # Do not add --close/--no-fork/--fcntl: archive guards use fcntl.flock too.
+    os.execvpe("flock",["flock","--exclusive","--nonblock","--conflict-exit-code","73",
+        str(lock_path),*command],environment)
 
 
 if __name__ == "__main__":

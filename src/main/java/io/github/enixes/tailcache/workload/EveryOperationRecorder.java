@@ -101,6 +101,7 @@ public final class EveryOperationRecorder {
     public long gapAbove10ms() { return gapAbove10ms; }
     public long recordedCount() { return service.getTotalCount(); }
     public long overflowCount() { return histogramOverflow + eventOverflow; }
+    public int stallEventCount() { return eventCount; }
     public long servicePercentile(double percentile) { return service.getValueAtPercentile(percentile); }
 
     public void export(Path directory, String stem) throws IOException {

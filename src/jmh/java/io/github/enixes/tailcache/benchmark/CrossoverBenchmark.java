@@ -34,6 +34,7 @@ public class CrossoverBenchmark {
         private long workerAllocationStart;
         private java.nio.file.Path observationDirectory;
         private int conditioningIterations;
+        private DenseObserverCapture denseCapture;
         private final java.util.ArrayList<IterationObservation> observations = new java.util.ArrayList<>();
 
         private record IterationObservation(IterationType phase, long operations, long writes,
@@ -73,6 +74,20 @@ public class CrossoverBenchmark {
                 transportFrames = preparation.frames();
             }
             var lifecycle = CrossoverLifecycleWarmup.prepare(backend, config);
+            if (Boolean.getBoolean("tailcache12.denseObserver")) {
+                if (!Boolean.getBoolean("tailcache12.observerDiagnosticOnly")
+                        || params.getMode() != Mode.SampleTime || params.getOpsPerInvocation() != 1
+                        || params.getMeasurement().getBatchSize() != 1 || params.getWarmup().getBatchSize() != 1
+                        || !params.getBenchmark().endsWith("mixedWorkload")
+                        || java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+                            .anyMatch(a -> a.startsWith("-XX:StartFlightRecording="))) {
+                    throw new IllegalArgumentException("Dense observer requires its unprofiled single-operation diagnostic");
+                }
+                EveryOperationRecorder.warmupBranches();
+                denseCapture = new DenseObserverCapture(params.getWarmup().getCount(),
+                        params.getMeasurement().getCount(), conditioningIterations);
+                System.out.println("[TailCache12][observer] denseObserverVersion=" + DenseObserverCapture.VERSION);
+            }
             workload = new CrossoverWorkload(backend, config);
             churn = new ApplicationChurn(churnBytesPerSecond, 4096, 128);
             if (compilerWindow) compiler = java.lang.management.ManagementFactory.getCompilationMXBean();
@@ -93,6 +108,7 @@ public class CrossoverBenchmark {
 
         @Setup(Level.Iteration)
         public void startIteration() {
+            if (denseCapture != null) denseCapture.resetIteration();
             workload.resetTraceCursor();
             operationsBefore = workload.operations();
             writesBefore = workload.writes();
@@ -135,10 +151,16 @@ public class CrossoverBenchmark {
                             + "," + snapshot.retainedPayloadBytes() + "," + snapshot.startNs() + "," + snapshot.endNs()
                             + "," + observation.compilerMs() + "," + observation.workerAllocatedBytes() + "\n");
                 }
+                if (denseCapture != null) denseCapture.export(observationDirectory.resolve("dense-observer"));
             } catch (java.io.IOException failure) {
                 throw new java.io.UncheckedIOException("Unable to export iteration evidence", failure);
             }
         }
+
+        // Generated diagnostic stub calls only outside the cache-service timestamp pair.
+        public void beginDenseWindow(long start) { denseCapture.beginWindow(start); }
+        public void recordDense(long start, long end, long previousEnd) { denseCapture.record(start,end,previousEnd); }
+        public void finishDenseWindow(long operations, long end) { denseCapture.finishWindow(operations,end); }
 
         @TearDown(Level.Trial)
         public void close() {
