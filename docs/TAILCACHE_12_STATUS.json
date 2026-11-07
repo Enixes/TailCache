@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Common observer diagnostic remains uncollected:002 rejected normal3GiB memory readiness before any cache JVM. Inactive pinned dependency-code preparation implemented/reviewed for one fresh003; no campaign qualified.",
+  "currentBlocker": "Common observer003 rejected initial readiness before any cache JVM:3057192KiB MemFree<3145728 despite6580100KiB available,swap0. Three zero-fork rejections preserved. Awaiting decision on prospectively replacing initial free-page metric; no unchanged retries/expanded cleanup.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Launch commonobserver003 once with explicit tooling+inactive-dependency-code preparation; retain unchanged3GiB/zero swap/120s quiet/360s gates,12 modes and zero replacements. Review all outcomes before adoption; if readiness fails preserve/report needed action.",
+  "nextWork": "Resolve docs/TAILCACHE_12_MEMORY_READINESS_DECISION.md before any new attempt. Keep existing gate unless user accepts prospective versioned4GiB MemAvailable alternative; implement/test/review only after acceptance, then fresh004 with all other gates unchanged.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1379,7 +1379,7 @@
     "implementationReview": "docs/TAILCACHE_12_COMMON_OBSERVER_IMPLEMENTATION_REVIEW.md",
     "attempt": "native-final-commonobserver-probe-20261107-003",
     "quiet": "native-final-commonobserver-probequiet-20261107-003",
-    "status": "dependency_code_preparation_implemented_reviewed_003_pending",
+    "status": "third_preparation_rejected_zero_cache_forks_waiting_memory_protocol_decision",
     "expectedFreshJvms": 12,
     "replacements": 0,
     "primaryEndpointUseAllowed": false,
@@ -1402,7 +1402,15 @@
       "preservedAt": "evidence-archives/native-final-commonobserver002-preparation-rejection-20261107-001"
     },
     "dependencyCodePlan": "docs/TAILCACHE_12_DEPENDENCY_CACHE_PLAN.md",
-    "dependencyCodeReview": "docs/TAILCACHE_12_DEPENDENCY_CACHE_REVIEW.md"
+    "dependencyCodeReview": "docs/TAILCACHE_12_DEPENDENCY_CACHE_REVIEW.md",
+    "thirdPreparationRejected": {
+      "attempt": "native-final-commonobserver-probe-20261107-003",
+      "cacheJvmsLaunched": 0,
+      "memFreeKiB": 3057192,
+      "memAvailableKiB": 6580100,
+      "swapUsedKiB": 0,
+      "preservedAt": "evidence-archives/native-final-commonobserver003-preparation-rejection-20261107-001"
+    }
   },
   "caffeineProfileArchive": {
     "path": "evidence-archives/native-final-caffeine-profile-checkpoint-20261107-025.tar.gz",
@@ -1411,5 +1419,14 @@
     "verifiedMembers": 396,
     "parent": "native-final-fixedbuffer-checkpoint-20261107-023.tar.gz",
     "parentSha256": "abc915a69303b3ac71bb6911001314c821a271fbe6ab75fcc543d4e402752c41"
+  },
+  "memoryReadinessDecision": {
+    "status": "awaiting_user_decision",
+    "document": "docs/TAILCACHE_12_MEMORY_READINESS_DECISION.md",
+    "existingMetric": "MemFreeKiB",
+    "existingMinimumKiB": 3145728,
+    "proposedMetric": "MemAvailableKiB",
+    "proposedMinimumKiB": 4194304,
+    "proposalActive": false
   }
 }
