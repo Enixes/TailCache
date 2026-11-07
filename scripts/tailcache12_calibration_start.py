@@ -23,13 +23,23 @@ def memory_snapshot():
     return result
 
 
-def prepare_file_cache(report,require_empty_swap=True):
+def prepare_file_cache(report,require_empty_swap=True,include_build_outputs=False):
     """Release only clean cached pages of retained task files, outside collection."""
     if report.exists(): raise ValueError('Cache preparation evidence exists; refusing overwrite')
-    result=dict(version=2,method='fsync-and-posix-fadvise-dontneed-task-files',
+    result=dict(version=3 if include_build_outputs else 2,method='fsync-and-posix-fadvise-dontneed-task-files',
                 sourceSha256=evidence.source_hash(),before=memory_snapshot(),files=[],errors=[],
                 minimumFreeKiB=3*1024**2,requiresEmptySwap=require_empty_swap,preparationPass=False)
-    for root in (evidence.REPORTS,evidence.ROOT/'evidence-archives'):
+    roots=(evidence.ROOT/'build',evidence.ROOT/'evidence-archives',evidence.ROOT/'.gradle') if include_build_outputs else (
+        evidence.REPORTS,evidence.ROOT/'evidence-archives')
+    if include_build_outputs:result['roots']=['build','evidence-archives','.gradle']
+    if include_build_outputs:
+        for root in roots:
+            if root.is_symlink() or not root.resolve().is_relative_to(evidence.ROOT.resolve()):
+                result['errors'].append(dict(path=str(root),error='Private preparation root is a symlink or escapes the checkout'))
+        if result['errors']:
+            evidence.save(report,result)
+            raise ValueError('Private cache preparation root escaped its declaration; no advice applied')
+    for root in roots:
         for path in sorted(root.rglob('*')):
             if path.is_symlink() or not path.is_file() or not path.stat().st_size:
                 continue

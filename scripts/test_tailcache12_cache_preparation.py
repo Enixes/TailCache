@@ -8,6 +8,37 @@ import tailcache12_calibration_start as start
 
 
 class CachePreparationTest(unittest.TestCase):
+    def test_private_cache_symlink_root_is_refused_before_any_advice(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)
+            foreign=root/'foreign';foreign.mkdir();(foreign/'data').write_bytes(b'not touched');(root/'.gradle').symlink_to(foreign)
+            report=reports/'rejection.json'
+            with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',reports), \
+                 patch.object(start.evidence,'source_hash',return_value='source'), \
+                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2,'SwapUsedKiB':0}), \
+                 patch.object(start.os,'posix_fadvise') as advice:
+                with self.assertRaises(ValueError):start.prepare_file_cache(report,include_build_outputs=True)
+            advice.assert_not_called()
+            self.assertTrue(json.loads(report.read_text())['errors'])
+
+    def test_private_build_cache_opt_in_is_contained_unique_and_preserves_all_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory);reports=root/'build/reports/tailcache12';reports.mkdir(parents=True)
+            paths=[reports/'raw',root/'build/classes/example.class',root/'.gradle/local-cache',root/'evidence-archives/archive']
+            for path in paths:path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b'preserved bytes')
+            foreign=root/'user-file';foreign.write_bytes(b'not touched');(root/'.gradle/link').symlink_to(foreign)
+            with patch.object(start.evidence,'ROOT',root),patch.object(start.evidence,'REPORTS',reports), \
+                 patch.object(start.evidence,'source_hash',return_value='source'), \
+                 patch.object(start,'memory_snapshot',return_value={'MemFreeKiB':4*1024**2,'SwapUsedKiB':0}), \
+                 patch.object(start.os,'posix_fadvise') as advice:
+                result=start.prepare_file_cache(reports/'prep.json',include_build_outputs=True)
+            self.assertEqual(result['version'],3)
+            self.assertEqual(result['roots'],['build','evidence-archives','.gradle'])
+            self.assertEqual(advice.call_count,4)
+            self.assertEqual({r['path'] for r in result['files']},{p.relative_to(root).as_posix() for p in paths})
+            for path in paths:self.assertEqual(path.read_bytes(),b'preserved bytes')
+            self.assertEqual(foreign.read_bytes(),b'not touched')
+
     def test_task_only_advice_preserves_bytes_and_retains_preparation(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory)

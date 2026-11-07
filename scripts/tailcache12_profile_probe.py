@@ -43,6 +43,7 @@ def replay(attempt, review_id):
     expected=grid()
     if (manifest.get('schemaVersion')!='tailcache12-worker-profile-v1'
             or manifest.get('stage')!='observer-profile' or not manifest.get('diagnosticOnly')
+            or manifest.get('cachePreparationVersion')!=3
             or manifest.get('primaryEndpointUseAllowed') is not False or manifest['expectedBlocks']!=[k for k,v in expected]
             or calibration.sha(attempt/'source.tar.gz')!=manifest['sourceArchiveSha256']):
         raise ValueError('Changed worker-profile declaration/source')
@@ -52,6 +53,9 @@ def replay(attempt, review_id):
         raise ValueError('Profile settings differ from frozen source')
     if archive_measurement_source_hash(attempt/'source.tar.gz')!=manifest['measurementSourceSha256']:
         raise ValueError('Profile measurement-source identity changed')
+    native_retry.verify_initial_quiet(attempt,dict(manifest,nativeHostRetryPolicy=native_retry.declare_policy(2)))
+    preparation=json.loads((attempt.parent/manifest['initialQuietRef']['attempt']/'host-preparation.json').read_text())
+    if preparation.get('version')!=3:raise ValueError('Profile requires its declared private-cache preparation')
     destination=attempt/review_id;destination.mkdir()
     rows=[];runtime=None;trace=None
     for index,invocation in enumerate(manifest['invocations']):
@@ -135,7 +139,8 @@ def main():
         raise ValueError('Worker profiles require a clean parent JVM-option environment')
     if shutil.disk_usage(evidence.ROOT).free<4*1024**3:
         raise ValueError('Require4GiB free disk for bounded recordings/review/preservation')
-    source=evidence.source_hash();cache=prepare_file_cache(cache_path)
+    source=evidence.source_hash();cache=prepare_file_cache(cache_path,include_build_outputs=True)
+    if cache.get('version')!=3:raise ValueError('Unexpected profile cache preparation version')
     if not run_preflight(quiet,120,300)['quietPass'] or source!=evidence.source_hash():
         raise ValueError('Profile preparation failed or source changed')
     evidence.save(quiet/'host-preparation.json',cache)
@@ -147,7 +152,7 @@ def main():
     if os.environ.get('TAILCACHE_REQUIRE_NATIVE_HOST')!='1' or current.get('nativeScopeQualified')!=1:
         raise ValueError('Worker profile requires its exclusive native accounting scope')
     manifest.update(schemaVersion='tailcache12-worker-profile-v1',diagnosticOnly=True,primaryEndpointUseAllowed=False,maxFreshJvms=4,
-        replacements=0,nativeEnvironmentVersion=1,nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(current),
+        replacements=0,cachePreparationVersion=3,nativeEnvironmentVersion=1,nativeEnvironmentDeclaration=evidence.native_host.environment_declaration(current),
         measurementSourceSha256=measurement_source_hash(evidence.ROOT),
         profileSettingsSha256=calibration.sha(evidence.ROOT/SETTINGS),
         plan='docs/TAILCACHE_12_JFR_PROFILE_PLAN.md')

@@ -19,7 +19,7 @@
   },
   "verification": {
     "javaTests": 45,
-    "pythonTests": 134,
+    "pythonTests": 136,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
@@ -51,10 +51,10 @@
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "Observer discrepancy unresolved; worker-only JFR diagnostic implemented/tested/reviewed, no new source-qualified prerequisites or primary evidence.",
+  "currentBlocker": "Observer discrepancy unresolved. JFR001 preparation stopped before any cache JVM at11MiB below fixed free-memory floor; opt-in private-cache v3 repair reviewed for fresh002, no gate relaxation.",
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Collect only the predeclared4-fork worker JFR profile after fresh native cache/empty-swap/quiet preparation. Verify recordings/clocks/quality, then review actual worker stacks/allocation sites; no primary campaign authorized.",
+  "nextWork": "Run only fresh4-worker profile002 with private-cache v3, unchanged3GiB/zero-swap gates and fresh quiet; then raw recording/clock/quality and worker-stack review. Preserve001 rejected preparation; no primary campaign authorized.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -1297,10 +1297,10 @@
   "tlabObservationOutcomeReview": "docs/TAILCACHE_12_TLAB_OBSERVATION_REVIEW.md",
   "workerProfilePlan": "docs/TAILCACHE_12_JFR_PROFILE_PLAN.md",
   "workerProfileImplementation": {
-    "status": "implemented_tested_reviewed_collection_pending",
+    "status": "private_cache_v3_repair_tested_reviewed_new002_collection_pending",
     "review": "docs/TAILCACHE_12_JFR_PROFILE_IMPLEMENTATION_REVIEW.md",
-    "attempt": "native-final-jfrprofile-20261107-001",
-    "quiet": "native-final-jfrprofilequiet-20261107-001",
+    "attempt": "native-final-jfrprofile-20261107-002",
+    "quiet": "native-final-jfrprofilequiet-20261107-002",
     "expectedFreshJvms": 4,
     "replacements": 0,
     "ordinaryEndpointExclusion": true,
@@ -1308,12 +1308,26 @@
     "affineClockSmokePass": true,
     "maximumSmokeResidualNs": 13766.895448446274,
     "maximumHeldOutSmokeResidualNs": 12515.248543947935,
-    "primaryEndpointUseAllowed": false
+    "primaryEndpointUseAllowed": false,
+    "firstPreparationRejected": true,
+    "cacheJvmsCollected": 0,
+    "cachePreparationVersion": 3,
+    "privatePreparationReview": "docs/TAILCACHE_12_PRIVATE_CACHE_PREPARATION_REVIEW.md"
   },
   "tlabObservationArchive": {
     "path": "evidence-archives/native-final-tlabdebug-checkpoint-20261107-018.tar.gz",
     "bytes": 911332328,
     "sha256": "f4ab8e908ee0f8a06516c43e474bc348ce00506e03b6c3af08b36a790dc1219a",
     "verifiedMembers": 38629
+  },
+  "workerProfilePreparationFailure": {
+    "attempt": "native-final-jfrprofile-20261107-001",
+    "cacheJvmsLaunched": 0,
+    "memFreeKiB": 3134136,
+    "minimumFreeKiB": 3145728,
+    "memAvailableKiB": 6439296,
+    "swapUsedKiB": 0,
+    "evidence": "evidence-archives/native-final-jfr-preparation-rejection-20261107-001.json",
+    "sha256": "f68d66642b5ec4b6fd3353d970800af5007a1538f49a6feb8d979e44d779a9f9"
   }
 }
