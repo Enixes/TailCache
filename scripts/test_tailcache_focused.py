@@ -11,6 +11,14 @@ class FocusedTest(unittest.TestCase):
             p.write_text('upperEquivalentNs,count\n'+''.join(f'{i},1\n' for i in range(1,200)))
             self.assertEqual(focus.rank(p,99),198)
             self.assertEqual(focus.rank(p,50),100)
+    def test_p9999_is_a_rank_not_the_maximum_and_uses_the_whole_count(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=pathlib.Path(tmp)/'bins.csv'
+            p.write_text('upperEquivalentNs,count\n10,9999\n1000000,1\n')
+            self.assertEqual(focus.rank(p,99.99),10)
+            self.assertEqual(focus.rank(p,100),1000000)
+            p.write_text('upperEquivalentNs,count\n10,9999\n1000000,2\n')
+            self.assertEqual(focus.rank(p,99.99),1000000)
     def test_finite_schedule_has_complete_independent_pairs_without_duplicates(self):
         slots=focus.schedule(4096,[328,352],3,['closed','arrival'])
         self.assertEqual(len(slots),24);self.assertEqual(len({s['label'] for s in slots}),24)
@@ -23,8 +31,8 @@ class FocusedTest(unittest.TestCase):
     def test_pressure_oom_is_retained_without_latency_ratio_and_without_poisoning_other_pairs(self):
         rows=[]
         for s in focus.schedule(4096,[328,352],3,['closed']):
-            latency={'service':{'percentilesNs':{'99':100,'99.9':200}}}
-            if s['backend']=='CHRONICLE_IN_MEMORY':latency={'service':{'percentilesNs':{'99':80,'99.9':160}}}
+            latency={'service':{'percentilesNs':{'99':100,'99.9':200,'99.99':1000}}}
+            if s['backend']=='CHRONICLE_IN_MEMORY':latency={'service':{'percentilesNs':{'99':80,'99.9':160,'99.99':1200}}}
             rows.append(dict(s,status='OK',latencyVerified=True,latency=latency,warnings=[]))
         rows[0]['status']='OOM_SETUP';rows[0].pop('latency')
         result=focus.summaries(rows)
@@ -32,10 +40,12 @@ class FocusedTest(unittest.TestCase):
         self.assertEqual(len(affected['ratios']['service']['99.9']['pairedRatios']),2)
         self.assertTrue(any(not p['usable'] for p in affected['passes']))
         self.assertIsNone(affected['ratios']['service']['99.9']['confidenceInterval'])
+        self.assertEqual(affected['ratios']['service']['99.9']['direction'],'chronicle-lower')
+        self.assertEqual(affected['ratios']['service']['99.99']['direction'],'caffeine-lower')
     def test_noisy_observations_are_visible_and_source_rows_are_not_reclassified(self):
         data=[]
         for s in focus.schedule(4096,[328],1,['closed']):
-            data.append(dict(s,status='OK',latencyVerified=True,latency={'service':{'percentilesNs':{'99':100,'99.9':200}}},warnings=['external CPU']))
+            data.append(dict(s,status='OK',latencyVerified=True,latency={'service':{'percentilesNs':{'99':100,'99.9':200,'99.99':1000}}},warnings=['external CPU']))
         original=copy.deepcopy(data);summary=focus.summaries(data)
         self.assertTrue(all(summary[0]['passes'][0]['warnings'].values()));self.assertEqual(data,original)
 
