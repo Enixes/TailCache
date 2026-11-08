@@ -1,6 +1,6 @@
 # Focused crossover results and researcher review — 8 November 2026
 
-[Open the interactive conclusions table and crossover graphs](TAILCACHE_RESULTS_EXPLORER.html). It covers all 132 forks, all three percentiles, and each retained timing channel, with paired evidence and CSV export.
+[Open the interactive conclusions table and crossover graphs](TAILCACHE_RESULTS_EXPLORER.html). It covers all 132 forks, all four percentiles, and each retained timing channel, with paired evidence and CSV export.
 
 **The first useful RQ answers are complete. Collection is stopped.** At 4 KiB, ordinary Chronicle `get` has a reproducible advantage in **actual scheduled response p99.9** after pressure increases, but **no forward crossover in saturated service p99/p99.9 was observed** at the tested high-pressure points. At 256 B, service p99.9 crosses in the opposite direction: Chronicle starts lower and becomes higher near heap saturation. Buffer reuse reverses that disadvantage in a separately labelled sensitivity.
 
@@ -8,7 +8,9 @@
 
 These are exploratory results answering where a useful effect exists and which endpoint sees it. They do not establish a universal occupancy threshold. All 132 workload JVMs completed, verified resident values and remain in the dataset, including warning-bearing forks. There were zero replacement forks, OOMs or censored arrivals. Historical Task 12 and AGY evidence retain their original classifications.
 
-## RQ1: response crossover exists; ordinary service crossover did not reproduce
+**Requested p99.999 extension:** the rarer service tail changes ordering: Chronicle is lower at all five saturated 4 KiB points. At 256 B, saturated service changes from Caffeine lower at 448 MiB to Chronicle lower at 480 MiB within the earlier runtime. Scheduled 4 KiB response remains lower for Chronicle even at baseline. [Read the p99.999 review and finite-support limits](#requested-p99999-extension).
+
+## RQ1 at p99/p99.9: response crossover exists; ordinary service crossover did not reproduce
 
 The scheduled experiment offers 50,000 requests/s to a single worker. Response is completion minus **intended arrival**, including backlog after a pause. Intended times never move after a stall, no overdue arrivals are skipped, and every offered request is accounted for. This differs from AGY's synthetic expected-interval histogram correction. Service is completion minus actual operation start; the saturated service experiment uses separate JVMs.
 
@@ -111,6 +113,32 @@ The [p99.99 dataset](../evidence-archives/focused-rq-p9999-20261108-001/study.js
 
 The separate `focused-rq-p9999-delivery-20261108-001.tar.gz` preserves this derivative, updated analysis/collector/decoder source, review and plots, with read-back verification. Its manifest pins the original delivery archive by hash; the original archive is required alongside this supplement for the complete raw evidence. Neither archive is an off-host backup.
 
+## Requested p99.999 extension
+
+This is a post hoc endpoint from the same retained distributions, with **zero new workload runs**. It extends the reported distribution; it does not replace p99, p99.9 or p99.99 or retroactively change the original hypothesis.
+
+**4 KiB saturated ordinary service now favors Chronicle at every tested point, in all three pairs.** This is a different conclusion from p99.99, where all five points favor Caffeine:
+
+| Application ballast | Caffeine service p99.999 | Chronicle service p99.999 | Paired Chronicle/Caffeine ratios |
+| --- | --- | --- | --- |
+| 328 MiB | 1.614–1.651 ms | 1.463–1.492 ms | 0.902, 0.904, 0.919 |
+| 352 MiB | 16.695–18.022 ms | 1.411–1.434 ms | 0.081, 0.084, 0.080 |
+| 360 MiB | 17.973–18.989 ms | 1.422–1.451 ms | 0.077, 0.081, 0.075 |
+| 364 MiB | 18.268–19.218 ms | 1.395–1.435 ms | 0.075, 0.076, 0.074 |
+| 368 MiB | 18.383–19.251 ms | 1.384–1.419 ms | 0.077, 0.074, 0.073 |
+
+At 368 MiB, the millisecond observations previously documented beyond p99.99 are now inside the reported tail. This is consistent with the frequency explanation above. It does not establish that every measured stall was caused by GC. Because Chronicle already wins at the lowest tested saturated pressure of 328 MiB at this percentile, these measurements establish an advantage throughout that range, **not a newly bracketed forward service crossover**. Builds remain separated in the explorer.
+
+**4 KiB scheduled response p99.999 also favors Chronicle at all measured points.** Within the matched later-runtime 30 s cohort, the zero-ballast baseline is 3.779–4.135 ms for Caffeine versus 1.701–1.759 ms for Chronicle; at 208 MiB it is 3.541–3.727 ms versus 1.491–1.762 ms. There is already an advantage at baseline, so the p99.9 forward response bracket remains specific to that endpoint.
+
+**256 B saturated ordinary service has a forward p99.999 ordering change between 448 and 480 MiB in the earlier runtime:** Caffeine is lower in all three pairs at 448 MiB (23.951–24.671 µs versus 1.029–1.065 ms); Chronicle is lower in all three pairs at 480 MiB (1.064–1.123 ms versus 1.238–1.356 ms for Caffeine). The later-runtime 464/472 MiB observations favor Caffeine; they cannot narrow the earlier-runtime bracket. The 472 MiB warning remains attached. At 256 B scheduled response, 448 MiB is mixed and 480 MiB favors Chronicle, with substantial fork variation. In the separate 256 B / 480 MiB getUsing comparison, Chronicle service p99.999 is lower in all three clean pairs, but Caffeine's range spans 29.487 µs–17.351 ms; the very different ratio magnitudes must remain visible.
+
+**Finite support is particularly important here.** An 8 s arrival fork has only **4 nominal observations** in its upper 0.001%; a 30 s arrival fork has **15**. Queued responses are correlated. The explorer shows nominal support and observations strictly above the selected HDR bin for every percentile and fork. These are not independent pause counts or confidence intervals. One-second arrival-floor controls have only 0.5 nominal upper-tail observations at p99.999; they are diagnostic and are not subtracted from measured latency. No trimming, pooling or new gate relaxation was used.
+
+The [p99.999 dataset](../evidence-archives/focused-rq-p99999-20261108-001/study.json), [primary comparisons](../evidence-archives/focused-rq-p99999-20261108-001/comparisons.md), [396 channel rows](../evidence-archives/focused-rq-p99999-20261108-001/forks.csv) and [audit](../evidence-archives/focused-rq-p99999-20261108-001/audit.json) retain the prior endpoints and append p99.999. Validation decoded **504 workload/control HDR histograms**, independently checked **1,680** nonempty workload endpoints and reverified **3,960** original inventory files. Original studies and both previous delivery bundles are hash-verified unchanged. p99.999 is computed by the pinned HDR rank rule, not substituted with a maximum. The updated collector handles legacy summaries without inventing absent percentiles.
+
+The first RQ answer is consequently **distribution- and load-dependent**: Chronicle's 4 KiB service disadvantage at p99.99 coexists with a service advantage at p99.999 and lower scheduled response at both endpoints. The off-heap benefit is visible in rarer stalls, while ordinary-access overhead remains visible lower in the distribution. This exploratory extension supports a more precise hypothesis for future confirmation; it does not turn three short forks into a precise threshold or a universal performance claim.
+
 ## Methods, warnings and independent review
 
 The [pre-implementation plan and staged decisions](TAILCACHE_FOCUSED_REDO.md) record what each bounded batch was intended to resolve. Twelve batches contain 132 workload JVMs plus 36 tiny control JVMs. No batch has more than 24 workload JVMs. Active collection totals about **64 minutes**; workload collection ran from 12:48 to 14:05 IST on 8 November, with implementation/review gaps. All slots were preserved; no whole-study restart was used.
@@ -130,7 +158,7 @@ Review findings and limits:
 - **Source matching:** the first four batches and later eight batches form two compiled-runtime groups after adding `getUsing` support. Every within-point backend pair is source matched. Ordinary `executeNext` logic is unchanged, but the runner gains a branch and common caller buffer. Both exact class sets are retained; the older 40-class set was reconstructed and all 40 hashes match its frozen protocol. RQ1's long response baseline and upper points share the same later runtime. The original 256 B 448/480 bracket shares the earlier runtime; cross-runtime midpoints are descriptive refinements.
 - **Causal scope:** G1, one worker, one seed, one heap, one arrival rate and this host. This is a bounded discovery study, not a collector/concurrency/production-SLA generalization. Allocation and pause evidence support mechanisms; they do not isolate all implementation differences. No survival limit or universal occupancy cliff is established.
 
-**Research decision:** the response-latency mechanism is worth pursuing; a larger confirmatory study should keep percentile and read ownership explicit. The p99.9 response crossover is not a percentile-independent threshold: at p99.99 Chronicle already wins at baseline. The original hypothesis that rising pressure must make ordinary Chronicle service p99/p99.9 beat Caffeine at 4 KiB is unsupported within this tested range, and the requested p99.99 endpoint does not rescue it. The 256 B service and reuse results also change ordering with percentile. These are usable distribution-level findings. Further collection is unnecessary for this first RQ-focused answer.
+**Research decision (p99 through p99.99; see the additional p99.999 findings above):** the response-latency mechanism is worth pursuing; a larger confirmatory study should keep percentile and read ownership explicit. The p99.9 response crossover is not a percentile-independent threshold: at p99.99 Chronicle already wins at baseline. The original hypothesis that rising pressure must make ordinary Chronicle service p99/p99.9 beat Caffeine at 4 KiB is unsupported within this tested range, and the requested p99.99 endpoint does not rescue it. The 256 B service and reuse results also change ordering with percentile. These are usable distribution-level findings. Further collection is unnecessary for this first RQ-focused answer.
 
 ## Retained delivery
 

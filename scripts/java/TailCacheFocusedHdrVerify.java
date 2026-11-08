@@ -8,7 +8,7 @@ public final class TailCacheFocusedHdrVerify {
     public static void main(String[] args) throws Exception {
         int count=0;
         List<String> endpoints=new ArrayList<>();
-        endpoints.add("path,count,p50Ns,p99Ns,p999Ns,p9999Ns,maxNs");
+        endpoints.add("path,count,p50Ns,p99Ns,p999Ns,p9999Ns,p99999Ns,maxNs");
         try(var files=Files.walk(Path.of(args[0]))) {
             for(Path file:files.filter(p->p.toString().endsWith(".hdr")).toList()) {
                 String stem=file.getFileName().toString().replace(".hdr","");
@@ -24,7 +24,7 @@ public final class TailCacheFocusedHdrVerify {
                 // directly from HDR, independently of Python's rank calculation.
                 if(args.length>1) endpoints.add("\""+file.toAbsolutePath().toString().replace("\"","\"\"")+"\","+h.getTotalCount()
                     +","+h.getValueAtPercentile(50)+","+h.getValueAtPercentile(99)+","+h.getValueAtPercentile(99.9)
-                    +","+h.getValueAtPercentile(99.99)+","+h.getMaxValue());
+                    +","+h.getValueAtPercentile(99.99)+","+h.getValueAtPercentile(99.999)+","+h.getMaxValue());
                 count++;
             }
         }

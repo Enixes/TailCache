@@ -73,7 +73,7 @@ def read_fork(path,spec,exit_code,timeout=False):
                 if count!=expected or count!=int(summary['count']):raise ValueError('Histogram operation conservation failed')
                 # Full bins retain p99.99 even in legacy runner files whose
                 # short summary only printed p50/p99/p99.9.
-                values={str(p):rank(bins,p) for p in (50,99,99.9,99.99)}
+                values={str(p):rank(bins,p) for p in (50,99,99.9,99.99,99.999)}
                 for p,key in ((50,'p50Ns'),(99,'p99Ns'),(99.9,'p999Ns')):
                     if count and values[str(p)]!=int(summary[key]):raise ValueError('Raw percentile mismatch')
                 result['latency'][channel]=dict(count=count,percentilesNs=values,maxNs=int(summary['maxNs']))
@@ -158,12 +158,14 @@ def summaries(results):
                 warnings={b:r['warnings'] for b,r in by.items()},ratios={})
             if good:
                 for channel in ('service','response') if regime=='arrival' else ('service',):
-                    pair['ratios'][channel]={p:by['CHRONICLE_IN_MEMORY']['latency'][channel]['percentilesNs'][p]/by['CAFFEINE']['latency'][channel]['percentilesNs'][p] for p in ('99','99.9','99.99')}
+                    c=by['CAFFEINE']['latency'][channel]['percentilesNs']
+                    h=by['CHRONICLE_IN_MEMORY']['latency'][channel]['percentilesNs']
+                    pair['ratios'][channel]={p:h[p]/c[p] for p in ('99','99.9','99.99','99.999') if p in c and p in h and c[p] and h[p] is not None}
             row['passes'].append(pair)
         for channel in ('service','response') if regime=='arrival' else ('service',):
             row['ratios'][channel]={}
-            for percentile in ('99','99.9','99.99'):
-                values=[p['ratios'][channel][percentile] for p in row['passes'] if p['usable']]
+            for percentile in ('99','99.9','99.99','99.999'):
+                values=[p['ratios'][channel][percentile] for p in row['passes'] if p['usable'] and percentile in p['ratios'][channel]]
                 row['ratios'][channel][percentile]=dict(pairedRatios=values,median=statistics.median(values) if values else None,
                     minimum=min(values,default=None),maximum=max(values,default=None),
                     direction='chronicle-lower' if values and max(values)<1 else 'caffeine-lower' if values and min(values)>1 else 'mixed-or-incomplete',confidenceInterval=None)

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Build an offline HTML explorer from retained, verified measurements only."""
-import argparse,collections,hashlib,json,pathlib,re
+import argparse,collections,hashlib,json,pathlib,re,shutil
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-SOURCE=ROOT/'evidence-archives/focused-rq-p9999-20261108-001/study.json'
+SOURCE=ROOT/'evidence-archives/focused-rq-p99999-20261108-001/study.json'
 TEMPLATE=ROOT/'scripts/tailcache12_explorer.html'
 OUTPUT=ROOT/'docs/TAILCACHE_RESULTS_EXPLORER.html'
-PERCENTILES=('99','99.9','99.99')
+PERCENTILES=('99','99.9','99.99','99.999')
 
 
 def embedded_download(name):
@@ -69,11 +69,13 @@ def build_data(source):
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--out',type=pathlib.Path,default=OUTPUT);args=parser.parse_args()
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--out',type=pathlib.Path,default=OUTPUT)
+    parser.add_argument('--site-out',type=pathlib.Path,help='Stage only the generated page and static Vercel configuration')
+    args=parser.parse_args()
     data=build_data(SOURCE)
     data['downloads']={
-        'study':dict(name='tailcache-p9999-study.json',mime='application/json',text=load_study()),
-        'audit':dict(name='tailcache-p9999-audit.json',mime='application/json',text=(SOURCE.parent/'audit.json').read_text() if (SOURCE.parent/'audit.json').exists() else embedded_download('audit')),
+        'study':dict(name='tailcache-p99999-study.json',mime='application/json',text=load_study()),
+        'audit':dict(name='tailcache-p99999-audit.json',mime='application/json',text=(SOURCE.parent/'audit.json').read_text() if (SOURCE.parent/'audit.json').exists() else embedded_download('audit')),
         'review':dict(name='tailcache-research-review.md',mime='text/markdown',text=(ROOT/'docs/TAILCACHE_FOCUSED_RESULTS.md').read_text()),
     }
     for file in data['downloads'].values():
@@ -81,7 +83,11 @@ def main():
     embedded=json.dumps(data,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
     template=TEMPLATE.read_text();assert template.count('__TAILCACHE_DATA__')==1
     args.out.write_text(template.replace('__TAILCACHE_DATA__',embedded))
-    print(json.dumps(dict(html=str(args.out.relative_to(ROOT)),bytes=args.out.stat().st_size,forks=len(data['forks']),primaryComparisons=22,allChannelComparisons=56,percentileConclusions=168,sourceSha256=data['sourceSha256']),indent=2))
+    if args.site_out:
+        args.site_out.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(args.out,args.site_out/'index.html')
+        shutil.copyfile(ROOT/'docs/interactive/vercel.json',args.site_out/'vercel.json')
+    print(json.dumps(dict(html=str(args.out.relative_to(ROOT)),bytes=args.out.stat().st_size,forks=len(data['forks']),primaryComparisons=22,allChannelComparisons=56,percentileConclusions=len(data['groups'])*len(PERCENTILES),sourceSha256=data['sourceSha256']),indent=2))
 
 
 if __name__=='__main__':main()

@@ -19,6 +19,19 @@ class FocusedTest(unittest.TestCase):
             self.assertEqual(focus.rank(p,100),1000000)
             p.write_text('upperEquivalentNs,count\n10,9999\n1000000,2\n')
             self.assertEqual(focus.rank(p,99.99),1000000)
+    def test_p99999_uses_all_observations_and_legacy_summaries_stay_readable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=pathlib.Path(tmp)/'bins.csv'
+            p.write_text('upperEquivalentNs,count\n10,99999\n1000000,1\n')
+            self.assertEqual(focus.rank(p,99.999),10)
+            p.write_text('upperEquivalentNs,count\n10,99999\n1000000,2\n')
+            self.assertEqual(focus.rank(p,99.999),1000000)
+        data=[]
+        for spec in focus.schedule(4096,[328],1,['closed']):
+            data.append(dict(spec,status='OK',latencyVerified=True,latency={'service':{'percentilesNs':{'99':100,'99.9':200,'99.99':1000}}},warnings=[]))
+        self.assertEqual(focus.summaries(data)[0]['ratios']['service']['99.999']['pairedRatios'],[])
+        for row in data:row['latency']['service']['percentilesNs']['99.999']=2000 if row['backend']=='CAFFEINE' else 1500
+        self.assertEqual(focus.summaries(data)[0]['ratios']['service']['99.999']['pairedRatios'],[0.75])
     def test_finite_schedule_has_complete_independent_pairs_without_duplicates(self):
         slots=focus.schedule(4096,[328,352],3,['closed','arrival'])
         self.assertEqual(len(slots),24);self.assertEqual(len({s['label'] for s in slots}),24)

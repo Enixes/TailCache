@@ -28,6 +28,18 @@ class ExplorerEvidenceTest(unittest.TestCase):
         g=next(g for g in self.data['groups'] if g['batch']=='focused-rq1-response-long-20261108-001' and g['ballast']==0 and g['channel']=='response')
         self.assertEqual(g['conclusions']['99.9']['winner'],'caffeine')
         self.assertEqual(g['conclusions']['99.99']['winner'],'chronicle')
+        self.assertEqual(g['conclusions']['99.999']['winner'],'chronicle')
+
+    def test_extreme_service_reversal_and_finite_support_are_preserved(self):
+        groups=[g for g in self.data['groups'] if g['payload']==4096 and g['regime']=='closed' and g['channel']=='service' and g['contract']=='ordinary']
+        self.assertEqual(len(groups),5)
+        for g in groups:
+            self.assertEqual(g['conclusions']['99.99']['winner'],'caffeine')
+            self.assertEqual(g['conclusions']['99.999']['winner'],'chronicle')
+        for fork in self.data['forks']:
+            for channel in fork['latency'].values():
+                if channel['count']:
+                    self.assertAlmostEqual(channel['tailSupport']['perPercentile']['99.999']['nominalUpperTailObservations'],channel['count']/100000)
 
     def test_reuse_never_borrows_caffeine_from_the_ordinary_comparison(self):
         for g in self.data['groups']:

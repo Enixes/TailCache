@@ -26,5 +26,15 @@
     "audit": "evidence-archives/focused-rq-p9999-20261108-001/audit.json",
     "review": "docs/TAILCACHE_FOCUSED_RESULTS.md#requested-p9999-extension",
     "deliveryArchive": "evidence-archives/focused-rq-p9999-delivery-20261108-001.tar.gz"
+  },
+  "p99999Extension": {
+    "complete": true,
+    "postHoc": true,
+    "newBenchmarkRuns": 0,
+    "dataset": "evidence-archives/focused-rq-p99999-20261108-001/study.json",
+    "audit": "evidence-archives/focused-rq-p99999-20261108-001/audit.json",
+    "review": "docs/TAILCACHE_FOCUSED_RESULTS.md#requested-p99999-extension",
+    "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html",
+    "deliveryArchive": "evidence-archives/focused-rq-p99999-delivery-20261108-001.tar.gz"
   }
 }
