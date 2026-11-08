@@ -81,3 +81,13 @@ Stop broadening the study. Collect only these final bisections, then synthesize:
 -4KiB saturated368MiB,3 pairs:6 JVMs,5minute cap, last capacity boundary beyond364MiB without assuming a latency crossover must exist.
 -256B saturated472MiB,3 pairs:6 JVMs,5minute cap, midpoint of the reverse464→480MiB service crossover.
 No further data-dependent matrix expansion is planned. All earlier focused batches remain separately identified. Final reporting will give ranges/brackets and warning sensitivity, not a fabricated precise universal threshold or a pooled confirmatory p-value.
+
+## Completion and final researcher review
+
+All final bisections completed, bringing collection to132 workload JVMs in12 bounded batches, with36 separate small control JVMs. No forks were replaced, no OOM occurred and no offered arrival was lost. Active collection totals64minutes. The first RQ-focused answer is complete; **no more benchmarks are planned**. See [results, plots and researcher review](TAILCACHE_FOCUSED_RESULTS.md).
+
+The30s4KiB response comparison brackets a repeatable forward crossover between0 and208MiB common ballast; all three pairs favor Caffeine at0 and Chronicle at208. At208MiB Caffeine reference occupancy is about72%, so a universal97% threshold is not supported. Saturated ordinary service p99/p99.9 still favors Caffeine at every tested4KiB point through368MiB and~99.3% occupancy, despite GC consuming about70% of its measured wall time. Throughput and queue response expose that cost. This distinction answers the original endpoint honestly rather than converting a response result into a service crossover.
+
+The original same-runtime256B448/480MiB pair set establishes a reverse service crossover; later464/472MiB refinements put the transition near the upper end but use the later getUsing-capable runtime. The472MiB point is mixed and warning-sensitive, so no precise threshold is claimed. getUsing restores Chronicle's service advantage at256B/480MiB in all three pairs, under its separate borrowed-read contract. Ten workload forks carry11 external/compiler warnings; all remain in the dataset. Main endpoint directions persist in warning-free sensitivity. The initial mixed8s response baseline also remains; it is not pooled with the stronger30s baseline.
+
+Independent final auditing reconciled3960 inventory files,132 measured GC windows,1008 percentile endpoints and504 decoded HDR distributions. Both exact runtime class sets and pinned dependencies are retained outside build. Historical Task12 acceptance and AGY discovery files were not overwritten. This completes the user's requested initial RQ-focused redo, with exploratory limits explicit; it does not retroactively qualify the original historical campaign.

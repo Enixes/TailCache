@@ -1,0 +1,21 @@
+{
+  "scope": "First RQ-focused exploratory follow-up; historical Task12 acceptance remains unchanged",
+  "taskComplete": true,
+  "collectionComplete": true,
+  "benchmarksStopped": true,
+  "completedUtc": "2026-11-08T08:50:43.039904+00:00",
+  "workloadForks": 132,
+  "controlForks": 36,
+  "batches": 12,
+  "replacementForks": 0,
+  "ooms": 0,
+  "censoredRequests": 0,
+  "collectionSeconds": 3841.172042,
+  "review": "docs/TAILCACHE_FOCUSED_RESULTS.md",
+  "dataset": "evidence-archives/focused-rq-results-20261108-001/study.json",
+  "audit": "evidence-archives/focused-rq-results-20261108-001/audit.json",
+  "deliveryArchive": "evidence-archives/focused-rq-delivery-20261108-001.tar.gz",
+  "deliveryManifest": "evidence-archives/focused-rq-delivery-20261108-001.json",
+  "researchStatus": "COMPLETE_EXPLORATORY_RQ_ANSWER",
+  "moreCollectionPlanned": false
+}
