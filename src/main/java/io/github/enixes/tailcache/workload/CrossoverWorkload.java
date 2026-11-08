@@ -79,6 +79,27 @@ public final class CrossoverWorkload implements AutoCloseable {
 
     public void resetTraceCursor() { cursor = 0; }
 
+    /** Secondary borrowed-buffer read contract, with identical trace/fresh immutable writes. */
+    public byte[] executeNextUsing(byte[] using) {
+        int position = cursor++;
+        if (cursor == trace.size()) cursor = 0;
+        int index = (int) trace.keyAt(position);
+        Long key = keys[index];
+        operations++;
+        if (trace.isReadAt(position)) {
+            byte[] value = ((io.github.enixes.tailcache.cache.ChronicleMapCacheAdapter) cache).getUsing(key, using);
+            if (value == null) throw new IllegalStateException("Unexpected cache miss");
+            if (value != using) throw new IllegalStateException("Requested buffer was not reused");
+            return value;
+        }
+        long version = writes + 1;
+        byte[] fresh = values.create(key, version, config.payloadBytes());
+        cache.put(key, fresh);
+        versions[index] = version;
+        writes = version;
+        return fresh;
+    }
+
     /** Trace/branch/fresh-supply floor. No cache access and no mutation of stored versions. */
     public Object executeSupplyFloorNext() {
         int position = cursor++;

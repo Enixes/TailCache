@@ -17,6 +17,10 @@ import java.util.Objects;
  * owns and deletes any temporary persisted file.</p>
  */
 public final class ChronicleMapCacheAdapter implements CacheAdapter {
+    /** Explicit caller-buffer sensitivity; ordinary get remains the primary contract. */
+    public byte[] getUsing(Long key, byte[] using) {
+        return map.getUsing(key, using);
+    }
 
     private static final double MAX_BLOAT_FACTOR = 1.0d;
     private static final boolean ALLOW_SEGMENT_TIERING = true;

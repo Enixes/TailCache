@@ -43,6 +43,8 @@ public final class FocusedCrossoverRunner {
             long measured=Long.parseLong(options.getOrDefault("--measure-ms","8000"))*1_000_000;
             long inject=Long.parseLong(options.getOrDefault("--inject-stall-ms","0"))*1_000_000;
             boolean floor=Boolean.parseBoolean(options.getOrDefault("--floor","false"));
+            boolean reuse=Boolean.parseBoolean(options.getOrDefault("--reuse","false"));
+            if (reuse && backend!=CrossoverBackend.CHRONICLE_IN_MEMORY) throw new IllegalArgumentException("Reuse arm requires Chronicle");
             if (rate<0 || rate>1_000_000 || rate>0 && 1_000_000_000L%rate!=0 || warm<0 || conditioning<0 || measured<=0 || inject<0 || inject>100_000_000)
                 throw new IllegalArgumentException("Invalid timing controls");
             CrossoverConfig config=new CrossoverConfig(Integer.parseInt(options.getOrDefault("--residents","32768")),payload,
@@ -55,7 +57,7 @@ public final class FocusedCrossoverRunner {
                     +"\ntraceSha256="+workload.traceFingerprint()+"\nvalueGenerator="+FreshValueGenerator.VERSION
                     +"\noptions="+options+"\njvmArgs="+ManagementFactory.getRuntimeMXBean().getInputArguments()
                     +"\njdk="+System.getProperty("java.runtime.version")+"\npacing="+(rate>0?"fixed-arrival-spin-no-skips":"closed-loop")
-                    +"\ncontinuousChurn=true\nlightweightLifecycleTrials=3\n");
+                    +"\ncontinuousChurn=true\nlightweightLifecycleTrials=3\nreadContract="+(reuse?"borrowed-getUsing-buffer":"ordinary-get")+"\n");
                 churn.start();List<String> windows=new ArrayList<>();
                 windows.add("phase,startNs,endNs,offeredEndNs,operations,scheduled,writes,workerAllocatedBytes,compilerMs,churnPayloadBytes,churnJvmAllocatedBytes,churnDroppedBytes,maxBacklog,stallEvents,unexportedStallEvents");
                 for (String name:List.of("WARMUP","CONDITIONING","MEASUREMENT")) {
@@ -63,7 +65,7 @@ public final class FocusedCrossoverRunner {
                     long duration=name.equals("WARMUP")?warm:name.equals("CONDITIONING")?conditioning:measured;
                     if (duration==0) continue;
                     workload.resetTraceCursor();
-                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0);
+                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0,reuse,payload);
                     windows.add(String.format(Locale.ROOT,"%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",name,r.start,r.end,r.offeredEnd,
                         r.operations,r.scheduled,r.writes,r.allocation,r.compilerMs,r.churnPayload,r.churnJvm,r.churnDropped,r.backlog,r.eventCount,r.overflowEvents));
                     // No formatting/file IO occurs inside run's measured envelope.
@@ -91,7 +93,9 @@ public final class FocusedCrossoverRunner {
         }
     }
 
-    static Result run(CrossoverWorkload workload,ApplicationChurn churn,long duration,long qps,boolean floor,long inject) {
+    static Result run(CrossoverWorkload workload,ApplicationChurn churn,long duration,long qps,boolean floor,long inject,boolean reuse,int payload) {
+        // Same caller buffer footprint in both arms; ordinary reads do not use it.
+        byte[] using=new byte[payload];
         Histogram service=new Histogram(1,MAX_NS,3),gaps=new Histogram(1,MAX_NS,3),response=new Histogram(1,MAX_NS,3);
         service.setAutoResize(false);gaps.setAutoResize(false);response.setAutoResize(false);
         long[] starts=new long[EVENT_LIMIT],ends=new long[EVENT_LIMIT],previous=new long[EVENT_LIMIT];
@@ -109,7 +113,7 @@ public final class FocusedCrossoverRunner {
                 while (System.nanoTime()<until) LockSupport.parkNanos(until-System.nanoTime());
                 injected=true;
             }
-            checksum+=floor?1:workload.executeNext()[0];end=System.nanoTime();
+            checksum+=floor?1:reuse?workload.executeNextUsing(using)[0]:workload.executeNext()[0];end=System.nanoTime();
             service.recordValue(end-opStart);gaps.recordValue(end-prevEnd);
             if (schedule!=null) {
                 response.recordValue(schedule.responseNs(count,end));

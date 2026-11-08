@@ -25,7 +25,7 @@ def properties(p):return dict(line.split('=',1) for line in p.read_text().splitl
 def sha(p):return evidence.file_sha(p)
 
 
-def schedule(payload,levels,passes,regimes):
+def schedule(payload,levels,passes,regimes,reuse=False):
     result=[]
     for block in range(1,passes+1):
         cells=[(live,regime) for live in levels for regime in regimes]
@@ -33,8 +33,9 @@ def schedule(payload,levels,passes,regimes):
         for index,(live,regime) in enumerate(cells):
             backends=evidence.BACKENDS if (block+index)%2 else tuple(reversed(evidence.BACKENDS))
             for backend in backends:
-                result.append(dict(label=f'b{block}-{regime}-p{payload}-live{live}-{backend}',backend=backend,payload=payload,
-                    liveMiB=live,block=block,regime=regime,qps=50000 if regime=='arrival' else 0))
+                using=reuse and backend=='CHRONICLE_IN_MEMORY'
+                result.append(dict(label=f'b{block}-{regime}-p{payload}-live{live}-{backend}'+('-getUsing' if using else ''),backend=backend,payload=payload,
+                    liveMiB=live,block=block,regime=regime,qps=50000 if regime=='arrival' else 0,reuse=using,accessMode='getUsing' if using else 'get'))
     return result
 
 
@@ -91,6 +92,11 @@ def read_fork(path,spec,exit_code,timeout=False):
             if verified:
                 integrity=properties(worker/'integrity.txt')
                 if int(integrity['residentCount'])!=spec.get('residents',32768):raise ValueError('Resident count changed')
+                if spec.get('residents',32768)==32768 and int(integrity['operations'])!=sum(int(r['operations']) for r in windows):
+                    raise ValueError('Workload operation totals do not reconcile')
+                config=properties(worker/'configuration.txt')
+                if spec.get('reuse') and config.get('readContract')!='borrowed-getUsing-buffer':
+                    raise ValueError('getUsing access contract missing')
             result['latencyVerified']=verified
             if exit_code==0 and verified:result['status']=completion['status']
             if int(measured['compilerMs'])>80:result['warnings'].append('Measured compiler activity exceeds80ms; retain as short-run evidence')
@@ -117,7 +123,7 @@ def launch(root,spec,classpath,warmup=8000,conditioning=2000,measure=8000,floor=
         '--live-mib',str(spec['liveMiB']),'--residents',str(spec.get('residents',32768)),
         '--churn-mib-sec',str(spec.get('churnMiB',32)),'--qps',str(spec['qps']),
         '--warmup-ms',str(warmup),'--conditioning-ms',str(conditioning),'--measure-ms',str(measure),
-        '--floor',str(floor).lower(),'--inject-stall-ms',str(inject)]
+        '--floor',str(floor).lower(),'--inject-stall-ms',str(inject),'--reuse',str(spec.get('reuse',False)).lower()]
     save(path/'command.json',dict(command=cmd,startedUtc=now()))
     host=[evidence.host_snapshot()];finished=threading.Event();errors=[]
     def monitor():
@@ -165,14 +171,16 @@ def summaries(results):
 
 def run(args):
     out=evidence.ROOT/'evidence-archives'/args.attempt
-    expected=schedule(args.payload,args.live,args.passes,args.regimes)
+    expected=schedule(args.payload,args.live,args.passes,args.regimes,args.reuse)
     classpath=(evidence.ROOT/'build/tmp/tailcache-focused-runtime.txt').read_text().strip()
     source=evidence.source_hash()
     if evidence.host_snapshot().get('nativeScopeQualified')!=1:raise ValueError('Require native exclusive scope')
     if out.exists():
         if not args.resume:raise ValueError('Attempt exists; use resume, never overwrite')
         protocol=load(out/'protocol.json')
-        if protocol['sourceSha256']!=source or protocol['schedule']!=expected or protocol['classpath']!=classpath:raise ValueError('Changed frozen source/schedule/runtime')
+        if (protocol['sourceSha256']!=source or protocol['schedule']!=expected or protocol['classpath']!=classpath
+                or (protocol['warmupMs'],protocol['conditioningMs'],protocol['measureMs'])!=(args.warmup_ms,args.conditioning_ms,args.measure_ms)):
+            raise ValueError('Changed frozen source/schedule/runtime')
     else:
         out.mkdir(parents=True);setup=out/'setup';setup.mkdir()
         runtime_files=[]
@@ -180,7 +188,7 @@ def run(args):
             p=pathlib.Path(item)
             runtime_files.extend([p] if p.is_file() else [q for q in p.rglob('*') if q.is_file()])
         protocol=dict(version=VERSION,declaredUtc=now(),sourceSha256=source,schedule=expected,classpath=classpath,
-            warmupMs=8000,conditioningMs=2000,measureMs=8000,budgetSeconds=args.budget_seconds,replacements=0,
+            warmupMs=args.warmup_ms,conditioningMs=args.conditioning_ms,measureMs=args.measure_ms,budgetSeconds=args.budget_seconds,replacements=0,
             estimands=['closed-loop service','scheduled-arrival response including queue debt'],
             runtimeSha256={str(p):sha(p) for p in runtime_files},heapMiB=512,churnMiBPerSecond=32,exploratory=True)
         save(out/'protocol.json',protocol)
@@ -220,7 +228,7 @@ def run(args):
             # No repeated slot: recover an interrupted collection as an explicit outcome.
             r=read_fork(p,spec,None,timeout=True);r['status']='INTERRUPTED';save(result_path,r)
         else:
-            time.sleep(3);r=launch(out,spec,classpath)
+            time.sleep(3);r=launch(out,spec,classpath,warmup=args.warmup_ms,conditioning=args.conditioning_ms,measure=args.measure_ms)
         results.append(r);save(out/'progress.json',dict(completed=len(results),planned=len(expected),lastLabel=spec['label'],utc=now()))
         print('FOCUS_PROGRESS '+str(len(results))+'/'+str(len(expected))+' '+spec['label']+' '+r['status']+' warnings='+str(len(r['warnings'])),flush=True)
     report=dict(version=VERSION,completeCollection=len(results)==len(expected),collected=len(results),planned=len(expected),
@@ -241,6 +249,8 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('attempt');p.add_argument('--payload',type=int,default=4096)
     p.add_argument('--live',type=int,nargs='+',default=[328,352]);p.add_argument('--passes',type=int,default=3)
     p.add_argument('--regimes',nargs='+',choices=['closed','arrival'],default=['closed','arrival']);p.add_argument('--budget-seconds',type=int,default=1200)
+    p.add_argument('--reuse',action='store_true');p.add_argument('--warmup-ms',type=int,default=8000)
+    p.add_argument('--conditioning-ms',type=int,default=2000);p.add_argument('--measure-ms',type=int,default=8000)
     p.add_argument('--resume',action='store_true');p.add_argument('--controls-only',action='store_true');args=p.parse_args()
     if not evidence.re.fullmatch('[A-Za-z0-9._-]+',args.attempt) or args.passes<1 or args.budget_seconds<1:p.error('Invalid batch')
     run(args)

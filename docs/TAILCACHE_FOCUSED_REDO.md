@@ -56,3 +56,18 @@ Next declared batches, selected using this discovery and bounded independently:
 3.256B at448/480MiB with the SAME512MiB heap, three pairs/point/regime:24 JVMs,20minute cap. The512MiB heap,32768 entries and50k/s arrival rate stay fixed for RQ2; ballast changes to reach a genuinely high occupancy for smaller payloads. A capacity failure triggers at most one narrow midpoint refinement, not a new broad grid.
 
 Each attempt is separately frozen and resumable, never reuses a completed slot, and retains endogenous outcomes/host warnings. The user explicitly prioritised an initial RQ answer over hardened gates on this host; no endpoint-dependent deletion or whole-study abort is introduced. Source/harness corruption is still distinguished from pressure phenomena. After these small batches, make plots and direct RQ answers before considering any additional work.
+
+## Follow-up outcomes and final targeted refinements
+
+The three follow-ups all completed:12 lower-response forks,6 service-edge forks,24 small-payload forks, in about15minutes. All small-payload and360MiB edge forks have no warnings; the lower-response batch retains one0MiB Caffeine compiler/outside-CPU warning. At4KiB/288MiB the three response p99.9 ratios are0.348/0.359/0.361, all Chronicle lower; at0MiB they are19.94/1.03/0.79, so an eight-second baseline does not reliably order this rare tail. At360MiB Caffeine spends4.28–4.60s/8s in measured GC with253–270 Full GCs, yet service p99.9 stays8.57–8.67µs versus10.54–11.06µs Chronicle. This is a service-versus-response distinction, not missing evidence to be discarded.
+
+At256B on the SAME512MiB heap, ordinary Chronicle service p99.9 is consistently lower at448MiB (ratio0.628–0.635) but consistently HIGHER at480MiB (ratio1.186–1.497). This is a reverse crossover, consistent with increased materialisation allocation as both heaps approach saturation; it is not the originally hypothesised off-heap win emerging with pressure. Scheduled response still favors Chronicle at480MiB in all pairs, ratios0.064–0.519. Occupancy depends on achieved workload/regime: report measured values rather than treating equal ballast as equal occupancy.
+
+Final small refinements, then synthesis rather than another full campaign:
+
+-4KiB arrival0/288MiB,3 pairs,12s warmup/2s conditioning/30s measured:12 JVMs,12minute cap. Match observation duration across both points to reduce rare-GC phase variability.
+-4KiB saturated364MiB,3 pairs:6 JVMs,5minute cap, to locate the capacity edge beyond the no-service-crossover360MiB result.
+-256B saturated464MiB,3 pairs:6 JVMs,5minute cap, to bisect the observed reverse crossover448→480MiB.
+-Secondary getUsing at256B/480MiB in both regimes,3 pairs:12 JVMs,8minute cap; and4KiB/352MiB arrivals,3 pairs:6 JVMs,5minute cap. These explain the allocation mechanism and use a borrowed-buffer read contract; they cannot replace the ordinary-get RQ1 result.
+
+The ordinary `executeNext` method is unchanged. A separate `executeNextUsing` shares logical keys/versions and identical fresh immutable writes, checks actual buffer identity, and has a test proving mutated caller buffers do not alter stored values. Both modes allocate the same tiny caller-buffer footprint. The sensitivity's compiled runtime/source are separately bound; no samples are pooled across access contracts. The first66 ordinary forks remain immutable and their original compiled runtime is retained. Any setup/measurement/verification OOM remains phase-labelled evidence, never a fabricated latency comparison.

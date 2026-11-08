@@ -4,6 +4,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ArrivalScheduleTest {
+    @Test void borrowedReadsActuallyReuseTheBufferWithoutChangingStoredValuesOrFreshWrites() {
+        var config=new CrossoverConfig(64,256,24301,0,4096,0,128);
+        try(var workload=new CrossoverWorkload(CrossoverBackend.CHRONICLE_IN_MEMORY,config)) {
+            byte[] using=new byte[256];
+            for(int i=0;i<1000;i++) {
+                long before=workload.writes();byte[] value=workload.executeNextUsing(using);
+                if(workload.writes()==before) { assertSame(using,value);using[0]^=1; }
+                else assertNotSame(using,value);
+            }
+            assertDoesNotThrow(workload::verifyContents);assertEquals(64,workload.size());
+        }
+    }
     @Test void stalledWorkerDoesNotLoseArrivalsOrResetTheirIntendedTimes() {
         var schedule=new ArrivalSchedule(1000,100,6);long now=1000;long[] responses=new long[6];
         for (int i=0;i<6;i++) {
