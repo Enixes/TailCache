@@ -36,5 +36,14 @@
     "review": "docs/TAILCACHE_FOCUSED_RESULTS.md#requested-p99999-extension",
     "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html",
     "deliveryArchive": "evidence-archives/focused-rq-p99999-delivery-20261108-001.tar.gz"
+  },
+  "fullTailExtension": {
+    "complete": true,
+    "newBenchmarkRuns": 0,
+    "dataset": "evidence-archives/focused-rq-tails-20261108-001/tails.json",
+    "audit": "evidence-archives/focused-rq-tails-20261108-001/audit.json",
+    "frozenClaims": "docs/TAILCACHE_FROZEN_CLAIMS.md",
+    "deliveryArchive": "evidence-archives/focused-rq-tails-delivery-20261108-001.tar.gz",
+    "confirmationBatchLaunched": false
   }
 }

@@ -2,6 +2,8 @@ import json
 import pathlib
 import tempfile
 import unittest
+from unittest.mock import patch
+import tailcache12_build_explorer as explorer
 from tailcache12_build_explorer import SOURCE,OUTPUT,build_data,classify,PERCENTILES,load_study
 
 
@@ -65,6 +67,28 @@ class ExplorerEvidenceTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             recovered=load_study(pathlib.Path(directory)/'missing-study.json')
         self.assertEqual(json.loads(recovered),self.raw)
+
+    def test_every_fork_has_three_count_normalized_stall_thresholds(self):
+        for fork in self.data['forks']:
+            for channel,distribution in fork['stallRates'].items():
+                self.assertEqual(distribution['count'],fork['latency'][channel]['count'])
+                for rate in distribution['rates'].values():
+                    self.assertLessEqual(rate['lowerCount'],rate['upperCount'])
+                    self.assertLessEqual(rate['upperCount'],distribution['count'])
+                    if distribution['count']:
+                        self.assertEqual(rate['lowerProbability'],rate['lowerCount']/distribution['count'])
+                        self.assertEqual(rate['upperProbability'],rate['upperCount']/distribution['count'])
+
+    def test_no_observed_ten_millisecond_response_stalls_is_not_a_backend_win(self):
+        g=next(g for g in self.data['groups'] if g['payload']==4096 and g['ballast']==0 and g['duration']==30 and g['channel']=='response')
+        self.assertEqual(g['stalls']['10000000']['winner'],'tie')
+        self.assertEqual(g['stalls']['100000']['winner'],'caffeine')
+        self.assertEqual(g['stalls']['1000000']['winner'],'chronicle')
+
+    def test_fresh_checkout_recovers_full_compressed_curves(self):
+        actual=explorer.load_tails()
+        with tempfile.TemporaryDirectory() as directory,patch.object(explorer,'TAIL_SOURCE',pathlib.Path(directory)/'missing.json'):
+            self.assertEqual(explorer.load_tails(),actual)
 
 
 if __name__=='__main__':unittest.main()

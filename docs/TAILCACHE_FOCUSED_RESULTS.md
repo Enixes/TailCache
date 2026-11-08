@@ -10,6 +10,9 @@ These are exploratory results answering where a useful effect exists and which e
 
 **Requested p99.999 extension:** the rarer service tail changes ordering: Chronicle is lower at all five saturated 4 KiB points. At 256 B, saturated service changes from Caffeine lower at 448 MiB to Chronicle lower at 480 MiB within the earlier runtime. Scheduled 4 KiB response remains lower for Chronicle even at baseline. [Read the p99.999 review and finite-support limits](#requested-p99999-extension).
 
+
+**Full-tail follow-up:** the explorer now includes every retained bin and strict probabilities of exceeding 100 µs, 1 ms and 10 ms. The [frozen claims](TAILCACHE_FROZEN_CLAIMS.md) keep the conclusions specific to payload, workload, percentile and ownership contract. No confirmation batch has been launched.
+
 ## RQ1 at p99/p99.9: response crossover exists; ordinary service crossover did not reproduce
 
 The scheduled experiment offers 50,000 requests/s to a single worker. Response is completion minus **intended arrival**, including backlog after a pause. Intended times never move after a stall, no overdue arrivals are skipped, and every offered request is accounted for. This differs from AGY's synthetic expected-interval histogram correction. Service is completion minus actual operation start; the saturated service experiment uses separate JVMs.
@@ -138,6 +141,36 @@ At 368 MiB, the millisecond observations previously documented beyond p99.99 are
 The [p99.999 dataset](../evidence-archives/focused-rq-p99999-20261108-001/study.json), [primary comparisons](../evidence-archives/focused-rq-p99999-20261108-001/comparisons.md), [396 channel rows](../evidence-archives/focused-rq-p99999-20261108-001/forks.csv) and [audit](../evidence-archives/focused-rq-p99999-20261108-001/audit.json) retain the prior endpoints and append p99.999. Validation decoded **504 workload/control HDR histograms**, independently checked **1,680** nonempty workload endpoints and reverified **3,960** original inventory files. Original studies and both previous delivery bundles are hash-verified unchanged. p99.999 is computed by the pinned HDR rank rule, not substituted with a maximum. The updated collector handles legacy summaries without inventing absent percentiles.
 
 The first RQ answer is consequently **distribution- and load-dependent**: Chronicle's 4 KiB service disadvantage at p99.99 coexists with a service advantage at p99.999 and lower scheduled response at both endpoints. The off-heap benefit is visible in rarer stalls, while ordinary-access overhead remains visible lower in the distribution. This exploratory extension supports a more precise hypothesis for future confirmation; it does not turn three short forks into a precise threshold or a universal performance claim.
+
+## Offline full-tail and stall-probability review
+
+The survival curves show empirical P(T > t) separately for each fork, at every recorded HDR bin boundary. They use all **1,704,023 bins** across **336 nonempty workload channels**, with no pooling, smoothing or outlier trimming. The three fixed thresholds were requested before this offline analysis. Their rates use the full operation count as denominator, not elapsed time or a count of GC events.
+
+The following ranges span three forks and any threshold-straddling HDR bin; they are not confidence intervals. C / Ch means Caffeine / Chronicle.
+
+| 4 KiB ordinary workload | Ballast | >100 µs, C / Ch | >1 ms, C / Ch | >10 ms, C / Ch |
+| --- | --- | --- | --- | --- |
+| Scheduled response (30 s) | 0 MiB | 0.0755333%–0.0848667% / 0.1114%–0.1164% | 0.0519333%–0.0592% / 0.0354667%–0.0416667% | 0% / 0% |
+| Scheduled response (30 s) | 208 MiB | 0.1574%–0.163467% / 0.115933%–0.1244% | 0.1034%–0.109467% / 0.0316%–0.0363333% | 0% / 0% |
+| Scheduled response (30 s) | 248 MiB | 0.2078%–0.223533% / 0.238%–0.247067% | 0.137867%–0.1476% / 0.0802667%–0.0859333% | 0% / 0% |
+| Scheduled response (30 s) | 288 MiB | 0.5794%–0.582933% / 0.265467%–0.279733% | 0.378867%–0.382067% / 0.0746667%–0.092% | 0% / 0% |
+| Saturated service (8 s) | 328 MiB | 0.00216868%–0.0023399% / 0.0051596%–0.00554248% | 0.0013494%–0.00148681% / 0.00374802%–0.00403757% | 7.90659e-06%–8.12467e-06% / 0% |
+| Saturated service (8 s) | 352 MiB | 0.00215892%–0.00290285% / 0.00674527%–0.00682814% | 0.00215892%–0.00290285% / 0.00450165%–0.00460926% | 0.00107946%–0.00145143% / 0% |
+| Saturated service (8 s) | 360 MiB | 0.00482903%–0.0052437% / 0.00719083%–0.00724613% | 0.00482903%–0.00522435% / 0.00478379%–0.00488781% | 0.00482903%–0.00522435% / 0% |
+| Saturated service (8 s) | 364 MiB | 0.00529413%–0.00653166% / 0.00746446%–0.00755098% | 0.00529413%–0.00653166% / 0.00465813%–0.00504766% | 0.00529413%–0.00653166% / 0% |
+| Saturated service (8 s) | 368 MiB | 0.00900352%–0.0092177% / 0.00773586%–0.00782269% | 0.00897656%–0.00918576% / 0.00465521%–0.00490002% | 0.00897656%–0.00918576% / 0% |
+
+**Frequency and severity trade off.** At 328 and 352 MiB saturated service, Caffeine has lower >100 µs and >1 ms operation probabilities in all three pairs, while Chronicle has lower >10 ms probability. At 360 and 364 MiB the >100 µs comparison still favors Caffeine, but >1 ms and >10 ms favor Chronicle. At 368 MiB Chronicle has lower probabilities at all three thresholds. These are distribution-specific comparisons, not a universal off-heap advantage.
+
+At 368 MiB, Caffeine has exactly 333, 313 and 315 recorded operations exceeding 10 ms, out of 3,709,660 / 3,407,447 / 3,439,035 operations. Chronicle has zero observed >10 ms operations in its 5,228,379 / 5,183,650 / 5,177,000 operations. The absence of an event in these short forks does not establish zero underlying risk or quantify independent pause episodes.
+
+The later-runtime 30 s response baseline has lower >100 µs probability for Caffeine but lower >1 ms probability for Chronicle. Both backends have zero observed >10 ms responses at all four 30 s pressure points. At 248 MiB the same >100 µs versus >1 ms ordering split appears. Thus a lower extreme percentile can coexist with a higher frequency of moderately slow operations.
+
+**Recorder precision is kept explicit.** Where a requested threshold falls inside an occupied HDR bin, the definite count includes only bins entirely above it, while the possible count also includes the straddling bin. For example, one 0 MiB Chronicle response fork has 532–533 >1 ms observations, not an invented exact count. All probabilities at HDR upper-bin boundaries are exact for the retained binned distribution. No sub-bin event timings can be recovered.
+
+Independent Java decoding and Python analysis agree on all **1,188 threshold checks** and on the lower/upper bounds of all recorded bins. The 792 raw HDR/bin files are verified against retained hashes; the three previous delivery bundles and the p99.999 study remain unchanged. The [tail dataset](../evidence-archives/focused-rq-tails-20261108-001/tails.json), [all 1,188 per-channel threshold rows](../evidence-archives/focused-rq-tails-20261108-001/stall-rates.csv) and [audit](../evidence-archives/focused-rq-tails-20261108-001/audit.json) retain full curves, count bounds and provenance. Empty closed-loop response channels remain empty.
+
+**Research decision:** this offline extension explains the apparent percentile contradictions without more collection. The [frozen claims](TAILCACHE_FROZEN_CLAIMS.md) supersede an unqualified “ordinary service crossover is unsupported”: 4 KiB has no observed service pressure bracket for the tested endpoints, but p99.999 favors Chronicle throughout the measured high-pressure range, and 256 B has endpoint-specific ordering changes. A new 18-JVM 0/104/208 MiB response batch is useful only to test repetition and narrow the p99.9 bracket; it is not required to establish that the observed effect exists. It remains unlaunched.
 
 ## Methods, warnings and independent review
 

@@ -1,9 +1,9 @@
 {
   "complete": true,
-  "utc": "2026-11-08T17:17:29.056673+00:00",
+  "utc": "2026-11-08T18:11:31.706073+00:00",
   "artifact": "docs/TAILCACHE_RESULTS_EXPLORER.html",
-  "artifactBytes": 2375966,
-  "artifactSha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",
+  "artifactBytes": 10532166,
+  "artifactSha256": "5e80030d689bdedcd941e7ab3b444c8178aee48bd8430a343529eed1b8eb3e90",
   "sourceSha256": "481354bda26bff146e3cff754c20fb1d4f20d09ed928a1f89eaa26469e9d9daf",
   "forks": 132,
   "primaryComparisons": 22,
@@ -29,7 +29,7 @@
   "sourceDownloadsEmbedded": true,
   "externalScriptOrStyleDependencies": false,
   "retainedMeasurementsUnchanged": true,
-  "pythonTestsPassed": 226,
+  "pythonTestsPassed": 236,
   "independentPercentileChecks": 1680,
   "decodedHdrHistograms": 504,
   "priorQa": {
@@ -81,6 +81,28 @@
     "authentication": "Vercel Authentication on all deployments",
     "signedOutUrlsVerified": 3,
     "remoteArtifactHashMatches": true,
-    "authenticatedBrowserCheck": "PASS: user signed in; hosted percentile controls, full coverage and definitions verified without browser errors or warnings."
-  }
+    "authenticatedBrowserCheck": "PASS: user signed in; hosted percentile controls, full coverage and definitions verified without browser errors or warnings.",
+    "newArtifactPublished": false
+  },
+  "priorFullTailExtensionQa": {
+    "artifactSha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",
+    "artifactBytes": 2375966,
+    "utc": "2026-11-08T17:17:29.056673+00:00"
+  },
+  "thresholdConclusions": 168,
+  "fullCurveBins": 1704023,
+  "independentThresholdChecks": 1188,
+  "tailSourceSha256": "c06f13f53e6a107242919d047d34665d6569d6ad08b3bf9890e6075a229bc0d2",
+  "fullTailBrowserChecks": [
+    "all-fork and single-pair curves",
+    "pressure/runtime selection at 0 and 368 MiB",
+    "strict count bounds and zero observed events",
+    "stall matrix 56 comparisons / 168 conclusions",
+    "8-column expanded stall rows",
+    "53-column CSV exact 5-row subset and denominators/counts",
+    "full tails download identical bytes/SHA-256",
+    "desktop survival plot and fork table",
+    "320px phone plot with staggered guide labels; no horizontal page overflow",
+    "no console errors or warnings; viewport reset"
+  ]
 }

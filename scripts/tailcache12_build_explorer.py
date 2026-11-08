@@ -7,6 +7,11 @@ SOURCE=ROOT/'evidence-archives/focused-rq-p99999-20261108-001/study.json'
 TEMPLATE=ROOT/'scripts/tailcache12_explorer.html'
 OUTPUT=ROOT/'docs/TAILCACHE_RESULTS_EXPLORER.html'
 PERCENTILES=('99','99.9','99.99','99.999')
+TAIL_SOURCE=ROOT/'evidence-archives/focused-rq-tails-20261108-001/tails.json'
+
+
+def load_tails():
+    return TAIL_SOURCE.read_text() if TAIL_SOURCE.exists() else embedded_download('tails')
 
 
 def embedded_download(name):
@@ -33,8 +38,12 @@ def classify(caffeine,chronicle):
 def build_data(source):
     source_text=load_study(source)
     original=json.loads(source_text);observations=original['observations'];forks=[];by=collections.defaultdict(list)
+    tails=json.loads(load_tails());assert tails['sourceSha256']==hashlib.sha256(source_text.encode()).hexdigest()
+    tail_by={(r['batch'],r['label']):r for r in tails['forks']}
     for index,r in enumerate(observations):
         forks.append({k:r[k] for k in ('label','batch','backend','payload','liveMiB','block','regime','measureMs','runtimeGroup','warnings','measurement','gc','latency')})
+        t=tail_by[(r['batch'],r['label'])]
+        forks[-1]['stallRates']={channel:dict(count=distribution['count'],rates=distribution['rates']) for channel,distribution in t['channels'].items()}
         by[(r['batch'],r['liveMiB'],r['regime'])].append(index)
     runtime_ids=sorted({r['runtimeGroup'] for r in observations})
     # Names describe the measured runtime, not the order of lexicographic hashes.
@@ -62,10 +71,24 @@ def build_data(source):
                 contract='reuse' if batch.startswith('focused-reuse') else 'ordinary',channel=channel,pairs=pairs,conclusions=conclusions,
                 primary=(regime=='closed' and channel=='service') or (regime=='arrival' and channel=='response'),
                 warningPairs=sum(bool(forks[p['c']]['warnings'] or forks[p['h']]['warnings']) for p in pairs)))
+            from tailcache12_tail_curves import classify_rates
+            groups[-1]['stalls']={}
+            for threshold in tails['thresholdsNs']:
+                key=str(threshold);samples=[]
+                for pair in pairs:
+                    c= fork_rate(forks[pair['c']],channel,key)
+                    h= fork_rate(forks[pair['h']],channel,key)
+                    samples.append((c,h))
+                groups[-1]['stalls'][key]=dict(classify_rates(samples),caffeine=[c for c,h in samples],chronicle=[h for c,h in samples])
     assert len(forks)==132 and len(groups)==56 and sum(g['primary'] for g in groups)==22
     return dict(forks=forks,groups=groups,percentiles=PERCENTILES,source=str(source.relative_to(ROOT)),
         sourceSha256=hashlib.sha256(source_text.encode()).hexdigest(),runtimeNames=runtime_names,
         studyDate='8 November 2026',heapMiB=512,offeredQps=50000,residentEntries=32768,backgroundMiBPerSecond=32)
+
+
+def fork_rate(fork,channel,threshold):
+    source=fork['stallRates'][channel]
+    return dict(source['rates'][threshold],count=source['count'])
 
 
 def main():
@@ -77,11 +100,16 @@ def main():
         'study':dict(name='tailcache-p99999-study.json',mime='application/json',text=load_study()),
         'audit':dict(name='tailcache-p99999-audit.json',mime='application/json',text=(SOURCE.parent/'audit.json').read_text() if (SOURCE.parent/'audit.json').exists() else embedded_download('audit')),
         'review':dict(name='tailcache-research-review.md',mime='text/markdown',text=(ROOT/'docs/TAILCACHE_FOCUSED_RESULTS.md').read_text()),
+        'tails':dict(name='tailcache-full-tails.json',mime='application/json',text=load_tails()),
+        'tail-audit':dict(name='tailcache-full-tail-audit.json',mime='application/json',text=(TAIL_SOURCE.parent/'audit.json').read_text() if (TAIL_SOURCE.parent/'audit.json').exists() else embedded_download('tail-audit')),
+        'claims':dict(name='tailcache-frozen-claims.md',mime='text/markdown',text=(ROOT/'docs/TAILCACHE_FROZEN_CLAIMS.md').read_text()),
     }
     for file in data['downloads'].values():
         file['sha256']=hashlib.sha256(file['text'].encode()).hexdigest()
     embedded=json.dumps(data,separators=(',',':')).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
     template=TEMPLATE.read_text();assert template.count('__TAILCACHE_DATA__')==1
+    assert template.count('__TAILCACHE_TAIL_UI__')==1
+    template=template.replace('__TAILCACHE_TAIL_UI__',(ROOT/'scripts/tailcache12_tail_ui.js').read_text())
     args.out.write_text(template.replace('__TAILCACHE_DATA__',embedded))
     if args.site_out:
         args.site_out.mkdir(parents=True,exist_ok=True)
