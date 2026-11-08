@@ -1,5 +1,7 @@
 # Focused crossover results and researcher review — 8 November 2026
 
+[Open the interactive conclusions table and crossover graphs](TAILCACHE_RESULTS_EXPLORER.html). It covers all 132 forks, all three percentiles, and each retained timing channel, with paired evidence and CSV export.
+
 **The first useful RQ answers are complete. Collection is stopped.** At 4 KiB, ordinary Chronicle `get` has a reproducible advantage in **actual scheduled response p99.9** after pressure increases, but **no forward crossover in saturated service p99/p99.9 was observed** at the tested high-pressure points. At 256 B, service p99.9 crosses in the opposite direction: Chronicle starts lower and becomes higher near heap saturation. Buffer reuse reverses that disadvantage in a separately labelled sensitivity.
 
 **Requested p99.99 extension:** percentile choice changes those statements. At p99.99, Chronicle already has lower scheduled response at the zero-ballast 4 KiB baseline, while Caffeine has lower saturated service at every tested ordinary-get point for both payloads. The 256 B buffer-reuse service advantage at p99.9 also does not extend to p99.99. The [comparison below](#requested-p9999-extension) uses the same retained distributions; no new benchmark was run and the original endpoints remain reported.
