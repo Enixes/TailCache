@@ -1,0 +1,70 @@
+{
+  "complete": true,
+  "verifiedUtc": "2026-11-08T17:41:52.040510+00:00",
+  "provider": "Vercel",
+  "teamName": "Enixes\u2019 projects",
+  "teamSlug": "enixes-projects",
+  "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+  "projectName": "tailcache-results",
+  "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+  "deploymentId": "dpl_3Cpkguxjmeo1wijMNxNFVrYZED8y",
+  "status": "READY",
+  "target": "production",
+  "url": "https://tailcache-results.vercel.app/",
+  "aliases": [
+    "https://tailcache-results.vercel.app/",
+    "https://tailcache-results-enixes-projects.vercel.app/"
+  ],
+  "deploymentUrl": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
+  "sourceCommit": "9a7e5818704110610bf32be7de09f2319fce58ec",
+  "framework": "static HTML",
+  "buildDurationMs": 1884,
+  "authentication": {
+    "method": "Vercel Authentication",
+    "enabled": true,
+    "deploymentType": "all",
+    "verifiedAfterDeployment": true,
+    "shareLinksCreated": false
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 2375966,
+      "sha1": "bb1e745f3a09329e88f8acc9718c08794a9f9cda",
+      "sha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",
+      "remoteFileUid": "bb1e745f3a09329e88f8acc9718c08794a9f9cda"
+    },
+    {
+      "path": "vercel.json",
+      "bytes": 337,
+      "sha1": "9a595494747e07de0a6c5bc789c9650ce15ff834",
+      "note": "Uploaded as UTF-8 text without trailing newline"
+    }
+  ],
+  "signedOutChecks": [
+    {
+      "url": "https://tailcache-results.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    }
+  ],
+  "browserCheck": "Production URL redirects to the Vercel login page; authenticated browser session not available.",
+  "contentVerification": "Remote index.html source UID matches the SHA-1 of the exact locally browser-tested artifact.",
+  "newBenchmarkRuns": 0
+}

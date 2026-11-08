@@ -32,3 +32,9 @@ rtk proxy python3 scripts/tailcache12_build_explorer.py --site-out build/tailcac
 ```
 
 Deploy that two-file directory, using the configured Vercel account/project. The page includes its research data downloads; the deployment requires no Java build, server, environment variables or raw archive upload. The deployment receipt records the actual target, source hashes and deployed URL after verification.
+
+### Live protected deployment
+
+[Open TailCache results](https://tailcache-results.vercel.app/). Sign in with a Vercel account that has access to Enixes’ projects / tailcache-results. Authentication protects **all deployments**, including production aliases and the unique generated deployment URL. No temporary sharing link was created.
+
+The deployed source is commit `9a7e581`; its exact index.html SHA-1 matches the deployment source file UID. All three signed-out URL checks redirect to Vercel SSO without returning the embedded results. The browser also reaches the Vercel login page. The authenticated page was previously tested locally; this session has no signed-in Vercel browser, so it did not repeat those interactions behind the hosted login. See [deployment.json](deployment.json) for target, hashes and checks.

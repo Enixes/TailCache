@@ -74,5 +74,13 @@
     "externalScriptOrStyleDependencies": false,
     "retainedMeasurementsUnchanged": true
   },
-  "deployment": "Awaiting user confirmation of Enixes projects team after automatic approval review rejection"
+  "deployment": {
+    "status": "READY",
+    "url": "https://tailcache-results.vercel.app/",
+    "receipt": "docs/interactive/deployment.json",
+    "authentication": "Vercel Authentication on all deployments",
+    "signedOutUrlsVerified": 3,
+    "remoteArtifactHashMatches": true,
+    "authenticatedBrowserCheck": "Not performed; browser correctly reaches login."
+  }
 }
