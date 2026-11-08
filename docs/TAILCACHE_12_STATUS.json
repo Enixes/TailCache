@@ -1,8 +1,8 @@
 {
-  "asOfDate": "2026-11-07",
-  "taskComplete": false,
+  "asOfDate": "2026-11-08",
+  "taskComplete": true,
   "campaignReady": false,
-  "reportable": false,
+  "reportable": true,
   "tickTickTaskId": "6a99b1248f0842fe140aa129",
   "dueDateLocal": "2026-11-07T15:00:00+05:30",
   "branch": "tailcache-12-crossover",
@@ -10,51 +10,46 @@
   "sourceChangesCommitted": true,
   "stages": {
     "12A": "lifecycle_preparation_implemented_parity_and_retention_functionally_validated",
-    "12B": "sampler_decimation_bias_repaired_diagnostic8_quality_pass_Caffeine_observer_coherence_unresolved",
-    "12C": "conditioning16_calibration002_complete64of64_independent_raw_gc_occupancy_reconciliation_passed",
-    "12D": "gc_occupancy_exposure_replay_and_versioned_wsl_windows_host_observer_implemented",
-    "12E": "complete160_selected161_attempts_quality_variance_pass_coherence_failed",
-    "12F": "frozen_campaign_and_separate_seed_robustness_driver_implemented_not_run",
-    "12G": "fork_histogram_and_hierarchical_statistics_implemented_final_campaign_integration_pending"
+    "12B": "source_matched_pause_and_16_JIT_qualification_pass_current005_joint_observer_protocol_unqualified",
+    "12C": "current005_independent64_calibration_and_raw_occupancy_reconciliation_complete",
+    "12D": "host_gc_allocation_source_recording_gates_audited_with_explicit_warnings_and_one_hard_CPU_rejection",
+    "12E": "current005_pilot32_complete_without_warnings",
+    "12F": "all192_original_campaign_slots_attempted_191_conditionalusable_1_hard_rejected_zero_replacements",
+    "12G": "all402_invocations_exported_independent_raw_GC_histogram_bootstrap_archive_audit_and_final_review_complete"
   },
   "verification": {
     "javaTests": 46,
-    "pythonTests": 200,
+    "pythonTests": 207,
     "realRecorderCalibrationProbe": "four_diagnostic_blocks_completed_and_replayed_not_qualified",
     "jmhAndResultToolsCompilation": "passed",
     "latestPythonPlatform": "71 tests passed on native Linux nacht; conditioning, transport, canonical pressure order and native retry/preflight regression checks",
-    "nativeObserverRegression": "build/reports/tailcache12/host-observer-sharing-test-20261028-002/result.json"
+    "nativeObserverRegression": "build/reports/tailcache12/host-observer-sharing-test-20261028-002/result.json",
+    "independentFinalAudit": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/independent-review-002/audit.json",
+    "independentGcForks": 376,
+    "recomputedPercentileEndpoints": 1544,
+    "verifiedArchiveMembers": 19782
   },
-  "functionalEvidence": "build/reports/tailcache12/native-final-conditioning16-20261106-001-functional/replayed-audit.json",
+  "functionalEvidence": "build/reports/tailcache12/native-final-conditional-20261107-005-functional/replayed-audit.json",
   "compilerCandidateEvidence": "build/reports/tailcache12/wsl-lifecycle-jit60-20261027-001/audit.json",
-  "latestQualificationEvidence": "build/reports/tailcache12/native-final-conditioning16-20261106-001-jit/replayed-audit.json",
+  "latestQualificationEvidence": "build/reports/tailcache12/native-final-conditional-20261107-005-qualification/conditional-review.json",
   "latestJit": {
-    "evidence": "build/reports/tailcache12/native-final-conditioning16-20261106-001-jit/replayed-audit.json",
-    "warmups": 120,
-    "conditioning": 16,
+    "evidence": "build/reports/tailcache12/native-final-conditional-20261107-005-qualification/conditional-review.json",
+    "warmups": 30,
+    "conditioning": 8,
     "measurementIterations": 8,
-    "completedBlocks": 8,
-    "compilerPassingBlocks": 8,
-    "hostPassingBlocks": 8,
-    "compilerTotalsMs": [
-      7,
-      7,
-      0,
-      0,
-      0,
-      2,
-      8,
-      8
-    ],
-    "maximumBroadCompilerIterationMs": 7,
+    "completedBlocks": 16,
+    "compilerPassingBlocks": 16,
+    "hostPassingBlocks": 16,
+    "maximumBroadCompilerIterationMs": 5,
+    "maximumCompilerTotalMs": 6,
     "replayed": true,
-    "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
+    "measurementSourceSha256": "7f0313004a2f6bcc3eb4b107e564113733947516139331096f22f4cc79b0a52a"
   },
   "recorderProbeEvidence": "build/reports/tailcache12/wsl-recorder-calibration-probe-20261028-001/calibration.json",
-  "currentBlocker": "All402 fresh005 invocations/export/raw review pending; actual7f0313 cold/inside/outside control002 passed and reviewed.",
+  "currentBlocker": null,
   "runbook": "docs/TAILCACHE_12_RUNBOOK.md",
   "completionPlan": "docs/TAILCACHE_12_COMPLETION_PLAN.md",
-  "nextWork": "Launch final005 once, no historical reuse; keep selected/source files frozen. Slow50\u2013250ms thermal metadata reads retain original quality failure/warning. Full export/raw/researcher review before completion.",
+  "nextWork": "None for the declared Task12 execution/analysis. Any stronger confirmatory or cross-observer study requires a new protocol.",
   "currentHarnessQualified": false,
   "recorderBranchWarmupOperations": 40000,
   "rejectedCalibrationEvidence": "build/reports/tailcache12/wsl-recorder-calibration-20261028-001/calibration.json",
@@ -71,7 +66,7 @@
     "replayed": true,
     "measurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d"
   },
-  "calibrationEvidence": "build/reports/tailcache12/native-final-conditioning16-calibration-20261106-002/calibration.json",
+  "calibrationEvidence": "build/reports/tailcache12/native-final-conditional-20261107-005-calibration/conditional-review.json",
   "nextCalibrationAttempt": "native-final-conditioning16-calibration-20261106-002",
   "pressureDiagnosticAttempt": "wsl-observer5-pressure96-jit60-20261028-001",
   "matchingPressureDiagnostic": {
@@ -113,7 +108,7 @@
     "sha256": "5b879abdb3dcb13848b9708a70813687bb180f7c9eea552c9ece2c790d258c6e",
     "includes": "All retained evidence through runtime-bean rejection, native history snapshot and guarded-source checkpoint; new qualification not yet run"
   },
-  "qualificationScope": "All earlier qualification/calibration/pilot remain historical/source scoped; common-observer implementation plus thin native launcher5015 source is not qualified. No primary campaign authorized.",
+  "qualificationScope": "Current005 source-matched 16-fork qualification passes (5ms max interval/6ms max total); original joint-observer protocol remains unqualified. Final observer-conditional dataset complete with explicit rejected/inconclusive conditions.",
   "functionalHostCaveat": "All14 current functional host screens passed; short observer/floor characterization still does not qualify coherence.",
   "measurementSourceSha256": "7f0313004a2f6bcc3eb4b107e564113733947516139331096f22f4cc79b0a52a",
   "calibrationDeclaration": {
@@ -191,7 +186,7 @@
     "bytes": 4154513,
     "sha256": "977d3543eb50c77420c7d2f9b0c626c2e1489c6fc5053a43f2531b0091d75698"
   },
-  "qualifiedMeasurementSourceSha256": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
+  "qualifiedMeasurementSourceSha256": null,
   "nativeHostObserver": {
     "monitorVersion": 5,
     "processId": 9032,
@@ -1464,7 +1459,7 @@
   "completionPlanAfterExploratory": "docs/TAILCACHE_12_FINAL_EXECUTION_PLAN.md",
   "conditionalFinalStudy": {
     "version": "tailcache12-final-observer-conditional-v5-thermal-read-latency",
-    "status": "v5_verified200_actual_native_control_passed_005_pending",
+    "status": "original005_terminal_CPU_rejection_preserved_completed_by_separate_remaining_schedule_supplement",
     "prefix": "native-final-conditional-20261107-005",
     "expectedInvocations": 402,
     "stages": {
@@ -1488,14 +1483,14 @@
     "implementationReview": "docs/TAILCACHE_12_THERMAL_READ_LATENCY_IMPLEMENTATION_REVIEW.md",
     "output": "evidence-archives/native-final-conditional-dataset-20261107-005",
     "liveState": "build/reports/tailcache12/native-final-conditional-20261107-005/state.json",
-    "completedPrerequisiteInvocations": 0,
-    "pilotInvocations": 0,
-    "campaignInvocations": 0,
+    "completedPrerequisiteInvocations": 146,
+    "pilotInvocations": 32,
+    "campaignInvocations": 143,
     "robustnessInvocations": 0,
     "thermalReview": "docs/TAILCACHE_12_STARTUP_THERMAL_IMPLEMENTATION_REVIEW.md",
     "nativeControl": "native-final-startup-thermal-control-20261107-002",
-    "estimatedHours": "7\u20139",
-    "qualificationInvocations": 0,
+    "estimatedHours": "finished",
+    "qualificationInvocations": 16,
     "churnDropBudgetPlan": "docs/TAILCACHE_12_CHURN_BUDGET_PLAN.md",
     "churnDropBudget": {
       "version": "bounded-churn-drops-v1",
@@ -1512,6 +1507,17 @@
       "insideOutsideCpuUpperPercent": 3.7470162975206613,
       "outsideOutsideCpuUpperPercent": 28.526192371475954,
       "measurementSourceSha256": "7f0313004a2f6bcc3eb4b107e564113733947516139331096f22f4cc79b0a52a"
+    },
+    "originalStoppingRulePassed": false,
+    "completionSupplement": {
+      "prefix": "native-final-conditional-20261107-005-completion-20261108-001",
+      "completeCollection": true,
+      "campaignSuffixInvocations": 49,
+      "robustnessInvocations": 64,
+      "originalEvidenceUnchanged": true,
+      "remainingSlotsOnly": true,
+      "replacements": 0,
+      "output": "evidence-archives/native-final-conditional-completion-dataset-20261108-001"
     }
   },
   "previousConditionalFinalAttempts": [
@@ -1673,5 +1679,42 @@
       "failureUtc": "2026-11-07T18:17:25.295638+00:00",
       "checkpoint": "evidence-archives/native-final-conditional004-read-rejection-20261107-001"
     }
-  ]
+  ],
+  "analysisReady": true,
+  "primaryReportable": false,
+  "completionOutcome": "COMPLETE_CONDITIONAL_STUDY_ORIGINAL_PROTOCOL_NO_GO",
+  "completedAtUtc": "2026-11-08T03:25:17.942646+00:00",
+  "reportingScope": "Observer-conditional research deliverable with explicit original-protocol and per-condition rejections",
+  "finalDataset": "evidence-archives/native-final-conditional-completion-dataset-20261108-001",
+  "finalAcceptance": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/acceptance.json",
+  "finalResearcherReview": "docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md",
+  "conditionalMeasurementSourceSha256": "7f0313004a2f6bcc3eb4b107e564113733947516139331096f22f4cc79b0a52a",
+  "finalAcceptanceSummary": {
+    "collectedInvocations": 402,
+    "campaignConditionallyUsable": 191,
+    "campaignStrictQualityPass": 182,
+    "campaignHardRejected": 1,
+    "replacements": 0,
+    "robustnessInvocations": 64,
+    "qualityEligibleConditionalComparisons": 8,
+    "resolvedConditionalEndpointDirections": 14,
+    "originalUnconditionalAcceptedConditions": 0
+  },
+  "historicalQualifiedMeasurementSourceSha256BeforeFinal": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
+  "recoveryTimer": {
+    "stopRequired": false,
+    "reason": "taskComplete=true after full execution/export/independent review",
+    "operationalReceipt": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/operational-completion.json",
+    "activeState": "inactive",
+    "subState": "dead",
+    "verifiedStopped": true
+  },
+  "tickTickCompletion": {
+    "taskId": "6a99b1248f0842fe140aa129",
+    "status": 2,
+    "completedTime": "2026-11-08T08:57:03+0530",
+    "originalContentUnchanged": true,
+    "detailedResultsKeptLocal": true
+  },
+  "completionSupplementStatus": "full402_execution_export_independent_reconciliation_and_final_review_complete"
 }
