@@ -81,6 +81,6 @@
     "authentication": "Vercel Authentication on all deployments",
     "signedOutUrlsVerified": 3,
     "remoteArtifactHashMatches": true,
-    "authenticatedBrowserCheck": "Not performed; browser correctly reaches login."
+    "authenticatedBrowserCheck": "PASS: user signed in; hosted percentile controls, full coverage and definitions verified without browser errors or warnings."
   }
 }

@@ -64,7 +64,19 @@
       "resultsPageExposed": false
     }
   ],
-  "browserCheck": "Production URL redirects to the Vercel login page; authenticated browser session not available.",
+  "browserCheck": "Signed-out request reaches login; user-authenticated browser loads the explorer and its controls.",
   "contentVerification": "Remote index.html source UID matches the SHA-1 of the exact locally browser-tested artifact.",
-  "newBenchmarkRuns": 0
+  "newBenchmarkRuns": 0,
+  "authenticatedBrowserCheck": {
+    "passed": true,
+    "verifiedUtc": "2026-11-08T17:53:36.687090+00:00",
+    "url": "https://tailcache-results.vercel.app/",
+    "checks": [
+      "Results page loads after user sign-in",
+      "p99.999 graph switch and 15 nominal tail observations",
+      "All-channel scope shows 56 comparisons and 224 conclusions",
+      "Definitions disclosure and timing example",
+      "No browser errors or warnings"
+    ]
+  }
 }
