@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Task12 focused resumable crossover batches; pressure outcomes are retained."""
-import argparse,collections,csv,datetime,hashlib,json,os,pathlib,random,shutil,statistics,subprocess,tarfile,threading,time
+import argparse,collections,csv,datetime,hashlib,json,math,os,pathlib,random,shutil,statistics,subprocess,tarfile,threading,time
 import tailcache12 as evidence
 from tailcache12_analysis import parse_gc,gc_summary
 
@@ -41,8 +41,8 @@ def schedule(payload,levels,passes,regimes):
 def rank(path,percentile):
     values=[(int(r['upperEquivalentNs']),int(r['count'])) for r in rows(path)];total=sum(n for v,n in values)
     if not total:return None
-    # Match the pinned HDR2.2.2 API's positive rounded rank exactly.
-    target=max(1,int((percentile/100.0)*total+0.5));n=0
+    # Pinned HDR2.2.2: nextAfter(percentile,-infinity), then ceiling rank.
+    target=max(1,math.ceil(math.nextafter(percentile,-math.inf)*total/100.0));n=0
     for value,count in values:
         n+=count
         if n>=target:return value

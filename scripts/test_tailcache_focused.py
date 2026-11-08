@@ -1,8 +1,16 @@
 import copy
 import unittest
+import tempfile
+import pathlib
 import tailcache12_focused as focus
 
 class FocusedTest(unittest.TestCase):
+    def test_pinned_hdr_ceiling_rank_is_not_old_rounded_rank(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=pathlib.Path(tmp)/'bins.csv'
+            p.write_text('upperEquivalentNs,count\n'+''.join(f'{i},1\n' for i in range(1,200)))
+            self.assertEqual(focus.rank(p,99),198)
+            self.assertEqual(focus.rank(p,50),100)
     def test_finite_schedule_has_complete_independent_pairs_without_duplicates(self):
         slots=focus.schedule(4096,[328,352],3,['closed','arrival'])
         self.assertEqual(len(slots),24);self.assertEqual(len({s['label'] for s in slots}),24)
