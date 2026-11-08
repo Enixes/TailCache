@@ -1,13 +1,13 @@
 {
   "complete": true,
-  "verifiedUtc": "2026-11-08T17:41:52.040510+00:00",
+  "verifiedUtc": "2026-11-08T18:38:12.505833+00:00",
   "provider": "Vercel",
   "teamName": "Enixes\u2019 projects",
   "teamSlug": "enixes-projects",
   "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
   "projectName": "tailcache-results",
   "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
-  "deploymentId": "dpl_3Cpkguxjmeo1wijMNxNFVrYZED8y",
+  "deploymentId": "dpl_4UUYfonrQTuw97AxxWTqrh66CNp7",
   "status": "READY",
   "target": "production",
   "url": "https://tailcache-results.vercel.app/",
@@ -15,10 +15,10 @@
     "https://tailcache-results.vercel.app/",
     "https://tailcache-results-enixes-projects.vercel.app/"
   ],
-  "deploymentUrl": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
-  "sourceCommit": "9a7e5818704110610bf32be7de09f2319fce58ec",
+  "deploymentUrl": "https://tailcache-results-4j1ybq6yr-enixes-projects.vercel.app/",
+  "sourceCommit": "9cb1b02c0f61e2ce183d6d12f845e9b9528a55d3",
   "framework": "static HTML",
-  "buildDurationMs": 1884,
+  "buildDurationMs": 2390,
   "authentication": {
     "method": "Vercel Authentication",
     "enabled": true,
@@ -29,10 +29,10 @@
   "files": [
     {
       "path": "index.html",
-      "bytes": 2375966,
-      "sha1": "bb1e745f3a09329e88f8acc9718c08794a9f9cda",
-      "sha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",
-      "remoteFileUid": "bb1e745f3a09329e88f8acc9718c08794a9f9cda"
+      "bytes": 10532166,
+      "sha1": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c",
+      "sha256": "5e80030d689bdedcd941e7ab3b444c8178aee48bd8430a343529eed1b8eb3e90",
+      "remoteFileUid": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c"
     },
     {
       "path": "vercel.json",
@@ -57,26 +57,110 @@
       "resultsPageExposed": false
     },
     {
-      "url": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
+      "url": "https://tailcache-results-4j1ybq6yr-enixes-projects.vercel.app/",
       "status": 302,
       "redirectOrigin": "https://vercel.com",
       "redirectPath": "/sso-api",
       "resultsPageExposed": false
     }
   ],
-  "browserCheck": "Signed-out request reaches login; user-authenticated browser loads the explorer and its controls.",
+  "browserCheck": "Authenticated full-tail page and controls work; clean signed-out clients redirect to Vercel SSO on all three URLs.",
   "contentVerification": "Remote index.html source UID matches the SHA-1 of the exact locally browser-tested artifact.",
   "newBenchmarkRuns": 0,
   "authenticatedBrowserCheck": {
     "passed": true,
-    "verifiedUtc": "2026-11-08T17:53:36.687090+00:00",
+    "verifiedUtc": "2026-11-08T18:38:12.505833+00:00",
     "url": "https://tailcache-results.vercel.app/",
     "checks": [
-      "Results page loads after user sign-in",
-      "p99.999 graph switch and 15 nominal tail observations",
-      "All-channel scope shows 56 comparisons and 224 conclusions",
-      "Definitions disclosure and timing example",
+      "Full-bin curves decode and render after sign-in",
+      "Single-pair selection shows two fork curves",
+      "All-channel stall matrix: 56 comparisons / 168 threshold conclusions",
+      "Frozen research claims download matches source bytes",
       "No browser errors or warnings"
     ]
-  }
+  },
+  "previousDeployments": [
+    {
+      "complete": true,
+      "verifiedUtc": "2026-11-08T17:41:52.040510+00:00",
+      "provider": "Vercel",
+      "teamName": "Enixes\u2019 projects",
+      "teamSlug": "enixes-projects",
+      "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+      "projectName": "tailcache-results",
+      "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+      "deploymentId": "dpl_3Cpkguxjmeo1wijMNxNFVrYZED8y",
+      "status": "READY",
+      "target": "production",
+      "url": "https://tailcache-results.vercel.app/",
+      "aliases": [
+        "https://tailcache-results.vercel.app/",
+        "https://tailcache-results-enixes-projects.vercel.app/"
+      ],
+      "deploymentUrl": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
+      "sourceCommit": "9a7e5818704110610bf32be7de09f2319fce58ec",
+      "framework": "static HTML",
+      "buildDurationMs": 1884,
+      "authentication": {
+        "method": "Vercel Authentication",
+        "enabled": true,
+        "deploymentType": "all",
+        "verifiedAfterDeployment": true,
+        "shareLinksCreated": false
+      },
+      "files": [
+        {
+          "path": "index.html",
+          "bytes": 10532166,
+          "sha1": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c",
+          "sha256": "5e80030d689bdedcd941e7ab3b444c8178aee48bd8430a343529eed1b8eb3e90",
+          "remoteFileUid": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c"
+        },
+        {
+          "path": "vercel.json",
+          "bytes": 337,
+          "sha1": "9a595494747e07de0a6c5bc789c9650ce15ff834",
+          "note": "Uploaded as UTF-8 text without trailing newline"
+        }
+      ],
+      "signedOutChecks": [
+        {
+          "url": "https://tailcache-results.vercel.app/",
+          "status": 302,
+          "redirectOrigin": "https://vercel.com",
+          "redirectPath": "/sso-api",
+          "resultsPageExposed": false
+        },
+        {
+          "url": "https://tailcache-results-enixes-projects.vercel.app/",
+          "status": 302,
+          "redirectOrigin": "https://vercel.com",
+          "redirectPath": "/sso-api",
+          "resultsPageExposed": false
+        },
+        {
+          "url": "https://tailcache-results-77n9vm5xu-enixes-projects.vercel.app/",
+          "status": 302,
+          "redirectOrigin": "https://vercel.com",
+          "redirectPath": "/sso-api",
+          "resultsPageExposed": false
+        }
+      ],
+      "browserCheck": "Signed-out request reaches login; user-authenticated browser loads the explorer and its controls.",
+      "contentVerification": "Remote index.html source UID matches the SHA-1 of the exact locally browser-tested artifact.",
+      "newBenchmarkRuns": 0,
+      "authenticatedBrowserCheck": {
+        "passed": true,
+        "verifiedUtc": "2026-11-08T17:53:36.687090+00:00",
+        "url": "https://tailcache-results.vercel.app/",
+        "checks": [
+          "Results page loads after user sign-in",
+          "p99.999 graph switch and 15 nominal tail observations",
+          "All-channel scope shows 56 comparisons and 224 conclusions",
+          "Definitions disclosure and timing example",
+          "No browser errors or warnings"
+        ]
+      }
+    }
+  ]
 }

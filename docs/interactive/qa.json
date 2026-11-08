@@ -9,7 +9,7 @@
   "primaryComparisons": 22,
   "allTimingChannelComparisons": 56,
   "percentileConclusions": 224,
-  "dataIntegrityTestsPassed": 8,
+  "dataIntegrityTestsPassed": 11,
   "newBenchmarkRuns": 0,
   "browser": "Codex in-app browser; restricted localhost preview",
   "browserChecks": [
@@ -81,8 +81,10 @@
     "authentication": "Vercel Authentication on all deployments",
     "signedOutUrlsVerified": 3,
     "remoteArtifactHashMatches": true,
-    "authenticatedBrowserCheck": "PASS: user signed in; hosted percentile controls, full coverage and definitions verified without browser errors or warnings.",
-    "newArtifactPublished": false
+    "authenticatedBrowserCheck": "PASS: full-tail curves, single-pair view, 56/168 stall matrix and exact frozen-claims download; no console errors or warnings.",
+    "newArtifactPublished": true,
+    "sourceCommit": "9cb1b02c0f61e2ce183d6d12f845e9b9528a55d3",
+    "deploymentId": "dpl_4UUYfonrQTuw97AxxWTqrh66CNp7"
   },
   "priorFullTailExtensionQa": {
     "artifactSha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",

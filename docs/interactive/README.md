@@ -37,7 +37,7 @@ Deploy that two-file directory, using the configured Vercel account/project. The
 
 [Open TailCache results](https://tailcache-results.vercel.app/). Sign in with a Vercel account that has access to Enixes’ projects / tailcache-results. Authentication protects **all deployments**, including production aliases and the unique generated deployment URL. No temporary sharing link was created.
 
-The deployed source is commit `9a7e581`; its exact index.html SHA-1 matches the deployment source file UID. All three signed-out URL checks redirect to Vercel SSO without returning the embedded results. The browser also reaches the Vercel login page. After the user signed in, the hosted p99.999 switch, all-channel coverage (56 comparisons / 224 conclusions), glossary and timing example were verified too, with no browser errors or warnings. See [deployment.json](deployment.json) for target, hashes and checks.
+The deployed source is commit `9cb1b02`; its exact index.html SHA-1 matches the deployment source file UID. All three signed-out URL checks redirect to Vercel SSO without returning the embedded results. The browser also reaches the Vercel login page. After the user signed in, the hosted p99.999 switch, all-channel coverage (56 comparisons / 224 conclusions), glossary and timing example were verified too, with no browser errors or warnings. See [deployment.json](deployment.json) for target, hashes and checks.
 
 ## Full tail and stall probabilities
 
@@ -46,3 +46,5 @@ The deployed source is commit `9a7e581`; its exact index.html SHA-1 matches the 
 Switch “Show conclusions for” to “Stall probabilities” to inspect all three threshold conclusions at every filtered point. Expanded rows and the full-tail section show definite–possible counts and denominators. CSV includes both views regardless of the selected display mode. Download full binned tails, their independent audit and the frozen research claims from Methods. The page uses native gzip decoding for the selected distributions, without a CDN or new network requests; current browsers with DecompressionStream are required to draw the full curves. Stall tables remain available if decoding is unsupported.
 
 The retained offline derivative is `evidence-archives/focused-rq-tails-20261108-001/`. No new workload runs are launched. The 0/104/208 MiB confirmation batch remains a separate decision after the offline review.
+
+The full-tail update is deployed and authenticated hosted checks passed: all-fork/single-pair curves, the complete stall matrix and exact frozen-claims download. Clean signed-out requests to both production aliases and the new unique deployment URL still redirect to Vercel SSO. The previous deployment receipt remains in deployment.json history.
