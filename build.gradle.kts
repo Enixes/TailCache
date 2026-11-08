@@ -56,6 +56,20 @@ tasks.test {
     jvmArgs(chronicleJvmArgs)
 }
 
+tasks.register("tailCacheFocusedBuild") {
+    dependsOn(tasks.classes)
+    val destination = layout.buildDirectory.file("tmp/tailcache-focused-runtime.txt")
+    val runtimePath = sourceSets.main.get().runtimeClasspath.asPath
+    inputs.files(sourceSets.main.get().runtimeClasspath)
+    outputs.file(destination)
+    doLast {
+        destination.get().asFile.apply {
+            parentFile.mkdirs()
+            writeText(runtimePath)
+        }
+    }
+}
+
 val jmh = sourceSets.create("jmh") {
     java.srcDir("src/jmh/java")
     resources.srcDir("src/jmh/resources")

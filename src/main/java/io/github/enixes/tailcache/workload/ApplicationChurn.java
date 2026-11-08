@@ -15,9 +15,10 @@ public final class ApplicationChurn implements AutoCloseable {
     private volatile Throwable workerFailure;
     private final com.sun.management.ThreadMXBean allocationCounter;
     private volatile long workerAllocatedBytes = -1;
-    private long allocatedObjects;
-    private long droppedObjects;
-    private long lateTicks;
+    private volatile long allocatedObjects;
+    private volatile long droppedObjects;
+    private volatile long lateTicks;
+    private volatile long workerAllocationBase = -1;
     private long startedNs;
     private long stoppedNs;
 
@@ -40,12 +41,14 @@ public final class ApplicationChurn implements AutoCloseable {
         allocatedObjects = droppedObjects = lateTicks = 0;
         workerFailure = null;
         workerAllocatedBytes = offeredBytesPerSecond == 0 ? 0 : -1;
+        workerAllocationBase = offeredBytesPerSecond == 0 ? 0 : -1;
         startedNs = System.nanoTime();
         running = true;
         if (offeredBytesPerSecond > 0) {
             thread = new Thread(() -> {
                 long id = Thread.currentThread().threadId();
                 long before = allocationCounter == null ? -1 : allocationCounter.getThreadAllocatedBytes(id);
+                workerAllocationBase = before;
                 try { allocate(); }
                 catch (Throwable failure) { workerFailure = failure; }
                 finally {
@@ -55,6 +58,19 @@ public final class ApplicationChurn implements AutoCloseable {
             thread.setDaemon(true);
             thread.start();
         }
+    }
+
+    /** Cumulative boundary observation without restarting the allocation thread. */
+    public synchronized Snapshot snapshot() {
+        if (!running) throw new IllegalStateException("Churn is not running");
+        if (workerFailure != null) throw new IllegalStateException("Churn worker failed", workerFailure);
+        long payload = allocatedObjects * objectBytes;
+        long jvm = offeredBytesPerSecond == 0 ? 0 : allocationCounter == null || workerAllocationBase < 0
+                ? -1 : allocationCounter.getThreadAllocatedBytes(thread.threadId()) - workerAllocationBase;
+        int retained = 0;
+        for (byte[] value : ring) if (value != null) retained++;
+        return new Snapshot(offeredBytesPerSecond, payload, droppedObjects * objectBytes, lateTicks,
+                startedNs, System.nanoTime(), (long) retained * objectBytes, checksum, jvm);
     }
 
     private void allocate() {
