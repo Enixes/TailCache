@@ -111,10 +111,10 @@
       "files": [
         {
           "path": "index.html",
-          "bytes": 10532166,
-          "sha1": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c",
-          "sha256": "5e80030d689bdedcd941e7ab3b444c8178aee48bd8430a343529eed1b8eb3e90",
-          "remoteFileUid": "5c47d88e6ed66ef8f301071fbe43e501c747fe1c"
+          "bytes": 2375966,
+          "sha1": "bb1e745f3a09329e88f8acc9718c08794a9f9cda",
+          "sha256": "18fafc6c90f4b9d1ca6ae030bc7a8c74a99e7973fc8b54561bfa74b5bb539797",
+          "remoteFileUid": "bb1e745f3a09329e88f8acc9718c08794a9f9cda"
         },
         {
           "path": "vercel.json",
