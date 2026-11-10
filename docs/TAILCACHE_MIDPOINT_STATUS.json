@@ -1,0 +1,33 @@
+{
+  "taskComplete": true,
+  "scope": "Bounded midpoint/seed follow-up; broader research and preprint remain separate",
+  "collectionComplete": true,
+  "analysisComplete": true,
+  "browserVerified": true,
+  "pythonTestsPassed": 245,
+  "workloadForks": 30,
+  "controlForks": 9,
+  "replacementForks": 0,
+  "adaptivePointCollected": false,
+  "originalUnconditionalProtocolQualified": false,
+  "master": "evidence-archives/midpoint-study-20261110-001/state.json",
+  "review": "docs/TAILCACHE_MIDPOINT_RESULTS.md",
+  "dataset": "evidence-archives/midpoint-results-20261110-001/study.json",
+  "audit": "evidence-archives/midpoint-results-20261110-001/audit.json",
+  "delivery": {
+    "complete": true,
+    "createdUtc": "2026-11-10T14:33:43.212353+00:00",
+    "archive": "evidence-archives/midpoint-delivery-20261110-001.tar.gz",
+    "bytes": 49965579,
+    "sha256": "cbb7232284a1b937698583f0f0c0aeb2eed39d200269a1a2af47442d9f32ce4a",
+    "verifiedFileMembers": 1104,
+    "verifiedUncompressedBytes": 70632226,
+    "workloadForks": 30,
+    "controlForks": 9,
+    "executedSourceSha256": "782a41005d94954297debf9d4e2560a8f71cc3db496dc464f23efb01d7783dd0",
+    "studySha256": "6a737c6cca9c2f858a35b8b5e51a1e97e8536112b37bcb9640e8089b8b610892",
+    "auditSha256": "c3399aa2408cbb960404ab4e97ca34e95d818cd4a9a308101efea259a6835925",
+    "explorerSha256": "fb2dfa0804a8ab9f04bbfff24dad5886fc84882814d2a6937753b0a7a73a2e46"
+  },
+  "nextWork": "Preprint manuscript/figure and human research review; no additional benchmark scheduled"
+}

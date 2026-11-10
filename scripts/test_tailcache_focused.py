@@ -2,9 +2,56 @@ import copy
 import unittest
 import tempfile
 import pathlib
+import os
+from unittest.mock import patch
 import tailcache12_focused as focus
 
 class FocusedTest(unittest.TestCase):
+    def test_seed_is_explicit_for_each_pair_and_seeds_are_never_aggregated(self):
+        slots=focus.schedule(4096,[0,104,208],3,['arrival'],seed=24302)
+        self.assertEqual(len(slots),18)
+        self.assertEqual({s['seed'] for s in slots},{24302})
+        with self.assertRaisesRegex(ValueError,'separate summaries'):
+            focus.summaries([dict(slots[0]),dict(slots[1],seed=24303)])
+
+    def test_launch_passes_declared_seed_to_unchanged_java_runtime(self):
+        class Process:
+            pid=os.getpid()
+            def wait(self,timeout=None):return 0
+            def poll(self):return 0
+        with tempfile.TemporaryDirectory() as tmp, \
+             patch.object(focus.evidence,'host_snapshot',return_value={'nativeScopeQualified':0}), \
+             patch.object(focus.subprocess,'Popen',return_value=Process()) as launched, \
+             patch.object(focus,'read_fork',return_value={'warnings':[]}):
+            spec=focus.schedule(4096,[104],1,['arrival'],seed=24303)[0]
+            focus.launch(pathlib.Path(tmp),spec,'unchanged-classpath')
+            command=launched.call_args.args[0]
+            self.assertEqual(command[command.index('--seed')+1],'24303')
+            identity=focus.load(pathlib.Path(tmp)/spec['label']/'worker-process.json')
+            self.assertEqual(identity['pid'],os.getpid())
+
+    def test_process_memory_observer_uses_status_and_handles_exited_process(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=pathlib.Path(tmp);(root/'123').mkdir()
+            (root/'123/status').write_text('Name:\tjava\nVmRSS:\t12345 kB\nVmHWM:\t14000 kB\nRssAnon:\t10000 kB\n')
+            phase=root/'phase.txt';phase.write_text('MEASUREMENT')
+            sample=focus.process_memory(123,phase,root)
+            self.assertEqual(sample['VmRSSKiB'],12345)
+            self.assertEqual(sample['VmHWMKiB'],14000)
+            self.assertEqual(sample['phase'],'MEASUREMENT')
+            self.assertEqual(sample['RssFileKiB'],'')
+            self.assertGreaterEqual(sample['sampleEndNs'],sample['sampleStartNs'])
+            self.assertIsNone(focus.process_memory(999,phase,root))
+
+    def test_resume_verification_detects_tampered_control_without_rewriting_it(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=pathlib.Path(tmp);raw=root/'floor.hdr';raw.write_bytes(b'original')
+            result={'rawSha256':{'floor.hdr':focus.sha(raw)}}
+            focus.verify_retained(root,result)
+            raw.write_bytes(b'tampered')
+            with self.assertRaisesRegex(ValueError,'Retained evidence changed'):
+                focus.verify_retained(root,result)
+            self.assertEqual(raw.read_bytes(),b'tampered')
     def test_pinned_hdr_ceiling_rank_is_not_old_rounded_rank(self):
         with tempfile.TemporaryDirectory() as tmp:
             p=pathlib.Path(tmp)/'bins.csv'

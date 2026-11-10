@@ -110,12 +110,22 @@ def main():
     template=TEMPLATE.read_text();assert template.count('__TAILCACHE_DATA__')==1
     assert template.count('__TAILCACHE_TAIL_UI__')==1
     template=template.replace('__TAILCACHE_TAIL_UI__',(ROOT/'scripts/tailcache12_tail_ui.js').read_text())
-    args.out.write_text(template.replace('__TAILCACHE_DATA__',embedded))
+    rendered=template.replace('__TAILCACHE_DATA__',embedded)
+    # Keep the separately declared cohort when regenerating the historical page,
+    # including fresh checkouts whose raw archives are not present locally.
+    from tailcache12_midpoint_explorer import START,END,attach,render_component
+    component=None
+    if (ROOT/'evidence-archives/midpoint-results-20261110-001/study.json').exists():component=render_component()
+    elif OUTPUT.exists():
+        retained=re.search(re.escape(START)+'.*?'+re.escape(END),OUTPUT.read_text(),re.S)
+        if retained:component=retained.group()
+    if component is not None:rendered=attach(rendered,component)
+    args.out.write_text(rendered)
     if args.site_out:
         args.site_out.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(args.out,args.site_out/'index.html')
         shutil.copyfile(ROOT/'docs/interactive/vercel.json',args.site_out/'vercel.json')
-    print(json.dumps(dict(html=str(args.out.relative_to(ROOT)),bytes=args.out.stat().st_size,forks=len(data['forks']),primaryComparisons=22,allChannelComparisons=56,percentileConclusions=len(data['groups'])*len(PERCENTILES),sourceSha256=data['sourceSha256']),indent=2))
+    print(json.dumps(dict(html=str(args.out.relative_to(ROOT)) if args.out.is_relative_to(ROOT) else str(args.out),bytes=args.out.stat().st_size,forks=len(data['forks']),primaryComparisons=22,allChannelComparisons=56,percentileConclusions=len(data['groups'])*len(PERCENTILES),sourceSha256=data['sourceSha256']),indent=2))
 
 
 if __name__=='__main__':main()

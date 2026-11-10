@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "conclusionViews": 36,
+  "downloads": [
+    "tailcache-midpoint-study.json",
+    "tailcache-midpoint-conclusions.csv",
+    "tailcache-midpoint-tails.json"
+  ],
+  "historicalForksPreserved": 132,
+  "mobileFit": {
+    "viewport": 320,
+    "scroll": 320,
+    "client": 320
+  },
+  "errors": [],
+  "checkedUtc": "2026-11-10T14:31:21.533Z"
+}
