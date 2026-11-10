@@ -8,4 +8,6 @@ out/
 .DS_Store
 hs_err_pid*
 *.jfr
+__pycache__/
+*.pyc
 results/
