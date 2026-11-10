@@ -1,5 +1,7 @@
 # TailCache Task12 native research runbook
 
+> **Update 8 November 2026:** Task12 is complete; see `TAILCACHE_12_FINAL_OUTCOME_REVIEW.md`. The accepted conditional final study did **not** use the warmup/conditioning counts listed below. It used 30 warmups, 8 conditioning and 8 analysed one-second intervals (`TAILCACHE_12_CONDITIONAL_FINAL_PROTOCOL_PLAN.md`; `original-protocol.json` in the final dataset). The rest of this runbook records the pre-final native controls. Any new run is a new protocol.
+
 Use the local tailcache-12-crossover checkout. Check docs/TAILCACHE_12_STATUS.json, live processes, retained manifests and the latest researcher reviews first. A partial or launched job is never completion. Historical WSL/migration instructions are retained in [the legacy runbook](TAILCACHE_12_LEGACY_WSL_RUNBOOK.md); they do not authorize current native runs.
 
 Current native controls are one worker, uniform periodic40001-operation trace,exactly38001 reads/2000 updates per period (rounded nominal95/5),seed24301,residents32768,fixed512MiBG1,common retained application inputs0/96/208/288MiB,payload256/4096 and independently offered32MiB/s churn. Normal warmup120×1s, fixed measurement-mode conditioning16×1s, analysed8×1s. Retain all24 physical measurement-mode intervals. Use result-transport-v2 and lifecycle-maintenance-v1. No percentile floor subtraction, post-hoc window movement or retained Chronicle payload bank. Both backends receive the same per-operation application demand; achieved throughput and intrinsic materialization allocation may differ.

@@ -1,0 +1,31 @@
+{
+  "utc": "2026-11-08T07:04:08.153152+00:00",
+  "actions": [
+    {
+      "path": "/home/y/.npm/_cacache",
+      "files": 7693,
+      "allocatedBytes": 3069607936
+    },
+    {
+      "path": "/home/y/.cache/pip/http-v2",
+      "files": 236,
+      "allocatedBytes": 156610560
+    },
+    {
+      "path": "/home/y/.cache/mozilla/firefox",
+      "files": 3151,
+      "allocatedBytes": 434503680
+    }
+  ],
+  "freeBeforeBytes": 3608248320,
+  "freeAfterBytes": 7304605696,
+  "reclaimedBytes": 3696357376,
+  "preserved": [
+    "TailCache/build/reports",
+    "TailCache/evidence-archives",
+    "AGY notes and uncommitted changes",
+    "Gradle/JDK/offline Maven dependencies",
+    "npm/_npx executables",
+    "Codex runtimes and session data"
+  ]
+}

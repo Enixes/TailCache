@@ -2,6 +2,8 @@
 
 Prepared before implementation on 2026-10-13 against clean commit `c008dad`. The state review below is the planning snapshot. Implementation and evidence updates are recorded in `docs/TAILCACHE_12_IMPLEMENTATION_REVIEW.md` and `docs/TAILCACHE_12_STATUS.json`; the campaign has not been run.
 
+> **Update 8 November 2026:** the campaign has since been executed and accepted as an observer-conditional study (original protocol NO_GO). See `TAILCACHE_12_FINAL_OUTCOME_REVIEW.md` and `TAILCACHE_12_FINAL_ACCEPTANCE.json`. The planning snapshot above is preserved unchanged.
+
 Source: [TickTick Task 12](https://ticktick.com/webapp/#p/60d767527eba1347b9b9006e/tasks/6a99b1248f0842fe140aa129), “Run RQ1/RQ2 crossover campaign, repeats and statistical summaries.” The task explicitly includes 12A–12G: repair, measurement validation, calibration, quality controls, pilot, campaign and statistics. The user chose **this machine during a quiet session** for the reportable campaign.
 
 ## Current-state review

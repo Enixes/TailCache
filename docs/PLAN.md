@@ -189,6 +189,8 @@ The purpose of this milestone is to make the **heap-pressure crossover** measura
 
 ## Milestone 2 - primary study: when does off-heap pay off?
 
+> **Status after Task 12 (8 November 2026):** this milestone ran once, as the conditional study in `TAILCACHE_12_FINAL_OUTCOME_REVIEW.md` (original protocol NO_GO). It covered RQ1/RQ2 only: one worker, uniform 95/5, G1 with 512 MiB, 256 B/4 KiB, and 0–288 MiB retained data. RQ1 was inconclusive in the primary campaign because 288 MiB stopped around ~90% Caffeine heap occupancy (and ~62% at 256 B) and used closed-loop percentiles. A follow-up 30-JVM 90–99% heap cliff diagnostic (`TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md`) pushed past G1's ~97% evacuation cliff alongside open-loop response latency and `ChronicleMap.getUsing(key, reusableBuffer)`, demonstrating the exact crossover, OOM boundary, and why zero-allocation object reuse is essential off-heap. RQ3/RQ4 have not been run. The checkboxes below are deliberately left unticked where the original unconditional protocol was not met. See the README "Task 12 results" section and `TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md` for full details.
+
 ### Primary research questions
 
 - **RQ1:** At what heap/live-set pressure, if any, does Chronicle Map in-memory achieve lower p99 / p99.9 operation latency than Caffeine despite its higher ordinary-access/materialization cost?
