@@ -57,7 +57,7 @@ Writes overwrite existing keys using preallocated per-key replacement payloads. 
 
 `CHRONICLE_PERSISTED` uses `ChronicleMapBuilder.createPersistedTo(...)` with a temporary file created for the JMH trial. The cache is populated before measurement, then explicitly closed and the temporary map file/directory are deleted during trial teardown.
 
-The primary persisted result is intended to represent **warm steady-state mapped access**, not map-open time or deliberately cold page-fault behaviour. Prepopulation touches the mapped entry data before measurement; TailCache's pilot phase still has to verify page-fault/writeback effects and record the filesystem/storage environment before any persisted numbers become reportable.
+The persisted JMH path is intended to represent **warm steady-state mapped access**, not map-open time or deliberately cold page-fault behaviour. The TailCache 07 pilot loads and sweeps mapped pages before measurement, records the filesystem/storage environment and process fault/I/O counters, and keeps map reopen/first-touch timing in a separate diagnostic. The first pilot found major faults and unstable host conditions, so its persisted latencies are not reportable. See [TailCache 07](docs/TAILCACHE_07.md).
 
 Persisted mode is also **not the same thing as a two-JVM experiment**. Multi-process sharing adds inter-process locking, coherence and scheduling effects and is kept as a separate secondary study.
 
