@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "host": "tailcache-results.vercel.app",
+      "httpStatus": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedDataExposed": false
+    },
+    {
+      "host": "tailcache-results-enixes-projects.vercel.app",
+      "httpStatus": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedDataExposed": false
+    },
+    {
+      "host": "tailcache-results-nkoky5dvg-enixes-projects.vercel.app",
+      "httpStatus": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedDataExposed": false
+    }
+  ]
+}

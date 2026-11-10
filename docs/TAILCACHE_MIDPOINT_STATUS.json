@@ -29,5 +29,15 @@
     "auditSha256": "c3399aa2408cbb960404ab4e97ca34e95d818cd4a9a308101efea259a6835925",
     "explorerSha256": "fb2dfa0804a8ab9f04bbfff24dad5886fc84882814d2a6937753b0a7a73a2e46"
   },
-  "nextWork": "Preprint manuscript/figure and human research review; no additional benchmark scheduled"
+  "nextWork": "Preprint manuscript/figure and human research review; no additional benchmark scheduled",
+  "deployment": {
+    "id": "dpl_8mx8HQMJBGews422tJV95X76LvRj",
+    "url": "https://tailcache-results.vercel.app/",
+    "ready": true,
+    "authProtected": true,
+    "remoteArtifactMatches": true,
+    "signedOutBlocked": true
+  },
+  "nativeBenchmarkLockFree": true,
+  "recoveryTimerState": "inactive"
 }
