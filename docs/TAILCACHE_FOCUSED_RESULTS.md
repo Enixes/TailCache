@@ -1,5 +1,7 @@
 # Focused crossover results and researcher review — 8 November 2026
 
+> **Update 11 November:** a separate 30-JVM midpoint/seed follow-up is now complete. It repeats the endpoint response direction change, leaves 104 MiB unresolved and adds sampled RSS. See [the follow-up review](TAILCACHE_MIDPOINT_RESULTS.md) and [paper working package](preprint/README.md). The original 132-fork results and dated prospective statements below remain historical evidence; they are not pooled with the follow-up.
+
 [Open the interactive conclusions table and crossover graphs](TAILCACHE_RESULTS_EXPLORER.html). It covers all 132 forks, all four percentiles, and each retained timing channel, with paired evidence and CSV export.
 
 **The first useful RQ answers are complete. Collection is stopped.** At 4 KiB, ordinary Chronicle `get` has a reproducible advantage in **actual scheduled response p99.9** after pressure increases, but **no forward crossover in saturated service p99/p99.9 was observed** at the tested high-pressure points. At 256 B, service p99.9 crosses in the opposite direction: Chronicle starts lower and becomes higher near heap saturation. Buffer reuse reverses that disadvantage in a separately labelled sensitivity.

@@ -2,7 +2,9 @@
 
 Planning date: **9 November 2026**, Asia/Kolkata. Earliest application deadline supplied by the user: **1 December 2026**. Target a publicly citable, reviewed version by **26 November**, with submission preparation earlier. These are planning targets, not guaranteed repository processing dates.
 
-Status: **PLAN ONLY — no new benchmark, submission, public release or TickTick rescheduling performed.** The conditional Task 12 study and exploratory analysis remain complete in their declared scopes; this is new follow-up work, not a reopening or relabelling of historical evidence.
+> **Current update, 11 November:** the bounded midpoint/seed follow-up completed on 10 November: 30 workload JVMs plus nine controls, no replacements. The 104 MiB point is mixed and the adaptive point was correctly skipped. See [the final midpoint review](TAILCACHE_MIDPOINT_RESULTS.md). The [preprint working package](preprint/README.md) now contains a claim/evidence map, static figures, derived inputs and a methods/related-work draft. The sections below preserve the 9 November prospective plan; “not launched” and “next collection” refer to that dated snapshot. No further collection is planned for v1. The manuscript is not yet author-approved, submitted or published.
+
+Historical status on 9 November: **PLAN ONLY — no new benchmark, submission, public release or TickTick rescheduling performed at that point.** The 11 November update above records subsequent completion. The conditional Task 12 study and exploratory analysis retain their declared scopes; the follow-up does not relabel historical evidence.
 
 Publication planning update, 9 November: see [the initial literature and venue review](TAILCACHE_LITERATURE_AND_PUBLICATION_STRATEGY.md). Existing literature already covers the broad off-heap/GC tradeoff and open/closed workload distinction. ICPE 2027 EERCS is a candidate venue with registration closing 10 November at 17:29:59 India time according to its live submission page; no registration has been made. Its January notification date cannot provide a guaranteed acceptance for December applications. A possible 12 November preprint v1 is an accelerated drafting target, subject to evidence/claim review, not a promised journal publication date.
 
@@ -123,4 +125,4 @@ Before publication, confirm the final authorship/affiliation, manuscript, licenc
 
 ## Next implementation unit
 
-Prepare Batch A's exact frozen manifest and controls, inspect native host/disk readiness and existing jobs, and make only the small runner/report changes needed for this cohort. Review correctness and resume handling before launch. No broader benchmark campaign is implied by this planning document.
+Batch A and the bounded seed follow-up are complete. Continue with manuscript completion, independent domain feedback, clean reproduction, raw-evidence backup/release selection and the technical audit. Task 13's paper package is in [preprint/README.md](preprint/README.md). No broader benchmark campaign is implied.

@@ -28,6 +28,8 @@ The smoke harness keeps the working set below the configured entry setting so va
 
 ## Latest exploratory results (10 November 2026)
 
+The [preprint working package](docs/preprint/README.md) contains the editable manuscript draft, claim-to-evidence map, static paper figures and offline figure reproduction. It is working material, not a submitted or author-approved preprint.
+
 The [midpoint results and researcher review](docs/TAILCACHE_MIDPOINT_RESULTS.md) and [interactive explorer](docs/TAILCACHE_RESULTS_EXPLORER.html) report the later replicated follow-up. For ordinary 4 KiB access, scheduled-response p99.9 favors Caffeine at 0 MiB and Chronicle at 208 MiB of common retained application data; 104 MiB is mixed across pairs and seeds. The crossover remains bracketed rather than precisely located. Chronicle's scheduled-response p99.99 and p99.999 advantage already exists at baseline. Lower Java heap occupancy did not imply lower process RSS. Service latency, scheduled response and buffer reuse remain separate comparisons.
 
 The sections below preserve the earlier conditional campaign and cliff diagnostic. The cliff diagnostic is exploratory evidence, not a replicated universal heap threshold or proof that buffer reuse is required. Read its claims alongside the later [publication plan](docs/TAILCACHE_PREPRINT_PLAN.md) and midpoint review.

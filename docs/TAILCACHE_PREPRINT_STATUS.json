@@ -1,0 +1,42 @@
+{
+  "schema": "tailcache-preprint-status-v1",
+  "updatedLocalDate": "2026-11-11",
+  "phase": "PAPER_PREPARATION_COMPLETE_DRAFT_STARTED",
+  "preprintComplete": false,
+  "submitted": false,
+  "authorApproved": false,
+  "newBenchmarkRuns": 0,
+  "package": "docs/preprint/README.md",
+  "implementationPlan": "docs/TAILCACHE_PREPRINT_PREPARATION_PLAN.md",
+  "review": "docs/preprint/REVIEW.md",
+  "task13": {
+    "claimEvidenceMap": "prepared",
+    "staticFigures": 7,
+    "derivedDataExport": "prepared",
+    "scope": "Focused and midpoint cohorts; final main-text selection and original-campaign summary remain manuscript work"
+  },
+  "task14": {
+    "status": "draft_started",
+    "manuscript": "docs/preprint/MANUSCRIPT.md",
+    "methods": "drafted",
+    "relatedWork": "bounded_primary_source_draft",
+    "remaining": "Contribution refinement, original-campaign summary, full prose edit, human feedback and typesetting"
+  },
+  "task15": {
+    "offlineFigureReproduction": "prepared_and_verified",
+    "remaining": "Clean harness build/smoke, raw-evidence off-host backup and release selection, licensing"
+  },
+  "task16": {
+    "agentPreparationReview": "complete",
+    "independentHumanReview": "pending",
+    "finalManuscriptAudit": "pending"
+  },
+  "task17": {
+    "status": "pending_author_approved_release",
+    "applicationDeadlineSupplied": "2026-12-01",
+    "targetCitableRelease": "2026-11-26"
+  },
+  "tickTickTasksChanged": false,
+  "originalTask12UnconditionalProtocolQualified": false,
+  "furtherCollectionPlannedForV1": false
+}

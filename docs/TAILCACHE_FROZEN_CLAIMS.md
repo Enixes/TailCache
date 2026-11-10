@@ -1,5 +1,7 @@
 # Frozen exploratory research claims — 8 November 2026
 
+> **Follow-up update, 11 November:** this document preserves the claims frozen for the original 132 focused forks. The separately planned midpoint/seed follow-up is complete; its 104 MiB observations are mixed and do not narrow the 0–208 MiB response bracket. Read [the midpoint review](TAILCACHE_MIDPOINT_RESULTS.md) and the current [paper claim-to-evidence map](preprint/CLAIMS.md) for the combined, cohort-separated narrative. The prospective “no batch launched” statements below describe 8 November, not current status.
+
 Scope: the retained 132 workload forks, ordinary get as primary, 512 MiB G1 heap, one worker, 32,768 resident entries and matched application ballast/allocation demand. These claims describe this tested workload and hardware. All warning-bearing forks remain visible. This version includes the requested post hoc p99.99, p99.999 and full-tail analyses; it does not rewrite the original endpoints.
 
 ## Claims that the data support

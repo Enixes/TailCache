@@ -2,6 +2,8 @@
 
 Recorded 9 November 2026, Asia/Kolkata. The user asked to note these items for later. **Deferred; no new collection is scheduled or launched by this note.**
 
+> **Update 11 November:** the bounded 0/104/208 MiB follow-up described prospectively below has now completed, including two additional seeds: 30 workload JVMs and nine controls. The endpoint response direction change repeats; 104 MiB is mixed; the adaptive addition was skipped. See [the midpoint review](TAILCACHE_MIDPOINT_RESULTS.md) and [paper preparation package](preprint/README.md). The broader measurement/generalisation questions below remain deferred; no rerun is required before drafting the scoped paper. The original 9 November planning text is retained as dated history.
+
 Subsequent planning: the user requested midpoint planning and a preprint before the 1 December application deadline. See [the bounded experiment and preprint plan](TAILCACHE_PREPRINT_PLAN.md); the 18-JVM batch is now proposed next work, still unlaunched. The broader follow-ups below remain available without requiring a full rerun.
 
 ## Completion and scope
@@ -26,7 +28,7 @@ These are stronger research follow-ups, not a commitment to rerun the entire mat
 
 ## Separate optional small confirmation batch
 
-**Not launched:** 4 KiB ordinary scheduled response at **0, 104 and 208 MiB** application ballast, three paired forks per point: **18 JVMs**.
+**Completed 10 November:** 4 KiB ordinary scheduled response at **0, 104 and 208 MiB** application ballast, three primary paired forks per point: **18 JVMs**, plus 12 additional-seed JVMs. The following paragraphs preserve the original prospective purpose and controls.
 
 Purpose: test whether the observed p99.9 direction change between 0 and 208 MiB repeats, and add the missing midpoint. At p99.99/p99.999 Chronicle already wins at baseline in the retained 30-second response data; those are baseline advantages, not newly observed forward crossovers.
 
