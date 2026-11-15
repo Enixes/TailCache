@@ -4,6 +4,8 @@ Prepared 11 November 2026. **Working material, not an author-approved or submitt
 
 Revised 15 November after a [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. Use [review-verification-20261115.json](review-verification-20261115.json) for the current validation receipt; `verification.json` and `data-audit.json` preserve the initial 11 November checks.
 
+The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#review-update) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
+
 - [Manuscript draft](MANUSCRIPT.md): methods and related work, initial results narrative and explicit remaining edits.
 - [Claim-to-evidence map](CLAIMS.md) and [machine-readable identities](claims.json).
 - [Figures and full captions](FIGURES.md), vector PDF/SVG plus PNG in `figures/`.

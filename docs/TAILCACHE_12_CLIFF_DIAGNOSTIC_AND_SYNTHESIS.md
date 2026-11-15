@@ -1,5 +1,7 @@
 # Post-Campaign Review, Methodological Synthesis, and 90–99% Heap Cliff Diagnostic
 
+> **Historical discovery record; reviewed interpretation, 15 November:** preserve the diagnostic below as evidence of what motivated later experiments. Its exact-cliff/mandatory-reuse language is not an accepted current claim. Later paired observations do not reproduce an ordinary 4 KiB service p99/p99.9 forward crossover, while fresh scheduled response reverses direction between 0 and 208 MiB and remains mixed at 104 MiB. Synthetic correction here differs from directly measured intended-arrival response. See [current state](TAILCACHE_CURRENT_STATE.md), [reviewed claims](preprint/CLAIMS.md) and [manuscript](preprint/MANUSCRIPT.md).
+
 **Date:** 8 November 2026
 
 **Branch:** `tailcache-12-crossover`

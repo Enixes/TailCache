@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "localBrowserArtifactVerified": true,
+  "authenticatedLiveBrowserVerified": false,
+  "reviewClaims": 14,
+  "figuresDecoded": 7,
+  "exactDownloads": [
+    {
+      "name": "MANUSCRIPT.md",
+      "bytes": 32095,
+      "sha256": "b264ad2cf5c5ffaf9cb8284d93dcdfc0ae10a8a5b0bb7ef6293a47919743253e"
+    },
+    {
+      "name": "DEEP_REVIEW_20261115.md",
+      "bytes": 7878,
+      "sha256": "d232b18f48c80e8738dbaca13d0cd1493d414d1089d23ba547ce6630abce85be"
+    },
+    {
+      "name": "claims.json",
+      "bytes": 32954,
+      "sha256": "c08c6cec06c055f66c42c4c4412440dc70a1ad6755ad720a8e930ce18944572d"
+    },
+    {
+      "name": "TAILCACHE_CURRENT_STATE.md",
+      "bytes": 4152,
+      "sha256": "d3ca2883e0859e532e87c637ab524133b4141bb7a567b465aca1d8f395c88550"
+    }
+  ],
+  "midpointControlViews": 36,
+  "historicalControlsChecked": true,
+  "standaloneChecked": true,
+  "mobile": [
+    {
+      "viewport": 390,
+      "scroll": 390
+    },
+    {
+      "viewport": 320,
+      "scroll": 320
+    }
+  ],
+  "pageErrors": [],
+  "automaticHttpRequests": []
+}

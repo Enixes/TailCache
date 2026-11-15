@@ -26,7 +26,9 @@ TailCache is designed to answer questions such as:
 
 The smoke harness keeps the working set below the configured entry setting so validation runs avoid eviction/capacity exhaustion. The reportable experiment will freeze backend-specific occupancy semantics explicitly before comparing latency distributions, because Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent controls.
 
-## Latest exploratory results (10 November 2026)
+## Current results and manuscript (reviewed 15 November 2026)
+
+Start with the [current research state](docs/TAILCACHE_CURRENT_STATE.md) and [complete documentation index](docs/DOCUMENTATION_INDEX.md). The [protected hosted explorer](https://tailcache-results.vercel.app/#review-update) includes the reviewed RQ answers, manuscript downloads, 14 claims and seven paper figures. Manuscript work continues in [draft PR #10](https://github.com/Enixes/TailCache/pull/10).
 
 The [preprint working package](docs/preprint/README.md) contains the editable manuscript draft, claim-to-evidence map, static paper figures and offline figure reproduction. It is working material, not a submitted or author-approved preprint.
 
@@ -65,6 +67,8 @@ What the evidence supports:
 Not covered: concurrency, skewed or other read/write mixes, other collectors or heap sizes, persisted/cold/two-JVM behaviour, `getUsing`, and eviction. Retained evidence lives under `evidence-archives/native-final-conditional-completion-dataset-20261108-001/`. That directory is git-ignored and exists only on the collection host.
 
 ### Follow-up diagnostic: 90–99% heap cliff, open-loop response latency, and `getUsing()`
+
+**Historical discovery diagnostic:** the single-fork observations and synthetic correction below selected regions for later experiments. They do not establish an exact universal GC threshold, a replicated ordinary-service crossover or mandatory buffer reuse. Use the current reviewed claims and source-matched results above for the manuscript.
 
 Because Task 12 stopped at 288 MiB ballast (~90% Caffeine occupancy at 4 KiB, ~62% at 256 B) and rejected any G1 evacuation failure, a separate 30-JVM cliff diagnostic pushed common application retention up to G1's To-Space Exhaustion / Full GC / OOM boundary while recording both **closed-loop service latency** and **coordinated-omission-corrected (open-loop) response latency** alongside `ChronicleMap.getUsing(key, reusableBuffer)`:
 

@@ -1,5 +1,7 @@
 # Task 12: deferred research follow-up
 
+> **Current update — 15 November:** the bounded follow-up and deep manuscript review are complete. The [current state](TAILCACHE_CURRENT_STATE.md) and [reviewed claim map](preprint/CLAIMS.md) supersede prospective wording below for present decisions. Recorder generalisation, other loads/machines and equal-total-memory interventions remain future research; none is a hidden prerequisite for writing the scoped findings. Original qualification failures stay explicit.
+
 Recorded 9 November 2026, Asia/Kolkata. The user asked to note these items for later. **Deferred; no new collection is scheduled or launched by this note.**
 
 > **Update 11 November:** the bounded 0/104/208 MiB follow-up described prospectively below has now completed, including two additional seeds: 30 workload JVMs and nine controls. The endpoint response direction change repeats; 104 MiB is mixed; the adaptive addition was skipped. See [the midpoint review](TAILCACHE_MIDPOINT_RESULTS.md) and [paper preparation package](preprint/README.md). The broader measurement/generalisation questions below remain deferred; no rerun is required before drafting the scoped paper. The original 9 November planning text is retained as dated history.

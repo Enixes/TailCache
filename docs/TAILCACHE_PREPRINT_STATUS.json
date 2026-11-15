@@ -46,5 +46,15 @@
     "targetedTestsPassed": 18,
     "paperDataUnchanged": true,
     "newBenchmarkRuns": 0
+  },
+  "reviewedPresentation": {
+    "updatedLocalDate": "2026-11-15",
+    "currentState": "docs/TAILCACHE_CURRENT_STATE.md",
+    "documentationIndex": "docs/DOCUMENTATION_INDEX.md",
+    "reviewedClaims": "docs/preprint/CLAIMS.md",
+    "deepReview": "docs/preprint/DEEP_REVIEW_20261115.md",
+    "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html#review-update",
+    "hostedUrl": "https://tailcache-results.vercel.app/#review-update",
+    "newBenchmarkRuns": 0
   }
 }

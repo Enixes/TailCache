@@ -1,5 +1,7 @@
 # Fresh midpoint and seed replication: results and researcher review
 
+> **Presentation review — 15 November:** these measurements and their acceptance are unchanged. The [manuscript](preprint/MANUSCRIPT.md), [reviewed claim map](preprint/CLAIMS.md), [current state](TAILCACHE_CURRENT_STATE.md) and [protected explorer](https://tailcache-results.vercel.app/#review-update) now incorporate the deep review. It tightened timing/payload inference and verifier coverage; it did not collect new forks or turn mixed 104 MiB into a resolved threshold.
+
 Run recorded **10 November 2026**. Collection: **19:20–19:46 Asia/Kolkata**, approximately 26 minutes. **30 workload JVMs plus nine controls**, no replacement forks. All workload JVMs completed with verified values and 1,500,000 scheduled responses apiece; no OOM or censored arrivals. No additional adaptive point was collected.
 
 [Interactive follow-up](TAILCACHE_MIDPOINT_EXPLORER.html) · [Integrated explorer](TAILCACHE_RESULTS_EXPLORER.html#midpoint-followup) · [Audited dataset](../evidence-archives/midpoint-results-20261110-001/study.json) · [All 108 percentile conclusions](../evidence-archives/midpoint-results-20261110-001/conclusions.csv) · [Threshold counts](../evidence-archives/midpoint-results-20261110-001/stall-rates.csv) · [Audit](../evidence-archives/midpoint-results-20261110-001/audit.json)

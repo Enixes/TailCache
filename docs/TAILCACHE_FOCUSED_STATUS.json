@@ -82,5 +82,15 @@
     "dataset": "evidence-archives/midpoint-results-20261110-001/study.json",
     "audit": "evidence-archives/midpoint-results-20261110-001/audit.json",
     "explorer": "docs/TAILCACHE_MIDPOINT_EXPLORER.html"
+  },
+  "reviewedPresentation": {
+    "updatedLocalDate": "2026-11-15",
+    "currentState": "docs/TAILCACHE_CURRENT_STATE.md",
+    "documentationIndex": "docs/DOCUMENTATION_INDEX.md",
+    "reviewedClaims": "docs/preprint/CLAIMS.md",
+    "deepReview": "docs/preprint/DEEP_REVIEW_20261115.md",
+    "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html#review-update",
+    "hostedUrl": "https://tailcache-results.vercel.app/#review-update",
+    "newBenchmarkRuns": 0
   }
 }

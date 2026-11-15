@@ -120,6 +120,8 @@ def main():
         retained=re.search(re.escape(START)+'.*?'+re.escape(END),OUTPUT.read_text(),re.S)
         if retained:component=retained.group()
     if component is not None:rendered=attach(rendered,component)
+    from tailcache12_review_explorer import attach as attach_review
+    rendered=attach_review(rendered)
     args.out.write_text(rendered)
     if args.site_out:
         args.site_out.mkdir(parents=True,exist_ok=True)
