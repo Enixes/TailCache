@@ -1,44 +1,48 @@
 {
   "complete": true,
-  "verifiedUtc": "2026-11-10T15:20:49.954525+00:00",
+  "verifiedUtc": "2026-11-15T18:34:35.021375+00:00",
+  "verifiedLocalDate": "2026-11-16",
+  "contentReviewLocalDate": "2026-11-15",
   "provider": "Vercel",
   "teamName": "Enixes' projects",
   "teamSlug": "enixes-projects",
   "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
   "projectName": "tailcache-results",
   "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
-  "deploymentId": "dpl_8mx8HQMJBGews422tJV95X76LvRj",
+  "deploymentId": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
   "status": "READY",
   "target": "production",
   "url": "https://tailcache-results.vercel.app/",
+  "reviewUrl": "https://tailcache-results.vercel.app/#review-update",
   "aliases": [
     "https://tailcache-results.vercel.app/",
     "https://tailcache-results-enixes-projects.vercel.app/"
   ],
-  "deploymentUrl": "https://tailcache-results-nkoky5dvg-enixes-projects.vercel.app/",
-  "sourceCommit": "5fda648c557bf46d999d00ad9752678f669d3e0e",
+  "deploymentUrl": "https://tailcache-results-my3vqi449-enixes-projects.vercel.app/",
+  "sourceCommit": "13d1f4d685f987907cf379fdfd2e24d166ef1cb1",
   "framework": null,
-  "buildDurationMs": 2941,
+  "buildDurationMs": 5176,
   "authentication": {
     "method": "Vercel Authentication",
     "enabled": true,
     "deploymentType": "all",
+    "verifiedBeforeDeployment": true,
     "verifiedAfterDeployment": true,
     "shareLinksCreated": false
   },
   "files": [
     {
       "path": "index.html",
-      "bytes": 13264909,
-      "sha1": "ac97adea86e8bc31664be20db32cc71a264d7300",
-      "sha256": "fb2dfa0804a8ab9f04bbfff24dad5886fc84882814d2a6937753b0a7a73a2e46",
-      "remoteFileUid": "ac97adea86e8bc31664be20db32cc71a264d7300"
+      "bytes": 14795107,
+      "sha1": "84e6749922fac922bc90007bb75c3080bcda0bbc",
+      "sha256": "94ecbfcf42bb5a399e6626bb17ec7d328298274dda16944bf1261b57a8349479",
+      "remoteFileUid": "84e6749922fac922bc90007bb75c3080bcda0bbc"
     },
     {
       "path": "vercel.json",
-      "bytes": 252,
-      "sha1": "9d0c7701f49260a46d61cb53320f108ca6812ac6",
-      "remoteFileUid": "9d0c7701f49260a46d61cb53320f108ca6812ac6"
+      "bytes": 338,
+      "sha1": "63d75456adc2c9fae82611b507c161890f4295f9",
+      "remoteFileUid": "63d75456adc2c9fae82611b507c161890f4295f9"
     }
   ],
   "signedOutChecks": [
@@ -57,38 +61,112 @@
       "embeddedDataExposed": false
     },
     {
-      "host": "tailcache-results-nkoky5dvg-enixes-projects.vercel.app",
+      "host": "tailcache-results-my3vqi449-enixes-projects.vercel.app",
       "httpStatus": 302,
       "redirectHost": "vercel.com",
       "redirectPath": "/sso-api",
       "embeddedDataExposed": false
     }
   ],
-  "browserCheck": {
-    "passed": true,
-    "conclusionViews": 36,
-    "downloads": [
-      "tailcache-midpoint-study.json",
-      "tailcache-midpoint-conclusions.csv",
-      "tailcache-midpoint-tails.json"
-    ],
-    "historicalForksPreserved": 132,
-    "mobileFit": {
-      "viewport": 320,
-      "scroll": 320,
-      "client": 320
-    },
-    "errors": [],
-    "checkedUtc": "2026-11-10T14:31:21.533Z"
+  "authenticatedLiveBrowserChecks": {
+    "performed": true,
+    "method": "Existing signed-in in-app browser; no token or cookie extraction",
+    "observed": "Reviewed state 15 November, three endpoint cards, manuscript links, historical and midpoint interactive controls rendered"
   },
-  "authenticatedBrowserCheck": {
-    "performed": false,
-    "reason": "Headless local QA plus exact remote artifact UID verification; no bypass/share link or browser credentials used."
-  },
-  "contentVerification": "Remote index.html UID matches SHA1 of exact locally tested artifact; project remains SSO-protected for all deployments.",
-  "newBenchmarkRuns": 30,
-  "controlRuns": 9,
+  "localBrowserQa": "docs/interactive/review-sync-qa.json",
+  "evidence": "docs/interactive/review-sync-evidence.json",
   "previousDeployments": [
+    {
+      "complete": true,
+      "verifiedUtc": "2026-11-10T15:20:49.954525+00:00",
+      "provider": "Vercel",
+      "teamName": "Enixes' projects",
+      "teamSlug": "enixes-projects",
+      "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+      "projectName": "tailcache-results",
+      "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+      "deploymentId": "dpl_8mx8HQMJBGews422tJV95X76LvRj",
+      "status": "READY",
+      "target": "production",
+      "url": "https://tailcache-results.vercel.app/",
+      "aliases": [
+        "https://tailcache-results.vercel.app/",
+        "https://tailcache-results-enixes-projects.vercel.app/"
+      ],
+      "deploymentUrl": "https://tailcache-results-nkoky5dvg-enixes-projects.vercel.app/",
+      "sourceCommit": "5fda648c557bf46d999d00ad9752678f669d3e0e",
+      "framework": null,
+      "buildDurationMs": 2941,
+      "authentication": {
+        "method": "Vercel Authentication",
+        "enabled": true,
+        "deploymentType": "all",
+        "verifiedAfterDeployment": true,
+        "shareLinksCreated": false
+      },
+      "files": [
+        {
+          "path": "index.html",
+          "bytes": 13264909,
+          "sha1": "ac97adea86e8bc31664be20db32cc71a264d7300",
+          "sha256": "fb2dfa0804a8ab9f04bbfff24dad5886fc84882814d2a6937753b0a7a73a2e46",
+          "remoteFileUid": "ac97adea86e8bc31664be20db32cc71a264d7300"
+        },
+        {
+          "path": "vercel.json",
+          "bytes": 252,
+          "sha1": "9d0c7701f49260a46d61cb53320f108ca6812ac6",
+          "remoteFileUid": "9d0c7701f49260a46d61cb53320f108ca6812ac6"
+        }
+      ],
+      "signedOutChecks": [
+        {
+          "host": "tailcache-results.vercel.app",
+          "httpStatus": 302,
+          "redirectHost": "vercel.com",
+          "redirectPath": "/sso-api",
+          "embeddedDataExposed": false
+        },
+        {
+          "host": "tailcache-results-enixes-projects.vercel.app",
+          "httpStatus": 302,
+          "redirectHost": "vercel.com",
+          "redirectPath": "/sso-api",
+          "embeddedDataExposed": false
+        },
+        {
+          "host": "tailcache-results-nkoky5dvg-enixes-projects.vercel.app",
+          "httpStatus": 302,
+          "redirectHost": "vercel.com",
+          "redirectPath": "/sso-api",
+          "embeddedDataExposed": false
+        }
+      ],
+      "browserCheck": {
+        "passed": true,
+        "conclusionViews": 36,
+        "downloads": [
+          "tailcache-midpoint-study.json",
+          "tailcache-midpoint-conclusions.csv",
+          "tailcache-midpoint-tails.json"
+        ],
+        "historicalForksPreserved": 132,
+        "mobileFit": {
+          "viewport": 320,
+          "scroll": 320,
+          "client": 320
+        },
+        "errors": [],
+        "checkedUtc": "2026-11-10T14:31:21.533Z"
+      },
+      "authenticatedBrowserCheck": {
+        "performed": false,
+        "reason": "Headless local QA plus exact remote artifact UID verification; no bypass/share link or browser credentials used."
+      },
+      "contentVerification": "Remote index.html UID matches SHA1 of exact locally tested artifact; project remains SSO-protected for all deployments.",
+      "newBenchmarkRuns": 30,
+      "controlRuns": 9
+    },
     {
       "complete": true,
       "verifiedUtc": "2026-11-08T17:41:52.040510+00:00",

@@ -55,6 +55,16 @@
     "deepReview": "docs/preprint/DEEP_REVIEW_20261115.md",
     "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html#review-update",
     "hostedUrl": "https://tailcache-results.vercel.app/#review-update",
-    "newBenchmarkRuns": 0
+    "newBenchmarkRuns": 0,
+    "deployment": {
+      "id": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+      "url": "https://tailcache-results.vercel.app/#review-update",
+      "ready": true,
+      "authProtected": true,
+      "remoteArtifactMatches": true,
+      "authenticatedBrowserVerified": true,
+      "signedOutBlocked": true,
+      "verifiedLocalDate": "2026-11-16"
+    }
   }
 }

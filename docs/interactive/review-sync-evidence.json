@@ -13,5 +13,11 @@
   "paperGuardrailTests": 18,
   "reviewExplorerTests": 3,
   "browserQa": "docs/interactive/review-sync-qa.json",
-  "sourceAudit": "docs/preprint/source-audit-20261115.json"
+  "sourceAudit": "docs/preprint/source-audit-20261115.json",
+  "completedLocalDate": "2026-11-16",
+  "deploymentId": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+  "productionReady": true,
+  "authProtectedAllDeployments": true,
+  "authenticatedLiveBrowserVerified": true,
+  "signedOutBlockingVerified": true
 }

@@ -1,7 +1,7 @@
 {
   "passed": true,
   "localBrowserArtifactVerified": true,
-  "authenticatedLiveBrowserVerified": false,
+  "authenticatedLiveBrowserVerified": true,
   "reviewClaims": 14,
   "figuresDecoded": 7,
   "exactDownloads": [
@@ -40,5 +40,7 @@
     }
   ],
   "pageErrors": [],
-  "automaticHttpRequests": []
+  "automaticHttpRequests": [],
+  "liveDeploymentId": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+  "signedOutBlockingVerified": true
 }
