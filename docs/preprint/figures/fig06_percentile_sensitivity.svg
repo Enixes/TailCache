@@ -1306,7 +1306,7 @@ L 704.066044 236.576
    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="360" y="14.590125" transform="rotate(-0 360 14.590125)">The extreme response advantage already exists at baseline</text>
   </g>
   <g id="text_29">
-   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="14.4" y="269.496" transform="rotate(-0 14.4 269.496)">Points = individual forks; hollow = warning-bearing. No pooled histograms or confidence intervals.</text>
+   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="14.4" y="269.496" transform="rotate(-0 14.4 269.496)">Forks remain separate; hollow markers or dashed curves carry warnings. No pooling or confidence intervals.</text>
   </g>
  </g>
  <defs>

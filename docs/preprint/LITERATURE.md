@@ -1,5 +1,15 @@
 # Literature verification and novelty boundary
 
+## 15 November review update
+
+Rechecked the primary Nunez preprint/DOI record, USENIX open/closed proceedings entry and Traini publisher record. The TeraHeap author page was temporarily unavailable to the fetcher; its previously verified citation is retained, with the publication DOI checked as the alternative. This is not a claim of a new exhaustive literature search.
+
+Inspected the [pinned HdrHistogram 2.2.2 implementation](https://github.com/HdrHistogram/HdrHistogram/blob/HdrHistogram-2.2.2/src/main/java/org/HdrHistogram/AbstractHistogram.java): `getValueAtPercentile` reduces the requested floating-point percentile by one representable step, applies a ceiling rank and returns the upper-equivalent bin value for nonzero percentiles. This supports the numerical method used in the paper's fixed endpoints. The generic current README alone was insufficient to pin these semantics; the bibliography now points to the versioned implementation. No source claims recorder neutrality.
+
+The revised manuscript separates the original same-ballast conditional payload evidence from the focused payload sweeps' different ballast ranges. Different results across those focused regimes alone cannot identify a payload effect or movement of a common response threshold. No new literature evidence upgrades that experimental limitation.
+
+## Initial 11 November verification
+
 Checked 11 November 2026 using Exa to fetch known primary sources, followed by one five-result targeted TeraHeap search. This is a bounded verification pass supporting the draft, not a systematic review. The broader initial search remains in [the literature strategy](../TAILCACHE_LITERATURE_AND_PUBLICATION_STRATEGY.md). Search-result slots are not papers read.
 
 | Citation | Primary page checked / material examined | Established knowledge | TailCache distinction and limit |

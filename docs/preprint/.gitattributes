@@ -1,0 +1,7 @@
+# Keep the manuscript, claim map and captions prominent in pull-request review.
+figures/** linguist-generated=true
+paper-data.json linguist-generated=true
+claims.json linguist-generated=true
+figure-index.json linguist-generated=true
+render-manifest.json linguist-generated=true
+*.csv linguist-generated=true

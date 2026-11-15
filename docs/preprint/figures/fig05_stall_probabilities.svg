@@ -1177,7 +1177,7 @@ L 667.08 216.304
    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="338.4" y="14.446125" transform="rotate(-0 338.4 14.446125)">A percentile transition can reflect a small change in stall frequency</text>
   </g>
   <g id="text_41">
-   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="13.536" y="262.404" transform="rotate(-0 13.536 262.404)">Points = individual forks; hollow = warning-bearing. No pooled histograms or confidence intervals.</text>
+   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="13.536" y="262.404" transform="rotate(-0 13.536 262.404)">Forks remain separate; hollow markers or dashed curves carry warnings. No pooling or confidence intervals.</text>
   </g>
  </g>
  <defs>

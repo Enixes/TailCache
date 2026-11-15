@@ -1,5 +1,13 @@
 # Preprint preparation review
 
+## Current review — 15 November 2026
+
+See [the deep-review findings and corrections](DEEP_REVIEW_20261115.md), [current executed checks](review-verification-20261115.json) and [source-to-export audit](source-audit-20261115.json). The 11 November assessment below is retained as history, not as the current test count.
+
+The review found and fixed false success for missing histogram coverage, an empty-comparison winner, assertion-dependent validation, omitted offered-rate pairing, and insufficient count/rate/protocol validation. It also tightened service/drain semantics and the payload inference, added the original campaign summary, pinned HDR implementation semantics, completed discussion/conclusion prose and disabled survival-path simplification. The headline observations did not change. Independent human review, final author approval, raw-artifact release/backup and clean Java harness reproduction remain open.
+
+## Initial review — 11 November 2026
+
 11 November 2026. **Agent implementation and research-method review; not independent human peer review.**
 
 ## Outcome

@@ -1,0 +1,21 @@
+{
+  "schema": "tailcache-paper-source-audit-20261115",
+  "passed": true,
+  "newBenchmarkRuns": 0,
+  "paperDataSha256": "a733eee906a863be68e7fd09ef9e6d3b51cf148ae69f5401c4a0706912ea50b7",
+  "originalInputHashes": {
+    "audit": "c3399aa2408cbb960404ab4e97ca34e95d818cd4a9a308101efea259a6835925",
+    "environment": "6b474d8d825de6fa89c4d7d4eeaf24be420b449e0dc23683538c60f2c2820644",
+    "focused": "481354bda26bff146e3cff754c20fb1d4f20d09ed928a1f89eaa26469e9d9daf",
+    "midpoint": "6a737c6cca9c2f858a35b8b5e51a1e97e8536112b37bcb9640e8089b8b610892",
+    "original": "7c42a2e769511557f926158cd920788f38aa6731b3d20ab2d9f4fd2748008d7a",
+    "tails": "fcc2c143ed4b06871af45c7fb4a1d82ed7c3e5ba0956038e75a55d3b2879ff59"
+  },
+  "observationsMatched": 162,
+  "topLevelObservationFieldsMatched": 2976,
+  "completeResponseDistributionsMatched": 18,
+  "originalCampaignComparisons": 16,
+  "originalCampaignAcceptanceReferencesVerified": 4,
+  "originalRawLogsReaudited": false,
+  "limits": "Exact source-to-export reconciliation; does not repeat prior full raw-GC/runtime/archive audits."
+}

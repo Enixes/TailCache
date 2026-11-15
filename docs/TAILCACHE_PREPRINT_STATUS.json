@@ -1,7 +1,7 @@
 {
   "schema": "tailcache-preprint-status-v1",
-  "updatedLocalDate": "2026-11-11",
-  "phase": "PAPER_PREPARATION_COMPLETE_DRAFT_STARTED",
+  "updatedLocalDate": "2026-11-15",
+  "phase": "DEEP_REVIEW_COMPLETE_DRAFT_REVISED",
   "preprintComplete": false,
   "submitted": false,
   "authorApproved": false,
@@ -10,26 +10,26 @@
   "implementationPlan": "docs/TAILCACHE_PREPRINT_PREPARATION_PLAN.md",
   "review": "docs/preprint/REVIEW.md",
   "task13": {
-    "claimEvidenceMap": "prepared",
+    "claimEvidenceMap": "revised_14_claims_with_original_conditional_context",
     "staticFigures": 7,
     "derivedDataExport": "prepared",
     "scope": "Focused and midpoint cohorts; final main-text selection and original-campaign summary remain manuscript work"
   },
   "task14": {
-    "status": "draft_started",
+    "status": "complete_narrative_draft_pending_author_review_and_typesetting",
     "manuscript": "docs/preprint/MANUSCRIPT.md",
     "methods": "drafted",
     "relatedWork": "bounded_primary_source_draft",
-    "remaining": "Contribution refinement, original-campaign summary, full prose edit, human feedback and typesetting"
+    "remaining": "Contribution/human review, final figure selection and typesetting, authorship/disclosure approval"
   },
   "task15": {
     "offlineFigureReproduction": "prepared_and_verified",
     "remaining": "Clean harness build/smoke, raw-evidence off-host backup and release selection, licensing"
   },
   "task16": {
-    "agentPreparationReview": "complete",
+    "agentPreparationReview": "deep_review_complete_2026-11-15",
     "independentHumanReview": "pending",
-    "finalManuscriptAudit": "pending"
+    "finalManuscriptAudit": "current_draft_checked_final_typeset_audit_pending"
   },
   "task17": {
     "status": "pending_author_approved_release",
@@ -38,5 +38,13 @@
   },
   "tickTickTasksChanged": false,
   "originalTask12UnconditionalProtocolQualified": false,
-  "furtherCollectionPlannedForV1": false
+  "furtherCollectionPlannedForV1": false,
+  "deepReview": {
+    "findings": "docs/preprint/DEEP_REVIEW_20261115.md",
+    "verification": "docs/preprint/review-verification-20261115.json",
+    "sourceAudit": "docs/preprint/source-audit-20261115.json",
+    "targetedTestsPassed": 18,
+    "paperDataUnchanged": true,
+    "newBenchmarkRuns": 0
+  }
 }

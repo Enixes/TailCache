@@ -66,7 +66,7 @@
     ],
     "figure": "fig01_response_replication",
     "id": "C01",
-    "limit": "Three paired forks per endpoint, all clean; workload-specific 0\u2013208 MiB bracket, not an exact or universal threshold.",
+    "limit": "Three paired forks per endpoint, all clean. Bracket means observed opposite endpoint directions, not a population-threshold confidence interval or an exact/universal threshold.",
     "sourceGroups": [
       "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
     ],
@@ -698,7 +698,7 @@
     ],
     "figure": "table: historical payload sensitivity",
     "id": "C06",
-    "limit": "p99.99 favors Caffeine at both points. Does not establish how the fresh 4 KiB scheduled-response crossover shifts with payload.",
+    "limit": "p99.99 favors Caffeine at both points. Focused payloads use disjoint ballast ranges; this is a within-256 B observation and does not isolate a payload effect or scheduled-response threshold shift.",
     "sourceGroups": [
       "57346dc1b2a815d9b04e40bdbb5ded0d1b34ed0e76ffd3b463ec04d40805dfea"
     ],
@@ -1110,6 +1110,17 @@
     "limit": "Single host/collector/heap/load; instrumented in-process scheduler; no independent externally arriving load, equal-total-memory intervention or matched 256 B response midpoint study.",
     "sourceGroups": [],
     "status": "unsupported claim boundary",
+    "warningForks": 0
+  },
+  {
+    "claim": "Original same-ballast conditional every-operation p99.9 favors Chronicle at 256 B and Caffeine at 4 KiB at 0/96/208 MiB.",
+    "endpoint": "Original observer-conditional campaign, separate from the 162 focused/follow-up forks",
+    "evidence": [],
+    "figure": "original-campaign-summary.json",
+    "id": "C14",
+    "limit": "Recorder-specific conditional result. No original unconditional qualification or common scheduled-response threshold estimate.",
+    "sourceGroups": [],
+    "status": "historical conditional observation",
     "warningForks": 0
   }
 ]

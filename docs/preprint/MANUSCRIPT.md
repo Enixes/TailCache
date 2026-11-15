@@ -1,18 +1,18 @@
 # TailCache: Heap Pressure, Allocation and Tail-Latency Tradeoffs in Java Caches
 
-**Working draft — 11 November 2026.** Methods and related work are drafted; the introduction, results synthesis and discussion below are initial prose for author review. This is not a submitted or publication-ready manuscript. Author names, affiliations, contributions, acknowledgements, final licence and tool-use disclosure require author agreement. Citation keys refer to [references.bib](references.bib); exact claim boundaries and evidence identities are in [CLAIMS.md](CLAIMS.md).
+**Revised working draft — 15 November 2026.** This version incorporates a source/data and research-method review. It is not a submitted or author-approved preprint. Author names, affiliations, contributions, acknowledgements, final licence and tool-use disclosure require author agreement. Citation keys refer to [references.bib](references.bib); exact claim boundaries and evidence identities are in [CLAIMS.md](CLAIMS.md). Full captions and vector figures are in [FIGURES.md](FIGURES.md).
 
-## Abstract — provisional
+## Abstract
 
-Moving cache values off the Java heap can reduce retained heap pressure while introducing materialization costs on access. We investigate this tradeoff using Caffeine and Chronicle Map, separating saturated operation service latency from response measured against a fixed intended-arrival schedule. A bounded follow-up uses 4 KiB values, a 512 MiB G1 heap, three levels of common application retention and three paired JVM repetitions per level, with two additional workload seeds analysed separately. Response p99.9 favors Caffeine at zero application ballast and Chronicle at 208 MiB; the 104 MiB point remains mixed. At response p99.99 and p99.999, Chronicle's advantage already exists at baseline. Historical saturated-service experiments give different, percentile-dependent rankings. Chronicle reduces post-GC Java heap occupancy but has higher sampled process residency in the follow-up. These exploratory findings support workload- and objective-specific decisions rather than a universal off-heap crossover threshold. We retain qualification failures, compiler warnings and evidence provenance, and provide offline figure reproduction.
+Moving cache values off the Java heap can reduce retained heap pressure while introducing materialization costs on access. We compare Caffeine and Chronicle Map using saturated operation service latency and response measured against a fixed intended-arrival schedule. A separately planned follow-up uses 4 KiB values, a 512 MiB G1 heap and three paired JVM repetitions at each of three application-retention levels, plus two additional seeds analysed separately. At zero additional ballast, response p99.9 is 24–33 µs for Caffeine and 282–325 µs for Chronicle. At 208 MiB it is 921–1,189 µs and 239–334 µs, respectively; the 104 MiB comparison remains mixed. Chronicle's response p99.99/p99.999 advantage already exists at baseline. Historical saturated-service experiments give different, percentile-specific rankings. At 208 MiB, Chronicle uses less post-GC Java heap but has higher sampled RSS: approximately 795–812 MiB versus 600–605 MiB. These exploratory results identify a repeated endpoint ranking reversal, not an exact or universal threshold. We preserve qualification failures, compiler warnings and per-fork provenance, and provide offline figure reproduction.
 
-## 1. Introduction — initial argument
+## 1. Introduction
 
 A Java cache can trade memory for reduced application work, but the retained objects and their lifecycle also affect collection and access costs. Moving values outside the GC-managed heap changes that balance. Ordinary reads can reconstruct heap objects, while reuse APIs can change the caller's ownership obligations. Consequently, an off-heap implementation need not be uniformly better in latency, allocation or total process memory.
 
-TailCache examines this decision for two current libraries under controlled application retention and allocation demand. The original questions concerned operation latency: **RQ1**, whether increasing application heap pressure produces a p99/p99.9 advantage for ordinary Chronicle access over Caffeine; and **RQ2**, how payload size changes that result. We preserve these questions even where the answer is negative or unresolved. A later, explicitly identified follow-up asks the analogous question for scheduled response, which includes backlog after stalls. It does not replace the service-latency question.
+TailCache examines this decision for two versioned libraries under controlled application retention and allocation demand. The original questions concerned operation latency: **RQ1**, whether increasing application heap pressure produces a p99/p99.9 advantage for ordinary Chronicle access over Caffeine; and **RQ2**, how payload size changes that result. We preserve these questions even where the answer is negative or unresolved. A later, explicitly identified follow-up asks the analogous question for scheduled response, which includes backlog after stalls. It does not replace the service-latency question.
 
-The candidate contribution is an auditable empirical account of how the latency objective, value contract and memory metric change a cache comparison. It is not the discovery of off-heap/GC tradeoffs, open-versus-closed workloads, or a new GC architecture. The strongest fresh result is a repeated response ranking change with an unresolved intermediate pressure point, accompanied by a heap-versus-residency tradeoff. A final introduction must sharpen the contribution after independent domain feedback.
+The contribution is a bounded empirical case study with three results: a separately planned repetition of a response ranking reversal whose intermediate point remains mixed; evidence that the percentile and timing boundary can change the library ordering; and an observed separation between retained-heap relief and total process residency. The accompanying artifact makes per-fork evidence, warnings and figure generation inspectable. These are workload-specific observations, not a general cache-selection algorithm, a new GC architecture or discovery of the underlying tradeoffs.
 
 ## 2. Related work
 
@@ -34,17 +34,26 @@ Schroeder, Wierman and Harchol-Balter show that independently arriving and compl
 
 Traini and colleagues show that Java microbenchmarks do not necessarily achieve steady state and that fixed warmup estimates can be inaccurate [@traini2023]. We accordingly report compilation activity and historical qualification failures rather than declaring that a fixed warmup proves steady state. HdrHistogram supplies configurable finite-resolution distributions [@hdrhistogram]; its precision and the number of rare observations constrain interpretation independently of warmup.
 
-This targeted comparison is not an exhaustive systematic literature review. The final related-work section still needs citation chaining and a human assessment of whether the empirical contribution is sufficiently distinct for the intended venue. The verification log records which primary pages and portions were examined.
+This is a targeted comparison, not an exhaustive systematic literature review. The verification log records the primary sources and portions examined. The closest practical overlap already demonstrates the broad crossover premise; TailCache's contribution must therefore rest on the more specific measurements above.
 
 ## 3. Methods
 
 ### 3.1 Study sequence and separation of evidence
 
-The investigation has distinct stages. The original Task 12 study attempted all 402 planned invocations, including 192 campaign slots and 64 robustness slots. Its final acceptance retained 191 campaign forks conditionally and one hard rejection. The stopping policy was amended after interruption; the original unconditional protocol remains **NO_GO**. That stage measured sparse JMH samples and every-operation service timing and is not retrospectively qualified by subsequent work.
+The investigation has distinct stages. The original Task 12 study attempted all 402 planned invocations, including 192 campaign slots and 64 robustness slots. An invocation is not always a single JVM because some functional controls contain multiple checks. Final acceptance retained 191 campaign forks conditionally and one hard rejection. The stopping policy was amended after interruption; the original unconditional protocol remains **NO_GO**. That stage measured sparse JMH samples and every-operation service timing and is not retrospectively qualified by subsequent work.
 
 A separate 30-JVM cliff diagnostic selected regions of interest. Its synthetic expected-interval correction is not the response measurement used below. The focused exploratory stage subsequently collected 132 workload JVMs across 12 bounded batches, plus 36 controls. Batch choices adapted to the observations; two compiled-runtime groups and different measurement windows must remain distinct. Extreme-percentile/full-tail extensions to that stage were post hoc analyses of retained distributions.
 
 The fresh midpoint follow-up was planned separately and collected on 10 November 2026. It comprised 18 primary workload JVMs and 12 seed-sensitivity JVMs, plus nine controls. All 30 workload JVMs completed. These are new repetitions rather than replacements for earlier rejected observations. Figures and derived evidence use stable identities `(dataset, batch, label)` and do not pool these stages.
+
+| Evidence stage | Retained unit count | Measurement / interpretation |
+| --- | --- | --- |
+| Original conditional investigation | 402 invocations; includes 192 campaign forks and 64 robustness forks | Sparse/every-operation service observers; original unconditional protocol unqualified |
+| Cliff discovery diagnostic | 30 workload JVMs | Region selection and synthetic expected-interval correction; not pooled |
+| Focused exploration | 132 workload JVMs plus 36 controls | Adaptive batches, two compiled-runtime groups, 8 s or 30 s windows; exploratory |
+| Midpoint follow-up | 18 primary plus 12 seed-sensitivity JVMs, nine controls | Predeclared bounded 0/104/208 MiB replication; 12/2/30 s phases; secondary seed cohorts kept separate |
+
+The original campaign used 30 one-second warmups, eight conditioning intervals and eight analysed intervals at 0/96/208/288 MiB, rather than the later follow-up's phase counts. Its quality classifications and numerical outcome summary appear in Section 4.1 and [the complete original comparison table](ORIGINAL_CAMPAIGN.md).
 
 ### 3.2 Cache semantics and common workload
 
@@ -56,7 +65,7 @@ Caffeine is configured with `maximumSize=40,960` and its default common-pool exe
 
 ### 3.3 Pressure, allocation and resource accounting
 
-Application ballast means strongly retained application data independent of the cache, not a second copy of cache payloads. The fresh levels are 0, 104 and 208 MiB. Common background churn offers 32 MiB/s using 4 KiB allocations and a bounded 128-slot retention ring. Achieved payload bytes and dropped demand are retained. The backends receive the same algorithmic application demand; saturated runs can complete different total operation counts.
+Application ballast means strongly retained application data independent of the cache, not a second copy of cache payloads. Its labels count byte-array payload, excluding object headers/reference-container overhead; zero denotes no additional ballast, not zero application/harness memory. Arrays are filled during setup. The fresh levels are 0, 104 and 208 MiB. Common background churn offers 32 MiB/s using 4 KiB allocations and a bounded 128-slot retention ring. Achieved payload bytes and dropped demand are retained. The backends receive the same algorithmic application demand; saturated runs can complete different total operation counts.
 
 We hold application ballast and offered churn equal, not total heap occupancy. Equating total heap occupancy would remove the retained-heap difference under investigation. Worker allocation is reported per completed operation separately from churn. Post-GC used-heap summaries describe occupancy rather than an exact live-object census. GC pause exposure is the overlap of pause intervals with the measurement envelope divided by measured duration; GC and safepoint totals can overlap and must not be added.
 
@@ -66,9 +75,9 @@ Fresh process residency is sampled from `/proc/PID/status` at approximately 1 Hz
 
 For operation *i*, service is `completion_i − actualStart_i`. Saturated service runs execute operations back to back and form their own experiment. In scheduled runs, intended arrival is `phaseStart + i × 20,000 ns`, corresponding to 50,000 requests/s. Response is `completion_i − intendedArrival_i`. Intended times are never reset after a pause, and overdue requests are not skipped. The worker spins until future intended times and processes backlog serially; there is no separate producer thread or network queue.
 
-Each fresh offered measurement window is 30 seconds, or 1,500,000 intended requests. The harness allows at most 10 seconds of drain beyond the offered window; incomplete completion would be censored rather than represented by a full latency distribution. All fresh forks completed every intended request. Gaps measure consecutive completion intervals and remain a separate diagnostic channel. Service within a paced run must not be substituted for saturated service from separate JVMs.
+Each fresh offered measurement window is 30 seconds, or 1,500,000 intended requests. A cooperative loop condition stops admitting subsequent operations once the previous observed completion reaches ten seconds beyond the offered end. This does not preempt an in-flight operation or impose a hard wall-clock bound. Incomplete completion would be censored rather than represented by a full latency distribution. All fresh forks completed every intended request. Gaps measure consecutive completion intervals and remain a separate diagnostic channel. Service within a paced run must not be substituted for saturated service from separate JVMs.
 
-The measured loop includes trace traversal, value generation on writes, cache access and value-byte consumption. Histogram recording and pacing affect subsequent execution and can alter the workload even when outside an individual service boundary. We make no observer-neutrality claim. Three-significant-digit HdrHistogram distributions retain counts and finite-resolution bin boundaries over the configured range. Quantiles follow the pinned library's rank semantics; no timing-floor subtraction or synthetic correction is applied to directly measured response.
+The timed operation includes trace traversal, value generation on writes, cache access and value-byte/checksum consumption. The completion timestamp precedes histogram recording, bookkeeping and the next operation's pacing. A pause occurring between operations can therefore affect gaps and later responses without appearing inside either service duration. Histogram recording/pacing can alter the workload even outside the individual service boundary; we make no observer-neutrality claim. Three-significant-digit HdrHistogram distributions retain counts and finite-resolution bin boundaries over the configured range. Quantiles use the pinned implementation's next-down/ceiling rank and upper-equivalent bin value [@hdrhistogram]. No timing-floor subtraction or synthetic correction is applied to directly measured response.
 
 ### 3.5 Fresh replication protocol
 
@@ -78,7 +87,7 @@ The main fresh endpoint is scheduled-response p99.9. Secondary endpoints include
 
 ### 3.6 Runtime, host and quality records
 
-Collection used one Intel Core i7-8750H host, with six physical cores and twelve logical CPUs, OpenJDK 21.0.12.1+1, G1 and `Xms=Xmx=512 MiB`. Dependencies include Caffeine 3.2.4, Chronicle Map 2026.1 and HdrHistogram 2.2.2. The earlier JMH campaign uses JMH 1.37. The fresh source archive SHA-256 is `782a41005d94954297debf9d4e2560a8f71cc3db496dc464f23efb01d7783dd0`; all 68 retained runtime files and the classpath match the later historical response cohort. Historical runtime identifiers use their original fingerprint scheme and are not relabelled as fresh hashes.
+Collection used one Intel Core i7-8750H host, with six physical cores and twelve logical CPUs, OpenJDK 21.0.12.1+1, G1 and `Xms=Xmx=512 MiB`. Dependencies include Caffeine 3.2.4, Chronicle Map 2026.1 and HdrHistogram 2.2.2. The earlier JMH campaign uses JMH 1.37. The fresh source archive SHA-256 is `782a41005d94954297debf9d4e2560a8f71cc3db496dc464f23efb01d7783dd0`; all 68 retained runtime files and the classpath match the later historical response cohort. The Python controller added seed handling and coarse RSS sampling; unchanged measured Java code does not establish unchanged observer interference. Historical runtime identifiers use their original fingerprint scheme and are not relabelled as fresh hashes.
 
 Chronicle analytics is disabled through a checked JVM property, and tiering/capacity configuration is logged. The maps in this paper's focused comparison are in memory. Persisted warm access, cold/open faults and cross-process sharing are outside this scope; a populated in-memory map is not evidence about storage opening behavior. Host, power, thermal, mount and storage records accompany collection. The controller uses exclusive scope/locking, verifies retained slots on resume and does not replace noisy observations.
 
@@ -90,29 +99,50 @@ All quantiles and curves remain per fork. Pair ratios divide Chronicle by Caffei
 
 At an HDR upper-bin boundary, the empirical survival function counts observations strictly above that boundary. For a threshold inside a bin, definite and possible exceedance counts bound quantization ambiguity; they are not sampling-confidence bounds. Zero observed exceedances retain the observation count and do not imply zero risk. A 1.5-million-response fork has only about 15 nominal observations in the upper 0.001%; multiple queued responses may share one pause. We do not treat response count as the number of independent stall episodes or assign each latency outlier to a specific GC event using aggregate histograms.
 
-## 4. Results — initial synthesis
+## 4. Results
 
-### 4.1 The response bracket repeats, but its midpoint remains mixed
+### 4.1 The original campaign does not establish an unconditional crossover
+
+The original conditional evidence is informative but observer-dependent. In the every-operation regime, qualified 256 B p99.9 ratios are 0.479, 0.495 and 0.539 at 0/96/208 MiB: Chronicle's advantage is already present at baseline. At those same ballast levels, the 4 KiB ratios are 1.298, 1.321 and 1.348, favoring Caffeine. These are original audit point ratios, not the fresh paired-fork ratios below. The sparse observer does not reproduce a clean universal ordering, and all 288 MiB comparisons have quality limitations.
+
+| Original condition | Qualified conditional result | Limit |
+| --- | --- | --- |
+| 256 B, every-operation service, 0/96/208 MiB | p99.9 favors Chronicle: ratios 0.479/0.495/0.539 | Baseline advantage, not pressure-emergent crossover |
+| 4 KiB, every-operation service, 0/96/208 MiB | p99.9 favors Caffeine: ratios 1.298/1.321/1.348 | No qualified Chronicle win at those points |
+| 256 B, sparse service, 96 MiB | p99 favors Caffeine; p99.9 unresolved | Recorder-specific result |
+| 4 KiB, sparse service, 0 MiB | p99/p99.9 favor Caffeine: 1.125/1.354 | Other sparse cells carry quality/missing-data limitations |
+
+The original study used coarse uncertainty from two outer passes; its nominal interval classifications are retained in the original audit. We neither infer an ordering from an unresolved point estimate nor transport those intervals to the later experiments. The same-pressure 256 B versus 4 KiB conditional comparisons support a limited payload-related difference within that measurement regime. They do not resolve a pressure threshold or the disagreement between observers.
+
+### 4.2 The response bracket repeats, but its midpoint remains mixed
 
 Figure 1 shows the fresh scheduled-response p99.9 result. At zero ballast, the three Chronicle/Caffeine ratios are 11.474, 8.494 and 13.647; at 208 MiB they are 0.215, 0.363 and 0.259. All six endpoint pairs are clean. At 104 MiB the ratios are 0.427, 0.447 and 8.500, with only one clean primary pair. The two clean additional-seed observations at 104 MiB disagree, so compiler warnings alone do not explain away the mixed transition. We retain the 0–208 MiB bracket and do not infer monotonicity or an exact threshold.
 
-### 4.2 A response ranking is not a service ranking
+| Common ballast | Caffeine response p99.9 (µs) | Chronicle response p99.9 (µs) | Paired Ch/C ratios (blocks 1–3) | Clean primary pairs |
+| --- | --- | --- | --- | --- |
+| 0 MiB | 23.823–33.183 | 281.855–325.119 | 11.474, 8.494, 13.647 | 3/3 |
+| 104 MiB | 33.311–426.239 | 153.343–283.135 | 0.427, 0.447, 8.500 | 1/3 |
+| 208 MiB | 921.087–1,188.863 | 239.231–334.335 | 0.215, 0.363, 0.259 | 3/3 |
 
-Figure 2 contrasts separate historical service and scheduled-response experiments at 352 MiB using the same earlier runtime. Historical saturated 4 KiB service favors Caffeine at p99/p99.9/p99.99 at all five tested points (328–368 MiB across two separately identified runtime groups). At p99.999, Chronicle is lower throughout that range, already at the lowest point. Neither statement supplies a newly bracketed service threshold. A large fraction of wall time lost to rare pauses can coexist with a comparatively small operation-weighted p99.9; response backlog and throughput expose a different cost.
+Ranges span individual forks and are not confidence intervals. “Bracket” describes opposite observed endpoint directions; it is not a population-threshold confidence bound. Both added seeds repeat those endpoint directions, with one pair per point, and disagree at 104 MiB.
 
-### 4.3 The full tail explains why a single percentile is inadequate
+### 4.3 A response ranking is not a service ranking
+
+Figure 2 contrasts separate historical service and scheduled-response experiments at 352 MiB using the same earlier runtime. Historical saturated 4 KiB service favors Caffeine at p99/p99.9/p99.99 at all five tested points (328–368 MiB across two separately identified runtime groups). At p99.999, Chronicle is lower throughout that range, already at the lowest point. Neither statement supplies a newly bracketed service threshold. Rare pauses and delay outside the service boundary can consume wall time while leaving an operation-weighted p99.9 comparatively small. Response backlog and throughput expose costs that this percentile alone cannot summarize. The result does not establish whether the dominant source of each individual stall was GC, compilation, recording or scheduling.
+
+### 4.4 The full tail explains why a single percentile is inadequate
 
 Figures 3, 5 and 6 report per-fork survival, threshold probabilities and endpoint sensitivity. At 104 MiB the primary Caffeine >100 µs response probabilities are approximately 0.1124%, 0.11367% and 0.09273%, straddling the 0.1% tail boundary defining p99.9. Small frequency changes can therefore move that percentile sharply. At response p99.99 and p99.999, every fresh pair favors Chronicle even at baseline. This is an already-present extreme-tail advantage, not evidence that the corresponding crossover was induced by pressure.
 
-### 4.4 Heap relief has allocation and residency costs
+### 4.5 Heap relief has allocation and residency costs
 
-Figure 4 reports about 4,121.6 worker B/op for ordinary 4 KiB Chronicle access versus 205.6 for Caffeine, in addition to common churn. At 208 MiB, primary post-GC heap occupancy is approximately 43.8% for Chronicle and 71.5–72.1% for Caffeine. Nevertheless, sampled measured-window RSS is approximately 796–812 MiB for Chronicle and 600–605 MiB for Caffeine. The result is relief of GC-managed retention, not demonstrated total-memory efficiency. Allocation/GC observations are consistent with a materialization tradeoff but do not prove the unique cause of each tail event.
+Figure 4 reports about 4,121.6 worker B/op in the ordinary 4 KiB Chronicle workload versus 205.6 for Caffeine, including the 5% fresh-write path and excluding common churn. At 208 MiB, primary post-GC heap occupancy is approximately 43.8% for Chronicle and 71.5–72.1% for Caffeine. Nevertheless, sampled measured-window RSS is approximately 795.5–811.7 MiB for Chronicle and 599.8–605.0 MiB for Caffeine. The result is relief of GC-managed retention, not demonstrated total-memory efficiency. Heap commitment/page residency, native map sizing and other process structures are not isolated by these measurements. Allocation/GC observations are consistent with a materialization tradeoff but do not prove the unique cause of each tail event.
 
-### 4.5 What RQ2 can and cannot answer
+### 4.6 What RQ2 can and cannot answer
 
-The historical earlier-runtime 256 B service experiment gives opposite percentile-dependent direction changes between 448 and 480 MiB: p99.9 changes toward Caffeine, p99.999 toward Chronicle, while p99.99 favors Caffeine at both points. This documents payload-dependent service tradeoffs, not a precise movement of the fresh 4 KiB response threshold. A matched 256 B response midpoint design would be needed for that stronger claim. Figure 7 is an appendix API sensitivity, comparing Caffeine with Chronicle reuse under different pressure settings; it is not a payload-only comparison.
+The historical earlier-runtime 256 B service experiment gives opposite percentile-dependent direction changes between 448 and 480 MiB: p99.9 changes toward Caffeine, p99.999 toward Chronicle, while p99.99 favors Caffeine at both points. These are within-256 B observations. The focused 256 B and 4 KiB sweeps use different ballast ranges; their contrast alone does not isolate a payload effect or estimate movement of a common threshold. The original same-pressure conditional comparison provides the narrower payload-related observation in Section 4.1. A matched 256 B scheduled-response design is absent, so the response-threshold-shift part of RQ2 remains unanswered. Figure 7 compares Caffeine with Chronicle reuse in different pressure settings; it is not a payload-only comparison.
 
-## 5. Threats to validity — initial text
+## 5. Threats to validity
 
 **Internal validity.** Timer/recording activity, busy-spin pacing, background churn, compiler/GC activity and asynchronous cache maintenance can affect outcomes. Source-matched controls and end-of-run correctness checks constrain specific errors but do not establish recorder neutrality or production realism. Some JIT warnings remain. The original protocol's failed gates and stopping-policy amendment must be disclosed.
 
@@ -122,20 +152,41 @@ The historical earlier-runtime 256 B service experiment gives opposite percentil
 
 **External validity.** Results concern one host, one collector and heap limit, a uniform read-heavy workload, fixed residents and one cache worker. Other load rates, payloads, concurrency, skew, eviction, persistence, collectors, hardware and memory budgets can change the ranking. Broad cache-selection rules or hard latency guarantees are not supported.
 
-## 6. Reproducibility and disclosure — initial text
+## 6. Reproducibility and disclosure
 
-The working package provides per-fork derived inputs, losslessly compressed fresh primary response histograms, input/output checksums, CSV exports and offline figure generation. Raw logs/source archives and earlier delivery bundles remain retained on the collection host and require a selected, licensed off-host release before artifact publication. The protected explorer is supplementary and is not the sole accessible artifact. The package's local verification rechecks selected histograms and claim invariants; it does not pretend to repeat the original independent raw-data audits.
+The working package provides per-fork derived inputs, losslessly compressed fresh primary response histograms, input/output checksums, CSV exports and offline figure generation. Raw logs/source archives and earlier delivery bundles remain retained on the collection host and require a selected, licensed off-host release before artifact publication. The protected explorer is supplementary and is not the sole accessible artifact. Portable checks require complete curve/schedule coverage, recompute quantiles and histogram threshold bounds, and reject inconsistent counts/probabilities. A separate host-only audit matches all 162 exported observations and all 18 primary distributions to the frozen audited source files. These checks do not repeat the original independent full raw-GC/runtime/archive audits, and successful figure regeneration does not validate the experimental design.
 
 Human authors must agree contribution roles and review the complete manuscript. Agent-assisted implementation and research-method review are not independent human peer review. Final tool-use disclosure should accurately describe the assistance used and follow the selected venue's requirements. Nothing has been submitted or deposited as an author-approved preprint.
 
-## 7. Discussion and conclusion — to develop
+## 7. Discussion
 
-Develop the practical decision around the application objective: service time, queued response, moderate-stall frequency or rare severe delay, while accounting for the API contract and process-memory budget. Explain the unresolved midpoint as useful evidence about variability rather than a failed requirement to obtain a sharp threshold. Relate each contribution back to the closest prior work and avoid presenting a library leaderboard as a general selection algorithm.
+### 7.1 Research-question answers
+
+| Question | Answer supported by this study | Boundary |
+| --- | --- | --- |
+| Original RQ1: pressure-emergent ordinary-service p99/p99.9 win | No qualified 4 KiB forward crossover was established in the tested conditions. Some 256 B regimes already favor Chronicle at baseline; others disagree or reverse toward Caffeine. | Does not establish absence of crossover outside the measured conditions; the original unconditional protocol failed. |
+| RQ2: effect of changing payload | The original same-pressure conditional results differ between 256 B and 4 KiB; focused service observations are also percentile-specific. | A change in a shared crossover threshold, particularly scheduled response, was not estimated by a matched design. |
+| Scheduled-response follow-up | Fresh p99.9 endpoint directions repeat at 0 and 208 MiB; 104 MiB is mixed. | Descriptive workload-specific reversal, not an exact threshold or universal selection rule. |
+| Extreme-tail and resource sensitivities | Extreme response advantages already exist at baseline; lower heap occupancy coexists with higher sampled RSS. | No claim of distribution-wide superiority, zero tail risk or total-memory savings. |
+
+### 7.2 Implications for a cache decision
+
+A decision based on p99.9 operation duration need not match a decision based on delayed responses or a rarer percentile. A practical comparison should state its intended arrival behavior and latency budget, then examine exceedance probabilities as well as quantiles. In this study, the same endpoint can change sharply when the proportion of moderately slow responses crosses its defining tail probability. An unresolved midpoint is therefore a useful limit on a sharp-threshold explanation, not justification for discarding a fork or continuing bisection until a desired answer appears.
+
+Ordinary materialization and borrowed-buffer reuse also answer different application questions. A caller that retains a returned value may not be able to adopt a reusable buffer without copying or changing ownership. Likewise, a deployment constrained by total resident memory cannot infer a benefit from Java-heap occupancy alone. Our data motivate these checks; they do not supply an automatic predictor for unseen workloads.
+
+### 7.3 Mechanism and follow-up priorities
+
+The observed access allocation, GC overlap and occupancy are consistent with known retention/materialization tradeoffs. The response result also depends on in-process scheduling and recording. Identifying the cause of each stall would require suitably aligned event-level evidence or a separate controlled intervention. A different offered load, an equal-total-memory design or an independent recorder sensitivity would test specific threats more directly than an unbounded sweep of additional pressure points. These are extensions, not results of this dataset.
+
+## 8. Conclusion
+
+TailCache shows that the answer to an on-/off-heap comparison depends on the measured objective and resource accounting. A separately planned 4 KiB follow-up repeats a scheduled-response p99.9 reversal between zero and 208 MiB of additional retained application data, while leaving 104 MiB unresolved. Extreme response advantages already exist at baseline, and historical saturated-service rankings depend on percentile and regime. Chronicle reduces retained GC-managed heap while incurring materialization allocation and higher sampled process residency in the fresh cohort. The defensible result is a scoped empirical tradeoff, not an exact universal crossover or unconditional off-heap advantage.
 
 ## Author-review checklist
 
 - Refine the contribution and related-work coverage with a systems/performance reviewer.
-- Add a compact original-campaign outcome table with conditional acceptance and exclusions; decide how much operational history belongs in the appendix.
+- Review the included original-campaign outcome table and decide how much operational history belongs in the appendix.
 - Finalize figure numbering/layout and select the generated historical 256 B/4 KiB paired tables in [RESULT_TABLES.md](RESULT_TABLES.md); retain runtime and contract identity.
 - Review evidence for any proposed causal wording; otherwise keep descriptive language.
 - Complete clean harness reproduction, raw-evidence backup/release selection, licences and artifact accessibility checks.

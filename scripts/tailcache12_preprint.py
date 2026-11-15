@@ -11,12 +11,13 @@ import json
 import math
 import os
 import pathlib
-import statistics
+from decimal import Decimal
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DEFAULT = ROOT / 'docs/preprint'
 PERCENTILES = ('99', '99.9', '99.99', '99.999')
 BACKENDS = ('CAFFEINE', 'CHRONICLE_IN_MEMORY')
+THRESHOLDS = (100_000, 1_000_000, 10_000_000)
 COLORS = {'CAFFEINE': '#b34b37', 'CHRONICLE_IN_MEMORY': '#176b91'}
 INPUTS = {
     'focused': 'evidence-archives/focused-rq-p99999-20261108-001/study.json',
@@ -26,6 +27,15 @@ INPUTS = {
     'original': 'docs/TAILCACHE_12_FINAL_ACCEPTANCE.json',
     'environment': 'evidence-archives/midpoint-study-20261110-001-primary/setup/environment.json',
 }
+
+
+class EvidenceError(ValueError):
+    """Invalid/incomplete evidence; active even when Python assertions are disabled."""
+
+
+def require(condition, message):
+    if not condition:
+        raise EvidenceError(message)
 
 
 def sha(path):
@@ -50,7 +60,7 @@ def pair_rows(rows, *, reuse=False):
         if row['backend'] == 'CHRONICLE_IN_MEMORY' and row['reuse'] != reuse:
             continue
         key = tuple(row[k] for k in ('dataset', 'batch', 'payload', 'liveMiB',
-                                    'regime', 'seed', 'runtimeGroup', 'measureMs', 'block'))
+                                    'regime', 'qps', 'seed', 'runtimeGroup', 'measureMs', 'block'))
         groups[key].append(row)
     result = []
     for key, values in sorted(groups.items()):
@@ -66,7 +76,10 @@ def pair_rows(rows, *, reuse=False):
 def decode_curve(channel):
     if channel['encoding'] != 'gzip-base64-flat-upper-ns-count':
         raise ValueError('Unknown curve encoding')
-    flat = json.loads(gzip.decompress(base64.b64decode(channel['curve'])))
+    raw = gzip.decompress(base64.b64decode(channel['curve'], validate=True))
+    require(hashlib.sha256(raw).hexdigest() == channel['curveSha256'], 'Curve content hash mismatch')
+    flat = json.loads(raw)
+    require(isinstance(flat,list) and flat and all(type(n) is int for n in flat), 'Histogram values/counts must be nonempty integers')
     if len(flat) % 2:
         raise ValueError('Odd histogram array')
     bins = list(zip(flat[::2], flat[1::2]))
@@ -74,7 +87,44 @@ def decode_curve(channel):
         raise ValueError('Invalid histogram bins')
     if sum(n for x, n in bins) != channel['count']:
         raise ValueError('Histogram count mismatch')
+    require(channel['bins'] == len(bins), 'Histogram bin-count mismatch')
+    digest = hashlib.sha256()
+    for upper, n in bins:
+        lower = lower_equivalent(upper)
+        require(lower >= 0 and lower % (1 << max(0,upper.bit_length()-11)) == 0,
+                'Invalid HDR upper-bin boundary')
+        digest.update(f'{lower},{upper},{n}\n'.encode())
+    require(digest.hexdigest() == channel['binBoundsSha256'], 'Histogram boundary hash mismatch')
+    require(channel['maximumBinUpperNs'] == bins[-1][0] and
+            channel['minimumBinLowerNs'] == lower_equivalent(bins[0][0]), 'Histogram extrema mismatch')
+    require(channel['empiricalResolution'] == 1/channel['count'], 'Histogram empirical resolution mismatch')
     return bins
+
+
+def lower_equivalent(upper):
+    # HdrHistogram 2.2.2: lowest discernible value=1, three significant digits.
+    return upper - (1 << max(0,upper.bit_length()-11)) + 1
+
+
+def validate_rates(distribution):
+    count = distribution['count']
+    require(type(count) is int and count > 0, 'Invalid exceedance denominator')
+    require(set(distribution['rates']) == {str(t) for t in THRESHOLDS}, 'Missing/extra threshold')
+    for rate in distribution['rates'].values():
+        lo,hi = rate['lowerCount'],rate['upperCount']
+        require(type(lo) is int and type(hi) is int and 0 <= lo <= hi <= count, 'Invalid exceedance count bounds')
+        require(rate['lowerProbability'] == lo/count and rate['upperProbability'] == hi/count,
+                'Exceedance probability/count mismatch')
+
+
+def verify_curve_rates(channel,bins):
+    validate_rates(channel)
+    for t in THRESHOLDS:
+        rate = channel['rates'][str(t)]
+        require(rate['lowerCount'] == sum(n for u,n in bins if lower_equivalent(u)>t),
+                'Definite exceedance count differs from histogram')
+        require(rate['upperCount'] == sum(n for u,n in bins if u>t),
+                'Possible exceedance count differs from histogram')
 
 
 def hdr_percentile(bins, percentile):
@@ -89,6 +139,7 @@ def hdr_percentile(bins, percentile):
 
 
 def direction(values):
+    require(values and all(math.isfinite(v) and v>0 for v in values), 'Comparison requires finite positive ratios')
     if all(v < 1 for v in values):
         return 'Chronicle lower'
     if all(v > 1 for v in values):
@@ -99,9 +150,9 @@ def direction(values):
 def prepare(out):
     out.mkdir(parents=True, exist_ok=True)
     data = {name: json.loads((ROOT / path).read_text()) for name, path in INPUTS.items()}
-    assert data['audit']['passed'] and data['audit']['workloadForks'] == 30
-    assert sha(ROOT / INPUTS['midpoint']) == data['audit']['studySha256']
-    assert sha(ROOT / INPUTS['tails']) == data['audit']['tailsSha256']
+    require(data['audit']['passed'] and data['audit']['workloadForks'] == 30, "Evidence check failed: data['audit']['passed'] and data['audit']['workloadForks'] == 30")
+    require(sha(ROOT / INPUTS['midpoint']) == data['audit']['studySha256'], "Evidence check failed: sha(ROOT / INPUTS['midpoint']) == data['audit']['studySha256']")
+    require(sha(ROOT / INPUTS['tails']) == data['audit']['tailsSha256'], "Evidence check failed: sha(ROOT / INPUTS['tails']) == data['audit']['tailsSha256']")
     rows = []
     keep = ('label', 'backend', 'payload', 'liveMiB', 'block', 'regime', 'qps',
             'status', 'warnings', 'measurement', 'latency', 'gc', 'batch',
@@ -114,8 +165,8 @@ def prepare(out):
                        cohort=source.get('cohort', 'historical'))
             rows.append(row)
     rows.sort(key=identity)
-    assert len(rows) == len({identity(r) for r in rows}) == 162
-    assert all(r['status'] == 'OK' for r in rows)
+    require(len(rows) == len({identity(r) for r in rows}) == 162, 'Evidence check failed: len(rows) == len({identity(r) for r in rows}) == 162')
+    require(all((r['status'] == 'OK' for r in rows)), "Evidence check failed: all((r['status'] == 'OK' for r in rows))")
     by_id = {(r['batch'], r['label']): r for r in rows if r['dataset'] == 'midpoint'}
     curves = []
     for fork in data['tails']['forks']:
@@ -123,11 +174,11 @@ def prepare(out):
         if row['cohort'] == 'primary':
             channel = fork['channels']['response']
             bins = decode_curve(channel)
-            assert channel['count'] == row['latency']['response']['count'] == 1_500_000
+            require(channel['count'] == row['latency']['response']['count'] == 1500000, "Evidence check failed: channel['count'] == row['latency']['response']['count'] == 1500000")
             for p in PERCENTILES:
-                assert hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p]
+                require(hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p], "Evidence check failed: hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p]")
             curves.append(dict(batch=fork['batch'], label=fork['label'], response=channel))
-    assert len(curves) == 18
+    require(len(curves) == 18, 'Evidence check failed: len(curves) == 18')
     env = data['environment']
     cpu = json.loads(env['cpu']['stdout'])['lscpu']
     hardware = {r['field'].rstrip(':'): r['data'] for r in cpu
@@ -142,54 +193,98 @@ def prepare(out):
                    provenance={k: dict(path=v, sha256=sha(ROOT / v)) for k, v in INPUTS.items()})
     write_json(out / 'paper-data.json', package, immutable=True)
     checks = verify(package)
-    write_json(out / 'data-audit.json', checks, immutable=True)
+    write_json(out / 'data-audit-v2.json', checks, immutable=True)
     print(json.dumps(checks))
 
 
 def verify(package):
+    require(package['schema']=='tailcache-paper-derived-v1', 'Unknown derived-data schema')
     rows = package['observations']
-    assert len(rows) == len({identity(r) for r in rows}) == 162
-    assert sum(r['dataset'] == 'focused' for r in rows) == 132
+    require(all(r['status']=='OK' for r in rows), 'Non-OK workload observation')
+    for row in rows:
+        require(row['dataset'] in ('focused','midpoint') and row['backend'] in BACKENDS, 'Unknown observation cohort/backend')
+        require(row['regime'] in ('closed','arrival') and row['qps']==(0 if row['regime']=='closed' else 50000),
+                'Workload regime/offered-rate mismatch')
+        require(row['payload'] in (256,4096) and type(row['reuse']) is bool and
+                not (row['backend']=='CAFFEINE' and row['reuse']), 'Unsupported payload/read contract')
+        require(set(row['latency'])=={'service','gap','response'}, 'Missing observation channel')
+        for channel,latency in row['latency'].items():
+            expected_count=row['measurement']['scheduled'] if channel=='response' else row['measurement']['operations']
+            require(latency['count']==expected_count, 'Observation channel count conservation failed')
+            if latency['count']:
+                values=[latency['percentilesNs'][p] for p in PERCENTILES]
+                require(all(type(v) is int and v>0 for v in values) and values==sorted(values)
+                        and values[-1]<=latency['maxNs'], 'Invalid observation percentile ordering/range')
+    require(len(rows) == len({identity(r) for r in rows}) == 162, 'Evidence check failed: len(rows) == len({identity(r) for r in rows}) == 162')
+    require(sum((r['dataset'] == 'focused' for r in rows)) == 132, "Evidence check failed: sum((r['dataset'] == 'focused' for r in rows)) == 132")
     fresh = [r for r in rows if r['dataset'] == 'midpoint']
-    assert len(fresh) == 30 and sum(bool(r['warnings']) for r in fresh) == 5
-    assert len({r['runtimeGroup'] for r in fresh}) == 1
-    assert len(pair_rows(fresh)) == 15
+    require(len(fresh) == 30 and sum((bool(r['warnings']) for r in fresh)) == 5, "Evidence check failed: len(fresh) == 30 and sum((bool(r['warnings']) for r in fresh)) == 5")
+    require(len({r['runtimeGroup'] for r in fresh}) == 1, "Evidence check failed: len({r['runtimeGroup'] for r in fresh}) == 1")
+    require(len(pair_rows(fresh)) == 15, 'Evidence check failed: len(pair_rows(fresh)) == 15')
     primary = [r for r in fresh if r['cohort'] == 'primary']
-    assert len(primary) == 18
+    require(len(primary) == 18, 'Evidence check failed: len(primary) == 18')
     for live, expected in ((0, 'Caffeine lower'), (104, 'Mixed or equal'), (208, 'Chronicle lower')):
         pairs = pair_rows([r for r in primary if r['liveMiB'] == live])
         ratios = [b['latency']['response']['percentilesNs']['99.9'] /
                   a['latency']['response']['percentilesNs']['99.9'] for a, b in pairs]
-        assert direction(ratios) == expected
-        assert sum(not a['warnings'] and not b['warnings'] for a, b in pairs) == (1 if live == 104 else 3)
+        require(direction(ratios) == expected, 'Evidence check failed: direction(ratios) == expected')
+        require(sum((not a['warnings'] and (not b['warnings']) for a, b in pairs)) == (1 if live == 104 else 3), "Evidence check failed: sum((not a['warnings'] and (not b['warnings']) for a, b in pairs)) == (1 if live == 104 else 3)")
     for r in fresh:
-        assert r['measurement']['operations'] == r['latency']['response']['count'] == 1_500_000
-        assert r['measurement']['scheduled'] == 1_500_000
+        require(r['measurement']['operations'] == r['latency']['response']['count'] == 1500000, "Evidence check failed: r['measurement']['operations'] == r['latency']['response']['count'] == 1500000")
+        require(r['measurement']['scheduled'] == 1500000, "Evidence check failed: r['measurement']['scheduled'] == 1500000")
+        require((r['payload'],r['regime'],r['qps'],r['reuse'],r['measureMs'])==(4096,'arrival',50000,False,30000),
+                'Fresh workload protocol mismatch')
+        require(r['measurement']['offeredEndNs']-r['measurement']['startNs']==30_000_000_000,
+                'Fresh offered-window duration mismatch')
+        require(r['measurement']['endNs']>r['measurement']['startNs'], 'Invalid measured timing envelope')
+        require(set(r['latency'])==set(r['stallRates'])=={'response','service','gap'}, 'Missing fresh channel')
+        for ch,latency in r['latency'].items():
+            require(latency['count']==1_500_000 and r['stallRates'][ch]['count']==latency['count'],
+                    'Fresh channel count mismatch')
+            vals=[latency['percentilesNs'][p] for p in PERCENTILES]
+            require(all(type(v) is int and v>0 for v in vals) and vals==sorted(vals)
+                    and latency['maxNs']>=vals[-1], 'Invalid percentile ordering/range')
+            validate_rates(r['stallRates'][ch])
+    expected={(cohort,seed,live,block,backend)
+              for cohort,seed,blocks in [('primary',24301,range(1,4)),('seed24302',24302,[1]),('seed24303',24303,[1])]
+              for live in (0,104,208) for block in blocks for backend in BACKENDS}
+    actual=[(r['cohort'],r['seed'],r['liveMiB'],r['block'],r['backend']) for r in fresh]
+    require(len(actual)==len(set(actual)) and set(actual)==expected, 'Fresh seed/block/pressure schedule mismatch')
     look = {(r['batch'], r['label']): r for r in primary}
+    curve_ids=[(c['batch'],c['label']) for c in package['curves']]
+    require(len(curve_ids)==len(set(curve_ids)) and set(curve_ids)==set(look),
+            'Missing, duplicate or unexpected primary response curve')
+    checked=0
     for curve in package['curves']:
         bins = decode_curve(curve['response'])
         row = look[(curve['batch'], curve['label'])]
+        require(curve['response']['count']==row['latency']['response']['count'], 'Curve denominator differs from observation')
+        verify_curve_rates(curve['response'],bins)
+        require(curve['response']['rates']==row['stallRates']['response']['rates'], 'Curve/observation rates differ')
         for p in PERCENTILES:
-            assert hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p]
+            require(hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p], "Evidence check failed: hdr_percentile(bins, p) == row['latency']['response']['percentilesNs'][p]")
+            checked+=1
     for a, b in pair_rows(fresh):
         for p in ('99.99', '99.999'):
-            assert b['latency']['response']['percentilesNs'][p] < a['latency']['response']['percentilesNs'][p]
+            require(b['latency']['response']['percentilesNs'][p] < a['latency']['response']['percentilesNs'][p], "Evidence check failed: b['latency']['response']['percentilesNs'][p] < a['latency']['response']['percentilesNs'][p]")
     service4k = [r for r in rows if r['dataset']=='focused' and r['payload']==4096
                  and r['regime']=='closed' and not r['reuse']]
-    assert len(service4k)==30
+    require(len(service4k) == 30, 'Evidence check failed: len(service4k) == 30')
     for a,b in pair_rows(service4k):
         for p in ('99','99.9','99.99'):
-            assert b['latency']['service']['percentilesNs'][p] > a['latency']['service']['percentilesNs'][p]
-        assert b['latency']['service']['percentilesNs']['99.999'] < a['latency']['service']['percentilesNs']['99.999']
+            require(b['latency']['service']['percentilesNs'][p] > a['latency']['service']['percentilesNs'][p], "Evidence check failed: b['latency']['service']['percentilesNs'][p] > a['latency']['service']['percentilesNs'][p]")
+        require(b['latency']['service']['percentilesNs']['99.999'] < a['latency']['service']['percentilesNs']['99.999'], "Evidence check failed: b['latency']['service']['percentilesNs']['99.999'] < a['latency']['service']['percentilesNs']['99.999']")
     service256 = [r for r in rows if r['dataset']=='focused' and r['batch']=='focused-rq2-256-20261108-001' and r['regime']=='closed']
-    assert len(service256)==12
+    require(len(service256) == 12, 'Evidence check failed: len(service256) == 12')
     for a,b in pair_rows(service256):
         for p,want_lower in [('99.9',a['liveMiB']==448),('99.999',a['liveMiB']==480)]:
-            assert (b['latency']['service']['percentilesNs'][p] < a['latency']['service']['percentilesNs'][p]) == want_lower
-        assert b['latency']['service']['percentilesNs']['99.99'] > a['latency']['service']['percentilesNs']['99.99']
+            require((b['latency']['service']['percentilesNs'][p] < a['latency']['service']['percentilesNs'][p]) == want_lower, "Evidence check failed: (b['latency']['service']['percentilesNs'][p] < a['latency']['service']['percentilesNs'][p]) == want_lower")
+        require(b['latency']['service']['percentilesNs']['99.99'] > a['latency']['service']['percentilesNs']['99.99'], "Evidence check failed: b['latency']['service']['percentilesNs']['99.99'] > a['latency']['service']['percentilesNs']['99.99']")
     return dict(passed=True, derivedForks=162, historicalForks=132, freshForks=30,
                 primaryPairs=9, additionalSeedPairs=6, freshWarningForks=5,
-                fullResponseCurvesChecked=18, histogramPercentileChecks=72,
+                fullResponseCurvesChecked=len(curve_ids), histogramPercentileChecks=checked,
+                primaryHistogramThresholdChecks=len(curve_ids)*len(THRESHOLDS),
+                freshChannelThresholdConsistencyChecks=len(fresh)*3*len(THRESHOLDS),
                 freshEndpointDirection='Caffeine at 0; mixed at 104; Chronicle at 208',
                 extremeResponseDirection='Chronicle lower at every fresh point, including baseline',
                 rawEvidenceReaudit=False, newBenchmarkRuns=0)
@@ -210,7 +305,7 @@ def export_tables(package, out):
                 entry = {k: r.get(k) for k in fields if k in r}
                 entry.update(warnings='; '.join(r['warnings']), channel=channel,
                              percentile=p, count=values['count'], latencyNs=values['percentilesNs'][p],
-                             nominalUpperTailObservations=values['count'] * (1 - float(p) / 100))
+                             nominalUpperTailObservations=Decimal(values['count']) * (1 - Decimal(p) / 100))
                 writer.writerow(entry)
     (out / 'fork-endpoints.csv').write_bytes(buffer.getvalue().encode())
     records = []
@@ -254,7 +349,7 @@ def export_tables(package, out):
               '| --- | --- | --- | --- | --- |']
     for live in (328,352,360,364,368):
         selected=[r for r in rows if r['dataset']=='focused' and r['payload']==4096 and r['regime']=='closed' and not r['reuse'] and r['liveMiB']==live]
-        assert len(selected)==6 and len({r['runtimeGroup'] for r in selected})==1
+        require(len(selected) == 6 and len({r['runtimeGroup'] for r in selected}) == 1, "Evidence check failed: len(selected) == 6 and len({r['runtimeGroup'] for r in selected}) == 1")
         for p in PERCENTILES:
             values=[b['latency']['service']['percentilesNs'][p]/a['latency']['service']['percentilesNs'][p] for a,b in pair_rows(selected)]
             lines.append(f'| {live} | `{selected[0]["runtimeGroup"][:12]}` | p{p} | '+', '.join(f'{v:.6f}' for v in values)+f' | {direction(values)} |')
@@ -278,7 +373,7 @@ def claims(package, out):
 
     add('C01', 'The fresh scheduled-response p99.9 ranking changes from Caffeine at 0 MiB to Chronicle at 208 MiB.',
         [r for r in primary if r['liveMiB'] in (0,208)], '4 KiB ordinary get; response p99.9; primary seed; 30 s',
-        'fig01_response_replication', 'Three paired forks per endpoint, all clean; workload-specific 0–208 MiB bracket, not an exact or universal threshold.')
+        'fig01_response_replication', 'Three paired forks per endpoint, all clean. Bracket means observed opposite endpoint directions, not a population-threshold confidence interval or an exact/universal threshold.')
     add('C02', '104 MiB remains unresolved; further bisection was skipped under the frozen adaptive rule.',
         [r for r in fresh if r['liveMiB']==104], 'Response p99.9; primary and additional seeds kept separate',
         'fig01_response_replication', 'Primary ratios are mixed with only one clean pair; the two clean additional-seed pairs disagree. No favourable-pair selection.')
@@ -293,7 +388,7 @@ def claims(package, out):
         'Post hoc extreme endpoint. No newly bracketed pressure crossover; short windows and correlated pauses limit generalisation.')
     add('C06', 'The historical 256 B service ranking is percentile-dependent: p99.9 reverses toward Caffeine, p99.999 toward Chronicle from 448 to 480 MiB.',
         service256,'Earlier runtime only; 256 B; ordinary saturated service; 8 s', 'table: historical payload sensitivity',
-        'p99.99 favors Caffeine at both points. Does not establish how the fresh 4 KiB scheduled-response crossover shifts with payload.')
+        'p99.99 favors Caffeine at both points. Focused payloads use disjoint ballast ranges; this is a within-256 B observation and does not isolate a payload effect or scheduled-response threshold shift.')
     add('C07', 'At 104 MiB, Caffeine response >100 µs probabilities straddle the 0.1% p99.9 tail boundary.',
         [r for r in primary if r['liveMiB']==104 and r['backend']=='CAFFEINE'],
         'Strict response exceedance probability at 100,000 ns', 'fig05_stall_probabilities',
@@ -319,6 +414,10 @@ def claims(package, out):
         [],'Scope exclusion','methods and threats to validity',
         'Single host/collector/heap/load; instrumented in-process scheduler; no independent externally arriving load, equal-total-memory intervention or matched 256 B response midpoint study.',
         'unsupported claim boundary')
+    add('C14', 'Original same-ballast conditional every-operation p99.9 favors Chronicle at 256 B and Caffeine at 4 KiB at 0/96/208 MiB.',
+        [],'Original observer-conditional campaign, separate from the 162 focused/follow-up forks',
+        'original-campaign-summary.json', 'Recorder-specific conditional result. No original unconditional qualification or common scheduled-response threshold estimate.',
+        'historical conditional observation')
     write_json(out/'claims.json',result)
     lines=['# Claim-to-evidence map', '', 'Prepared from frozen derived inputs; each evidence identity is `(dataset, batch, label)`. The complete identities, warning counts and source groups are in [claims.json](claims.json). No claims are upgraded to confirmatory or causal status.', '',
            '| ID | Allowed statement | Evidence / figure | Limit |','| --- | --- | --- | --- |']
@@ -343,7 +442,7 @@ def render(package, out):
                                'figure.titlesize': 12, 'svg.fonttype': 'none', 'pdf.fonttype': 42,
                                'axes.spines.top': False, 'axes.spines.right': False,
                                'axes.grid': True, 'grid.alpha': .18, 'savefig.dpi': 240,
-                               'svg.hashsalt': 'tailcache-paper-v1'})
+                               'svg.hashsalt': 'tailcache-paper-v1', 'path.simplify': False})
     folder = out / 'figures'; folder.mkdir(exist_ok=True)
     rows = package['observations']
     primary = [r for r in rows if r['dataset'] == 'midpoint' and r['cohort'] == 'primary']
@@ -353,7 +452,7 @@ def render(package, out):
     def save(fig, name, title, caption, used):
         fig.suptitle(title, fontweight='bold')
         fig.tight_layout(rect=(0, .04, 1, .93))
-        fig.text(.02, .015, 'Points = individual forks; hollow = warning-bearing. No pooled histograms or confidence intervals.', fontsize=7)
+        fig.text(.02, .015, 'Forks remain separate; hollow markers or dashed curves carry warnings. No pooling or confidence intervals.', fontsize=7)
         for ext in ('svg', 'png', 'pdf'):
             metadata={'Creator': 'TailCache offline paper renderer'}
             if ext=='pdf': metadata.update(CreationDate=None,ModDate=None)
@@ -405,7 +504,7 @@ def render(package, out):
 
     selected = [r for r in rows if r['dataset'] == 'focused' and r['payload'] == 4096
                 and r['batch'] == 'focused-rq1-4k-20261108-001' and r['liveMiB'] == 352 and not r['reuse']]
-    assert len(selected) == 12 and len({r['runtimeGroup'] for r in selected}) == 1
+    require(len(selected) == 12 and len({r['runtimeGroup'] for r in selected}) == 1, "Evidence check failed: len(selected) == 12 and len({r['runtimeGroup'] for r in selected}) == 1")
     fig, axes = plt.subplots(1, 2, figsize=(8.8, 3.8))
     for ax, regime, channel, title in zip(axes, ('closed', 'arrival'), ('service', 'response'),
                                          ('(a) Saturated service: separate JVMs', '(b) Scheduled response: 50,000/s')):
@@ -437,7 +536,7 @@ def render(package, out):
          'Fresh primary cohort, three curves per backend per point. Curves preserve every occupied HDR upper-bin boundary in the displayed domain; no pooling or smoothing. Dashed curves carry warnings (rather than the marker convention used elsewhere). P(response > t) is exact for the retained binned distribution at upper boundaries. Dotted horizontal lines mark 0.1% and 1/N (N=1,500,000); they are not confidence bounds. Zero survival beyond a fork maximum is omitted on the logarithmic axis, not replaced with an invented probability. The left edge truncates ordinary fast responses.', primary)
 
     fig, axes = plt.subplots(2, 2, figsize=(8.8, 6.2))
-    metrics = [(lambda r:r['measurement']['workerBytesPerOperation'], 'Worker allocation (B/op)', '(a) Ordinary read materialization'),
+    metrics = [(lambda r:r['measurement']['workerBytesPerOperation'], 'Worker allocation (B/op)', '(a) Ordinary-get workload allocation'),
                (lambda r:r['gc']['pauseExposureFraction'] * 100, 'GC pause overlap (% wall time)', '(b) GC pause exposure'),
                (lambda r:r['gc']['postGcUsedHeapMedianFraction'] * 100, 'Median post-GC used heap (%)', '(c) GC-managed heap occupancy'),
                (lambda r:r['processMemory']['measuredMaxRssKiB'] / 1024, 'Sampled maximum RSS (MiB)', '(d) Process residency, sampled at 1 Hz')]
@@ -479,7 +578,7 @@ def render(package, out):
     fig, axes = plt.subplots(1, 2, figsize=(8.8, 3.8))
     for ax, payload, ballast in zip(axes, (4096,256), (352,480)):
         use = [r for r in selected if r['payload']==payload]
-        assert len(use)==6 and len({r['runtimeGroup'] for r in use})==1
+        require(len(use) == 6 and len({r['runtimeGroup'] for r in use}) == 1, "Evidence check failed: len(use) == 6 and len({r['runtimeGroup'] for r in use}) == 1")
         for a,b in pair_rows(use,reuse=True):
             warning=dict(b,warnings=a['warnings']+b['warnings'])
             for i,p in enumerate(PERCENTILES):

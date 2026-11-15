@@ -329,7 +329,7 @@ z
     </g>
    </g>
    <g id="text_11">
-    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="183.1825" y="71.568" transform="rotate(-0 183.1825 71.568)">(a) Ordinary read materialization</text>
+    <text style="font-size: 10px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="183.1825" y="71.568" transform="rotate(-0 183.1825 71.568)">(a) Ordinary-get workload allocation</text>
    </g>
    <g id="legend_1">
     <g id="patch_5">
@@ -1137,7 +1137,7 @@ L 623.88 389.104
    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: middle" x="316.8" y="18.046125" transform="rotate(-0 316.8 18.046125)">Lower retained Java heap does not imply lower process memory</text>
   </g>
   <g id="text_49">
-   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="12.672" y="439.704" transform="rotate(-0 12.672 439.704)">Points = individual forks; hollow = warning-bearing. No pooled histograms or confidence intervals.</text>
+   <text style="font-size: 7px; font-family: 'DejaVu Sans', 'Bitstream Vera Sans', 'Computer Modern Sans Serif', 'Lucida Grande', 'Verdana', 'Geneva', 'Lucid', 'Arial', 'Helvetica', 'Avant Garde', sans-serif; text-anchor: start" x="12.672" y="439.704" transform="rotate(-0 12.672 439.704)">Forks remain separate; hollow markers or dashed curves carry warnings. No pooling or confidence intervals.</text>
   </g>
  </g>
  <defs>
