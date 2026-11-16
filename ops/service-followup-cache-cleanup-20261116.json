@@ -1,0 +1,11 @@
+{
+  "utc": "2026-11-16T18:16:56.953604+00:00",
+  "removedRebuildableCaches": [
+    "/home/y/.cache/ms-playwright",
+    "/home/y/.cache/uv"
+  ],
+  "beforeFreeBytes": 227549184,
+  "afterFreeBytes": 1106280448,
+  "freedBytes": 878731264,
+  "researchEvidenceDeleted": false
+}

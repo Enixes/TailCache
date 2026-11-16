@@ -30,6 +30,12 @@ public final class CrossoverWorkload implements AutoCloseable {
     private boolean closed;
 
     public CrossoverWorkload(CrossoverBackend backend, CrossoverConfig config) {
+        this(backend, config, TRACE_SIZE);
+    }
+
+    /** Separate follow-up cohorts can freeze a longer trace without changing legacy defaults. */
+    public CrossoverWorkload(CrossoverBackend backend, CrossoverConfig config, int traceSize) {
+        if (traceSize < 1 || traceSize > 2_000_003) throw new IllegalArgumentException("Invalid trace size");
         this.config = config;
         if (!Boolean.getBoolean("chronicle.analytics.disable")) {
             throw new IllegalStateException("Chronicle analytics must be disabled");
@@ -44,7 +50,7 @@ public final class CrossoverWorkload implements AutoCloseable {
                 cache.put(keys[i], values.create(keys[i], 0, config.payloadBytes()));
             }
             trace = new DeterministicWorkloadGenerator().generate(
-                    WorkloadSpec.uniform(TRACE_SIZE, keys.length, 0.95, config.seed()));
+                    WorkloadSpec.uniform(traceSize, keys.length, 0.95, config.seed()));
             applicationData = new RetainedApplicationData(
                     config.applicationLiveBytes(), config.applicationObjectBytes());
             verifyContents();
@@ -112,6 +118,26 @@ public final class CrossoverWorkload implements AutoCloseable {
     public long operations() { return operations; }
     public long writes() { return writes; }
     public long reads() { return operations - writes; }
+    /** Setup-only allocation; these key-coverage arrays are not retained by the workload. */
+    public String traceConfiguration() {
+        boolean[] accessed = new boolean[keys.length], read = new boolean[keys.length], updated = new boolean[keys.length];
+        int readOperations = 0;
+        for (int i = 0; i < trace.size(); i++) {
+            int key = (int) trace.keyAt(i);
+            accessed[key] = true;
+            if (trace.isReadAt(i)) { read[key] = true; readOperations++; } else updated[key] = true;
+        }
+        int all = 0, reads = 0, writes = 0;
+        for (int i = 0; i < keys.length; i++) {
+            if (accessed[i]) all++;
+            if (read[i]) reads++;
+            if (updated[i]) writes++;
+        }
+        return "traceOperations=" + trace.size() + "\ntraceReadOperations=" + readOperations
+                + "\ntraceWriteOperations=" + (trace.size() - readOperations)
+                + "\ntraceDistinctKeys=" + all + "\ntraceDistinctReadKeys=" + reads
+                + "\ntraceDistinctWriteKeys=" + writes + "\ntraceArrayPayloadBytes=" + (9L * trace.size());
+    }
     public long size() { return cache.size(); }
     public long applicationChecksum() { return applicationData.checksum(); }
     public String backendConfiguration() {

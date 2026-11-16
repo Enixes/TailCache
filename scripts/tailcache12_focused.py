@@ -173,15 +173,16 @@ def read_fork(path,spec,exit_code,timeout=False):
     return result
 
 
-def launch(root,spec,classpath,warmup=8000,conditioning=2000,measure=8000,floor=False,inject=0):
+def launch(root,spec,classpath,warmup=8000,conditioning=2000,measure=8000,floor=False,inject=0,
+           runner=None,extra_args=(),timeout_seconds=75):
     path=root/spec['label'];path.mkdir(exist_ok=False)
     cmd=[JAVA,*FLAGS,'-XX:+UseG1GC','-Xms512m','-Xmx512m',f'-Xlog:gc*,safepoint:file={path}/gc.log:uptimemillis,timenanos,level,tags:filecount=0',
-        '-cp',classpath,MAIN,'--out',str(path/'worker'),'--backend',spec['backend'],'--payload',str(spec['payload']),
+        '-cp',classpath,runner or MAIN,'--out',str(path/'worker'),'--backend',spec['backend'],'--payload',str(spec['payload']),
         '--live-mib',str(spec['liveMiB']),'--residents',str(spec.get('residents',32768)),
         '--churn-mib-sec',str(spec.get('churnMiB',32)),'--qps',str(spec['qps']),
         '--seed',str(spec.get('seed',24301)),
         '--warmup-ms',str(warmup),'--conditioning-ms',str(conditioning),'--measure-ms',str(measure),
-        '--floor',str(floor).lower(),'--inject-stall-ms',str(inject),'--reuse',str(spec.get('reuse',False)).lower()]
+        '--floor',str(floor).lower(),'--inject-stall-ms',str(inject),'--reuse',str(spec.get('reuse',False)).lower(),*extra_args]
     save(path/'command.json',dict(command=cmd,startedUtc=now()))
     host=[evidence.host_snapshot()];finished=threading.Event();errors=[];memory=[];process=None
     def monitor():
@@ -200,7 +201,7 @@ def launch(root,spec,classpath,warmup=8000,conditioning=2000,measure=8000,floor=
             if host[0].get('nativeScopeQualified')==1 and evidence.native_host.process_cgroup(group)!=host[0]['nativeCgroup']:
                 process.kill();process.wait();raise ValueError('Worker escaped declared native scope')
             observer=threading.Thread(target=monitor,daemon=True);observer.start()
-            try:code=process.wait(timeout=75)
+            try:code=process.wait(timeout=timeout_seconds)
             except subprocess.TimeoutExpired:
                 timedout=True;process.kill();process.wait();code=None
     finally:
