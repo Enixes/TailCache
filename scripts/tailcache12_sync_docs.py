@@ -12,7 +12,7 @@ ACTIVE={'README.md','docs/SCOPE.md','docs/METHODOLOGY.md','docs/PLAN.md',
 def main():
     state=json.loads((ROOT/'docs/TAILCACHE_PREPRINT_STATUS.json').read_text())
     lines=['# TailCache current research and manuscript state', '',
-           '**Updated 15 November 2026.** This page is the current entry point. [All documentation](DOCUMENTATION_INDEX.md) distinguishes active guidance from dated experiment records.', '',
+           '**Updated 16 November 2026.** This page is the current entry point. [All documentation](DOCUMENTATION_INDEX.md) distinguishes active guidance from dated experiment records.', '',
            '## Research answers', '',
            '| Question / metric | Current conclusion | Limit |',
            '| --- | --- | --- |',
@@ -28,6 +28,8 @@ def main():
            '- [Fresh midpoint/seed follow-up](TAILCACHE_MIDPOINT_RESULTS.md): 30 workload JVMs plus nine controls; no replacements; five compiler warnings retained; adaptive bisection skipped.',
            '- [Deep review](preprint/DEEP_REVIEW_20261115.md): 18 tests, 72 quantile checks, 54 histogram threshold calculations, 270 channel/rate consistency checks and exact offline reproduction.',
            '- [Source reconciliation](preprint/source-audit-20261115.json): all 162 exported observations and 18 primary distributions match their retained audited inputs.', '',
+           '- [Second systems review](preprint/RE_REVIEW_20261116.md): 621 raw histograms, 486 published full curves, 207 GC summaries, original archive/bootstrap rerun and trace inspection; no numerical discrepancy.',
+           '- Interpretation limits: primary trace touches 23,169 of 32,768 residents and updates 1,939; library differences do not isolate heap placement. All nine short controls lack native CPU coverage.', '',
            '## Manuscript and explorer', '',
            '- [Working manuscript](preprint/MANUSCRIPT.md), [14 reviewed claims](preprint/CLAIMS.md), [seven paper figures](preprint/FIGURES.md), [original conditional comparisons](preprint/ORIGINAL_CAMPAIGN.md).',
            '- [Interactive explorer](TAILCACHE_RESULTS_EXPLORER.html#review-update), [standalone midpoint explorer](TAILCACHE_MIDPOINT_EXPLORER.html#review-update).',
@@ -44,7 +46,7 @@ def main():
            'Old plans, gates, dated reviews and immutable acceptance records remain intact. Their “next run” or “not launched” language describes the date of that record. Use this page and the current preprint status for present decisions. Raw archives remain git-ignored; hosted HTML and derived data do not replace them.', '']
     (ROOT/'docs/TAILCACHE_CURRENT_STATE.md').write_text('\n'.join(lines))
     files=sorted(set([ROOT/'README.md',ROOT/'docs/DOCUMENTATION_INDEX.md',* (ROOT/'docs').rglob('*.md')]))
-    index=['# Documentation index', '', '**Updated 15 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.', '',
+    index=['# Documentation index', '', '**Updated 16 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.', '',
            '| Document | Role |','| --- | --- |']
     for path in files:
         rel=str(path.relative_to(ROOT))

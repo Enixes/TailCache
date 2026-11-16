@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "files": {
+    "TAILCACHE_RESULTS_EXPLORER.html": {
+      "outsideReviewedPanelByteEquivalent": true,
+      "sha256": "cf322fa4c4e02eb9b0670f7b4811466e3174f673bc72368f87d29151e8b9b0dc"
+    },
+    "TAILCACHE_MIDPOINT_EXPLORER.html": {
+      "outsideReviewedPanelByteEquivalent": true,
+      "sha256": "4dfc623bae2a97db186274b54b39d6b6877dd89683c2fed29a0c2b1b13969107"
+    }
+  }
+}

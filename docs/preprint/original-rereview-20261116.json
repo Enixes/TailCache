@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "newBenchmarkRuns": 0,
+  "exactlyMatchesPriorAudit": true,
+  "rerunDirectory": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/independent-review-20261116-repeatable",
+  "rerunAuditSha256": "cad3215c6593109106034152610b48329a0ea1025d9723b4f47208d5d779846d",
+  "summary": {
+    "passed": true,
+    "method": "Independent stdlib CSV/rank, unified-log, paired bootstrap and tar-member reconciliation; collector parsers not imported.",
+    "datasetSha256": "a8b88d3da40e8a1ef420c08c9a23559a617c6cb02a289aa5e96ec4878aeff73a",
+    "counts": {
+      "physicalMeasuredWindows": 3088,
+      "jmhRetainedSamples": 451960566,
+      "recomputedPercentileEndpoints": 1544,
+      "histogramForks": 386,
+      "independentGcForks": 376,
+      "measuredGcPauses": 26588,
+      "offlineDecodedHdrHistograms": 5952,
+      "independentBootstrapEndpoints": 30
+    },
+    "occupancySamples": 26588,
+    "totalConditioningAndMeasuredDroppedBytes": 0,
+    "maximumMeasuredCompilerIntervalMs": 39,
+    "totalInvocations": 402,
+    "campaignAccepted": 191,
+    "campaignRejected": 1,
+    "completeCampaignComparisons": 15,
+    "resolvedConditionalComparisons": 8,
+    "archiveVerifiedMembers": 19782,
+    "archiveSha256": "85df767f2b73d8b967655a9d09b08e57337379f5554f3d81f26788c604f62276",
+    "originalStoppingRulePassed": false,
+    "unconditionalProtocolQualified": false
+  },
+  "limits": "Reran the prior independent CSV/rank/GC/bootstrap/archive calculations without collector imports. The 5952 offlineDecodedHdrHistograms counter reconciles prior verification receipts; it is not a fresh compressed-HDR decode. No historical gate was changed."
+}

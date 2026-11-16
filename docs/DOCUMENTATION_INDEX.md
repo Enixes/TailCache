@@ -1,6 +1,6 @@
 # Documentation index
 
-**Updated 15 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
+**Updated 16 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
 
 | Document | Role |
 | --- | --- |
@@ -139,6 +139,7 @@
 | [docs/interactive/MIDPOINT_QA_PLAN.md](interactive/MIDPOINT_QA_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/PRODUCT.md](interactive/PRODUCT.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/README.md](interactive/README.md) | Dated plan, experiment record or historical review; read with current-state summary |
+| [docs/interactive/REREVIEW_QA_PLAN_20261116.md](interactive/REREVIEW_QA_PLAN_20261116.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/REVIEW_SYNC_QA_PLAN.md](interactive/REVIEW_SYNC_QA_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/preprint/CLAIMS.md](preprint/CLAIMS.md) | Current manuscript/reproduction package |
 | [docs/preprint/DEEP_REVIEW_20261115.md](preprint/DEEP_REVIEW_20261115.md) | Current manuscript/reproduction package |
@@ -149,3 +150,5 @@
 | [docs/preprint/README.md](preprint/README.md) | Current manuscript/reproduction package |
 | [docs/preprint/RESULT_TABLES.md](preprint/RESULT_TABLES.md) | Current manuscript/reproduction package |
 | [docs/preprint/REVIEW.md](preprint/REVIEW.md) | Current manuscript/reproduction package |
+| [docs/preprint/RE_REVIEW_20261116.md](preprint/RE_REVIEW_20261116.md) | Current manuscript/reproduction package |
+| [docs/preprint/RE_REVIEW_PLAN_20261116.md](preprint/RE_REVIEW_PLAN_20261116.md) | Current manuscript/reproduction package |

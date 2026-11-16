@@ -16,6 +16,9 @@ class ReviewedExplorerTest(unittest.TestCase):
         self.assertEqual(self.component.count('<figure>'),7)
         self.assertIn('104 MiB: mixed',self.component)
         self.assertIn('remains NO_GO',self.component)
+        self.assertIn('23,169 of 32,768',self.component)
+        self.assertIn('nine one-second controls lack native CPU coverage',self.component)
+        self.assertIn('cannot be attributed solely to heap placement',self.component)
 
     def test_downloads_are_exact_current_files(self):
         links=re.findall(r'href="data:[^;]+;base64,([^\"]+)" download="([^\"]+)" data-sha256="([^\"]+)"',self.component)

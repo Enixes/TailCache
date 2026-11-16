@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "localLinksChecked": true,
+  "citationKeysChecked": [
+    "chronicle2026",
+    "hdrhistogram",
+    "knasiecki2022",
+    "kolokasis2020",
+    "kolokasis2023",
+    "nunez2016",
+    "schroeder2006",
+    "traini2023"
+  ],
+  "paperDataSha256": "a733eee906a863be68e7fd09ef9e6d3b51cf148ae69f5401c4a0706912ea50b7",
+  "targetedRegressionTests": 24,
+  "newBenchmarkRuns": 0
+}

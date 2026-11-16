@@ -1,7 +1,7 @@
 {
   "schema": "tailcache-preprint-status-v1",
-  "updatedLocalDate": "2026-11-15",
-  "phase": "DEEP_REVIEW_COMPLETE_DRAFT_REVISED",
+  "updatedLocalDate": "2026-11-16",
+  "phase": "SECOND_RAW_REVIEW_COMPLETE_DRAFT_REVISED",
   "preprintComplete": false,
   "submitted": false,
   "authorApproved": false,
@@ -27,7 +27,7 @@
     "remaining": "Clean harness build/smoke, raw-evidence off-host backup and release selection, licensing"
   },
   "task16": {
-    "agentPreparationReview": "deep_review_complete_2026-11-15",
+    "agentPreparationReview": "second_raw_and_systems_review_complete_2026-11-16",
     "independentHumanReview": "pending",
     "finalManuscriptAudit": "current_draft_checked_final_typeset_audit_pending"
   },
@@ -48,7 +48,7 @@
     "newBenchmarkRuns": 0
   },
   "reviewedPresentation": {
-    "updatedLocalDate": "2026-11-15",
+    "updatedLocalDate": "2026-11-16",
     "currentState": "docs/TAILCACHE_CURRENT_STATE.md",
     "documentationIndex": "docs/DOCUMENTATION_INDEX.md",
     "reviewedClaims": "docs/preprint/CLAIMS.md",
@@ -65,6 +65,19 @@
       "authenticatedBrowserVerified": true,
       "signedOutBlocked": true,
       "verifiedLocalDate": "2026-11-16"
-    }
+    },
+    "secondReview": "docs/preprint/RE_REVIEW_20261116.md"
+  },
+  "secondReview": {
+    "findings": "docs/preprint/RE_REVIEW_20261116.md",
+    "plan": "docs/preprint/RE_REVIEW_PLAN_20261116.md",
+    "rawAudit": "docs/preprint/raw-rereview-20261116.json",
+    "originalRerun": "docs/preprint/original-rereview-20261116.json",
+    "traceAudit": "docs/preprint/trace-review-20261116.json",
+    "numericalDiscrepanciesFound": 0,
+    "newBenchmarkRuns": 0,
+    "paperDataUnchanged": true,
+    "targetedTestsPassed": 24,
+    "verification": "docs/preprint/review-verification-20261116.json"
   }
 }

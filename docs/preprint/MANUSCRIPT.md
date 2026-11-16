@@ -1,6 +1,6 @@
 # TailCache: Heap Pressure, Allocation and Tail-Latency Tradeoffs in Java Caches
 
-**Revised working draft — 15 November 2026.** This version incorporates a source/data and research-method review. It is not a submitted or author-approved preprint. Author names, affiliations, contributions, acknowledgements, final licence and tool-use disclosure require author agreement. Citation keys refer to [references.bib](references.bib); exact claim boundaries and evidence identities are in [CLAIMS.md](CLAIMS.md). Full captions and vector figures are in [FIGURES.md](FIGURES.md).
+**Revised working draft — 16 November 2026.** This version incorporates source/data, raw-evidence and research-method reviews. It is not a submitted or author-approved preprint. Author names, affiliations, contributions, acknowledgements, final licence and tool-use disclosure require author agreement. Citation keys refer to [references.bib](references.bib); exact claim boundaries and evidence identities are in [CLAIMS.md](CLAIMS.md). Full captions and vector figures are in [FIGURES.md](FIGURES.md).
 
 ## Abstract
 
@@ -59,9 +59,13 @@ The original campaign used 30 one-second warmups, eight conditioning intervals a
 
 Both backends receive deterministic uniform keys, approximately 95% reads and 5% existing-key updates, with 32,768 resident entries. The trace has 40,001 operations, comprising 38,001 reads and 2,000 writes, and repeats; it is not an unbounded IID stream. The trace cursor resets at phase boundaries. Fresh update arrays encode key/version-dependent contents and remain immutable after insertion. End-of-run checks verify every resident value and entry count. The worker consumes a value byte into a checksum published through a volatile field, making measured work observable; this is not a formal proof against every compiler transformation.
 
+Uniform describes trace generation, not equal visitation of all resident keys. Offline reproduction with the verified retained classes and matching configuration fingerprints shows that seed 24301 touches 23,169 distinct keys, including 22,570 read keys and 1,939 updated keys. The other 9,599 resident keys are absent from measured trace access, and 30,829 are never updated by that trace; setup and final integrity scans still visit all residents. Seeds 24302 and 24303 touch 23,109 and 22,991 distinct keys, with 1,945 and 1,944 updated keys. At the fixed arrival rate one full trace occupies 0.80002 seconds; a 30-second offered window contains 37 full periods plus a prefix. Resident retention, the active access set and the repeatedly updated subset therefore differ substantially.
+
 Chronicle's ordinary `get` materializes a value array; Caffeine returns its retained array reference. We preserve this API-level difference rather than equalizing read allocation. Chronicle retains no heap bank of all cached payloads. The optional `getUsing` path populates a supplied caller buffer and verifies identity with that buffer; subsequent reads may overwrite it.
 
 Caffeine is configured with `maximumSize=40,960` and its default common-pool executor; the initialized frequency sketch has 65,536 slots. Chronicle is configured for 65,536 entries, constant payload sizing, `maxBloatFactor=1.0`, segment tiering enabled, entry checksums disabled and null-returning puts. These capacity settings provide headroom for 32,768 residents; they are not asserted to have equal storage overhead. There is no eviction workload. One cache worker does not mean a single-threaded process: churn, JVM GC/compiler and Caffeine maintenance can also run.
+
+This compares two complete library configurations. Their metadata, layout, maintenance, capacity headroom and access semantics differ along with value placement. The study does not isolate a causal effect of moving otherwise identical storage off heap.
 
 ### 3.3 Pressure, allocation and resource accounting
 
@@ -92,6 +96,8 @@ Collection used one Intel Core i7-8750H host, with six physical cores and twelve
 Chronicle analytics is disabled through a checked JVM property, and tiering/capacity configuration is logged. The maps in this paper's focused comparison are in memory. Persisted warm access, cold/open faults and cross-process sharing are outside this scope; a populated in-memory map is not evidence about storage opening behavior. Host, power, thermal, mount and storage records accompany collection. The controller uses exclusive scope/locking, verifies retained slots on resume and does not replace noisy observations.
 
 Nine floor/injected-stall controls passed integrity and request-conservation checks. They demonstrate observability within their control settings, not observer neutrality or precise long-run extreme-tail error bounds. Five fresh workload forks exceeded the declared 80 ms measured compilation-activity warning. At primary 104 MiB these were Caffeine block 1 (505 ms) and Chronicle block 3 (191 ms). No fresh host warnings, OOMs or censored arrivals occurred. Warning-inclusive results and clean-pair coverage are both visible; fixed warmup does not prove compilation-free steady state.
+
+The no-host-warning statement concerns workload forks. All nine short controls retain a warning for missing native CPU settling/measurement coverage, and the seed-24302 injected-stall control also has a compilation warning. Each control has a single one-second measurement without the workload's warmup/conditioning sequence. They check accounting and stall visibility, not equivalent host qualification, a subtractable overhead correction or a calibrated 30-second tail distribution.
 
 ### 3.7 Analysis and uncertainty
 
@@ -144,7 +150,7 @@ The historical earlier-runtime 256 B service experiment gives opposite percentil
 
 ## 5. Threats to validity
 
-**Internal validity.** Timer/recording activity, busy-spin pacing, background churn, compiler/GC activity and asynchronous cache maintenance can affect outcomes. Source-matched controls and end-of-run correctness checks constrain specific errors but do not establish recorder neutrality or production realism. Some JIT warnings remain. The original protocol's failed gates and stopping-policy amendment must be disclosed.
+**Internal validity.** Timer/recording activity, busy-spin pacing, background churn, compiler/GC activity and asynchronous cache maintenance can affect outcomes. Whole-library differences prevent attributing a ranking solely to heap placement. The finite trace repeatedly updates a small fixed subset; its locality and phase repetition can interact with collection and scheduling. Source-matched controls and end-of-run correctness checks constrain specific errors but do not establish recorder neutrality or production realism. Short controls lack native CPU coverage. Some JIT warnings remain. The original protocol's failed gates and stopping-policy amendment must be disclosed.
 
 **Construct validity.** Service, scheduled response and inter-completion gaps are different constructs. Intended-arrival response is computed within the worker, not observed by an independent client. Equal heap and application ballast do not equal total memory; post-GC heap and 1 Hz RSS are imperfect summaries. Ordinary get and reuse offer different value ownership.
 
@@ -154,7 +160,9 @@ The historical earlier-runtime 256 B service experiment gives opposite percentil
 
 ## 6. Reproducibility and disclosure
 
-The working package provides per-fork derived inputs, losslessly compressed fresh primary response histograms, input/output checksums, CSV exports and offline figure generation. Raw logs/source archives and earlier delivery bundles remain retained on the collection host and require a selected, licensed off-host release before artifact publication. The protected explorer is supplementary and is not the sole accessible artifact. Portable checks require complete curve/schedule coverage, recompute quantiles and histogram threshold bounds, and reject inconsistent counts/probabilities. A separate host-only audit matches all 162 exported observations and all 18 primary distributions to the frozen audited source files. These checks do not repeat the original independent full raw-GC/runtime/archive audits, and successful figure regeneration does not validate the experimental design.
+The working package provides per-fork derived inputs, losslessly compressed fresh primary response histograms, input/output checksums, CSV exports and offline figure generation. Raw logs/source archives and earlier delivery bundles remain retained on the collection host and require a selected, licensed off-host release before artifact publication. The protected explorer is supplementary and is not the sole accessible artifact. Portable checks require complete curve/schedule coverage, recompute quantiles and histogram threshold bounds, and reject inconsistent counts/probabilities. A source audit matches all 162 exported observations and all 18 primary distributions to their frozen inputs.
+
+A second host-only pass on 16 November decoded all 621 available focused/follow-up workload and control histograms, reconciled 486 published full curves, checked 4,632 raw-file hashes, 207 GC summaries and all 30 fresh sampled-RSS summaries, and verified 68 retained runtime files. A rerun of the original independent auditor reproduced its 3,088-window, 1,544-endpoint, 30-bootstrap-comparison and 19,782-archive-member checks without changing its conditional acceptance. The original auditor's 5,952 prior HDR-decode receipts were checked as retained metadata, not freshly re-decoded in that rerun. The [dated re-review](RE_REVIEW_20261116.md) states exact coverage and remaining limits; neither data reconciliation nor successful figure regeneration validates the experimental design.
 
 Human authors must agree contribution roles and review the complete manuscript. Agent-assisted implementation and research-method review are not independent human peer review. Final tool-use disclosure should accurately describe the assistance used and follow the selected venue's requirements. Nothing has been submitted or deposited as an author-approved preprint.
 

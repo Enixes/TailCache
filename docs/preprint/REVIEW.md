@@ -1,6 +1,10 @@
 # Preprint preparation review
 
-## Current review — 15 November 2026
+## Current review — 16 November 2026
+
+See [the systems research re-review](RE_REVIEW_20261116.md), [raw histogram/log reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [frozen trace inspection](trace-review-20261116.json). No numerical discrepancy was found. The revision discloses the smaller active/update key sets, whole-library confounding and short-control CPU/compiler warnings. It preserves the headline endpoint reversal and all unresolved/conditional classifications. This remains an agent review, not human peer review.
+
+## Previous review — 15 November 2026
 
 See [the deep-review findings and corrections](DEEP_REVIEW_20261115.md), [current executed checks](review-verification-20261115.json) and [source-to-export audit](source-audit-20261115.json). The 11 November assessment below is retained as history, not as the current test count.
 

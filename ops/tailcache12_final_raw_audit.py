@@ -77,8 +77,10 @@ def independent_bootstrap(blocks,confidence,resamples):
     return point,draws[math.ceil(tail*resamples)-1],draws[math.ceil((1-tail)*resamples)-1]
 
 
-def main():
-    out=DATA/'independent-review-002';out.mkdir(exist_ok=False);dataset=load(DATA/'dataset.json')
+def main(out=None):
+    if not __debug__:raise RuntimeError('Run without -O: this historical independent auditor uses assertions')
+    out=pathlib.Path(out) if out is not None else DATA/'independent-review-002'
+    out.mkdir(exist_ok=False);dataset=load(DATA/'dataset.json')
     observations={k:v['observations'] for k,v in dataset['stages'].items() if k!='campaign'}
     observations.update(campaign=dataset['campaignObservations'],robustness=dataset['robustnessObservations'])
     controls={};invocations={}
@@ -190,4 +192,8 @@ def main():
     print(json.dumps(summary,indent=2))
 
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--out',type=pathlib.Path,help='Fresh audit directory; existing directories are refused')
+    main(parser.parse_args().out)

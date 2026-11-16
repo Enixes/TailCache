@@ -1,6 +1,6 @@
 # TailCache current research and manuscript state
 
-**Updated 15 November 2026.** This page is the current entry point. [All documentation](DOCUMENTATION_INDEX.md) distinguishes active guidance from dated experiment records.
+**Updated 16 November 2026.** This page is the current entry point. [All documentation](DOCUMENTATION_INDEX.md) distinguishes active guidance from dated experiment records.
 
 ## Research answers
 
@@ -20,6 +20,9 @@
 - [Fresh midpoint/seed follow-up](TAILCACHE_MIDPOINT_RESULTS.md): 30 workload JVMs plus nine controls; no replacements; five compiler warnings retained; adaptive bisection skipped.
 - [Deep review](preprint/DEEP_REVIEW_20261115.md): 18 tests, 72 quantile checks, 54 histogram threshold calculations, 270 channel/rate consistency checks and exact offline reproduction.
 - [Source reconciliation](preprint/source-audit-20261115.json): all 162 exported observations and 18 primary distributions match their retained audited inputs.
+
+- [Second systems review](preprint/RE_REVIEW_20261116.md): 621 raw histograms, 486 published full curves, 207 GC summaries, original archive/bootstrap rerun and trace inspection; no numerical discrepancy.
+- Interpretation limits: primary trace touches 23,169 of 32,768 residents and updates 1,939; library differences do not isolate heap placement. All nine short controls lack native CPU coverage.
 
 ## Manuscript and explorer
 

@@ -2,7 +2,7 @@
 
 Prepared 11 November 2026. **Working material, not an author-approved or submitted preprint.**
 
-Revised 15 November after a [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. Use [review-verification-20261115.json](review-verification-20261115.json) for the current validation receipt; `verification.json` and `data-audit.json` preserve the initial 11 November checks.
+Revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
 
 The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#review-update) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
 
