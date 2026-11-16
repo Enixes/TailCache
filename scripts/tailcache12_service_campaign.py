@@ -37,6 +37,7 @@ def source_files():
              'ops/tailcache12_final_raw_audit.py',
              'docs/TAILCACHE_SERVICE_CROSSOVER_FOLLOWUP_PLAN.md',
              'docs/TAILCACHE_SERVICE_IMPLEMENTATION_REVIEW.md',
+             'docs/TAILCACHE_SERVICE_RQ_EXTENSION_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')]
     for directory, pattern in [('src', '*.java'), ('scripts', '*.py'), ('scripts/java', '*.java')]:
         files += sorted((ROOT / directory).rglob(pattern))
@@ -189,7 +190,7 @@ def select_confirmation(rows, candidate):
 
 
 class Campaign:
-    def __init__(self, out):
+    def __init__(self, out, design=None):
         self.out = out
         self.cp = (ROOT / 'build/service-followup-20261116/classpath.txt').read_text().strip()
         self.source, hashes = source_identity()
@@ -198,6 +199,7 @@ class Campaign:
             self.protocol = focus.load(declaration)
             check(self.protocol['sourceSha256'] == self.source and self.protocol['classpath'] == self.cp,
                   'Frozen source/runtime path changed; preserve this cohort')
+            if design is not None:check(self.protocol.get('design')==design,'Changed extension design')
         else:
             out.mkdir(parents=True, exist_ok=False)
             (out / 'setup').mkdir()
@@ -224,7 +226,9 @@ class Campaign:
                 sourceSha256=self.source, sourceFiles=hashes, runtimeSha256=runtime, classpath=self.cp,
                 archivedClasspath=archived_cp, primaryEndpoint='ordinary 95/5 combined saturated-service p99.9',
                 warmupMs=WARM, conditioningMs=CONDITION, measureMs=MEASURE,
-                traceOperations=1000003, screen=screen_schedule(), maxWorkloadJvms=MAX_WORKLOAD_JVMS,
+                traceOperations=1000003, screen=screen_schedule() if design is None else [],
+                maxWorkloadJvms=MAX_WORKLOAD_JVMS if design is None else design['maxWorkloadJvms'],
+                design=design,
                 controls=4, functionalValidationJvms=2, meaningfulRatioBounds=[.9,1.1], originalEvidenceUnchanged=True,
                 preservedPaperInputs={str(p.relative_to(ROOT)):focus.sha(p) for p in
                     [ROOT/'docs/preprint/paper-data.json',ROOT/'docs/TAILCACHE_12_FINAL_ACCEPTANCE.json',
@@ -250,6 +254,8 @@ class Campaign:
             check(focus.sha(pathlib.Path(file)) == digest, 'Compiled runtime changed: ' + file)
         for file, digest in self.protocol['preservedPaperInputs'].items():
             check(focus.sha(ROOT/file)==digest, 'Prior paper evidence changed: '+file)
+        for file,digest in (self.protocol.get('design') or {}).get('discoveryInputs',{}).items():
+            check(focus.sha(ROOT/file)==digest,'Discovery input changed: '+file)
 
     def checkpoint(self):
         focus.save(self.out / 'state.json', self.state)
@@ -278,7 +284,7 @@ class Campaign:
             check(ready['swapOutPages'] == self.ready['swapOutPages'] and
                   ready['swapInPages'] == self.ready['swapInPages'], 'Paging increased; preserve slots')
             if not control and spec not in self.state['scheduled']:
-                check(len(self.state['scheduled']) < MAX_WORKLOAD_JVMS, 'Workload JVM budget exhausted')
+                check(len(self.state['scheduled']) < self.protocol['maxWorkloadJvms'], 'Workload JVM budget exhausted')
                 self.state['scheduled'].append(spec)
                 self.checkpoint()
             if path.exists():
@@ -312,7 +318,7 @@ class Campaign:
             self.state['decisions'].append(name)
             self.checkpoint()
 
-    def run(self):
+    def run_controls(self):
         controls = []
         for label, payload, floor, supply, inject in [('timer',256,True,False,0),
                 ('injected-stall',256,True,False,20), ('supply256',256,False,True,0),
@@ -321,6 +327,9 @@ class Campaign:
             s.update(residents=64,churnMiB=0,floor=floor,supply=supply,inject=inject)
             controls.append(s)
         self.execute(controls, control=True)
+
+    def run(self):
+        self.run_controls()
         self.execute(self.protocol['screen'])
         screen = pairs(self.observations(), 'screen')
         candidate = select_candidate(screen)

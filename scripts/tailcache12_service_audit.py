@@ -9,6 +9,7 @@ import json
 import math
 import pathlib
 import subprocess
+import tarfile
 
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 
@@ -32,9 +33,32 @@ def audit(base,out):
     require(__debug__,'Run without -O: prior independent GC parser uses assertions')
     out.mkdir(parents=True,exist_ok=False)
     study=load(base/'study.json');protocol=load(base/'protocol.json');state=load(base/'state.json')
-    require(state['complete'] and len(study['observations'])<=44,'Incomplete collection or budget exceeded')
-    for file,digest in protocol['sourceFiles'].items():require(sha(ROOT/file)==digest,'Source changed: '+file)
-    for file,digest in protocol['runtimeSha256'].items():require(sha(pathlib.Path(file))==digest,'Runtime changed')
+    require(state['complete'] and len(study['observations'])<=protocol['maxWorkloadJvms'],
+            'Incomplete collection or budget exceeded')
+    # Verify the archived source/runtime, so a later legitimate checkout edit does not
+    # make a previously frozen cohort unverifiable. Never execute arbitrary tar paths.
+    archived_source={}
+    with tarfile.open(base/'source.tar.gz','r:gz') as archive:
+        for member in archive:
+            require(member.isfile() and member.name in protocol['sourceFiles'] and member.name not in archived_source,
+                    'Unexpected/duplicate source archive member')
+            with archive.extractfile(member) as stream:data=stream.read()
+            require(hashlib.sha256(data).hexdigest()==protocol['sourceFiles'][member.name],'Archived source changed')
+            archived_source[member.name]=data
+    require(set(archived_source)==set(protocol['sourceFiles']),'Archived source coverage')
+    runtime={}
+    original_cp=protocol['classpath'].split(':')
+    for index,item in enumerate(original_cp):
+        original=pathlib.Path(item);destination=base/'runtime'/str(index)
+        for file,digest in protocol['runtimeSha256'].items():
+            p=pathlib.Path(file)
+            if str(p)==item:
+                archived=destination/p.name
+            elif p.is_relative_to(original):
+                archived=destination/p.relative_to(original)
+            else:continue
+            require(sha(archived)==digest,'Archived runtime changed: '+file);runtime[file]=digest
+    require(runtime==protocol['runtimeSha256'],'Archived runtime coverage')
     for file,digest in protocol['preservedPaperInputs'].items():require(sha(ROOT/file)==digest,'Prior paper evidence changed')
     entries=[(r,base/'slots'/r['label']) for r in study['observations']]
     entries += [(load(p),p.parent) for p in sorted((base/'controls').glob('*/service-result.json'))]
@@ -45,13 +69,17 @@ def audit(base,out):
             require(sha(directory/file)==digest,'Raw file changed: '+str(directory/file));counts['rawFiles']+=1
         paths.extend(sorted((directory/'worker').glob('*.hdr')))
     java=pathlib.Path('/usr/lib/jvm/java-21-openjdk/bin')
-    cp=protocol['classpath'];helper=ROOT/'scripts/java/TailCacheFocusedHdrVerify.java'
+    cp=':'.join(str(base/p) for p in protocol['archivedClasspath'])
+    helper=out/'TailCacheFocusedHdrVerify.java'
+    helper.write_bytes(archived_source['scripts/java/TailCacheFocusedHdrVerify.java'])
     subprocess.run([str(java/'javac'),'-cp',cp,'-d',str(out),str(helper)],check=True,capture_output=True)
     decoded=out/'decoded.csv'
     ran=subprocess.run([str(java/'java'),'-Xmx96m','-cp',str(out)+':'+cp,'TailCacheFocusedHdrVerify',str(base),str(decoded)],check=True,capture_output=True,text=True)
     raw={r['path']:r for r in csvrows(decoded)}
     require(set(raw)=={str(p.resolve()) for p in paths},'Available histogram coverage mismatch')
-    spec=importlib.util.spec_from_file_location('independent_original',ROOT/'ops/tailcache12_final_raw_audit.py')
+    independent=out/'prior_independent_gc.py'
+    independent.write_bytes(archived_source['ops/tailcache12_final_raw_audit.py'])
+    spec=importlib.util.spec_from_file_location('independent_original',independent)
     old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
     for row,directory in entries:
         if not row.get('latencyVerified') or row['status']!='OK':

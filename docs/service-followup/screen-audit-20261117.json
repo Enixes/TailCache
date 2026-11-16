@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "newWorkloadJvms": 20,
+  "controlJvms": 4,
+  "independentlyDecodedHistograms": 120,
+  "counts": {
+    "rawFiles": 720,
+    "quantileEndpoints": 470,
+    "channelCounts": 120,
+    "perBinUnions": 24,
+    "gcSummaries": 24,
+    "rssSummaries": 24,
+    "pairedRatios": 200
+  },
+  "studySha256": "87d441a4f6c6085d434bcd63b7ab5601d0781860f1dce67347179c742dda04e8",
+  "protocolSha256": "805e7dd3f4b6cf3d234a0e87ee516fa4d54fc0848e1661fd7606a5c2ec257a21",
+  "sourceArchiveSha256": "dc831d5869560f8201ddb9187e798933436cf824a445ccf0617057ef90612d55",
+  "inventoryFiles": 850,
+  "runtimeFilesVerified": 72,
+  "helper": {
+    "passed": true,
+    "stdout": "{\"passed\":true,\"longTraceMix\":true,\"backendValues\":true,\"perBinReadUpdateUnion\":true,\"supplyFloor\":true}\n",
+    "stderr": "SLF4J(W): No SLF4J providers were found.\nSLF4J(W): Defaulting to no-operation (NOP) logger implementation\nSLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.\n",
+    "sourceSha256": {
+      "src/main/java/io/github/enixes/tailcache/workload/CrossoverWorkload.java": "a5ef3a9e1608e33555b2132dd5c0879c37709d35c912c5f12b024933c27f7471",
+      "src/main/java/io/github/enixes/tailcache/workload/ServiceCrossoverRunner.java": "128e3491c91f7339779227706a902266860d6f54dc7a8f919b3510ffb1bafcea",
+      "scripts/java/ServiceCrossoverSelfTest.java": "16456caa78bd7d1d9c461f97b2b680f7b450003cf518e86302786be696529a9c"
+    }
+  },
+  "limits": "Offline reconciliation reuses pinned HDR decoder and prior independent GC parser; no event-level causal claim or independent new performance replication."
+}
