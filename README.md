@@ -26,11 +26,13 @@ TailCache is designed to answer questions such as:
 
 The smoke harness keeps the working set below the configured entry setting so validation runs avoid eviction/capacity exhaustion. The reportable experiment will freeze backend-specific occupancy semantics explicitly before comparing latency distributions, because Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent controls.
 
-## Current results and manuscript (reviewed 15 November 2026)
+## Current results and manuscript (reviewed 16 November 2026)
 
 Start with the [current research state](docs/TAILCACHE_CURRENT_STATE.md) and [complete documentation index](docs/DOCUMENTATION_INDEX.md). The [protected hosted explorer](https://tailcache-results.vercel.app/#review-update) includes the reviewed RQ answers, manuscript downloads, 14 claims and seven paper figures. Manuscript work continues in [draft PR #10](https://github.com/Enixes/TailCache/pull/10).
 
 The [preprint working package](docs/preprint/README.md) contains the editable manuscript draft, claim-to-evidence map, static paper figures and offline figure reproduction. It is working material, not a submitted or author-approved preprint.
+
+The [second systems research review](docs/preprint/RE_REVIEW_20261116.md) reconciled raw focused/follow-up distributions and the original conditional campaign without finding a numerical discrepancy. It clarifies that the primary periodic trace accesses 23,169 of 32,768 retained keys and updates 1,939 distinct keys, compares complete library configurations rather than isolating heap placement, and preserves CPU/compiler warnings on the short controls. This is an agent assessment, not independent human peer review.
 
 The [midpoint results and researcher review](docs/TAILCACHE_MIDPOINT_RESULTS.md) and [interactive explorer](docs/TAILCACHE_RESULTS_EXPLORER.html) report the later replicated follow-up. For ordinary 4 KiB access, scheduled-response p99.9 favors Caffeine at 0 MiB and Chronicle at 208 MiB of common retained application data; 104 MiB is mixed across pairs and seeds. The crossover remains bracketed rather than precisely located. Chronicle's scheduled-response p99.99 and p99.999 advantage already exists at baseline. Lower Java heap occupancy did not imply lower process RSS. Service latency, scheduled response and buffer reuse remain separate comparisons.
 

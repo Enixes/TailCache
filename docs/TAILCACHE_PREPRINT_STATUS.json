@@ -57,14 +57,16 @@
     "hostedUrl": "https://tailcache-results.vercel.app/#review-update",
     "newBenchmarkRuns": 0,
     "deployment": {
-      "id": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+      "id": "dpl_DQw1uHkAWE1425oTR8r15VcMcct7",
       "url": "https://tailcache-results.vercel.app/#review-update",
       "ready": true,
       "authProtected": true,
       "remoteArtifactMatches": true,
-      "authenticatedBrowserVerified": true,
+      "authenticatedBrowserVerified": false,
+      "localBrowserVerified": true,
       "signedOutBlocked": true,
-      "verifiedLocalDate": "2026-11-16"
+      "verifiedLocalDate": "2026-11-16",
+      "sourceCommit": "ea0736094635bfa66fd3fcd7dfaab8e1b515b736"
     },
     "secondReview": "docs/preprint/RE_REVIEW_20261116.md"
   },

@@ -1,0 +1,69 @@
+{
+  "complete": true,
+  "verifiedUtc": "2026-11-16T17:47:03.738150+00:00",
+  "verifiedLocalDate": "2026-11-16",
+  "contentReviewLocalDate": "2026-11-16",
+  "provider": "Vercel",
+  "teamName": "Enixes projects",
+  "teamSlug": "enixes-projects",
+  "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+  "projectName": "tailcache-results",
+  "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+  "deploymentId": "dpl_DQw1uHkAWE1425oTR8r15VcMcct7",
+  "status": "READY",
+  "target": "production",
+  "url": "https://tailcache-results.vercel.app/",
+  "reviewUrl": "https://tailcache-results.vercel.app/#review-update",
+  "aliases": [
+    "https://tailcache-results.vercel.app/",
+    "https://tailcache-results-enixes-projects.vercel.app/"
+  ],
+  "deploymentUrl": "https://tailcache-results-k3ca5ugl2-enixes-projects.vercel.app/",
+  "sourceCommit": "ea0736094635bfa66fd3fcd7dfaab8e1b515b736",
+  "framework": null,
+  "buildDurationMs": 4699,
+  "authentication": {
+    "method": "Vercel Authentication",
+    "enabled": true,
+    "deploymentType": "all",
+    "verifiedBeforeDeployment": true,
+    "verifiedAfterDeployment": true,
+    "shareLinksCreated": false
+  },
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 14803966,
+      "sha1": "f2c94f821f585f5680f0dde05964c9bcf94e489e",
+      "sha256": "cf322fa4c4e02eb9b0670f7b4811466e3174f673bc72368f87d29151e8b9b0dc",
+      "remoteFileUid": "f2c94f821f585f5680f0dde05964c9bcf94e489e"
+    },
+    {
+      "path": "vercel.json",
+      "bytes": 338,
+      "sha1": "63d75456adc2c9fae82611b507c161890f4295f9",
+      "sha256": "dc92cf6d97b42b5301327dcdf8c282f8eaeb4312e6cc7a7edc7426de5d481c2b",
+      "remoteFileUid": "63d75456adc2c9fae82611b507c161890f4295f9"
+    }
+  ],
+  "signedOutChecks": [
+    {
+      "host": "tailcache-results.vercel.app",
+      "status": 302,
+      "redirectHost": "vercel.com"
+    },
+    {
+      "host": "tailcache-results-k3ca5ugl2-enixes-projects.vercel.app",
+      "status": 302,
+      "redirectHost": "vercel.com"
+    }
+  ],
+  "authenticatedLiveBrowserChecks": {
+    "performed": false,
+    "reason": "Current deployment checked through READY/alias/source-UID APIs and signed-out requests; functional browser QA used the exact local static artifact. Prior authenticated live checks remain in deployment history."
+  },
+  "localBrowserQa": "docs/interactive/rereview-qa-20261116.json",
+  "evidence": "docs/interactive/rereview-preservation-20261116.json",
+  "remoteArtifactMatches": true,
+  "newBenchmarkRuns": 0
+}

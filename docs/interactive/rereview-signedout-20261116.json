@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "observations": [
+    {
+      "host": "tailcache-results.vercel.app",
+      "status": 302,
+      "redirectHost": "vercel.com"
+    },
+    {
+      "host": "tailcache-results-k3ca5ugl2-enixes-projects.vercel.app",
+      "status": 302,
+      "redirectHost": "vercel.com"
+    }
+  ]
+}
