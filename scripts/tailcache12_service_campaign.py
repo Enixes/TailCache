@@ -38,6 +38,8 @@ def source_files():
              'docs/TAILCACHE_SERVICE_CROSSOVER_FOLLOWUP_PLAN.md',
              'docs/TAILCACHE_SERVICE_IMPLEMENTATION_REVIEW.md',
              'docs/TAILCACHE_SERVICE_RQ_EXTENSION_PROTOCOL.md',
+             'docs/TAILCACHE_SERVICE_PACED_PROTOCOL.md',
+             'docs/TAILCACHE_SERVICE_OBSERVER_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')]
     for directory, pattern in [('src', '*.java'), ('scripts', '*.py'), ('scripts/java', '*.java')]:
         files += sorted((ROOT / directory).rglob(pattern))
@@ -190,9 +192,9 @@ def select_confirmation(rows, candidate):
 
 
 class Campaign:
-    def __init__(self, out, design=None):
+    def __init__(self, out, design=None, classpath_file=None):
         self.out = out
-        self.cp = (ROOT / 'build/service-followup-20261116/classpath.txt').read_text().strip()
+        self.cp = (classpath_file or ROOT / 'build/service-followup-20261116/classpath.txt').read_text().strip()
         self.source, hashes = source_identity()
         declaration = out / 'protocol.json'
         if declaration.exists():
@@ -224,17 +226,18 @@ class Campaign:
                             runtime[str(file)] = focus.sha(file)
             self.protocol = dict(version='service-crossover-v1', declaredUtc=focus.now(),
                 sourceSha256=self.source, sourceFiles=hashes, runtimeSha256=runtime, classpath=self.cp,
-                archivedClasspath=archived_cp, primaryEndpoint='ordinary 95/5 combined saturated-service p99.9',
+                archivedClasspath=archived_cp, primaryEndpoint=(design or {}).get('primaryEndpoint', 'ordinary 95/5 combined saturated-service p99.9'),
                 warmupMs=WARM, conditioningMs=CONDITION, measureMs=MEASURE,
                 traceOperations=1000003, screen=screen_schedule() if design is None else [],
                 maxWorkloadJvms=MAX_WORKLOAD_JVMS if design is None else design['maxWorkloadJvms'],
                 design=design,
-                controls=4, functionalValidationJvms=2, meaningfulRatioBounds=[.9,1.1], originalEvidenceUnchanged=True,
+                controls=(design or {}).get('controls',4), functionalValidationJvms=(design or {}).get('functionalValidationJvms',2),
+                meaningfulRatioBounds=[.9,1.1], originalEvidenceUnchanged=True,
                 preservedPaperInputs={str(p.relative_to(ROOT)):focus.sha(p) for p in
                     [ROOT/'docs/preprint/paper-data.json',ROOT/'docs/TAILCACHE_12_FINAL_ACCEPTANCE.json',
                      ROOT/'evidence-archives/focused-rq-p99999-20261108-001/study.json',
                      ROOT/'evidence-archives/midpoint-results-20261110-001/study.json']},
-                selectionProtocol='docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')
+                selectionProtocol=(design or {}).get('protocol','docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md'))
             immutable(declaration, self.protocol)
             with tarfile.open(out / 'source.tar.gz', 'x:gz') as archive:
                 for file in source_files():

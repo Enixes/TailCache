@@ -36,6 +36,17 @@ class RecoveryTest(unittest.TestCase):
         self.assertEqual("waiting_for_usage_permission", recovery.decision({}, self.thread, self.turn,
             dict(self.limits, rateLimits=dict(spendControlReached=True)), {}, []))
         self.assertLessEqual(len(recovery.PROMPT.encode()), 1000)
+        self.assertLessEqual(len(recovery.SERVICE_PROMPT.encode()), 1000)
+
+    def test_unknown_thread_state_fails_closed(self):
+        for status in ({}, dict(type="notLoaded"), dict(type="systemError")):
+            self.assertEqual("thread_not_idle", recovery.decision({}, dict(status=status),
+                self.turn, self.limits, {}, []))
+
+    def test_service_drivers_suppress_wakeup_between_forks(self):
+        for name in ("tailcache12_service_paced.py", "tailcache12_service_observer.py",
+                     "tailcache12_service_extension.py", "tailcache12_service_audit.py"):
+            self.assertIn(name, recovery.SERVICE_DRIVERS)
 
 
 if __name__ == "__main__":

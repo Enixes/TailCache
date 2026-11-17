@@ -90,7 +90,9 @@ def audit(base,out):
         w=measured[0];n=int(w['operations']);writes=int(w['writes'])
         for channel,data in row['latency'].items():
             r=raw[str((directory/'worker'/(channel+'.hdr')).resolve())]
-            expected=0 if channel=='response' else writes if channel=='update-service' else n-writes if channel=='read-service' else n
+            scheduled=int(w['scheduled'])
+            if scheduled:require(scheduled==n,'Complete paced operation/arrival conservation')
+            expected=scheduled if channel=='response' else writes if channel=='update-service' else n-writes if channel=='read-service' else n
             require(int(r['count'])==data['count']==expected,'Per-channel conservation')
             for p,k in [('50','p50Ns'),('99','p99Ns'),('99.9','p999Ns'),('99.99','p9999Ns'),('99.999','p99999Ns')]:
                 if expected:same(int(r[k]),data['percentilesNs'][p],'Published/library percentile');counts['quantileEndpoints']+=bool(expected)

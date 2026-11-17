@@ -1,0 +1,55 @@
+{
+  "updatedUtc": "2026-11-17T05:24:20.118452+00:00",
+  "phase": "PACED_IMPLEMENTATION_PENDING",
+  "complete": false,
+  "branch": "codex/tailcache-preprint",
+  "implementationCommit": "9145984",
+  "initialScreen": {
+    "directory": "evidence-archives/service-followup-20261117-001",
+    "workloadJvms": 20,
+    "controls": 4,
+    "complete": true,
+    "rawAudits": [
+      "independent-audit-001/audit.json",
+      "independent-audit-002/audit.json"
+    ]
+  },
+  "running": null,
+  "pending": [
+    "RQ extension collection and raw audit finished; review retained outcomes and continue planned load/harness checks.",
+    "Inspect full primary/holdout results; retain all warnings and near ties.",
+    "Run the prospectively planned matched-arrival check (24 workload JVMs) under TAILCACHE_SERVICE_PACED_PROTOCOL.md.",
+    "Promote and validate /tmp/ServiceObserverBenchmark.java and /tmp/tailcache12_service_observer.py only after active collection/audit finish; compile separately; run fixed JMH check (24 workload JVMs plus one timer and two smoke controls). Implement core.Campaign classpath_file override and observer-specific raw audit first.",
+    "Prototype observer cleanup uses process groups; review timeout cleanup and counter/count/GC/RSS checks before launch.",
+    "Assess a small maintenance-policy ablation only if it addresses the observed read-tail mechanism; declare separately before collecting.",
+    "Independently reconcile GC/stall timestamps and mixture tail contributions for every relevant fork, not just the striking example.",
+    "Write final RQ answers, per-point conclusions, researcher review, paper/docs/interactive updates, commit/push and protected hosting verification."
+  ],
+  "constraints": [
+    "No benchmark currently active. Freeze all mapped sources/runtime before each subsequent cohort; never edit them during its collection or audit.",
+    "JMH and paced prospective protocol docs are already saved outside the active source map.",
+    "Existing paper-data.json and prior raw evidence unchanged; do not pool observers, seeds or discovery/confirmation forks.",
+    "Free disk was improved by removing only rebuildable browser/Python caches; keep >=512MiB for new benchmark slots.",
+    "User authorizes autonomous overnight work, meaningful research tests and justified prospective extensions; no submission/deposit or human-review claim."
+  ],
+  "taskComplete": false,
+  "rqExtension": {
+    "directory": "evidence-archives/service-rq-extension-20261117-001",
+    "workloadJvms": 80,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAudit": "independent-audit-001/audit.json",
+    "rawAuditPassed": true,
+    "researchReviewComplete": false
+  },
+  "recovery": {
+    "verifiedUtc": "2026-11-17T05:25:12.111679+00:00",
+    "timer": "tailcache12-recovery.timer",
+    "active": true,
+    "intervalMinutes": 15,
+    "threadId": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "suppressesActiveThreadOrBenchmark": true,
+    "stopsWhenTaskComplete": true
+  }
+}

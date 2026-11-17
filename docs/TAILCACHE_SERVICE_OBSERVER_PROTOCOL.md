@@ -1,0 +1,21 @@
+# Independent service-harness sensitivity — prospective plan, 17 November 2026
+
+Declared while the fixed RQ extension is running, before implementation or any JMH measurement in this follow-up. Motivation comes from the completed 20-JVM screen and the prior observer-dependent campaign: repeated results within one custom recorder do not prove harness independence. This plan does not amend active protocols, change their source or pool their observations.
+
+## Design
+
+Use pinned JMH 1.37 SampleTime in a separate source/runtime cohort with the same cache-operation implementation, 1,000,003-operation trace, resident count, seed 24301, ordinary immutable 95/5 workload, 512 MiB G1 heap, common ballast and offered 32 MiB/s churn. Consume the returned value byte so work remains observable; retain allocation counters and final full-value integrity checks. Do not substitute getUsing or retain a Chronicle heap payload bank.
+
+Fixed cells: **512 B, 1 KiB and 4 KiB × 0/208 MiB ballast × both backends × two fresh workload forks = 24 workload JVMs**. Parent JMH launchers are separate overhead processes and must be accounted for explicitly. Add one separately labelled timer-floor control (three warmup / three measurement iterations) and two short functional cache-smoke forks, one per backend (512 B/zero ballast, two warmup / one measurement iteration). These three qualification/control forks are not research observations. Deterministically shuffle cells and alternate backend order; do not adapt cells to subsequent RQ-extension results. If implementation cannot safely preserve this contract, revise the prospective plan before collection and explain the discrepancy.
+
+JMH uses 14 one-second warmup iterations (the first 12 labelled warmup and last two conditioning for diagnostics) and eight one-second measurement iterations, one worker and one benchmark operation per invocation. Each parent launcher has a 256 MiB maximum heap; each actual workload fork must verify its 512 MiB maximum heap. This differs from the custom recorder's contiguous 12/2/30-second phases. Iteration boundaries, sampling, caller/JIT shape, observable-consumption mechanism and recorder activity are a **harness-regime sensitivity**, not an isolated intervention on timer overhead or a proof of observer neutrality. Report these differences rather than claiming an identical experiment.
+
+Start background churn once per trial and retain it continuously across phases. Retain per-iteration monotonic windows, completed operations/writes, JVM allocation counters, achieved/dropped churn and compilation activity. Capture GC logs, actual worker cgroup/PID, host snapshots and measured-window RSS. Compile into a separate directory; preserve both prior compiled runtimes and all evidence. Use the exclusive native lock/scope and the same readiness safeguards. Do not compile while another performance experiment measures.
+
+## Analysis and stopping
+
+Primary cross-check is service p99.9 ranking at each fixed cell; p99 and higher tails are secondary. Recompute explicit quantiles from retained per-fork sample histograms, state the rank convention, sample counts and per-iteration support, and distinguish JMH's displayed estimators from the recomputed rank if they differ. Never treat retained samples as all operations or pool independent forks/observers. Record compilation, host and allocation-demand warnings. Incomplete/failed slots remain outcomes, with no silent replacement or repeated warmup/window search.
+
+Confirm real work using values/residents and allocation counter evidence, verify measurement-window/count conservation and raw source/runtime identity, and independently reconcile GC and exported histograms. Two pairs are a bounded descriptive sensitivity check, not a calibrated significance test. If clear endpoint directions disagree with the custom recorder, keep the disagreement in the paper and narrow its claims. Do not drop either regime to obtain a desired crossover.
+
+Collection stops after the fixed matrix or a blocking integrity/readiness issue. Research completion additionally requires raw audit, comparison tables, an explicit researcher review and honest integration into the RQ answers.

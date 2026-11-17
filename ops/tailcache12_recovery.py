@@ -30,6 +30,23 @@ PROMPT = (
     "Stay quiet while existing work runs; notify only meaningful failure, completion or needed user action. "
     "Stop tailcache12-recovery.timer when taskComplete=true."
 )
+SERVICE_STATUS = "docs/TAILCACHE_SERVICE_STATUS.json"
+SERVICE_PROMPT = (
+    "User-requested recovery: continue TailCache service/RQ experiments in /home/y/TailCache. "
+    "The latest turn stopped for a usage limit and the backend now explicitly allows ordinary usage. "
+    "Read docs/TAILCACHE_SERVICE_STATUS.json, the service protocols and researcher reviews first. "
+    "Inspect physical-host processes and retained manifests before acting. Never duplicate a benchmark, "
+    "overwrite evidence, replace failed slots or pool cohorts/observers/seeds. Resume completed checkpoints. "
+    "Finish the bounded matched-arrival and JMH checks, independent raw audits, GC/stall reconciliation, "
+    "RQ conclusions and paper/docs/interactive updates. Preserve contrary results and frozen historical inputs. "
+    "Commit/push reviewed work and preserve hosted authentication. A launched job is not completion. "
+    "Stop tailcache12-recovery.timer when this service status has taskComplete=true."
+)
+SERVICE_DRIVERS = {
+    "tailcache12_native.py", "tailcache12_focused.py", "tailcache12_service_campaign.py",
+    "tailcache12_service_extension.py", "tailcache12_service_paced.py",
+    "tailcache12_service_observer.py", "tailcache12_service_audit.py",
+}
 
 
 class LocalRpc:
@@ -138,7 +155,7 @@ def benchmark_pids():
                 continue
             if pathlib.Path(args[0]).name.startswith("python") and len(args) >= 3:
                 name = pathlib.Path(args[1]).name
-                if args[2] in drivers.get(name, set()) or name in {
+                if name in SERVICE_DRIVERS or args[2] in drivers.get(name, set()) or name in {
                         "tailcache12_finish.py", "tailcache12_sequence.py", "tailcache12_preparation.py",
                         "tailcache12_quiet.py", "tailcache12_native_probe.py", "tailcache12_calibration_start.py",
                         "tailcache12_jit_events.py", "tailcache12_pilot_start.py",
@@ -162,6 +179,8 @@ def decision(task, thread, turn, limits, state, busy):
         return "benchmark_running"
     if thread.get("status", {}).get("type") == "active":
         return "thread_active"
+    if thread.get("status", {}).get("type") != "idle":
+        return "thread_not_idle"
     error = (turn.get("error") or {}).get("codexErrorInfo")
     code = error if isinstance(error, str) else next(iter(error), None) if isinstance(error, dict) else None
     if turn.get("status") not in ("failed", "interrupted") or code not in ("usageLimitExceeded", "rateLimitExceeded"):
@@ -187,6 +206,8 @@ def main():
     parser.add_argument("--thread", required=True)
     parser.add_argument("--socket", required=True)
     parser.add_argument("--codex", default="/home/y/.local/bin/codex")
+    parser.add_argument("--status-file", choices=("docs/TAILCACHE_12_STATUS.json", SERVICE_STATUS),
+                        default="docs/TAILCACHE_12_STATUS.json")
     parser.add_argument("--inspect", action="store_true", help="Read status without queuing a message")
     args = parser.parse_args()
     uuid.UUID(args.thread)
@@ -198,7 +219,9 @@ def main():
             return 0
         state_path = STATE_DIR/"state.json"
         state = json.loads(state_path.read_text()) if state_path.exists() else {}
-        task = json.loads((ROOT/"docs/TAILCACHE_12_STATUS.json").read_text())
+        task = json.loads((ROOT/args.status_file).read_text())
+        if not isinstance(task.get("taskComplete"), bool):
+            raise ValueError("Recovery status requires explicit boolean taskComplete")
         busy = benchmark_pids()
         action, thread, turn, limits = "", {}, {}, {}
         if (ROOT/"ops/tailcache12-recovery.disabled").exists():
@@ -236,7 +259,8 @@ def main():
                 action = "benchmark_running"
             else:
                 result = subprocess.run([args.codex, "queue", "--thread", args.thread,
-                    "--message", PROMPT, "--resume", "-C", str(ROOT)], capture_output=True, text=True, timeout=30)
+                    "--message", SERVICE_PROMPT if args.status_file == SERVICE_STATUS else PROMPT,
+                    "--resume", "-C", str(ROOT)], capture_output=True, text=True, timeout=30)
                 if result.returncode:
                     raise RuntimeError("Codex recovery queue command failed")
                 state["queuedForTurnId"] = turn["id"]
