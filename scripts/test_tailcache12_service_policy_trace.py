@@ -42,12 +42,14 @@ class PolicyTraceTest(unittest.TestCase):
                  mock.patch.object(core.time,'sleep'),mock.patch.object(core.focus,'launch',side_effect=failed_launch) as launch:
                 campaign=core.Campaign(root/'cohort',design=design,classpath_file=cp)
                 spec=trace.schedule()[0]
+                spec['extraArgs']=['--trace-pattern','repeated-short']
                 campaign.execute([spec]);campaign.execute([spec])
                 self.assertEqual(launch.call_count,1)
                 kwargs=launch.call_args.kwargs
                 self.assertEqual((kwargs['warmup'],kwargs['conditioning'],kwargs['measure'],kwargs['timeout_seconds']),
                                  (60000,4000,30000,180))
                 self.assertIn(str(spec['traceOperations']),kwargs['extra_args'])
+                self.assertEqual(kwargs['extra_args'][-2:],('--trace-pattern','repeated-short'))
 
     def test_policy_four_arm_budget_and_identity(self):
         slots=policy.schedule()

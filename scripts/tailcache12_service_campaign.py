@@ -47,6 +47,7 @@ def source_files():
              'docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_IMPLEMENTATION_REVIEW.md',
+             'docs/TAILCACHE_SERVICE_GEOMETRY_IMPLEMENTATION_REVIEW.md',
              'docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')]
     for directory, pattern in [('src', '*.java'), ('scripts', '*.py'), ('scripts/java', '*.java')]:
         files += sorted((ROOT / directory).rglob(pattern))
@@ -127,6 +128,8 @@ def extend_result(directory, result):
     config = focus.properties(directory / 'worker/configuration.txt')
     check(int(config['traceOperations']) == result.get('traceOperations',1000003) and int(config['traceWriteOperations']) == (2000 if result.get('traceOperations')==40001 else 50000),
           'Long trace declaration differs')
+    if result.get('tracePattern'):
+        check(config.get('tracePattern')==result['tracePattern'],'Actual trace-pattern selection differs')
     result['trace'] = {k: v for k, v in config.items() if k.startswith('trace')}
     result['measurement']['writes'] = int(measured['writes'])
     seconds = (int(measured['endNs']) - int(measured['startNs'])) / 1e9
@@ -326,7 +329,8 @@ class Campaign:
                     measure=4000 if control else self.protocol['measureMs'], floor=spec.get('floor',False),
                     inject=spec.get('inject',0), runner=MAIN,
                     extra_args=('--supply-floor',str(spec.get('supply',False)).lower(),
-                                *(['--trace-operations',str(spec['traceOperations'])] if 'traceOperations' in spec else [])),
+                                *(['--trace-operations',str(spec['traceOperations'])] if 'traceOperations' in spec else []),
+                                *spec.get('extraArgs',[])),
                     timeout_seconds=(self.protocol.get('design') or {}).get('processTimeoutSeconds',100))
             result = extend_result(path, result)
             immutable(saved, result)

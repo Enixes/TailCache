@@ -1,6 +1,6 @@
 {
-  "updatedUtc": "2026-11-17T07:17:48.507590+00:00",
-  "phase": "LARGE_PAYLOAD_READY",
+  "updatedUtc": "2026-11-17T07:34:29.788228+00:00",
+  "phase": "GEOMETRY_READY",
   "complete": false,
   "branch": "codex/tailcache-preprint",
   "implementationCommit": "86611c7",
@@ -17,7 +17,6 @@
   "running": null,
   "pending": [
     "Execute the fixed serial policy/trace sequence (16 policy + eight baseline trace workload JVMs), each with controls, source-matched functional qualification, raw audit and event reconciliation. Protocols are prospective and qualification passed.",
-    "After the running sequence, run the prospectively declared four-workload 8 KiB worth pilot under docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_PROTOCOL.md; at most eight confirmation workloads only if its frozen p99.9 rule triggers. Implement/validate first; do not change active sources.",
     "Run the prospectively declared eight-workload equal-array trace-pattern control under docs/TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md after the larger-payload scope. Use separate classes/runtime and qualify before capture; no edits to active source.",
     "Review the complete screen/replication/paced/JMH/policy/trace results. Further expansion requires a small predeclared pilot and an explicit RQ-relevant reason, not a search for a preferred winner.",
     "Keep the old response bracket scoped: the long-trace paced cohort favors Chronicle response at baseline too; JMH service rankings disagree with the custom recorder for intermediate payloads. No pooling or post hoc endpoint replacement.",
@@ -93,6 +92,18 @@
     "collectionComplete": true,
     "rawAuditPassed": true,
     "mechanismAuditPassed": true,
+    "researchReviewComplete": false
+  },
+  "largePayload": {
+    "directory": "evidence-archives/service-large-payload-pilot-20261117-001",
+    "workloadJvms": 4,
+    "controls": 3,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "worthDecision": "none",
+    "reason": "Service p99.9 Ch/C 1.1047 at baseline and 1.1711 at 208 MiB; no expansion under frozen rule.",
+    "confirmationWorkloadJvms": 0,
     "researchReviewComplete": false
   }
 }

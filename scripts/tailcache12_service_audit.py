@@ -123,6 +123,10 @@ def audit(base,out):
             if (protocol.get('design') or {}).get('kind')=='cache-policy-sensitivity-v1':
                 require('policy='+policy in config['backendConfig'],'Actual cache policy declaration')
         require('-Dchronicle.analytics.disable=true' in config['jvmArgs'],'Analytics must be disabled')
+        require(all(flag in config['jvmArgs'] for flag in ('-Xms512m','-Xmx512m','-XX:+UseG1GC')),
+                'Actual fixed-heap/collector contract')
+        if row.get('tracePattern'):
+            require(config.get('tracePattern')==row['tracePattern'],'Actual raw trace-pattern selection')
     # A confirmation may contain multiple paired forks; each must be complete and correctly matched.
     grouped=collections.defaultdict(dict)
     for row in study['observations']:
