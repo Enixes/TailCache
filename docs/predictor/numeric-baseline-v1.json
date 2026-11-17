@@ -1,0 +1,19 @@
+{
+  "version": "constant-pilot-quantiles-v1",
+  "sourceStudySha256": "8521cb118f3160ed6d6aa2276c2ea502b4b7a4f227eec7f97f4f9e0ddf5a9af6",
+  "valuesNs": {
+    "CAFFEINE": {
+      "99": 7595,
+      "99.9": 724479,
+      "99.99": 7155711,
+      "99.999": 9248767
+    },
+    "CHRONICLE_IN_MEMORY": {
+      "99": 7895,
+      "99.9": 138623,
+      "99.99": 1327103,
+      "99.999": 1643519
+    }
+  },
+  "scope": "Additional comparator specified after primary results, before fresh12; fitted to pilot only"
+}

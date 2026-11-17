@@ -1,20 +1,17 @@
 {
   "taskComplete": false,
-  "phase": "QUALIFIED_SOURCE_READY_FOR_PILOT",
+  "phase": "SECONDARY_READY_TO_RUN",
   "plan": "docs/TAILCACHE_PREDICTOR_PLAN.md",
   "running": null,
   "authorization": "Autonomous experiment-review-change cycles for eight hours; recover only when ordinary usage is explicitly available.",
   "pending": [
-    "Freeze/audit offline predictor",
-    "Implement/qualify continuous deterministic stream",
-    "Run bounded conditioning/worth pilot",
-    "Freeze and execute30 fresh validation forks",
-    "Independent scoring/research review and targeted follow-up if justified",
-    "Update manuscript/results/explorer, push reviewed work and stop recovery"
+    "Complete running conditioning pilot and independent raw/mechanism audits",
+    "Use frozen choice to run30 fresh validation forks and score GC-conditioned predictions separately from forecast",
+    "Research review, one justified bounded follow-up if warranted, final dataset/manuscript/explorer and protected delivery"
   ],
   "historicalServiceScope": "Complete at8e5dded; unchanged",
   "originalUnconditionalStatus": "NO_GO; unchanged",
-  "updatedUtc": "2026-11-17T18:44:53.073296+00:00",
+  "updatedUtc": "2026-11-17T20:44:24.193726+00:00",
   "recovery": {
     "active": true,
     "timer": "tailcache12-recovery.timer",
@@ -27,5 +24,48 @@
   "qualificationRuntime": "build/predictor-20261118",
   "qualificationAttempt": "predictor-qualification-20261118-001",
   "validationAttempt": "predictor-validation-20261118-001",
-  "sequenceAttempt": "predictor-sequence-20261118-001"
+  "sequenceAttempt": "predictor-sequence-20261118-001",
+  "measurementSourceCommit": "a330849",
+  "driver": {
+    "toolSessionId": 3709,
+    "sequenceAttempt": "predictor-sequence-20261118-001",
+    "exclusiveScope": "tailcache12-predictor-20261118-001.scope",
+    "sourceFrozenUntilSequenceFinishes": false,
+    "doNotEdit": "All src/java, scripts/*.py and scripts/java plus the mapped plan/model/development-input manifest"
+  },
+  "qualification": {
+    "attempt": "predictor-qualification-20261118-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "score": "evidence-archives/predictor-qualification-20261118-001/score-v1.json"
+  },
+  "secondaryCandidate": {
+    "specification": "docs/predictor/DRAIN_CANDIDATE.md",
+    "parameters": "docs/predictor/drain-candidate-v1.json",
+    "code": "docs/predictor/drain_candidate.py.txt",
+    "freezeCommit": "afe73bd",
+    "primaryHoldoutTargetsReadBeforeFreeze": false,
+    "primaryModelUnchanged": true,
+    "toyChecksPassed": 4,
+    "next": "Evaluate only after primary30-fork collection/audits and originalM0/M1 scoring; fresh12 only if frozen worth rule passes"
+  },
+  "validation": {
+    "attempt": "predictor-validation-20261118-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "score": "evidence-archives/predictor-validation-20261118-001/score-v1.json"
+  },
+  "primaryValidationComplete": true,
+  "primaryForecastSupported": false,
+  "primaryResult": "Response p99.9 reversal at0 vs0.5% writes; all15 pair directions consistent, original0.5\u20132% bracket forecast failed",
+  "secondaryWorthPassed": true,
+  "nextExperiments": {
+    "confirmationAttempt": "predictor-drain-confirm-20261118-001",
+    "freshForks": 12,
+    "compilerDiagnosticAttempt": "predictor-compiler-diagnostic-20261118-001",
+    "diagnosticJvms": 1,
+    "protocol": "docs/TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md"
+  }
 }

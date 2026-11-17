@@ -65,6 +65,7 @@ SERVICE_DRIVERS = {
     "tailcache12_service_large_payload.py", "tailcache12_service_geometry.py",
     "tailcache12_predictor_campaign.py", "tailcache12_predictor_sequence.py",
     "tailcache12_predictor_audit.py",
+    "tailcache12_predictor_confirm.py",
 }
 
 
