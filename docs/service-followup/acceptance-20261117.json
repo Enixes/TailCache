@@ -1,0 +1,89 @@
+{
+  "rawIntegrityPassed": true,
+  "exploratoryIncluded": 184,
+  "noRecordedWarnings": 138,
+  "warningBearingForks": 46,
+  "originalUnconditionalQualified": false,
+  "originalTask12Status": "NO_GO; unchanged",
+  "cohorts": {
+    "screen": {
+      "workloadJvms": 20,
+      "controls": 4,
+      "noRecordedWarnings": 17,
+      "warningCounts": {
+        "Native CPU outside benchmark scope exceeded 10% upper bound": 2,
+        "Allocation demand lost under stall; endogenous pressure outcome retained": 1
+      }
+    },
+    "replication": {
+      "workloadJvms": 80,
+      "controls": 4,
+      "noRecordedWarnings": 59,
+      "warningCounts": {
+        "Native CPU outside benchmark scope exceeded 10% upper bound": 12,
+        "Allocation demand lost under stall; endogenous pressure outcome retained": 9
+      }
+    },
+    "paced": {
+      "workloadJvms": 24,
+      "controls": 4,
+      "noRecordedWarnings": 12,
+      "warningCounts": {
+        "Measured compiler activity exceeds80ms; retain as short-run evidence": 9,
+        "Allocation demand lost under stall; endogenous pressure outcome retained": 4,
+        "Native CPU outside benchmark scope exceeded 10% upper bound": 1
+      }
+    },
+    "observer": {
+      "workloadJvms": 24,
+      "controls": 3,
+      "noRecordedWarnings": 21,
+      "warningCounts": {
+        "Measured compiler activity exceeds80ms; retain as harness sensitivity": 1,
+        "Allocation demand lost under stall; endogenous pressure outcome retained": 2
+      }
+    },
+    "policy": {
+      "workloadJvms": 16,
+      "controls": 4,
+      "noRecordedWarnings": 15,
+      "warningCounts": {
+        "Native CPU outside benchmark scope exceeded 10% upper bound": 1
+      }
+    },
+    "trace": {
+      "workloadJvms": 8,
+      "controls": 4,
+      "noRecordedWarnings": 5,
+      "warningCounts": {
+        "Native CPU outside benchmark scope exceeded 10% upper bound": 1,
+        "Measured compiler activity exceeds80ms; retain as short-run evidence": 2
+      }
+    },
+    "largePilot": {
+      "workloadJvms": 4,
+      "controls": 3,
+      "noRecordedWarnings": 2,
+      "warningCounts": {
+        "Allocation demand lost under stall; endogenous pressure outcome retained": 2
+      }
+    },
+    "geometry": {
+      "workloadJvms": 8,
+      "controls": 4,
+      "noRecordedWarnings": 7,
+      "warningCounts": {
+        "Measured compiler activity exceeds80ms; retain as short-run evidence": 1
+      }
+    }
+  },
+  "rawHdrHistograms": 935,
+  "jmhSampleHistograms": 197,
+  "researchComplete": true,
+  "reason": "Bounded collection, raw/portable verification and agent-assisted scientific review complete; push/protected deployment and operational receipt pending.",
+  "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+  "collectionComplete": true,
+  "deliveryComplete": false,
+  "review": "FINAL_REVIEW_20261117.md",
+  "browserVisualQaPerformed": false
+}

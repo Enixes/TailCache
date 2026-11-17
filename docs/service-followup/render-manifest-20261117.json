@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+  "sourceSha256": "30f6e3e400dc340496aa065abe40617d95071a63853ba3eee32eea724b05b69e",
+  "portableChecks": {
+    "passed": true,
+    "counts": {
+      "perBinUnions": 160,
+      "quantileEndpoints": 3520,
+      "distributions": 704,
+      "thresholdChecks": 480,
+      "mixtureChecks": 160,
+      "forks": 184,
+      "pairedRatios": 1840,
+      "pointConclusions": 1120
+    },
+    "cohorts": 8,
+    "pairContrasts": 96,
+    "pointGroups": 58,
+    "limits": "Independent portable arithmetic/representation reconciliation; raw audits remain separate, not human peer review or proof of design validity."
+  },
+  "matplotlib": "3.10.7",
+  "outputs": {
+    "figures/a1-harness-payload.png": "9c85b341c15d1f3f5678eaf24ccec441fa30e5e9f2e23a814c25cb9ac380b16d",
+    "figures/a1-harness-payload.svg": "268f0b70870a632f2bc8e51470b897ae92881befe2392f2421b3bb4ae1c1f061",
+    "figures/a2-cache-policy.png": "70e4dab4f8e3109fe204521f8b48f481c0b2c12d85fba7d811f973d76333785b",
+    "figures/a2-cache-policy.svg": "4cfc392e733286b86692d5f91f5f83856cd27c4a7b7b1eb1722a6863be813fa3",
+    "figures/a3-trace-response.png": "1c807a715673f2fa86027f8bdbf526953504b3cd9240677acb4239d8576ab1b8",
+    "figures/a3-trace-response.svg": "dda877cc5b9d2457d37295efe34c42948b9c8ddab387c120fbb43670a6cb2b7c",
+    "figures/a4-gc-denominators.png": "60606513273627a629f40be2a28bc1716a21e4ca594ed13a416202c79aa9398a",
+    "figures/a4-gc-denominators.svg": "2f9a110b19af233925a87ea1054a9a21acd0b3f7eb4330d3d2a6ceb3b1de3082",
+    "figures/a5-paced-payload.png": "36f7cc65c99cfc112d506a1832df8dc2dacb3d917998e96e8da0a95dbfc1b665",
+    "figures/a5-paced-payload.svg": "19d1237990ed29fcd3a024da99e6469186ce67046b2a59ad44ca878cda54cb20",
+    "figures/a6-larger-payload.png": "46e89a29cd2ad0219fe56fe449422321d234864c4bf8841e464fd8d806ae3466",
+    "figures/a6-larger-payload.svg": "de74f48c35bed15800d79b863833c2374632c35c544ec5c129b5c0e7f6a267b6",
+    "figures/a7-full-service-tail.png": "1457ffe3aaa12486c4e513ffbcb4eb89e3cc20e07d4b1f6a6d37684dbac69657",
+    "figures/a7-full-service-tail.svg": "bf8bb5c2517d607f146e3dce83c612f31ec0dd042f1a87cd8f64d02dd4d7d806"
+  }
+}

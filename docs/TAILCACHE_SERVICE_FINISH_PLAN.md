@@ -1,5 +1,15 @@
 # Service/RQ follow-up finish plan — 17 November 2026
 
+## Current authoritative checkpoint — final delivery
+
+All eight cohorts and raw/event audits are complete: 184 research forks, 30 controls and 27 separate JMH launchers. No benchmark is active or planned. The final portable package, all 58 point conclusions, 704 curves/3,520 ranks, seven new figures, clean-source compilation, clean analysis reproduction and final technical review now pass. Manuscript/current documentation and explorer source are updated. DOM integration passes; real-browser visual QA is unavailable because the CUA host is unavailable. See docs/service-followup/FINAL_REVIEW_20261117.md and docs/interactive/SERVICE_QA_20261117.md.
+
+Remaining: regenerate/verify final HTML, push reviewed source/data/docs on codex/tailcache-preprint, update draft PR #10, deploy the exact staged static files to existing protected Vercel project and verify source UIDs/SSO for HTML/data/figures. Then mark this service scope taskComplete=true, stop the recovery timer and commit receipts. Human author approval, independent review and public paper/raw-evidence deposit remain publication work, not another benchmark.
+
+The final package SHA is 8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef. Historical paper-data.json remains unchanged. Provisional generated exports were removed only after verifying all their numerical fields survive in the final package; receipt ops/service-followup-provisional-cleanup-20261117.json. Raw archives/runtime files remain intact. Matplotlib lives in temporary storage.
+
+The remainder of this plan below is chronological context; its old running-session labels have completed and must not be relaunched.
+
 Operational continuation plan; historical Task 12 remains complete with its original unconditional NO_GO. The active scope is docs/TAILCACHE_SERVICE_STATUS.json. Automatic usage-reset recovery targets this same chat and checks every 15 minutes, requires explicit ordinary usage permission, and suppresses active chats/benchmark drivers. Do not queue a duplicate turn or benchmark. Stop the timer only after the service scope has taskComplete=true.
 
 ## Completed and preserved

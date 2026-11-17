@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "method": "jsdom 29.0.0 DOM integration, synthetic events; not a real browser",
+  "inputMode": "Complete staged hosted HTML",
+  "resizeObserverStubbed": true,
+  "controlStates": 1956,
+  "quantileDetailChecks": 3264,
+  "fullTailPairs": 2,
+  "offHappyPath": 2,
+  "browserVisualQaPerformed": false,
+  "browserVisualQaReason": "CUA browser access host unavailable; no security settings or browser protection changed",
+  "limits": "No layout, responsive viewport or real-browser interaction signoff. Separate scientific PNG figures visually inspected."
+}

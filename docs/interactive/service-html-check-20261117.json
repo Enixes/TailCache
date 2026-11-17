@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "files": {
+    "docs/TAILCACHE_RESULTS_EXPLORER.html": {
+      "bytes": 22402857,
+      "newSection": 1,
+      "reviewSection": 1,
+      "originalFocused": 1
+    },
+    "docs/TAILCACHE_MIDPOINT_EXPLORER.html": {
+      "bytes": 11868342,
+      "newSection": 1,
+      "reviewSection": 1,
+      "originalFocused": 0
+    }
+  },
+  "hostedDataSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+  "method": "Generated source structure/download identities; not browser rendering"
+}

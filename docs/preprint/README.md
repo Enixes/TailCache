@@ -2,7 +2,7 @@
 
 Prepared 11 November 2026. **Working material, not an author-approved or submitted preprint.**
 
-Revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
+Extended 17 November with [184 new research forks across eight cohorts](../service-followup/RESULTS_20261117.md), [58 point groups](../service-followup/followup-data-20261117.md), [seven supplementary figures](../service-followup/FIGURES_20261117.md), [new claims](../service-followup/CLAIMS_20261117.md) and a [final technical review](../service-followup/FINAL_REVIEW_20261117.md). The earlier package was revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
 
 The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#review-update) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
 
@@ -43,8 +43,20 @@ On the evidence host, reconcile all exported observations/distributions and rege
 rtk proxy python3 scripts/tailcache12_preprint_source_audit.py
 ```
 
-This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. Their off-host backup/public artifact, a clean harness build/smoke reproduction, and licensing review remain Task 15 work. No raw-evidence deposit or formal preprint publication is performed by these commands.
+This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. Their off-host backup/public artifact, a independent performance replication and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup. No raw-evidence deposit or formal preprint publication is performed by these commands.
 
 ## Paper boundary
 
-The ordinary 4 KiB scheduled-response p99.9 direction change repeats between 0 and 208 MiB; 104 MiB is mixed. Extreme-response advantages already exist at baseline. Historical saturated service and API-reuse sensitivities remain separate. The original unconditional protocol stays unqualified. Three matching paired directions are descriptive replication, not a significance test. None of this establishes a universal threshold, causal GC attribution or a production SLA.
+In the earlier short-trace cohort, the ordinary 4 KiB scheduled-response p99.9 direction change repeats between 0 and 208 MiB; 104 MiB is mixed. Extreme-response advantages already exist at baseline. Historical saturated service and API-reuse sensitivities remain separate. The original unconditional protocol stays unqualified. Three matching paired directions are descriptive replication, not a significance test. None of this establishes a universal threshold, causal GC attribution or a production SLA.
+
+## Reproduce the 17 November extension
+
+The new portable package is separate from frozen `paper-data.json`. No Java process or raw archive is needed for its analysis:
+
+```sh
+rtk proxy python3 scripts/tailcache12_service_verify.py docs/service-followup/followup-data-20261117.json
+rtk proxy /tmp/tailcache-paper-venv/bin/python scripts/tailcache12_service_figures.py
+rtk proxy python3 -m unittest discover -s scripts -p test_tailcache12_service_verify.py
+```
+
+Use an isolated Matplotlib environment with [the pinned render requirements](../service-followup/render-requirements-20261117.txt); the `/tmp` environment is a local convenience, not a committed dependency. [Clean-directory reproduction](../service-followup/clean-analysis-reproduction-20261117.json) records matching SVG/PNG hashes. Full source/protocol/runtime/audit identities accompany each cohort. Collection states are frozen historical evidence; the separate dated acceptance/review determines analysis completion.

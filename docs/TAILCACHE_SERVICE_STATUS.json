@@ -1,9 +1,9 @@
 {
-  "updatedUtc": "2026-11-17T07:34:29.788228+00:00",
-  "phase": "GEOMETRY_READY",
+  "updatedUtc": "2026-11-17T09:14:41.645570+00:00",
+  "phase": "REVIEWED_AWAITING_DELIVERY",
   "complete": false,
   "branch": "codex/tailcache-preprint",
-  "implementationCommit": "86611c7",
+  "implementationCommit": "d0962a7",
   "initialScreen": {
     "directory": "evidence-archives/service-followup-20261117-001",
     "workloadJvms": 20,
@@ -16,12 +16,9 @@
   },
   "running": null,
   "pending": [
-    "Execute the fixed serial policy/trace sequence (16 policy + eight baseline trace workload JVMs), each with controls, source-matched functional qualification, raw audit and event reconciliation. Protocols are prospective and qualification passed.",
-    "Run the prospectively declared eight-workload equal-array trace-pattern control under docs/TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md after the larger-payload scope. Use separate classes/runtime and qualify before capture; no edits to active source.",
-    "Review the complete screen/replication/paced/JMH/policy/trace results. Further expansion requires a small predeclared pilot and an explicit RQ-relevant reason, not a search for a preferred winner.",
-    "Keep the old response bracket scoped: the long-trace paced cohort favors Chronicle response at baseline too; JMH service rankings disagree with the custom recorder for intermediate payloads. No pooling or post hoc endpoint replacement.",
-    "Produce the per-point conclusion table, full-tail/GC-stall/allocation interpretation, graphs and honest manuscript/claim/doc/interactive integration with independent checks.",
-    "Commit/push reviewed work, update PR #10, preserve authentication on hosted HTML, and verify delivery. Mark taskComplete only after this research/review/delivery scope finishes; then stop recovery."
+    "Push reviewed source/data/docs and update draft PR #10.",
+    "Deploy exact staged static source to existing protected Vercel project; verify hashes/aliases and signed-out HTML/JSON/figure SSO.",
+    "Record delivery completion, stop recovery timer and push receipts."
   ],
   "constraints": [
     "No benchmark currently active. Freeze all mapped sources/runtime before each subsequent cohort; never edit them during its collection or audit.",
@@ -39,7 +36,7 @@
     "collectionComplete": true,
     "rawAudit": "independent-audit-001/audit.json",
     "rawAuditPassed": true,
-    "researchReviewComplete": false
+    "researchReviewComplete": true
   },
   "recovery": {
     "verifiedUtc": "2026-11-17T05:25:12.111679+00:00",
@@ -59,7 +56,7 @@
     "rawAudit": "independent-audit-001/audit.json",
     "rawAuditPassed": true,
     "cohortContractAudit": "cohort-contract-audit.json",
-    "researchReviewComplete": false
+    "researchReviewComplete": true
   },
   "observer": {
     "directory": "evidence-archives/service-observer-20261117-001",
@@ -69,7 +66,7 @@
     "collectionComplete": true,
     "rawAudit": "independent-audit-001/audit.json",
     "rawAuditPassed": true,
-    "researchReviewComplete": false
+    "researchReviewComplete": true
   },
   "userAuthorization": "17 November: autonomous until tonight, all RQ-relevant combinations through small feasibility/worth pilots before substantial expansion; automatic recovery after ordinary usage becomes available.",
   "finalSequence": {
@@ -83,7 +80,7 @@
     "collectionComplete": true,
     "rawAuditPassed": true,
     "mechanismAuditPassed": true,
-    "researchReviewComplete": false
+    "researchReviewComplete": true
   },
   "trace": {
     "directory": "evidence-archives/service-trace-20261117-001",
@@ -92,7 +89,7 @@
     "collectionComplete": true,
     "rawAuditPassed": true,
     "mechanismAuditPassed": true,
-    "researchReviewComplete": false
+    "researchReviewComplete": true
   },
   "largePayload": {
     "directory": "evidence-archives/service-large-payload-pilot-20261117-001",
@@ -104,6 +101,21 @@
     "worthDecision": "none",
     "reason": "Service p99.9 Ch/C 1.1047 at baseline and 1.1711 at 208 MiB; no expansion under frozen rule.",
     "confirmationWorkloadJvms": 0,
-    "researchReviewComplete": false
+    "researchReviewComplete": true
+  },
+  "geometry": {
+    "directory": "evidence-archives/service-geometry-20261117-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "scientificScopeComplete": true,
+  "portablePackage": "docs/service-followup/followup-data-20261117.json",
+  "finalReview": "docs/service-followup/FINAL_REVIEW_20261117.md",
+  "browserQa": {
+    "domIntegrationPassed": true,
+    "realBrowserVisualPerformed": false,
+    "reason": "CUA browser host unavailable"
   }
 }

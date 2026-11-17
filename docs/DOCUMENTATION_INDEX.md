@@ -1,6 +1,8 @@
 # Documentation index
 
-**Updated 16 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
+**Updated 17 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
+
+The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
 
 | Document | Role |
 | --- | --- |
@@ -152,3 +154,33 @@
 | [docs/preprint/REVIEW.md](preprint/REVIEW.md) | Current manuscript/reproduction package |
 | [docs/preprint/RE_REVIEW_20261116.md](preprint/RE_REVIEW_20261116.md) | Current manuscript/reproduction package |
 | [docs/preprint/RE_REVIEW_PLAN_20261116.md](preprint/RE_REVIEW_PLAN_20261116.md) | Current manuscript/reproduction package |
+
+## Added follow-up and operational records
+
+| Document | Scope |
+| --- | --- |
+| [docs/TAILCACHE_SERVICE_CROSSOVER_FOLLOWUP_PLAN.md](TAILCACHE_SERVICE_CROSSOVER_FOLLOWUP_PLAN.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md](TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_FINISH_PLAN.md](TAILCACHE_SERVICE_FINISH_PLAN.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_GEOMETRY_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_GEOMETRY_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md](TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_LARGE_PAYLOAD_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_PROTOCOL.md](TAILCACHE_SERVICE_LARGE_PAYLOAD_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_OBSERVER_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_OBSERVER_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_OBSERVER_PROTOCOL.md](TAILCACHE_SERVICE_OBSERVER_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_PACED_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_PACED_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_PACED_PROTOCOL.md](TAILCACHE_SERVICE_PACED_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_POLICY_PROTOCOL.md](TAILCACHE_SERVICE_POLICY_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_POLICY_TRACE_IMPLEMENTATION_REVIEW.md](TAILCACHE_SERVICE_POLICY_TRACE_IMPLEMENTATION_REVIEW.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_RQ_EXTENSION_PROTOCOL.md](TAILCACHE_SERVICE_RQ_EXTENSION_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/TAILCACHE_SERVICE_TRACE_PROTOCOL.md](TAILCACHE_SERVICE_TRACE_PROTOCOL.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/interactive/SERVICE_QA_20261117.md](interactive/SERVICE_QA_20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/CLAIMS_20261117.md](service-followup/CLAIMS_20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/FIGURES_20261117.md](service-followup/FIGURES_20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/RESULTS_20261117.md](service-followup/RESULTS_20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/SCREEN_20261117.md](service-followup/SCREEN_20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/followup-data-20261117.md](service-followup/followup-data-20261117.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/progress-data-20261117-001.md](service-followup/progress-data-20261117-001.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/progress-data-20261117-002.md](service-followup/progress-data-20261117-002.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
+| [docs/service-followup/FINAL_REVIEW_20261117.md](service-followup/FINAL_REVIEW_20261117.md) | Final agent-assisted technical review and limits |

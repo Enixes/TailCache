@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "independentFreshDirectory": true,
+  "rawArchivesAvailable": false,
+  "matchedFigureOutputs": 14,
+  "stdout": "{\"passed\": true, \"figures\": 7, \"outputs\": 14}\n",
+  "stderr": "",
+  "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+  "limits": "Clean portable analysis/figure reproduction, not independent Java performance replication."
+}
