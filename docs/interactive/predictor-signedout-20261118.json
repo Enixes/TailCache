@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "verifiedUtc": "2026-11-17T21:52:36.731269+00:00",
+  "signedOutChecks": [
+    {
+      "url": "https://tailcache-results.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b1-write-rate-reversal.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/predictor-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/service-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/predictor-figures/b1-write-rate-reversal.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-enixes-projects.vercel.app/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-n5k7ni491-enixes-projects.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-n5k7ni491-enixes-projects.vercel.app/predictor-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-n5k7ni491-enixes-projects.vercel.app/service-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-n5k7ni491-enixes-projects.vercel.app/predictor-figures/b1-write-rate-reversal.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    },
+    {
+      "url": "https://tailcache-results-n5k7ni491-enixes-projects.vercel.app/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "resultsPageExposed": false
+    }
+  ],
+  "bypassLinksCreated": false,
+  "credentialsUsed": false
+}

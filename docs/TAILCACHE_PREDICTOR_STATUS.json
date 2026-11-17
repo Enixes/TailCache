@@ -1,22 +1,22 @@
 {
-  "taskComplete": false,
-  "phase": "REVIEWED_DELIVERY_PENDING",
+  "taskComplete": true,
+  "phase": "COMPLETE_WITH_RETAINED_LIMITS",
   "plan": "docs/TAILCACHE_PREDICTOR_PLAN.md",
   "running": null,
   "authorization": "Autonomous experiment-review-change cycles for eight hours; recover only when ordinary usage is explicitly available.",
-  "pending": [
-    "Push reviewed branch and update draft PR10",
-    "Deploy verified static artifact retaining SSO all; check file identities and signed-out redirects",
-    "Mark this scope complete and stop recovery timer"
-  ],
+  "pending": [],
   "historicalServiceScope": "Complete at8e5dded; unchanged",
   "originalUnconditionalStatus": "NO_GO; unchanged",
-  "updatedUtc": "2026-11-17T21:48:21.160178+00:00",
+  "updatedUtc": "2026-11-17T21:53:39.495731+00:00",
   "recovery": {
-    "active": true,
+    "active": false,
     "timer": "tailcache12-recovery.timer",
     "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
-    "requiresExplicitOrdinaryUsageAllowed": true
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "stopRequestedBecauseTaskComplete": true,
+    "stoppedVerified": true,
+    "verifiedUtc": "2026-11-17T21:54:24.687452+00:00",
+    "unitStates": "Id=tailcache12-recovery.timer\nActiveState=inactive\n\nId=tailcache12-recovery.service\nActiveState=inactive\n"
   },
   "executionBudgetSeconds": 28800,
   "model": "docs/predictor/model-v1.json",
@@ -83,5 +83,19 @@
   "secondaryResult": "0/5% endpoints repeat;0.5% mixed, one contrary fresh pair retained. M1/M2/GCsum6of6 conditional winner calls; updated exante replication forecast5of6.",
   "review": "docs/predictor/REVIEW.md",
   "dataset": "docs/predictor/predictor-data-20261118.json",
-  "finalVerification": "docs/predictor/final-verification.json"
+  "finalVerification": "docs/predictor/final-verification.json",
+  "delivery": {
+    "sourceCommit": "146af126d13bf839a6573c724c8f8e755c42a626",
+    "deploymentId": "dpl_72YwJPBb3jNA5sBzpyTmKvToEMCK",
+    "authentication": "Vercel SSO all;15 signed-out asset/alias checks",
+    "pullRequest": "https://github.com/Enixes/TailCache/pull/10",
+    "draft": true,
+    "portableResearchForks": 60,
+    "rawAuditsPassed": true,
+    "portableVerificationPassed": true,
+    "tests": 30,
+    "domQaPassed": true,
+    "browserVisualQaPerformed": false
+  },
+  "completionMeaning": "Declared predictor scope collected, audited, reviewed and delivered; original unconditional NO_GO and new transient qualification remain; no author-approved deposit"
 }
