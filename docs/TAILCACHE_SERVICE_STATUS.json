@@ -1,9 +1,9 @@
 {
-  "updatedUtc": "2026-11-17T06:20:23.807202+00:00",
-  "phase": "POLICY_TRACE_READY",
+  "updatedUtc": "2026-11-17T07:17:48.507590+00:00",
+  "phase": "LARGE_PAYLOAD_READY",
   "complete": false,
   "branch": "codex/tailcache-preprint",
-  "implementationCommit": "03ce9c2",
+  "implementationCommit": "86611c7",
   "initialScreen": {
     "directory": "evidence-archives/service-followup-20261117-001",
     "workloadJvms": 20,
@@ -17,6 +17,8 @@
   "running": null,
   "pending": [
     "Execute the fixed serial policy/trace sequence (16 policy + eight baseline trace workload JVMs), each with controls, source-matched functional qualification, raw audit and event reconciliation. Protocols are prospective and qualification passed.",
+    "After the running sequence, run the prospectively declared four-workload 8 KiB worth pilot under docs/TAILCACHE_SERVICE_LARGE_PAYLOAD_PROTOCOL.md; at most eight confirmation workloads only if its frozen p99.9 rule triggers. Implement/validate first; do not change active sources.",
+    "Run the prospectively declared eight-workload equal-array trace-pattern control under docs/TAILCACHE_SERVICE_GEOMETRY_PROTOCOL.md after the larger-payload scope. Use separate classes/runtime and qualify before capture; no edits to active source.",
     "Review the complete screen/replication/paced/JMH/policy/trace results. Further expansion requires a small predeclared pilot and an explicit RQ-relevant reason, not a search for a preferred winner.",
     "Keep the old response bracket scoped: the long-trace paced cohort favors Chronicle response at baseline too; JMH service rankings disagree with the custom recorder for intermediate payloads. No pooling or post hoc endpoint replacement.",
     "Produce the per-point conclusion table, full-tail/GC-stall/allocation interpretation, graphs and honest manuscript/claim/doc/interactive integration with independent checks.",
@@ -27,7 +29,8 @@
     "JMH and paced prospective protocol docs are already saved outside the active source map.",
     "Existing paper-data.json and prior raw evidence unchanged; do not pool observers, seeds or discovery/confirmation forks.",
     "Free disk was improved by removing only rebuildable browser/Python caches; keep >=512MiB for new benchmark slots.",
-    "User authorizes autonomous overnight work, meaningful research tests and justified prospective extensions; no submission/deposit or human-review claim."
+    "User authorizes autonomous overnight work, meaningful research tests and justified prospective extensions; no submission/deposit or human-review claim.",
+    "Provisional progress-data JSON files are rebuildable presentation outputs, not primary evidence. Final package must clarify unused JMH generic measureMs=30000: actual JMH is 14 warmup / eight measurement one-second iterations."
   ],
   "taskComplete": false,
   "rqExtension": {
@@ -69,5 +72,27 @@
     "rawAuditPassed": true,
     "researchReviewComplete": false
   },
-  "userAuthorization": "17 November: autonomous until tonight, all RQ-relevant combinations through small feasibility/worth pilots before substantial expansion; automatic recovery after ordinary usage becomes available."
+  "userAuthorization": "17 November: autonomous until tonight, all RQ-relevant combinations through small feasibility/worth pilots before substantial expansion; automatic recovery after ordinary usage becomes available.",
+  "finalSequence": {
+    "directory": "evidence-archives/service-final-sequence-20261117-001",
+    "collectionAndAuditsComplete": true
+  },
+  "policy": {
+    "directory": "evidence-archives/service-policy-20261117-001",
+    "workloadJvms": 16,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": false
+  },
+  "trace": {
+    "directory": "evidence-archives/service-trace-20261117-001",
+    "workloadJvms": 8,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": false
+  }
 }

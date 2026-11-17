@@ -37,8 +37,9 @@ SERVICE_PROMPT = (
     "Read docs/TAILCACHE_SERVICE_STATUS.json, the service protocols and researcher reviews first. "
     "Inspect physical-host processes and retained manifests before acting. Never duplicate a benchmark, "
     "overwrite evidence, replace failed slots or pool cohorts/observers/seeds. Resume completed checkpoints. "
-    "Finish the bounded matched-arrival and JMH checks, independent raw audits, GC/stall reconciliation, "
-    "RQ conclusions and paper/docs/interactive updates. Preserve contrary results and frozen historical inputs. "
+    "Finish the explicitly pending bounded RQ experiments, controls and audits listed there, with worth pilots "
+    "before expansion, GC/stall reconciliation and paper/docs/interactive updates. Preserve contrary results "
+    "and frozen historical inputs. "
     "Commit/push reviewed work and preserve hosted authentication. A launched job is not completion. "
     "Stop tailcache12-recovery.timer when this service status has taskComplete=true."
 )
@@ -49,6 +50,7 @@ SERVICE_DRIVERS = {
     "tailcache12_service_observer_audit.py", "tailcache12_service_policy.py",
     "tailcache12_service_trace.py", "tailcache12_service_mechanism.py",
     "tailcache12_service_final_sequence.py",
+    "tailcache12_service_large_payload.py", "tailcache12_service_geometry.py",
 }
 
 
