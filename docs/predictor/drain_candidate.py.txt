@@ -1,0 +1,46 @@
+"""Frozen secondary M2 solver; staged as text while primary measured-source map is frozen."""
+import collections,math
+
+def merge(pauses):
+    out=[]
+    for a,b in sorted(pauses):
+        if b<a:raise ValueError('Negative pause')
+        if out and a<=out[-1][1]:out[-1]=(out[-1][0],max(b,out[-1][1]))
+        elif a<b:out.append((a,b))
+    return out
+
+def simulate(pauses,start,end,step,service,bookkeeping,percentiles):
+    if not(end>start and step>0 and service>0 and bookkeeping>=0):raise ValueError('Server config')
+    ps=merge([(a-start,b-start) for a,b in pauses if b>start]);pointer=0
+    n=(end-start+step-1)//step;ready=0.;counts=collections.Counter()
+    def advance(t,cost):
+        nonlocal pointer
+        while pointer<len(ps):
+            a,b=ps[pointer]
+            if b<=t:pointer+=1;continue
+            if a<=t:t=float(b);pointer+=1;continue
+            if t+cost<=a:return t+cost
+            cost-=a-t;t=float(b);pointer+=1
+        return t+cost
+    for i in range(n):
+        intended=i*step;finish=advance(max(float(intended),ready),service)
+        value=max(1,math.ceil(finish-intended));width=1<<max(0,value.bit_length()-11)
+        counts[value|(width-1)]+=1
+        ready=advance(finish,bookkeeping)
+    bins=sorted(counts.items());result={}
+    for q in percentiles:
+        rank=max(1,math.ceil(math.nextafter(float(q),-math.inf)*n/100));cumulative=0
+        for upper,count in bins:
+            cumulative+=count
+            if cumulative>=rank:result[q]=upper;break
+    return dict(percentilesNs=result,operations=n,drainNs=max(0,ready-(end-start)),
+                utilisation=(service+bookkeeping)/step)
+
+def interpolate(points,x):
+    points=sorted((int(k),v) for k,v in points.items())
+    if x<points[0][0] or x>points[-1][0]:raise ValueError('No untested extrapolation')
+    for k,v in points:
+        if x==k:return v
+    for (a,u),(b,v) in zip(points,points[1:]):
+        if a<x<b:return u+(v-u)*(x-a)/(b-a)
+    raise ValueError('Missing interpolation')

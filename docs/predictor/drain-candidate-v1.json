@@ -1,0 +1,44 @@
+{
+  "version": "pilot-derived-drain-v1",
+  "declaredUtc": "2026-11-17T19:32:49.957396+00:00",
+  "primaryValidationResponseUnblinded": false,
+  "intrinsicServiceNs": {
+    "CAFFEINE": {
+      "50": 363.45268563512377,
+      "500": 697.7659851773235,
+      "0": 287.537992
+    },
+    "CHRONICLE_IN_MEMORY": {
+      "50": 981.2999553327378,
+      "500": 1292.4842694254646,
+      "0": 938.6970364251766
+    }
+  },
+  "bookkeepingNs": {
+    "CAFFEINE": 40.32610426451663,
+    "CHRONICLE_IN_MEMORY": 44.582362733910486
+  },
+  "serviceCutoffNs": 100000,
+  "timerBaselineNs": {
+    "99": 111,
+    "99.9": 15679,
+    "99.99": 23887,
+    "99.999": 58815
+  },
+  "calibrationInputs": {
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w50-warm120000-p4096-live0-b1-s34801-CAFFEINE/worker/service-bins.csv": "a6954d220bb7ce8365d52ba2f6cacb95e4f103df7d7e52274e00c8cf3b9f0b1e",
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w500-warm120000-p4096-live0-b1-s34801-CAFFEINE/worker/service-bins.csv": "e2855b7c21295b96b8ca369256f9a209e62d734d9b9fe3f01c9934db0c5cf3fe",
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w0-warm120000-p4096-live0-b1-s34801-CAFFEINE/worker/service-bins.csv": "1d1b5beca94ebafa303daf4ff17faa1efe2db58366e431e7fa8fdf0b9f816a76",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b1-s24301-CAFFEINE/worker/service-bins.csv": "cc04fb5e25ca95f8e6dbb96a1ada78aaff61622f5822a89d1e7d1c17a470ba1f",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b2-s24301-CAFFEINE/worker/service-bins.csv": "92b5374509905a291a8c2827174b2425700e5659ca91d8da2b0d4d857400c4e4",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b3-s24301-CAFFEINE/worker/service-bins.csv": "0f9f2c1c2880e75ec0cb37c8ae46ca0cdec03c1ffbeae9a4d0d6ecfe49d3ef1d",
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w50-warm120000-p4096-live0-b1-s34801-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "e100c107afb9272f55c1b227b7c492467f0c1ac3f5e60a3c79ad160344162f90",
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w500-warm120000-p4096-live0-b1-s34801-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "6f7a70951a747e986e543e7afd67e8ebe67fb7299467a1316a21b3eaa3d85275",
+    "evidence-archives/predictor-qualification-20261118-001/slots/qualification-w0-warm120000-p4096-live0-b1-s34801-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "dd7457c70bf2e41879c5c7375a44788ff32527aff7f6ee6bbea98b44b6624d9d",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b1-s24301-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "ef47c2c0909f913ec55c572c927d52ebf9967baa0e28c3f5f4ff67dc68e229aa",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b2-s24301-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "8f7504f3e326c4ac36164e1dad18566740d472ecaed4797dedf8a5229ed0f832",
+    "evidence-archives/service-rq-extension-20261117-001/slots/payload-confirmation-p4096-live0-b3-s24301-CHRONICLE_IN_MEMORY/worker/service-bins.csv": "c5d56fe0b99cb37e3f306d6f2c9b3361fe29d0c97d3b55a8968e572780dd3528"
+  },
+  "solverSha256": "d5a4ab606a39ed9d7f0612fbf0eb7d63d705ff1f69024237b155c8ea415d6520",
+  "meaning": "Secondary candidate frozen after pilot while primary validation is collecting; not original pre-collection model"
+}
