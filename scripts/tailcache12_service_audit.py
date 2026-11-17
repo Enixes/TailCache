@@ -88,6 +88,8 @@ def audit(base,out):
         require(windows==row['windows'],'Raw phase windows changed')
         measured=[w for w in windows if w['phase']=='MEASUREMENT'];require(len(measured)==1,'Window count')
         w=measured[0];n=int(w['operations']);writes=int(w['writes'])
+        require(all(not int(v['scheduled']) or int(v['operations'])==int(v['scheduled']) for v in windows),
+                'All-phase intended/completed request conservation')
         for channel,data in row['latency'].items():
             r=raw[str((directory/'worker'/(channel+'.hdr')).resolve())]
             scheduled=int(w['scheduled'])
@@ -113,23 +115,40 @@ def audit(base,out):
         counts['gcSummaries']+=1;counts['rssSummaries']+=1
         config=dict(line.split('=',1) for line in (directory/'worker/configuration.txt').read_text().splitlines() if '=' in line)
         require(config['traceSha256']==row['trace']['traceSha256'],'Trace identity')
-        require(config['traceArrayPayloadBytes']=='9000027','Trace memory declaration')
+        trace_operations=row.get('traceOperations',1000003)
+        require(trace_operations in (40001,1000003),'Declared trace selection')
+        require(int(config['traceOperations'])==trace_operations and int(config['traceArrayPayloadBytes'])==9*trace_operations,'Trace memory declaration')
+        if row['backend'].startswith('CAFFEINE'):
+            policy={'CAFFEINE':'BOUNDED_DEFAULT','CAFFEINE_BOUNDED_DIRECT':'BOUNDED_DIRECT','CAFFEINE_UNBOUNDED':'UNBOUNDED'}[row['backend']]
+            if (protocol.get('design') or {}).get('kind')=='cache-policy-sensitivity-v1':
+                require('policy='+policy in config['backendConfig'],'Actual cache policy declaration')
         require('-Dchronicle.analytics.disable=true' in config['jvmArgs'],'Analytics must be disabled')
     # A confirmation may contain multiple paired forks; each must be complete and correctly matched.
     grouped=collections.defaultdict(dict)
     for row in study['observations']:
         key=tuple(row[k] for k in ('stage','payload','liveMiB','seed','block'))
         require(row['backend'] not in grouped[key],'Duplicate backend');grouped[key][row['backend']]=row
-    require(len(grouped)==len(study['pairs']),'Pair coverage')
+    policy=(protocol.get('design') or {}).get('kind')=='cache-policy-sensitivity-v1'
+    require(len(study['pairs'])==len(grouped)*(3 if policy else 1),'Pair coverage')
+    seen=set()
     for pair in study['pairs']:
-        arms=grouped[tuple(pair[k] for k in ('stage','payload','liveMiB','seed','block'))]
+        key=tuple(pair[k] for k in ('stage','payload','liveMiB','seed','block'))
+        arms=grouped[key]
+        reference=pair.get('referenceBackend','CAFFEINE');treatment=pair.get('comparisonBackend','CHRONICLE_IN_MEMORY')
+        require(reference!=treatment and (key,reference,treatment) not in seen,'Duplicate/self contrast')
+        seen.add((key,reference,treatment))
+        require(set(arms)==({'CAFFEINE','CAFFEINE_BOUNDED_DIRECT','CAFFEINE_UNBOUNDED','CHRONICLE_IN_MEMORY'} if policy else {'CAFFEINE','CHRONICLE_IN_MEMORY'}),'Paired arm coverage')
+        chosen={b:arms[b] for b in (reference,treatment)}
+        require(pair['labels']=={b:r['label'] for b,r in chosen.items()},'Paired labels changed')
         if pair['valid']:
-            require(set(arms)=={'CAFFEINE','CHRONICLE_IN_MEMORY'},'Incomplete valid pair')
-            require(len({r['trace']['traceSha256'] for r in arms.values()})==1,'Different paired traces')
+            require(all(r['status']=='OK' and r.get('latencyVerified') for r in chosen.values()),'Invalid valid pair')
+            require(len({r['trace']['traceSha256'] for r in chosen.values()})==1,'Different paired traces')
+            if all(r.get('qps',0)>0 for r in chosen.values()):
+                require(len({tuple((w['phase'],w['writes']) for w in r['windows']) for r in chosen.values()})==1,'Paired all-phase logical writes')
             for channel,values in pair['ratios'].items():
                 for percentile,value in values.items():
-                    same(arms['CHRONICLE_IN_MEMORY']['latency'][channel]['percentilesNs'][percentile]/
-                         arms['CAFFEINE']['latency'][channel]['percentilesNs'][percentile],value,'Published paired ratio')
+                    same(arms[treatment]['latency'][channel]['percentilesNs'][percentile]/
+                         arms[reference]['latency'][channel]['percentilesNs'][percentile],value,'Published paired ratio')
                     counts['pairedRatios']+=1
     manifest=[dict(path=str(p.relative_to(base)),bytes=p.stat().st_size,sha256=sha(p))
               for p in sorted(base.rglob('*')) if p.is_file() and not p.is_relative_to(out)]

@@ -43,6 +43,7 @@ def source_files():
              'docs/TAILCACHE_SERVICE_POLICY_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_TRACE_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_OBSERVER_IMPLEMENTATION_REVIEW.md',
+             'docs/TAILCACHE_SERVICE_POLICY_TRACE_IMPLEMENTATION_REVIEW.md',
              'docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')]
     for directory, pattern in [('src', '*.java'), ('scripts', '*.py'), ('scripts/java', '*.java')]:
         files += sorted((ROOT / directory).rglob(pattern))
@@ -60,6 +61,25 @@ def immutable(path, value):
         check(focus.load(path) == value, 'Immutable declaration differs: ' + str(path))
     else:
         focus.save(path, value)
+
+
+def validate_compilation(compilation, qualification, mode):
+    """Bind fresh qualification and compiled classes to their actual sources/dependencies."""
+    compiled=focus.load(compilation);qualified=focus.load(qualification)
+    check(compiled.get('passed') is True and qualified.get('passed') is True and qualified.get('mode')==mode,
+          'Source-matched functional qualification required')
+    check(qualified['compilationSha256']==focus.sha(compilation),'Qualification/compiler identity differs')
+    for name,digest in compiled['sourceSha256'].items():
+        check(focus.sha(ROOT/name)==digest,'Compilation source changed: '+name)
+    for name,digest in compiled['compiledRuntime'].items():
+        check(focus.sha(compilation.parent/name)==digest,'Qualified compiled class changed: '+name)
+    check(qualified['sourceSha256']==compiled['sourceSha256']['scripts/java/PolicyTraceSelfTest.java'],
+          'Functional helper source differs')
+    reference=ROOT/'evidence-archives/service-followup-20261117-001'
+    check(focus.load(reference/'independent-audit-001/audit.json')['protocolSha256']==focus.sha(reference/'protocol.json'),
+          'Prior shared-runtime declaration changed')
+    for name,digest in focus.load(reference/'protocol.json')['runtimeSha256'].items():
+        check(focus.sha(pathlib.Path(name))==digest,'Prior shared runtime changed: '+name)
 
 
 def pair_specs(stage, payload, live, block=1, seed=24301, reverse=False):
@@ -102,7 +122,7 @@ def extend_result(directory, result):
     union.update(bins(directory / 'worker/update-service-bins.csv'))
     check(dict(union) == combined, 'Combined distribution differs from exact read/update union')
     config = focus.properties(directory / 'worker/configuration.txt')
-    check(config['traceOperations'] == '1000003' and config['traceWriteOperations'] == '50000',
+    check(int(config['traceOperations']) == result.get('traceOperations',1000003) and int(config['traceWriteOperations']) == (2000 if result.get('traceOperations')==40001 else 50000),
           'Long trace declaration differs')
     result['trace'] = {k: v for k, v in config.items() if k.startswith('trace')}
     result['measurement']['writes'] = int(measured['writes'])
@@ -230,8 +250,8 @@ class Campaign:
             self.protocol = dict(version='service-crossover-v1', declaredUtc=focus.now(),
                 sourceSha256=self.source, sourceFiles=hashes, runtimeSha256=runtime, classpath=self.cp,
                 archivedClasspath=archived_cp, primaryEndpoint=(design or {}).get('primaryEndpoint', 'ordinary 95/5 combined saturated-service p99.9'),
-                warmupMs=WARM, conditioningMs=CONDITION, measureMs=MEASURE,
-                traceOperations=1000003, screen=screen_schedule() if design is None else [],
+                warmupMs=(design or {}).get('warmupMs',WARM), conditioningMs=(design or {}).get('conditioningMs',CONDITION), measureMs=(design or {}).get('measureMs',MEASURE),
+                traceOperations=(design or {}).get('traceOperations',1000003), screen=screen_schedule() if design is None else [],
                 maxWorkloadJvms=MAX_WORKLOAD_JVMS if design is None else design['maxWorkloadJvms'],
                 design=design,
                 controls=(design or {}).get('controls',4), functionalValidationJvms=(design or {}).get('functionalValidationJvms',2),
@@ -246,7 +266,7 @@ class Campaign:
                 for file in source_files():
                     archive.add(file, arcname=str(file.relative_to(ROOT)))
             focus.save(out / 'setup/environment.json', focus.environment_metadata())
-            shutil.copyfile(ROOT/'build/service-followup-20261116/functional-validation.json',
+            shutil.copyfile(ROOT/(design or {}).get('functionalValidationReceipt','build/service-followup-20261116/functional-validation.json'),
                             out/'setup/functional-validation.json')
             focus.save(out / 'state.json', dict(complete=False, startedUtc=focus.now(), scheduled=[], decisions=[]))
         self.state = focus.load(out / 'state.json')
@@ -299,10 +319,12 @@ class Campaign:
                 focus.verify_retained(path, result)
             else:
                 time.sleep(3)
-                result = focus.launch(root, spec, self.cp, warmup=WARM, conditioning=CONDITION,
-                    measure=4000 if control else MEASURE, floor=spec.get('floor',False),
+                result = focus.launch(root, spec, self.cp, warmup=self.protocol['warmupMs'], conditioning=self.protocol['conditioningMs'],
+                    measure=4000 if control else self.protocol['measureMs'], floor=spec.get('floor',False),
                     inject=spec.get('inject',0), runner=MAIN,
-                    extra_args=('--supply-floor',str(spec.get('supply',False)).lower()), timeout_seconds=100)
+                    extra_args=('--supply-floor',str(spec.get('supply',False)).lower(),
+                                *(['--trace-operations',str(spec['traceOperations'])] if 'traceOperations' in spec else [])),
+                    timeout_seconds=(self.protocol.get('design') or {}).get('processTimeoutSeconds',100))
             result = extend_result(path, result)
             immutable(saved, result)
             if control:

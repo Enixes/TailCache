@@ -1,9 +1,9 @@
 {
-  "updatedUtc": "2026-11-17T05:50:48.800222+00:00",
-  "phase": "PACED_AUDITED_OBSERVER_READY",
+  "updatedUtc": "2026-11-17T06:20:23.807202+00:00",
+  "phase": "POLICY_TRACE_READY",
   "complete": false,
   "branch": "codex/tailcache-preprint",
-  "implementationCommit": "ee05287",
+  "implementationCommit": "03ce9c2",
   "initialScreen": {
     "directory": "evidence-archives/service-followup-20261117-001",
     "workloadJvms": 20,
@@ -16,15 +16,11 @@
   },
   "running": null,
   "pending": [
-    "Paced collection and audits complete. Continue the frozen 24-workload-JVM independent JMH check.",
-    "Inspect full primary/holdout results; retain all warnings and near ties.",
-    "Run the prospectively planned matched-arrival check (24 workload JVMs) under TAILCACHE_SERVICE_PACED_PROTOCOL.md.",
-    "Promote and validate /tmp/ServiceObserverBenchmark.java and /tmp/tailcache12_service_observer.py only after active collection/audit finish; compile separately; run fixed JMH check (24 workload JVMs plus one timer and two smoke controls). Implement core.Campaign classpath_file override and observer-specific raw audit first.",
-    "Prototype observer cleanup uses process groups; review timeout cleanup and counter/count/GC/RSS checks before launch.",
-    "Run the fixed 16-JVM cache-policy sensitivity after paced/JMH collection, as declared in docs/TAILCACHE_SERVICE_POLICY_PROTOCOL.md; independent runtime, qualification and raw audit required.",
-    "Run the fixed eight-JVM baseline trace/longer-warmup sensitivity under docs/TAILCACHE_SERVICE_TRACE_PROTOCOL.md; keep short/long traces and historical cohorts separate.",
-    "Independently reconcile GC/stall timestamps and mixture tail contributions for every relevant fork, not just the striking example.",
-    "Write final RQ answers, per-point conclusions, researcher review, paper/docs/interactive updates, commit/push and protected hosting verification."
+    "Execute the fixed serial policy/trace sequence (16 policy + eight baseline trace workload JVMs), each with controls, source-matched functional qualification, raw audit and event reconciliation. Protocols are prospective and qualification passed.",
+    "Review the complete screen/replication/paced/JMH/policy/trace results. Further expansion requires a small predeclared pilot and an explicit RQ-relevant reason, not a search for a preferred winner.",
+    "Keep the old response bracket scoped: the long-trace paced cohort favors Chronicle response at baseline too; JMH service rankings disagree with the custom recorder for intermediate payloads. No pooling or post hoc endpoint replacement.",
+    "Produce the per-point conclusion table, full-tail/GC-stall/allocation interpretation, graphs and honest manuscript/claim/doc/interactive integration with independent checks.",
+    "Commit/push reviewed work, update PR #10, preserve authentication on hosted HTML, and verify delivery. Mark taskComplete only after this research/review/delivery scope finishes; then stop recovery."
   ],
   "constraints": [
     "No benchmark currently active. Freeze all mapped sources/runtime before each subsequent cohort; never edit them during its collection or audit.",
@@ -62,5 +58,16 @@
     "rawAuditPassed": true,
     "cohortContractAudit": "cohort-contract-audit.json",
     "researchReviewComplete": false
-  }
+  },
+  "observer": {
+    "directory": "evidence-archives/service-observer-20261117-001",
+    "workloadJvms": 24,
+    "controls": 3,
+    "parentLauncherJvms": 27,
+    "collectionComplete": true,
+    "rawAudit": "independent-audit-001/audit.json",
+    "rawAuditPassed": true,
+    "researchReviewComplete": false
+  },
+  "userAuthorization": "17 November: autonomous until tonight, all RQ-relevant combinations through small feasibility/worth pilots before substantial expansion; automatic recovery after ordinary usage becomes available."
 }

@@ -46,6 +46,9 @@ SERVICE_DRIVERS = {
     "tailcache12_native.py", "tailcache12_focused.py", "tailcache12_service_campaign.py",
     "tailcache12_service_extension.py", "tailcache12_service_paced.py",
     "tailcache12_service_observer.py", "tailcache12_service_audit.py",
+    "tailcache12_service_observer_audit.py", "tailcache12_service_policy.py",
+    "tailcache12_service_trace.py", "tailcache12_service_mechanism.py",
+    "tailcache12_service_final_sequence.py",
 }
 
 

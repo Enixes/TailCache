@@ -54,7 +54,7 @@ public final class CrossoverWorkload implements AutoCloseable {
             applicationData = new RetainedApplicationData(
                     config.applicationLiveBytes(), config.applicationObjectBytes());
             verifyContents();
-            if (cache instanceof CaffeineCacheAdapter caffeine && caffeine.frequencySketchSlotsForDiagnostic() == 0) {
+            if (cache instanceof CaffeineCacheAdapter caffeine && caffeine.isBoundedForDiagnostic() && caffeine.frequencySketchSlotsForDiagnostic() == 0) {
                 throw new IllegalStateException("Crossover Caffeine frequency sketch is not initialized");
             }
         } catch (RuntimeException | Error failure) {
