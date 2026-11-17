@@ -60,3 +60,7 @@ rtk proxy python3 -m unittest discover -s scripts -p test_tailcache12_service_ve
 ```
 
 Use an isolated Matplotlib environment with [the pinned render requirements](../service-followup/render-requirements-20261117.txt); the `/tmp` environment is a local convenience, not a committed dependency. [Clean-directory reproduction](../service-followup/clean-analysis-reproduction-20261117.json) records matching SVG/PNG hashes. Full source/protocol/runtime/audit identities accompany each cohort. Collection states are frozen historical evidence; the separate dated acceptance/review determines analysis completion.
+
+## Reproduce the 18 November predictor extension
+
+The [current predictor report](../predictor/RESULTS.md), [research review](../predictor/REVIEW.md) and [portable commands](../predictor/README.md) add60 separately identified research forks. The draft now includes failed boundary forecasts, fresh 0.5% disagreement, GC-conditioned model errors and naive comparisons. Earlier data packages and claim maps keep their dated scope. The new working manuscript has not been author-approved or deposited.

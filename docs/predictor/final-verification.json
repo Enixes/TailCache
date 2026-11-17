@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "packageSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+  "packageRebuildByteIdentical": true,
+  "historicalHtmlPreservedExceptCurrentDocumentDownloads": {
+    "TAILCACHE_RESULTS_EXPLORER.html": true,
+    "TAILCACHE_MIDPOINT_EXPLORER.html": true
+  },
+  "historicalPackagesUnchanged": true,
+  "currentManuscriptAndStateDownloadsMatch": true,
+  "cleanFigureOutputsMatch": 8,
+  "targetedTests": 30,
+  "browserVisualQaPerformed": false,
+  "newResearchForks": 60,
+  "noReplacementForks": true
+}

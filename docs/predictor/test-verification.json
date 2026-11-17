@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "tests": 30,
+  "suites": [
+    {
+      "suite": "test_tailcache12_pause_model.py",
+      "exitCode": 0,
+      "output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "suite": "test_tailcache12_predictor_campaign.py",
+      "exitCode": 0,
+      "output": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    },
+    {
+      "suite": "test_tailcache12_predictor_confirm.py",
+      "exitCode": 0,
+      "output": ".\n----------------------------------------------------------------------\nRan 1 test in 0.000s\n\nOK\n"
+    },
+    {
+      "suite": "test_tailcache12_predictor_package.py",
+      "exitCode": 0,
+      "output": "......\n----------------------------------------------------------------------\nRan 6 tests in 6.211s\n\nOK\n"
+    },
+    {
+      "suite": "test_tailcache12_service_verify.py",
+      "exitCode": 0,
+      "output": ".......\n----------------------------------------------------------------------\nRan 7 tests in 17.133s\n\nOK\n"
+    },
+    {
+      "suite": "test_tailcache12_recovery.py",
+      "exitCode": 0,
+      "output": ".....\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "performanceBenchmarksLaunched": 0
+}

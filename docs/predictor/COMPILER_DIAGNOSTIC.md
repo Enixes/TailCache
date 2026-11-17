@@ -1,0 +1,11 @@
+# Compiler diagnostic — 18 November 2026
+
+One additional, separately instrumented Caffeine JVM at 2% writes used the unchanged continuous-stream runner, 120/4/30-second phases, compiler-only JFR and timestamped JIT logs. It is not a latency replication, a replacement for a warning-bearing fork, or part of the research dataset. Raw evidence is retained under `evidence-archives/predictor-compiler-diagnostic-20261118-001`.
+
+The compilation MXBean reports 307 ms during warmup, 216 ms during conditioning and 0 ms during measurement. JFR records seven compilation tasks for `PredictorCrossoverRunner.run`; a C2 OSR task beginning at 02:26:07.041718 +05:30 lasts 150.735171 ms. The JIT completion log places that task in conditioning. JFR records `unstable_if` deoptimizations of this method at bytecode index 272 at 02:26:07.023412 and 02:26:11.048013 +05:30, close to the warmup and conditioning exits. `javap` of the measured class identifies index 272 as the branch that exits once the requested operation count has been completed. This supports phase-exit profiling/recompilation as one reason a long single warmup invocation need not settle every later invocation.
+
+The measurement has three JIT-log lines: a level-3 HDR minimum-value update, a native JFR flush registration and a level-1 JFR periodic-task accessor. A zero integer-millisecond MXBean delta therefore does not establish that no compilation event occurred. Instrumentation itself introduces JFR-related work.
+
+This single probe did not reproduce a large measurement-period compiler delta. It cannot explain all nine compiler warnings in the primary validation, establish causality for their latency outcomes, or validate a revised runner. Existing warnings remain unchanged. Replacing one long warmup call with repeated complete phase invocations is a plausible future qualification intervention, but it has not been tested here and would require a separately frozen runtime and comparison. We stop the diagnostic at its declared one-JVM budget.
+
+The diagnostic runtime is OpenJDK **21.0.13.0.3+1**, also recorded in all new cohort environment manifests. Earlier manuscript cohorts used their recorded runtime versions; cross-date differences must not be attributed solely to trace changes. All new within-cohort paired contrasts use matched runtime files.

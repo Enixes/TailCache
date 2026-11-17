@@ -1,8 +1,8 @@
 # Documentation index
 
-**Updated 17 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
+**Updated 18 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
 
-The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
+The completed [18 November predictor study](predictor/RESULTS.md), [review](predictor/REVIEW.md) and [reproduction guide](predictor/README.md) describe the newest evidence. The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
 
 | Document | Role |
 | --- | --- |
@@ -184,3 +184,14 @@ The completed [17 November extension](service-followup/RESULTS_20261117.md), [su
 | [docs/service-followup/progress-data-20261117-001.md](service-followup/progress-data-20261117-001.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
 | [docs/service-followup/progress-data-20261117-002.md](service-followup/progress-data-20261117-002.md) | Current results/reproduction or dated extension protocol/review; use current state for status |
 | [docs/service-followup/FINAL_REVIEW_20261117.md](service-followup/FINAL_REVIEW_20261117.md) | Final agent-assisted technical review and limits |
+
+## Continuous-stream predictor records
+
+- [COMPILER_DIAGNOSTIC.md](predictor/COMPILER_DIAGNOSTIC.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [DRAIN_CANDIDATE.md](predictor/DRAIN_CANDIDATE.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [FIGURES.md](predictor/FIGURES.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [IMPLEMENTATION_REVIEW.md](predictor/IMPLEMENTATION_REVIEW.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [README.md](predictor/README.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [RESULTS.md](predictor/RESULTS.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [REVIEW.md](predictor/REVIEW.md): current completed predictor artifact, or explicitly frozen model/implementation record.
+- [Original predictor plan](TAILCACHE_PREDICTOR_PLAN.md) and [fresh confirmation protocol](TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md): frozen prospective records.

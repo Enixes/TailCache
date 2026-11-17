@@ -1,17 +1,17 @@
 {
   "taskComplete": false,
-  "phase": "SECONDARY_READY_TO_RUN",
+  "phase": "REVIEWED_DELIVERY_PENDING",
   "plan": "docs/TAILCACHE_PREDICTOR_PLAN.md",
   "running": null,
   "authorization": "Autonomous experiment-review-change cycles for eight hours; recover only when ordinary usage is explicitly available.",
   "pending": [
-    "Complete running conditioning pilot and independent raw/mechanism audits",
-    "Use frozen choice to run30 fresh validation forks and score GC-conditioned predictions separately from forecast",
-    "Research review, one justified bounded follow-up if warranted, final dataset/manuscript/explorer and protected delivery"
+    "Push reviewed branch and update draft PR10",
+    "Deploy verified static artifact retaining SSO all; check file identities and signed-out redirects",
+    "Mark this scope complete and stop recovery timer"
   ],
   "historicalServiceScope": "Complete at8e5dded; unchanged",
   "originalUnconditionalStatus": "NO_GO; unchanged",
-  "updatedUtc": "2026-11-17T20:44:24.193726+00:00",
+  "updatedUtc": "2026-11-17T21:48:21.160178+00:00",
   "recovery": {
     "active": true,
     "timer": "tailcache12-recovery.timer",
@@ -27,11 +27,11 @@
   "sequenceAttempt": "predictor-sequence-20261118-001",
   "measurementSourceCommit": "a330849",
   "driver": {
-    "toolSessionId": 3709,
-    "sequenceAttempt": "predictor-sequence-20261118-001",
-    "exclusiveScope": "tailcache12-predictor-20261118-001.scope",
+    "toolSessionId": 5528,
+    "attempt": "predictor-drain-confirm-20261118-001",
+    "exclusiveScope": "tailcache12-predictor-confirm-20261118-001.scope",
     "sourceFrozenUntilSequenceFinishes": false,
-    "doNotEdit": "All src/java, scripts/*.py and scripts/java plus the mapped plan/model/development-input manifest"
+    "doNotEdit": "All src Java/scripts Python/scripts Java and confirmation mapped model/protocol inputs"
   },
   "qualification": {
     "attempt": "predictor-qualification-20261118-001",
@@ -67,5 +67,21 @@
     "compilerDiagnosticAttempt": "predictor-compiler-diagnostic-20261118-001",
     "diagnosticJvms": 1,
     "protocol": "docs/TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md"
-  }
+  },
+  "secondary": {
+    "attempt": "predictor-drain-confirm-20261118-001",
+    "researchForks": 12,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true
+  },
+  "compilerDiagnostic": {
+    "attempt": "predictor-compiler-diagnostic-20261118-001",
+    "diagnosticJvms": 1
+  },
+  "secondaryExpansionConsumed": true,
+  "additionalFresh12Allowed": false,
+  "secondaryResult": "0/5% endpoints repeat;0.5% mixed, one contrary fresh pair retained. M1/M2/GCsum6of6 conditional winner calls; updated exante replication forecast5of6.",
+  "review": "docs/predictor/REVIEW.md",
+  "dataset": "docs/predictor/predictor-data-20261118.json",
+  "finalVerification": "docs/predictor/final-verification.json"
 }

@@ -1,8 +1,10 @@
 # TailCache current research and manuscript state
 
-**Active extension, 18 November:** a prospectively specified pause-model/write-ratio test is being qualified. Read [predictor plan](TAILCACHE_PREDICTOR_PLAN.md) and [operational status](TAILCACHE_PREDICTOR_STATUS.json). The completed17November scope below remains unchanged; new qualification/validation will stay separate.
+**Updated 18 November 2026.** The [continuous-stream predictor study](predictor/RESULTS.md) is fully collected/audited:18 qualification,30 primary and12 fresh secondary research forks. Four controls, three functional JVMs and one compiler diagnostic are counted separately. Source/runtime, raw histograms, GC/RSS, stream continuity and portable/model checks pass; failed steady-state qualification and warnings remain. [Operational status](TAILCACHE_PREDICTOR_STATUS.json) records delivery/recovery completion separately.
 
-**Updated 17 November 2026.** [All documentation](DOCUMENTATION_INDEX.md) separates active entry points from immutable dated records. The worth-first extension is collected and audited; no benchmark remains to run in this bounded scope.
+The new scheduled-response p99.9 result reverses from Caffeine at 0% writes to Chronicle at 5% in both holdouts. All primary 0.5% pairs favor Chronicle, but fresh 0.5% is mixed. Original and updated boundary forecasts therefore fail; no exact transition is established. M1/M2 conditional winner accuracy ties the simple total-GC rule. M2 improves aggregate numerical error, yet a constant pilot quantile is better for Chronicle alone. [Results/tables](predictor/RESULTS.md), [figures](predictor/FIGURES.md), [review](predictor/REVIEW.md) and [portable reproduction](predictor/README.md) are the current entry points.
+
+[All documentation](DOCUMENTATION_INDEX.md) preserves earlier dated scopes. The17 November results below remain unchanged. No additional benchmark is planned for the completed bounded predictor scope.
 
 | Question / metric | Current conclusion | Limit |
 | --- | --- | --- |
@@ -12,7 +14,7 @@
 | Extreme tails / GC | Tail curves and stall rates expose effects a single percentile misses. GC wall-time fraction can greatly exceed affected-operation fraction. | Rare-event support and one-pair discovery cells limit threshold inference. |
 | Memory / reuse | Earlier Chronicle heap relief coexists with higher sampled RSS. getUsing remains a separate contract. | Neither total-memory savings nor a matched three-arm reuse comparison established. |
 
-## Completed extension and artifact
+## Preserved17 November extension and artifact
 
 - [17 November results](service-followup/RESULTS_20261117.md), [all 58 point groups](service-followup/followup-data-20261117.md), [all channel/percentile conclusions](service-followup/point-conclusions-20261117.csv), [new claim map](service-followup/CLAIMS_20261117.md).
 - 184 research JVMs across eight cohorts, plus 30 controls. All raw-integrity checks pass; 138 research forks have no recorded warning, 46 remain warning-bearing. No pooling across observers, seeds, policies or stages.
@@ -22,7 +24,7 @@
 ## Manuscript and explorer
 
 - [Revised working manuscript](preprint/MANUSCRIPT.md), [original 14 claims](preprint/CLAIMS.md), [original seven figures](preprint/FIGURES.md), [new supplementary figures](service-followup/FIGURES_20261117.md).
-- [Offline explorer](TAILCACHE_RESULTS_EXPLORER.html#service-followup), [protected hosted explorer](https://tailcache-results.vercel.app/#service-followup), [deployment receipt](interactive/deployment.json).
+- [Offline explorer](TAILCACHE_RESULTS_EXPLORER.html#predictor-followup), [protected hosted explorer](https://tailcache-results.vercel.app/#predictor-followup), [deployment receipt](interactive/deployment.json).
 - Branch `codex/tailcache-preprint`, [draft PR #10](https://github.com/Enixes/TailCache/pull/10), stacked on [research PR #9](https://github.com/Enixes/TailCache/pull/9).
 
 ## Remaining before publication

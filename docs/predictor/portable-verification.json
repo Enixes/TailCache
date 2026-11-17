@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "counts": {
+    "perBinUnions": 60,
+    "quantileEndpoints": 1420,
+    "distributions": 284,
+    "thresholdChecks": 180,
+    "mixtureChecks": 60,
+    "forks": 60,
+    "pairedRatios": 710,
+    "pointConclusions": 710
+  },
+  "cohorts": 3,
+  "pairContrasts": 30,
+  "pointGroups": 30,
+  "limits": "Independent portable representation/arithmetic and M0/M1 reconstruction. M2 replay uses its separately frozen algorithm, not an independent implementation. Qualification remains transient; no human peer review.",
+  "predictorCounts": {
+    "reconstructedModelValues": 720,
+    "matchedStreams": 30,
+    "numericalSummaries": 220,
+    "winnerSummaries": 68,
+    "forecastPoints": 18
+  },
+  "researchForks": 60,
+  "controls": 4,
+  "separateCompilerDiagnostic": 1,
+  "separateFunctionalJvms": 3,
+  "packageSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc"
+}

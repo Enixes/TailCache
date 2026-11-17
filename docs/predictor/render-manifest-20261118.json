@@ -1,0 +1,15 @@
+{
+  "inputSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+  "rendererSha256": "e6355c5cc2b3ff925f4cddbdb7aec018d072c9f53e4dd9611408a8bdbea67ba6",
+  "matplotlibVersion": "3.10.7",
+  "outputs": {
+    "figures/b1-write-rate-reversal.png": "2a9885addaf66732950aac01abf60e7326d2bf18db3e028178d3c510362cf134",
+    "figures/b1-write-rate-reversal.svg": "087923fd98292c3d83f71e97490cd471d04be09292053847d7ccc2a4a4d82242",
+    "figures/b2-conditional-prediction.png": "f3319be7c90cae759bf131d2e0b2bdc8daf1eea220aeb1955d528981a920b099",
+    "figures/b2-conditional-prediction.svg": "5e4aae2dfc69cb99ea78cf4bd7b9ebda028687dbd69fb21f5cf8d05ea8fef5fd",
+    "figures/b3-pause-budget.png": "a76ff27ab2eff22cc450bb6a3eed871957ab812e217dc2e7d20d58be506363c6",
+    "figures/b3-pause-budget.svg": "9a324062e651f44a2a449d8fa9304a3db80ff8eb594462e8ce391f5cbb16d70b",
+    "figures/b4-extreme-tails.png": "23ac98a2e7fd72dff07e8905382ae536ea33240bacb763e9e2f57eddbbd4907a",
+    "figures/b4-extreme-tails.svg": "7c06ef2c8d400873fe5f44a836289eafe673fc4ffee2418a2223dd676b3fe194"
+  }
+}

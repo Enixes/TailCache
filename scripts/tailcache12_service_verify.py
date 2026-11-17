@@ -101,7 +101,7 @@ def verify(data,final=True):
             require(row['latency']['read-service']['count']==n-writes and
                     row['latency']['update-service']['count']==writes,'Conditional operation counts')
             union=collections.Counter(dict(curves[identity]['read-service']))
-            union.update(dict(curves[identity]['update-service']))
+            union.update(dict(curves[identity].get('update-service',[])))
             require(dict(union)==dict(curves[identity]['service']),'Per-bin read/update conservation')
             counts['perBinUnions']+=1
             for w in row['windows']:
@@ -128,7 +128,7 @@ def verify(data,final=True):
                 counts['thresholdChecks']+=1
             mixed=m['mixtureAboveP999'];boundary=mixed['boundaryUpperEquivalentNs']
             for channel in ('service','read-service','update-service'):
-                require(sum(v for u,v in curves[identity][channel] if u>boundary)==mixed['counts'][channel],'Tail mixture component')
+                require(sum(v for u,v in curves[identity].get(channel,[]) if u>boundary)==mixed['counts'][channel],'Tail mixture component')
             counts['mixtureChecks']+=1
         counts['forks']+=1
     require(set(curves)==expected_curves,'Unexpected/missing fork curves')
