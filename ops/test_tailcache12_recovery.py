@@ -37,6 +37,7 @@ class RecoveryTest(unittest.TestCase):
             dict(self.limits, rateLimits=dict(spendControlReached=True)), {}, []))
         self.assertLessEqual(len(recovery.PROMPT.encode()), 1000)
         self.assertLessEqual(len(recovery.SERVICE_PROMPT.encode()), 1000)
+        self.assertLessEqual(len(recovery.PREDICTOR_PROMPT.encode()), 1000)
 
     def test_unknown_thread_state_fails_closed(self):
         for status in ({}, dict(type="notLoaded"), dict(type="systemError")):

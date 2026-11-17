@@ -1,0 +1,19 @@
+{
+  "capturedUtc": "2026-11-17T18:32:57.064156+00:00",
+  "removed": [
+    {
+      "path": "/home/y/.npm/_npx",
+      "bytes": 275700612,
+      "kind": "inactive rebuildable npm download environments/cache"
+    },
+    {
+      "path": "/home/y/.npm/_cacache",
+      "bytes": 18416306,
+      "kind": "inactive rebuildable npm download environments/cache"
+    }
+  ],
+  "freeBefore": 385437696,
+  "freeAfter": 785584128,
+  "activeNpxProcessesObserved": 0,
+  "evidenceRemoved": false
+}

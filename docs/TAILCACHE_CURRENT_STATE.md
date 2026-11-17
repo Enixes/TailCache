@@ -1,5 +1,7 @@
 # TailCache current research and manuscript state
 
+**Active extension, 18 November:** a prospectively specified pause-model/write-ratio test is being qualified. Read [predictor plan](TAILCACHE_PREDICTOR_PLAN.md) and [operational status](TAILCACHE_PREDICTOR_STATUS.json). The completed17November scope below remains unchanged; new qualification/validation will stay separate.
+
 **Updated 17 November 2026.** [All documentation](DOCUMENTATION_INDEX.md) separates active entry points from immutable dated records. The worth-first extension is collected and audited; no benchmark remains to run in this bounded scope.
 
 | Question / metric | Current conclusion | Limit |

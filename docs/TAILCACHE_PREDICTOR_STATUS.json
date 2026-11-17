@@ -1,0 +1,31 @@
+{
+  "taskComplete": false,
+  "phase": "QUALIFIED_SOURCE_READY_FOR_PILOT",
+  "plan": "docs/TAILCACHE_PREDICTOR_PLAN.md",
+  "running": null,
+  "authorization": "Autonomous experiment-review-change cycles for eight hours; recover only when ordinary usage is explicitly available.",
+  "pending": [
+    "Freeze/audit offline predictor",
+    "Implement/qualify continuous deterministic stream",
+    "Run bounded conditioning/worth pilot",
+    "Freeze and execute30 fresh validation forks",
+    "Independent scoring/research review and targeted follow-up if justified",
+    "Update manuscript/results/explorer, push reviewed work and stop recovery"
+  ],
+  "historicalServiceScope": "Complete at8e5dded; unchanged",
+  "originalUnconditionalStatus": "NO_GO; unchanged",
+  "updatedUtc": "2026-11-17T18:44:53.073296+00:00",
+  "recovery": {
+    "active": true,
+    "timer": "tailcache12-recovery.timer",
+    "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "requiresExplicitOrdinaryUsageAllowed": true
+  },
+  "executionBudgetSeconds": 28800,
+  "model": "docs/predictor/model-v1.json",
+  "developmentAudit": "docs/predictor/development-audit-v1.json",
+  "qualificationRuntime": "build/predictor-20261118",
+  "qualificationAttempt": "predictor-qualification-20261118-001",
+  "validationAttempt": "predictor-validation-20261118-001",
+  "sequenceAttempt": "predictor-sequence-20261118-001"
+}

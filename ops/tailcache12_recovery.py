@@ -31,6 +31,18 @@ PROMPT = (
     "Stop tailcache12-recovery.timer when taskComplete=true."
 )
 SERVICE_STATUS = "docs/TAILCACHE_SERVICE_STATUS.json"
+PREDICTOR_STATUS = "docs/TAILCACHE_PREDICTOR_STATUS.json"
+PREDICTOR_PROMPT = (
+    "User-requested ordinary-usage recovery: continue TailCache predictor experiments in /home/y/TailCache. "
+    "Read docs/TAILCACHE_PREDICTOR_STATUS.json and docs/TAILCACHE_PREDICTOR_PLAN.md first. "
+    "Inspect physical-host processes and retained manifests; never duplicate a job or overwrite evidence. "
+    "Resume verified slots, preserve failures/contrary predictions and historical NO_GO. "
+    "Finish offline model audit, continuous-stream qualification, worth/conditioning pilot, frozen30-fork "
+    "validation, independent HDR/GC/model scoring and systems review. Use a new bounded protocol for any "
+    "justified follow-up; no hunting until a desired crossover appears. Frozen forecasts differ from models "
+    "conditioned on new GC logs. Update paper/docs/results and protected explorer, push reviewed work. "
+    "A partial/launched job is not completion. Stop recovery when predictor taskComplete=true."
+)
 SERVICE_PROMPT = (
     "User-requested recovery: continue TailCache service/RQ experiments in /home/y/TailCache. "
     "The latest turn stopped for a usage limit and the backend now explicitly allows ordinary usage. "
@@ -51,6 +63,8 @@ SERVICE_DRIVERS = {
     "tailcache12_service_trace.py", "tailcache12_service_mechanism.py",
     "tailcache12_service_final_sequence.py",
     "tailcache12_service_large_payload.py", "tailcache12_service_geometry.py",
+    "tailcache12_predictor_campaign.py", "tailcache12_predictor_sequence.py",
+    "tailcache12_predictor_audit.py",
 }
 
 
@@ -211,7 +225,7 @@ def main():
     parser.add_argument("--thread", required=True)
     parser.add_argument("--socket", required=True)
     parser.add_argument("--codex", default="/home/y/.local/bin/codex")
-    parser.add_argument("--status-file", choices=("docs/TAILCACHE_12_STATUS.json", SERVICE_STATUS),
+    parser.add_argument("--status-file", choices=("docs/TAILCACHE_12_STATUS.json", SERVICE_STATUS, PREDICTOR_STATUS),
                         default="docs/TAILCACHE_12_STATUS.json")
     parser.add_argument("--inspect", action="store_true", help="Read status without queuing a message")
     args = parser.parse_args()
@@ -264,7 +278,7 @@ def main():
                 action = "benchmark_running"
             else:
                 result = subprocess.run([args.codex, "queue", "--thread", args.thread,
-                    "--message", SERVICE_PROMPT if args.status_file == SERVICE_STATUS else PROMPT,
+                    "--message", {SERVICE_STATUS:SERVICE_PROMPT,PREDICTOR_STATUS:PREDICTOR_PROMPT}.get(args.status_file,PROMPT),
                     "--resume", "-C", str(ROOT)], capture_output=True, text=True, timeout=30)
                 if result.returncode:
                     raise RuntimeError("Codex recovery queue command failed")
