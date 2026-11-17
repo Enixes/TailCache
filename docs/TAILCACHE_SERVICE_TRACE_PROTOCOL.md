@@ -1,0 +1,15 @@
+# Baseline trace / warmup sensitivity — prospective plan, 17 November 2026
+
+The first completed matched-arrival block has materially different 4 KiB baseline response tails from the historical 40,001-operation trace. Its second baseline pair repeats that direction without a compilation warning. Multiple things differ from history (including trace coverage/footprint, recorder channels and JDK patch version), so this is not evidence identifying the cause. Preserve both cohorts and test a compact within-runtime contrast rather than transporting the old response bracket to the new workload.
+
+## Fixed scope
+
+**4 KiB, zero additional ballast, ordinary Caffeine and Chronicle, two trace lengths (40,001 and 1,000,003), two paired repetitions: eight workload JVMs.** Fixed 50,000 intended arrivals/s, seed 24301, 32,768 residents, 512 MiB G1 and common 32 MiB/s offered churn. Freeze shuffled trace/repetition cells and alternating backend order before collection. Use **60 seconds warmup, four seconds conditioning and 30 seconds offered measurement** in both trace conditions. The longer fixed warmup is a prospective sensitivity to the substantial compiler activity in some 12-second paced forks; it is not proof of steady state. No warmup search or favorable-window selection.
+
+Use a separately compiled runner whose timed operation, consumption, classification, recording and queue-debt loop are unchanged, adding only setup-time trace-length selection. Preserve previous binaries. Validate both trace lengths with fresh-value equivalence and resident/count checks in one bounded functional JVM, then run the four timer/injected-stall/fresh-supply controls using the same longer warmup/conditioning and four-second measurement. All intended operations must complete in every phase. Within a pair, phases and logical write counts/content must match. Require complete source/runtime/raw evidence and preserve every failed or warning-bearing slot.
+
+Primary follow-up endpoint is scheduled-response p99.9 at baseline. Paced service p99.9, p99/p99.99/p99.999, complete survival, threshold probabilities, per-operation/read-update decomposition, allocation, GC, RSS and actual churn remain diagnostics. Never pool these observations with the previous 12-second warmup cohorts or use a post hoc percentile as a replacement primary endpoint.
+
+## Boundaries
+
+The trace manipulation changes access order, distinct read/update coverage, reuse/lifetime patterns and common primitive-array footprint (including humongous-region geometry), together. It is a **trace-design sensitivity**, not an isolated causal test of key coverage. Both trace settings use the same JDK patch version, common recorder and longer warmup within this new cohort. The two pairs cannot establish significance or locate a pressure crossover; there is only one ballast point. Report all results, compiler/host/demand warnings and any disagreement. Stop after the eight workloads and independent audit, with no automatic expansion to another pressure sweep.

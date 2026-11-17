@@ -40,6 +40,9 @@ def source_files():
              'docs/TAILCACHE_SERVICE_RQ_EXTENSION_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_PACED_PROTOCOL.md',
              'docs/TAILCACHE_SERVICE_OBSERVER_PROTOCOL.md',
+             'docs/TAILCACHE_SERVICE_POLICY_PROTOCOL.md',
+             'docs/TAILCACHE_SERVICE_TRACE_PROTOCOL.md',
+             'docs/TAILCACHE_SERVICE_OBSERVER_IMPLEMENTATION_REVIEW.md',
              'docs/TAILCACHE_SERVICE_CROSSOVER_PROTOCOL.md')]
     for directory, pattern in [('src', '*.java'), ('scripts', '*.py'), ('scripts/java', '*.java')]:
         files += sorted((ROOT / directory).rglob(pattern))
