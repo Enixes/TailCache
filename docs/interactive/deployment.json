@@ -1,42 +1,127 @@
 {
-  "complete": true,
-  "verifiedUtc": "2026-11-16T17:47:03.738150+00:00",
-  "verifiedLocalDate": "2026-11-16",
-  "contentReviewLocalDate": "2026-11-16",
   "provider": "Vercel",
-  "teamName": "Enixes projects",
-  "teamSlug": "enixes-projects",
-  "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
-  "projectName": "tailcache-results",
-  "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
-  "deploymentId": "dpl_DQw1uHkAWE1425oTR8r15VcMcct7",
+  "deploymentId": "dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R",
   "status": "READY",
   "target": "production",
+  "sourceCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
   "url": "https://tailcache-results.vercel.app/",
-  "reviewUrl": "https://tailcache-results.vercel.app/#review-update",
-  "aliases": [
-    "https://tailcache-results.vercel.app/",
-    "https://tailcache-results-enixes-projects.vercel.app/"
-  ],
-  "deploymentUrl": "https://tailcache-results-k3ca5ugl2-enixes-projects.vercel.app/",
-  "sourceCommit": "ea0736094635bfa66fd3fcd7dfaab8e1b515b736",
-  "framework": null,
-  "buildDurationMs": 4699,
-  "authentication": {
-    "method": "Vercel Authentication",
-    "enabled": true,
-    "deploymentType": "all",
-    "verifiedBeforeDeployment": true,
-    "verifiedAfterDeployment": true,
-    "shareLinksCreated": false
-  },
+  "reviewUrl": "https://tailcache-results.vercel.app/#service-followup",
+  "deploymentUrl": "https://tailcache-results-nxu31ts3l-enixes-projects.vercel.app/",
+  "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+  "projectName": "tailcache-results",
+  "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
   "files": [
     {
       "path": "index.html",
-      "bytes": 14803966,
-      "sha1": "f2c94f821f585f5680f0dde05964c9bcf94e489e",
-      "sha256": "cf322fa4c4e02eb9b0670f7b4811466e3174f673bc72368f87d29151e8b9b0dc",
-      "remoteFileUid": "f2c94f821f585f5680f0dde05964c9bcf94e489e"
+      "bytes": 16404758,
+      "sha1": "c19391ccddbd828b8b65233210d6c59494b88960",
+      "sha256": "21c523ee538c9d795de8b5fa488b63998e89ccd9af9276cdd454a9a73af93ec6",
+      "remoteFileUid": "c19391ccddbd828b8b65233210d6c59494b88960"
+    },
+    {
+      "path": "service-data.json",
+      "bytes": 6780117,
+      "sha1": "1f8d3445a99990109d2ca19280dfd7d02daa40e9",
+      "sha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+      "remoteFileUid": "1f8d3445a99990109d2ca19280dfd7d02daa40e9"
+    },
+    {
+      "path": "service-figures/a1-harness-payload.png",
+      "bytes": 77075,
+      "sha1": "6d39781ddbb67b7643d690dd0498f6ed499bb7f7",
+      "sha256": "9c85b341c15d1f3f5678eaf24ccec441fa30e5e9f2e23a814c25cb9ac380b16d",
+      "remoteFileUid": "6d39781ddbb67b7643d690dd0498f6ed499bb7f7"
+    },
+    {
+      "path": "service-figures/a1-harness-payload.svg",
+      "bytes": 67262,
+      "sha1": "c527d564e63926a88dfa3ec9e45d34e58e521fe1",
+      "sha256": "268f0b70870a632f2bc8e51470b897ae92881befe2392f2421b3bb4ae1c1f061",
+      "remoteFileUid": "c527d564e63926a88dfa3ec9e45d34e58e521fe1"
+    },
+    {
+      "path": "service-figures/a2-cache-policy.png",
+      "bytes": 65467,
+      "sha1": "969f58143cead9fd5e857866a3b238a7839d7eeb",
+      "sha256": "70e4dab4f8e3109fe204521f8b48f481c0b2c12d85fba7d811f973d76333785b",
+      "remoteFileUid": "969f58143cead9fd5e857866a3b238a7839d7eeb"
+    },
+    {
+      "path": "service-figures/a2-cache-policy.svg",
+      "bytes": 55923,
+      "sha1": "dc298d0ce147831e3087e2e3cb1a5acac5bd8af3",
+      "sha256": "4cfc392e733286b86692d5f91f5f83856cd27c4a7b7b1eb1722a6863be813fa3",
+      "remoteFileUid": "dc298d0ce147831e3087e2e3cb1a5acac5bd8af3"
+    },
+    {
+      "path": "service-figures/a3-trace-response.png",
+      "bytes": 86494,
+      "sha1": "f1452bab68bec172ea639f49ef4f8843b4ebaa50",
+      "sha256": "1c807a715673f2fa86027f8bdbf526953504b3cd9240677acb4239d8576ab1b8",
+      "remoteFileUid": "f1452bab68bec172ea639f49ef4f8843b4ebaa50"
+    },
+    {
+      "path": "service-figures/a3-trace-response.svg",
+      "bytes": 71555,
+      "sha1": "8fb5d9e57675f8df575197090e639012a76a01a6",
+      "sha256": "dda877cc5b9d2457d37295efe34c42948b9c8ddab387c120fbb43670a6cb2b7c",
+      "remoteFileUid": "8fb5d9e57675f8df575197090e639012a76a01a6"
+    },
+    {
+      "path": "service-figures/a4-gc-denominators.png",
+      "bytes": 103163,
+      "sha1": "865b692519e1666fcaad07aea8bbd624dbb6169f",
+      "sha256": "60606513273627a629f40be2a28bc1716a21e4ca594ed13a416202c79aa9398a",
+      "remoteFileUid": "865b692519e1666fcaad07aea8bbd624dbb6169f"
+    },
+    {
+      "path": "service-figures/a4-gc-denominators.svg",
+      "bytes": 86527,
+      "sha1": "5edcd19e0a05337c23fbf67458df627069ed1df7",
+      "sha256": "2f9a110b19af233925a87ea1054a9a21acd0b3f7eb4330d3d2a6ceb3b1de3082",
+      "remoteFileUid": "5edcd19e0a05337c23fbf67458df627069ed1df7"
+    },
+    {
+      "path": "service-figures/a5-paced-payload.png",
+      "bytes": 80453,
+      "sha1": "ceb8c10a40e693df23631a854cd28cbd8ea11ba7",
+      "sha256": "36f7cc65c99cfc112d506a1832df8dc2dacb3d917998e96e8da0a95dbfc1b665",
+      "remoteFileUid": "ceb8c10a40e693df23631a854cd28cbd8ea11ba7"
+    },
+    {
+      "path": "service-figures/a5-paced-payload.svg",
+      "bytes": 62699,
+      "sha1": "84e012e0b77d92c2c865a12c9e97a4ccc0d59fb0",
+      "sha256": "19d1237990ed29fcd3a024da99e6469186ce67046b2a59ad44ca878cda54cb20",
+      "remoteFileUid": "84e012e0b77d92c2c865a12c9e97a4ccc0d59fb0"
+    },
+    {
+      "path": "service-figures/a6-larger-payload.png",
+      "bytes": 50816,
+      "sha1": "fd1af321f895cd11154d68ec10aa24d64dfa27c0",
+      "sha256": "46e89a29cd2ad0219fe56fe449422321d234864c4bf8841e464fd8d806ae3466",
+      "remoteFileUid": "fd1af321f895cd11154d68ec10aa24d64dfa27c0"
+    },
+    {
+      "path": "service-figures/a6-larger-payload.svg",
+      "bytes": 44494,
+      "sha1": "42fed7d19aa6b7ae3b35e4e8f5ebd6a9ae49b523",
+      "sha256": "de74f48c35bed15800d79b863833c2374632c35c544ec5c129b5c0e7f6a267b6",
+      "remoteFileUid": "42fed7d19aa6b7ae3b35e4e8f5ebd6a9ae49b523"
+    },
+    {
+      "path": "service-figures/a7-full-service-tail.png",
+      "bytes": 94747,
+      "sha1": "03a01a7e0cc7f76417a93684b9bc166b8193dd8f",
+      "sha256": "1457ffe3aaa12486c4e513ffbcb4eb89e3cc20e07d4b1f6a6d37684dbac69657",
+      "remoteFileUid": "03a01a7e0cc7f76417a93684b9bc166b8193dd8f"
+    },
+    {
+      "path": "service-figures/a7-full-service-tail.svg",
+      "bytes": 137294,
+      "sha1": "987d1c30f859309a30801ccb7bde3d9dbdfedaf0",
+      "sha256": "bf8bb5c2517d607f146e3dce83c612f31ec0dd042f1a87cd8f64d02dd4d7d806",
+      "remoteFileUid": "987d1c30f859309a30801ccb7bde3d9dbdfedaf0"
     },
     {
       "path": "vercel.json",
@@ -46,27 +131,186 @@
       "remoteFileUid": "63d75456adc2c9fae82611b507c161890f4295f9"
     }
   ],
+  "remoteArtifactMatches": true,
+  "remoteMatchMethod": "READY static deployment, all17 source UIDs and both aliases; no authenticated response-body/browser verification",
+  "authentication": {
+    "method": "Vercel Authentication",
+    "enabled": true,
+    "deploymentType": "all",
+    "verifiedBeforeDeployment": true,
+    "verifiedAfterDeployment": true,
+    "shareLinksCreated": false
+  },
+  "authenticatedLiveBrowserChecks": {
+    "performed": false,
+    "reason": "CUA browser host unavailable; no bypass/share link used. Prior browser receipts are historical only."
+  },
+  "localBrowserQa": "docs/interactive/service-dom-qa-20261117.json",
+  "localBrowserQaType": "DOM integration only; not actual browser visual signoff",
+  "preview": {
+    "id": "dpl_FxSFDLGkxrfw6ZsRi9sJ5qmTubFn",
+    "sourceUidsMatch": true,
+    "signedOutSsoChecked": true,
+    "promoteRequestStatus": 422,
+    "resolution": "Created a production deployment from identical verified source files; preview preserved."
+  },
+  "buildDurationMs": 5637,
+  "newBenchmarkRuns": 0,
+  "experimentForksInNewPackage": 184,
+  "controlsInNewPackage": 30,
+  "complete": true,
+  "verifiedUtc": "2026-11-17T15:18:05.247108+00:00",
+  "verifiedLocalDate": "2026-11-17",
+  "contentReviewLocalDate": "2026-11-17",
+  "teamSlug": "enixes-projects",
+  "aliases": [
+    "https://tailcache-results.vercel.app/",
+    "https://tailcache-results-enixes-projects.vercel.app/"
+  ],
   "signedOutChecks": [
     {
       "host": "tailcache-results.vercel.app",
+      "path": "/",
       "status": 302,
-      "redirectHost": "vercel.com"
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
     },
     {
-      "host": "tailcache-results-k3ca5ugl2-enixes-projects.vercel.app",
+      "host": "tailcache-results.vercel.app",
+      "path": "/service-data.json",
       "status": 302,
-      "redirectHost": "vercel.com"
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results.vercel.app",
+      "path": "/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-enixes-projects.vercel.app",
+      "path": "/",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-enixes-projects.vercel.app",
+      "path": "/service-data.json",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-enixes-projects.vercel.app",
+      "path": "/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-nxu31ts3l-enixes-projects.vercel.app",
+      "path": "/",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-nxu31ts3l-enixes-projects.vercel.app",
+      "path": "/service-data.json",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
+    },
+    {
+      "host": "tailcache-results-nxu31ts3l-enixes-projects.vercel.app",
+      "path": "/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectHost": "vercel.com",
+      "redirectPath": "/sso-api",
+      "embeddedResearchExposed": false
     }
   ],
-  "authenticatedLiveBrowserChecks": {
-    "performed": false,
-    "reason": "Current deployment checked through READY/alias/source-UID APIs and signed-out requests; functional browser QA used the exact local static artifact. Prior authenticated live checks remain in deployment history."
-  },
-  "localBrowserQa": "docs/interactive/rereview-qa-20261116.json",
-  "evidence": "docs/interactive/rereview-preservation-20261116.json",
-  "remoteArtifactMatches": true,
-  "newBenchmarkRuns": 0,
   "previousDeployments": [
+    {
+      "complete": true,
+      "verifiedUtc": "2026-11-16T17:47:03.738150+00:00",
+      "verifiedLocalDate": "2026-11-16",
+      "contentReviewLocalDate": "2026-11-16",
+      "provider": "Vercel",
+      "teamName": "Enixes projects",
+      "teamSlug": "enixes-projects",
+      "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+      "projectName": "tailcache-results",
+      "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+      "deploymentId": "dpl_DQw1uHkAWE1425oTR8r15VcMcct7",
+      "status": "READY",
+      "target": "production",
+      "url": "https://tailcache-results.vercel.app/",
+      "reviewUrl": "https://tailcache-results.vercel.app/#review-update",
+      "aliases": [
+        "https://tailcache-results.vercel.app/",
+        "https://tailcache-results-enixes-projects.vercel.app/"
+      ],
+      "deploymentUrl": "https://tailcache-results-k3ca5ugl2-enixes-projects.vercel.app/",
+      "sourceCommit": "ea0736094635bfa66fd3fcd7dfaab8e1b515b736",
+      "framework": null,
+      "buildDurationMs": 4699,
+      "authentication": {
+        "method": "Vercel Authentication",
+        "enabled": true,
+        "deploymentType": "all",
+        "verifiedBeforeDeployment": true,
+        "verifiedAfterDeployment": true,
+        "shareLinksCreated": false
+      },
+      "files": [
+        {
+          "path": "index.html",
+          "bytes": 14803966,
+          "sha1": "f2c94f821f585f5680f0dde05964c9bcf94e489e",
+          "sha256": "cf322fa4c4e02eb9b0670f7b4811466e3174f673bc72368f87d29151e8b9b0dc",
+          "remoteFileUid": "f2c94f821f585f5680f0dde05964c9bcf94e489e"
+        },
+        {
+          "path": "vercel.json",
+          "bytes": 338,
+          "sha1": "63d75456adc2c9fae82611b507c161890f4295f9",
+          "sha256": "dc92cf6d97b42b5301327dcdf8c282f8eaeb4312e6cc7a7edc7426de5d481c2b",
+          "remoteFileUid": "63d75456adc2c9fae82611b507c161890f4295f9"
+        }
+      ],
+      "signedOutChecks": [
+        {
+          "host": "tailcache-results.vercel.app",
+          "status": 302,
+          "redirectHost": "vercel.com"
+        },
+        {
+          "host": "tailcache-results-k3ca5ugl2-enixes-projects.vercel.app",
+          "status": 302,
+          "redirectHost": "vercel.com"
+        }
+      ],
+      "authenticatedLiveBrowserChecks": {
+        "performed": false,
+        "reason": "Current deployment checked through READY/alias/source-UID APIs and signed-out requests; functional browser QA used the exact local static artifact. Prior authenticated live checks remain in deployment history."
+      },
+      "localBrowserQa": "docs/interactive/rereview-qa-20261116.json",
+      "evidence": "docs/interactive/rereview-preservation-20261116.json",
+      "remoteArtifactMatches": true,
+      "newBenchmarkRuns": 0
+    },
     {
       "complete": true,
       "verifiedUtc": "2026-11-15T18:34:35.021375+00:00",

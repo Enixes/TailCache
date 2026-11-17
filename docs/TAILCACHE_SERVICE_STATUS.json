@@ -1,7 +1,7 @@
 {
-  "updatedUtc": "2026-11-17T09:14:41.645570+00:00",
-  "phase": "REVIEWED_AWAITING_DELIVERY",
-  "complete": false,
+  "updatedUtc": "2026-11-17T15:19:24.784159+00:00",
+  "phase": "COMPLETE",
+  "complete": true,
   "branch": "codex/tailcache-preprint",
   "implementationCommit": "d0962a7",
   "initialScreen": {
@@ -15,11 +15,7 @@
     ]
   },
   "running": null,
-  "pending": [
-    "Push reviewed source/data/docs and update draft PR #10.",
-    "Deploy exact staged static source to existing protected Vercel project; verify hashes/aliases and signed-out HTML/JSON/figure SSO.",
-    "Record delivery completion, stop recovery timer and push receipts."
-  ],
+  "pending": [],
   "constraints": [
     "No benchmark currently active. Freeze all mapped sources/runtime before each subsequent cohort; never edit them during its collection or audit.",
     "JMH and paced prospective protocol docs are already saved outside the active source map.",
@@ -28,7 +24,7 @@
     "User authorizes autonomous overnight work, meaningful research tests and justified prospective extensions; no submission/deposit or human-review claim.",
     "Provisional progress-data JSON files are rebuildable presentation outputs, not primary evidence. Final package must clarify unused JMH generic measureMs=30000: actual JMH is 14 warmup / eight measurement one-second iterations."
   ],
-  "taskComplete": false,
+  "taskComplete": true,
   "rqExtension": {
     "directory": "evidence-archives/service-rq-extension-20261117-001",
     "workloadJvms": 80,
@@ -39,14 +35,19 @@
     "researchReviewComplete": true
   },
   "recovery": {
-    "verifiedUtc": "2026-11-17T05:25:12.111679+00:00",
+    "verifiedUtc": "2026-11-17T15:19:24.784159+00:00",
     "timer": "tailcache12-recovery.timer",
-    "active": true,
+    "active": false,
     "intervalMinutes": 15,
     "threadId": "01a1032c-87df-72d1-93cb-cd6f076451a0",
     "requiresExplicitOrdinaryUsageAllowed": true,
     "suppressesActiveThreadOrBenchmark": true,
-    "stopsWhenTaskComplete": true
+    "stopsWhenTaskComplete": true,
+    "enabled": false,
+    "stoppedAfterTaskComplete": true,
+    "timerLoadState": "not-found",
+    "timerActiveState": "inactive",
+    "serviceActiveState": "inactive"
   },
   "paced": {
     "directory": "evidence-archives/service-paced-20261117-001",
@@ -117,5 +118,17 @@
     "domIntegrationPassed": true,
     "realBrowserVisualPerformed": false,
     "reason": "CUA browser host unavailable"
-  }
+  },
+  "deliveryComplete": true,
+  "analysisCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "deployedCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "deploymentId": "dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R",
+  "pr": "https://github.com/Enixes/TailCache/pull/10",
+  "result": "No robust ordinary-service forward crossover; conditional policy/harness/trace sensitivities retained.",
+  "remainingPublicationWork": [
+    "Independent human/domain contribution review and author revision",
+    "Final typesetting/citation/licensing/authorship/disclosure decisions",
+    "Selected raw-evidence off-host/public release and author-approved deposit"
+  ],
+  "originalUnconditionalStatus": "NO_GO; unchanged"
 }

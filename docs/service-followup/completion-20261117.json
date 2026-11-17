@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "completedUtc": "2026-11-17T15:19:24.784159+00:00",
+  "scope": "17 November bounded service/policy/trace exploratory extension; publication decisions remain",
+  "researchForks": 184,
+  "controlForks": 30,
+  "jmhParentLaunchers": 27,
+  "cohorts": 8,
+  "analysisSourceCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "deploymentId": "dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R",
+  "url": "https://tailcache-results.vercel.app/#service-followup",
+  "pr": "https://github.com/Enixes/TailCache/pull/10",
+  "portableDistributions": 704,
+  "portableQuantileChecks": 3520,
+  "pointGroups": 58,
+  "recoveryTimerStopped": true,
+  "activeBenchmarks": [],
+  "browserVisualQaPerformed": false,
+  "browserQaLimitation": "CUA browser host unavailable; complete staged HTML passed jsdom synthetic-event integration only",
+  "historicalPaperDataUnchanged": true,
+  "originalUnconditionalStatus": "NO_GO; unchanged"
+}

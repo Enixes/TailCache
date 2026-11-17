@@ -80,10 +80,14 @@
   "rawHdrHistograms": 935,
   "jmhSampleHistograms": 197,
   "researchComplete": true,
-  "reason": "Bounded collection, raw/portable verification and agent-assisted scientific review complete; push/protected deployment and operational receipt pending.",
+  "reason": "Bounded exploratory collection, integrity/portable checks, agent-assisted research review, reviewed branch/PR and protected deployment complete. Real-browser visual QA unavailable and disclosed.",
   "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
   "collectionComplete": true,
-  "deliveryComplete": false,
+  "deliveryComplete": true,
   "review": "FINAL_REVIEW_20261117.md",
-  "browserVisualQaPerformed": false
+  "browserVisualQaPerformed": false,
+  "completedUtc": "2026-11-17T15:18:05.247108+00:00",
+  "deploymentId": "dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R",
+  "sourceCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "pr": "https://github.com/Enixes/TailCache/pull/10"
 }

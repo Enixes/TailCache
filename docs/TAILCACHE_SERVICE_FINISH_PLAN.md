@@ -1,12 +1,12 @@
 # Service/RQ follow-up finish plan — 17 November 2026
 
-## Current authoritative checkpoint — final delivery
+## Current authoritative checkpoint — completed
 
-All eight cohorts and raw/event audits are complete: 184 research forks, 30 controls and 27 separate JMH launchers. No benchmark is active or planned. The final portable package, all 58 point conclusions, 704 curves/3,520 ranks, seven new figures, clean-source compilation, clean analysis reproduction and final technical review now pass. Manuscript/current documentation and explorer source are updated. DOM integration passes; real-browser visual QA is unavailable because the CUA host is unavailable. See docs/service-followup/FINAL_REVIEW_20261117.md and docs/interactive/SERVICE_QA_20261117.md.
+The bounded exploratory extension is complete. All eight cohorts (184 research forks, 30 controls and 27 separate JMH launchers) completed collection and raw/event audits. The portable package, 58 point groups/704 curves/3,520 ranks, seven figures, clean-source compilation, clean analysis reproduction and final agent-assisted review pass. Original unconditional Task 12 remains NO_GO. No benchmark is active or planned.
 
-Remaining: regenerate/verify final HTML, push reviewed source/data/docs on codex/tailcache-preprint, update draft PR #10, deploy the exact staged static files to existing protected Vercel project and verify source UIDs/SSO for HTML/data/figures. Then mark this service scope taskComplete=true, stop the recovery timer and commit receipts. Human author approval, independent review and public paper/raw-evidence deposit remain publication work, not another benchmark.
+Source/data/docs are pushed at 6ede3cf on codex/tailcache-preprint. Draft PR #10 is updated and remains stacked/unmerged. Protected production deployment dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R serves the identical verified 17-source-file artifact at https://tailcache-results.vercel.app/#service-followup. Both aliases/source UIDs match and nine signed-out HTML/JSON/figure requests redirect to SSO. No sharing link or weaker authentication was created. The preview was preserved; its promotion endpoint returned422, so an identical source-file production build was created and verified.
 
-The final package SHA is 8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef. Historical paper-data.json remains unchanged. Provisional generated exports were removed only after verifying all their numerical fields survive in the final package; receipt ops/service-followup-provisional-cleanup-20261117.json. Raw archives/runtime files remain intact. Matplotlib lives in temporary storage.
+DOM integration of the complete staged HTML passes; real-browser visual QA remains unavailable because the CUA host is unavailable. This limitation is disclosed. See docs/service-followup/FINAL_REVIEW_20261117.md, docs/interactive/deployment.json and docs/TAILCACHE_SERVICE_STATUS.json. Human review, author decisions and public paper/raw-evidence deposit remain publication work. The recovery timer is stopped on completion; do not restart experiments from the historical notes below.
 
 The remainder of this plan below is chronological context; its old running-session labels have completed and must not be relaunched.
 
