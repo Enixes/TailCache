@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Append an auditable mechanism view without changing historical explorer sections."""
 import argparse,base64,copy,hashlib,json,pathlib,re,shutil
+import tailcache12_mechanism_report as checks
 ROOT=pathlib.Path(__file__).resolve().parents[1];BASE=ROOT/'docs/mechanism';START='<!-- TAILCACHE_MECHANISM_START -->';END='<!-- TAILCACHE_MECHANISM_END -->'
 def strip(s):return re.sub(re.escape(START)+'.*?'+re.escape(END),'',s,flags=re.S)
 def render(hosted=False):
- path=BASE/'mechanism-data-20261118.json';d=json.loads(path.read_text());summary=copy.deepcopy(d)
+ path=BASE/'mechanism-data-20261118.json';d=json.loads(path.read_text());checks.verify(d);summary=copy.deepcopy(d)
  for r in summary['forks']:
   for k in ('distributions','measuredPauses','safepoints','windows','rawSha256'):r.pop(k,None)
  for c in summary['cohorts'].values():
@@ -16,7 +17,8 @@ def render(hosted=False):
  fs={r['id']:r for r in d['forks']};hot=[p for p in d['pairs'] if p['cohort'].startswith('hotset-')]
  if hot:
   narrow=[p for p in hot if fs[p['c']]['hotset']==2048];wide=[p for p in hot if fs[p['c']]['hotset']==32768]
-  message=f"<p class='mf-note'><strong>Observed locality reversal at5% writes.</strong> With2048 eligible update keys, Caffeine has lower responsep99.9 in{sum(p['ratios']['response']['99.9']>1 for p in narrow)}/{len(narrow)} pairs; with32768 keys, Chronicle is lower in{sum(p['ratios']['response']['99.9']<1 for p in wide)}/{len(wide)} pairs. Screen and reversed-order repeat remain separate, with two seeds. This bundles value lifetime, locality and cache-policy activity.</p>"
+  clean_narrow=sum(not(fs[p['c']]['warnings'] or fs[p['h']]['warnings']) for p in narrow);clean_wide=sum(not(fs[p['c']]['warnings'] or fs[p['h']]['warnings']) for p in wide)
+  message=f"<p class='mf-note'><strong>Observed locality reversal at5% writes.</strong> With2048 eligible update keys, Caffeine has lower responsep99.9 in{sum(p['ratios']['response']['99.9']>1 for p in narrow)}/{len(narrow)} pairs; with32768 keys, Chronicle is lower in{sum(p['ratios']['response']['99.9']<1 for p in wide)}/{len(wide)} pairs. Screen and reversed-order repeat remain separate, with two seeds. Entirely warning-free pairs: concentrated {clean_narrow}/{len(narrow)}, distributed {clean_wide}/{len(wide)}. This is warning-inclusive evidence and bundles value lifetime, locality and cache-policy activity.</p>"
   body=body.replace('<label>Evidence cohort',message+'<label>Evidence cohort')
  figures=json.loads((BASE/'figure-index-20261118.json').read_text());manifest=json.loads((BASE/'render-manifest-20261118.json').read_text());assert manifest['inputSha256']==hashlib.sha256(path.read_bytes()).hexdigest()
  gallery='<details><summary>Three scientific figures and captions</summary>'

@@ -24,4 +24,9 @@ class MechanismDesign(unittest.TestCase):
   for i in range(0,len(rows),2):
    if rows[i]['backend']!='CAFFEINE':rows[i:i+2]=rows[i:i+2][::-1]
   with self.assertRaisesRegex(ValueError,'balance'):c.validate_schedule(rows)
+ def test_odd_schedule_rejected(self):
+  with self.assertRaisesRegex(ValueError,'paired schedule'):c.validate_schedule(c.schedule('logging')[:-1])
+ def test_extra_unmatched_setting_rejected(self):
+  rows=c.schedule('logging');rows[1]['undeclaredSetting']=1
+  with self.assertRaisesRegex(ValueError,'Matched settings'):c.validate_schedule(rows)
 if __name__=='__main__':unittest.main()

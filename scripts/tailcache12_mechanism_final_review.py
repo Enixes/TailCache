@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Final independent export/raw/archive/order binding; no performance JVMs."""
-import collections,hashlib,json,pathlib,tarfile
+import argparse,collections,hashlib,json,pathlib,tarfile
 ROOT=pathlib.Path(__file__).resolve().parents[1];BASE=ROOT/'docs/mechanism'
 def load(p):return json.loads(p.read_text())
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def need(v,m):
  if not v:raise ValueError(m)
 def main():
- d=load(BASE/'mechanism-data-20261118.json');fs={r['id']:r for r in d['forks']};counts=collections.Counter();orders={};functional={};smokes={}
+ parser=argparse.ArgumentParser();parser.add_argument('--out',type=pathlib.Path,default=BASE/'final-evidence-review.json');args=parser.parse_args()
+ import tailcache12_mechanism_report as portable
+ d=load(BASE/'mechanism-data-20261118.json');portable.verify(d);fs={r['id']:r for r in d['forks']};counts=collections.Counter();orders={};functional={};smokes={}
  for cohort,meta in d['cohorts'].items():
   root=ROOT/'evidence-archives'/meta['attempt'];protocol=load(root/'protocol.json');study=load(root/'study.json');state=load(root/'state.json');need(state['complete'] and study['collectionComplete'],'Complete cohort')
   for name,digest in meta['inputs'].items():need(sha(root/name)==digest,'Export input hash '+name)
@@ -57,5 +59,5 @@ def main():
  manifest=load(BASE/'render-manifest-20261118.json');need(manifest['inputSha256']==sha(BASE/'mechanism-data-20261118.json'),'Figure data binding')
  for name,h in manifest['outputs'].items():need(sha(BASE/name)==h,'Figure hash')
  warnings=collections.Counter(w for r in fs.values() for w in r['warnings']);receipt=dict(sharedFunctionalSetup=dict(uniqueFunctionalReceipts=len(functional),uniqueSmokeReceipts=len(smokes),actualFunctionalJvms=sum(r['functionalJvms'] for r in functional.values())+sum(r['functionalJvms'] for r in smokes.values()),metadataClarification='Frozen qualification/logging functionalValidationJvms=3 describe the same shared setup; functionalReceiptReused=false is incorrect metadata. Functional commands ran once before qualification, not again in logging. All copied receipt identities and source branches are retained.'),passed=True,datasetSha256=sha(BASE/'mechanism-data-20261118.json'),counts=dict(counts),warningBearingForks=sum(bool(r['warnings']) for r in fs.values()),warnings=dict(warnings),evacuationFailureForks=sum(bool(r['gc']['measuredEvacuationFailures']) for r in fs.values()),fullGcForks=sum(bool(r['gc']['fullGcCount']) for r in fs.values()),historicalPackageSha256=preserved,limits='Fresh byte/archive/export/order reconciliation; uses already decoded source-bound raw HDR receipts. Agent-assisted review is not independent human peer review or host replication.')
- (BASE/'final-evidence-review.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+ args.out.write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
 if __name__=='__main__':main()

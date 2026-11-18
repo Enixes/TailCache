@@ -211,3 +211,8 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 | [docs/mechanism/RESULTS.md](mechanism/RESULTS.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
 | [docs/mechanism/REVIEW.md](mechanism/REVIEW.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
 | [docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md](predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md) | Dated posthoc review that motivated the completed mechanism scope |
+
+## Deep mechanism re-review
+
+- [Review plan](mechanism/REREVIEW_PLAN_20261118.md).
+- [Findings, fixes and unchanged scientific boundaries](mechanism/REREVIEW_20261118.md).

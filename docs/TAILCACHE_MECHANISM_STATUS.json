@@ -92,5 +92,18 @@
     "manuscript corrections and agent-assisted systems/research reviews",
     "scientific figures and hosted/standalone interactive QA",
     "authenticated production deployment and draft PR update"
-  ]
+  ],
+  "lastRereview": {
+    "state": "LOCAL_VALIDATION_COMPLETE_DELIVERY_PENDING",
+    "baseCommit": "49524ad",
+    "plan": "docs/mechanism/REREVIEW_PLAN_20261118.md",
+    "review": "docs/mechanism/REREVIEW_20261118.md",
+    "measurementsChanged": false,
+    "newPerformanceJvms": 0,
+    "focusedTests": 31,
+    "portableNumericalFields": 3456,
+    "modelReplayPassed": true,
+    "recoveryReenabled": false,
+    "updatedUtc": "2026-11-18T16:44:02.671666+00:00"
+  }
 }

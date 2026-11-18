@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "method": "jsdom27.2.0 synthetic DOM integration",
+  "datasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "states": 892,
+  "pointQuantiles": 640,
+  "fullTailPairs": 32,
+  "stallRates": 192,
+  "emptyChannels": 2,
+  "failureRecovery": 2,
+  "historicalComponentsInitialize": true,
+  "harnessCloseRaceCorrected": true,
+  "realBrowserLayoutTested": false,
+  "reason": "CUA inventory: browser access host unavailable; no browsers/apps",
+  "limits": "No authenticated live-browser, viewport or screenshot signoff. Scientific PNGs inspected separately; signed-out SSO and remote UID checks are separate."
+}

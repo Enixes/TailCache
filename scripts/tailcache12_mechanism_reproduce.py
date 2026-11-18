@@ -4,9 +4,27 @@ import argparse,hashlib,json,math,pathlib,runpy,tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[1];DATA=ROOT/'docs/mechanism/mechanism-data-20261118.json'
 def check(v,m):
  if not v:raise ValueError(m)
+# Frozen before the mechanism measurements; data-supplied self-hashes are not a code trust boundary.
+FROZEN_SOURCES={
+ 'docs/predictor/model-v1.json':'8f68243bf48a01607a166a763813c2bc6ac11bec9a5616f3ea1cc0c021426a81',
+ 'docs/predictor/drain-candidate-v1.json':'8d5ec2ff9e877866fca23388c3f5e792fba63d2e708fe58c123c881cd125c58a',
+ 'docs/predictor/numeric-baseline-v1.json':'5d50526b77b562e376c7cecb39afd6b6a8db41030ab37760d2cdaafae0f77b46',
+ 'docs/predictor/drain_candidate.py.txt':'d5a4ab606a39ed9d7f0612fbf0eb7d63d705ff1f69024237b155c8ea415d6520',
+ 'scripts/tailcache12_pause_model.py':'a9f855d85d5e8dc80ed4946fb889752355b32070ec0ceb48cdcd8fcadee54938',
+}
+def validate_frozen_sources(d):
+ check(set(d.get('frozenModelFiles',{}))==set(FROZEN_SOURCES),'Frozen source coverage')
+ for name,expected in FROZEN_SOURCES.items():
+  record=d['frozenModelFiles'][name]
+  check(record['sha256']==expected and hashlib.sha256(record['text'].encode()).hexdigest()==expected,'Unrecognized frozen source: '+name)
+ for name,expected in d['model']['referenceInputs'].items():
+  check(FROZEN_SOURCES.get(name)==expected,'Frozen calibration reference')
+
 def main():
  a=argparse.ArgumentParser();a.add_argument('--data',type=pathlib.Path,default=DATA);a.add_argument('--out',type=pathlib.Path);args=a.parse_args();raw=args.data.read_bytes();d=json.loads(raw);counts={};Q=('99','99.9','99.99','99.999')
- for name,record in d['frozenModelFiles'].items():check(hashlib.sha256(record['text'].encode()).hexdigest()==record['sha256'],'Portable source hash')
+ validate_frozen_sources(d)
+ from tailcache12_mechanism_report import verify
+ verify(d)
  with tempfile.TemporaryDirectory(prefix='tailcache-mechanism-replay-') as tmp:
   out=pathlib.Path(tmp)
   for name,r in d['frozenModelFiles'].items():(out/pathlib.Path(name).name).write_text(r['text'])

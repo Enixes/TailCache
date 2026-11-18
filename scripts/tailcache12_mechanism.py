@@ -36,10 +36,11 @@ def schedule(kind,logging='sync',prime=0,confirmation=False):
  validate_schedule(rows);return rows
 
 def validate_schedule(rows):
+ core.check(rows and len(rows)%2==0,'Complete paired schedule')
  core.check(len({r['label'] for r in rows})==len(rows),'Unique slots')
  for a,b in zip(rows[::2],rows[1::2]):
   core.check({a['backend'],b['backend']}==set(core.BACKENDS),'Paired backends')
-  core.check(all(a[k]==b[k] for k in a if k not in ('backend','label')),'Matched settings')
+  core.check({k:v for k,v in a.items() if k not in ('backend','label')}=={k:v for k,v in b.items() if k not in ('backend','label')},'Matched settings')
  grouped=collections.defaultdict(list)
  for i in range(0,len(rows),2):
   r=rows[i];key=tuple((k,r[k]) for k in ('stage','payload','writeBps','hotset','primeCalls','logging','heapMiB','measureMs'));grouped[key].append(r['backend'])

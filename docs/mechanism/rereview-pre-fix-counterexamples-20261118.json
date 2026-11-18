@@ -1,0 +1,52 @@
+[
+  {
+    "case": "empty scope retaining completed metadata",
+    "incorrectlyPassed": true,
+    "counts": {
+      "forks": 0,
+      "pairs": 0,
+      "controls": 0
+    }
+  },
+  {
+    "case": "one pair missing",
+    "incorrectlyPassed": true,
+    "counts": {
+      "thresholds": 960,
+      "quantiles": 1580,
+      "unions": 64,
+      "ratios": 765,
+      "modelSummaries": 2880,
+      "forks": 64,
+      "pairs": 31,
+      "controls": 6
+    }
+  },
+  {
+    "case": "response distributions missing",
+    "incorrectlyPassed": true,
+    "counts": {
+      "thresholds": 768,
+      "quantiles": 1260,
+      "unions": 64,
+      "ratios": 790,
+      "modelSummaries": 2880,
+      "forks": 64,
+      "pairs": 32,
+      "controls": 6
+    }
+  },
+  {
+    "case": "all threshold rates missing",
+    "incorrectlyPassed": true,
+    "counts": {
+      "quantiles": 1580,
+      "unions": 64,
+      "ratios": 790,
+      "modelSummaries": 2880,
+      "forks": 64,
+      "pairs": 32,
+      "controls": 6
+    }
+  }
+]

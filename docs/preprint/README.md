@@ -70,3 +70,5 @@ The [current predictor report](../predictor/RESULTS.md), [research review](../pr
 ## Reproduce the 18 November mechanism extension
 
 Use the separate [portable commands](../mechanism/README.md). They verify all 64 forks/32 pairs, full tails, strict stall-rate bounds and frozen conditional models. New claims and their limits are audited in [the mechanism review](../mechanism/REVIEW.md); the older claim maps retain their dated scope. No new paper submission or author approval is implied.
+
+The subsequent [deep mechanism re-review](../mechanism/REREVIEW_20261118.md) hardens incomplete-export checks, pins replay source identity, and distinguishes warning-inclusive replication from clean-host confirmation. Measurement data remain unchanged.

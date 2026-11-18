@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Scientific mechanism figures: separate paired outcomes, no pooled quantiles."""
-import hashlib,json,math,os,pathlib
+import argparse,hashlib,json,math,os,pathlib
+import tailcache12_mechanism_report as checks
 os.environ.setdefault('MPLCONFIGDIR','/tmp/tailcache-mechanism-mpl')
 import matplotlib;matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 ROOT=pathlib.Path(__file__).resolve().parents[1];BASE=ROOT/'docs/mechanism';OUT=BASE/'figures';C,H,W='#246387','#b85a29','#ad3044'
 def main():
- d=json.loads((BASE/'mechanism-data-20261118.json').read_text());fs={r['id']:r for r in d['forks']};cohorts=[c for c in ('logging','priming','hotset-screen','hotset-repeat','transition','headroom-screen','headroom-confirm','payload') if any(p['cohort']==c for p in d['pairs'])];OUT.mkdir(exist_ok=True);idx=[]
+ global OUT
+ parser=argparse.ArgumentParser();parser.add_argument('--out',type=pathlib.Path);args=parser.parse_args()
+ if args.out:OUT=args.out/'figures';OUT.parent.mkdir(parents=True,exist_ok=True)
+ d=json.loads((BASE/'mechanism-data-20261118.json').read_text());checks.verify(d);fs={r['id']:r for r in d['forks']};cohorts=[c for c in ('logging','priming','hotset-screen','hotset-repeat','transition','headroom-screen','headroom-confirm','payload') if any(p['cohort']==c for p in d['pairs'])];OUT.mkdir(exist_ok=True);idx=[]
  plt.rcParams.update({'font.family':'DejaVu Sans','font.size':9,'axes.spines.top':False,'axes.spines.right':False,'axes.grid':True,'grid.alpha':.18,'svg.hashsalt':'tailcache-mechanism-20261118'})
  def save(fig,id,title,caption):
   fig.suptitle(title,fontsize=14,fontweight='bold');fig.tight_layout(rect=(0,0,1,.94))
@@ -37,5 +41,6 @@ def main():
   ax.set(xscale='log',yscale='log',xlim=(lo,hi),ylim=(lo,hi),xlabel='Measured response p99.9 (µs)',ylabel='Predicted (µs)',title=method)
  axes[0].legend(handles=[Line2D([],[],ls='',marker='o',color=C,label='Caffeine'),Line2D([],[],ls='',marker='o',color=H,label='Chronicle')],fontsize=8)
  save(fig,'c3-conditional-transport','Frozen conditional models still have numerical transport error','All calibrated4KiB forks after logging/priming development are shown, including warnings and collector failures. The fixed GC-only and broader-safepoint FIFO reconstructions use observed pauses; the constant pilot baseline does not. No parameters are fitted here. Contrasts across multiple interventions are descriptive; per-cohort/per-backend numerical summaries remain authoritative. M3core is also retained/scored in the portable package; showing M3total is not an after-data model selection.')
- (BASE/'figure-index-20261118.json').write_text(json.dumps(idx,indent=2)+'\n');manifest=dict(inputSha256=hashlib.sha256((BASE/'mechanism-data-20261118.json').read_bytes()).hexdigest(),rendererSha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),matplotlibVersion=matplotlib.__version__,outputs={str(p.relative_to(BASE)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(OUT.iterdir()) if p.suffix in ('.png','.svg')});(BASE/'render-manifest-20261118.json').write_text(json.dumps(manifest,indent=2)+'\n');(BASE/'FIGURES.md').write_text('# Mechanism figures\n\n'+'\n\n'.join(f"**Figure C{i}. {r['title']}.** {r['caption']}\n\n![{r['title']}](figures/{r['id']}.png)" for i,r in enumerate(idx,1))+'\n');print('MECHANISM_FIGURES_COMPLETE',len(idx))
+ target=OUT.parent
+ (target/'figure-index-20261118.json').write_text(json.dumps(idx,indent=2)+'\n');manifest=dict(inputSha256=hashlib.sha256((BASE/'mechanism-data-20261118.json').read_bytes()).hexdigest(),rendererSha256=hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),matplotlibVersion=matplotlib.__version__,outputs={str(p.relative_to(target)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(OUT.iterdir()) if p.suffix in ('.png','.svg')});(target/'render-manifest-20261118.json').write_text(json.dumps(manifest,indent=2)+'\n');(target/'FIGURES.md').write_text('# Mechanism figures\n\n'+'\n\n'.join(f"**Figure C{i}. {r['title']}.** {r['caption']}\n\n![{r['title']}](figures/{r['id']}.png)" for i,r in enumerate(idx,1))+'\n');print('MECHANISM_FIGURES_COMPLETE',len(idx))
 if __name__=='__main__':main()
