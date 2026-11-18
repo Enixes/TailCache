@@ -97,5 +97,19 @@
     "domQaPassed": true,
     "browserVisualQaPerformed": false
   },
-  "completionMeaning": "Declared predictor scope collected, audited, reviewed and delivered; original unconditional NO_GO and new transient qualification remain; no author-approved deposit"
+  "completionMeaning": "Declared predictor scope collected, audited, reviewed and delivered; original unconditional NO_GO and new transient qualification remain; no author-approved deposit",
+  "subsequentDeepReview": {
+    "date": "2026-11-18",
+    "report": "docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md",
+    "analysis": "docs/predictor/deep-review-analysis-20261118.json",
+    "analysisSha256": "dc3aac3422b34936038b5ffffdfceaf5ed0a1dca3c8ad0e8b0bb85456bf6ebda",
+    "newJvms": 0,
+    "developmentOnly": true,
+    "scheduleImbalanceFound": true,
+    "evacuationFailureDisclosureNeeded": true,
+    "occupancyCriterionIsNotStationarityProof": true,
+    "recommendedNext": "Constrained-order logging sensitivity, then controlled update-hotset screen; separate bounded scope",
+    "newExperimentsLaunched": false,
+    "recoveryReactivated": false
+  }
 }

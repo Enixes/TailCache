@@ -1,0 +1,3122 @@
+{
+  "developmentOnly": true,
+  "heldOutValidation": false,
+  "newJvms": 0,
+  "parametersChanged": false,
+  "frozenModelChanged": false,
+  "elapsedSeconds": 129.3985638860031,
+  "scriptSha256": "725c1f2f57ade16faf1413e7ad1624edf8bc19d946bc4f0db416ccc90a91f565",
+  "scheduleAudits": {
+    "validation": {
+      "protocolSha256": "dd1a4ca910dd905739eca23d22332332b60f36c04c266e208dee461b94a93994",
+      "byWriteBps": {
+        "200": {
+          "ChronicleFirst": 1,
+          "CaffeineFirst": 2
+        },
+        "50": {
+          "CaffeineFirst": 3
+        },
+        "100": {
+          "ChronicleFirst": 2,
+          "CaffeineFirst": 1
+        },
+        "500": {
+          "CaffeineFirst": 1,
+          "ChronicleFirst": 2
+        },
+        "0": {
+          "ChronicleFirst": 2,
+          "CaffeineFirst": 1
+        }
+      }
+    },
+    "confirmation": {
+      "protocolSha256": "afd5bfe1d0b2bb1bd11a2f0b5c2573314dd2b0e0b0faf660bde3bfd8419aed35",
+      "byWriteBps": {
+        "500": {
+          "CaffeineFirst": 2
+        },
+        "0": {
+          "CaffeineFirst": 2
+        },
+        "50": {
+          "ChronicleFirst": 2
+        }
+      }
+    }
+  },
+  "evacuationFailures": {
+    "validation": {
+      "CAFFEINE": {
+        "0": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "50": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 3,
+          "totalMeasuredEvacuationFailures": 4,
+          "fullGcs": 0
+        },
+        "100": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 2,
+          "totalMeasuredEvacuationFailures": 2,
+          "fullGcs": 0
+        },
+        "200": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "500": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        }
+      },
+      "CHRONICLE_IN_MEMORY": {
+        "0": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "50": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "100": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "200": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "500": {
+          "forks": 3,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        }
+      }
+    },
+    "confirmation": {
+      "CAFFEINE": {
+        "0": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "50": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 2,
+          "totalMeasuredEvacuationFailures": 2,
+          "fullGcs": 0
+        },
+        "500": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        }
+      },
+      "CHRONICLE_IN_MEMORY": {
+        "0": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "50": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        },
+        "500": {
+          "forks": 2,
+          "forksWithMeasuredEvacuationFailure": 0,
+          "totalMeasuredEvacuationFailures": 0,
+          "fullGcs": 0
+        }
+      }
+    }
+  },
+  "qualificationHalfWindowKinds": [
+    {
+      "count": 4,
+      "postGcMiB": [
+        269.0,
+        269.0,
+        270.0,
+        274.0
+      ],
+      "medianHeapFraction": 0.5263671875,
+      "collectionKinds": {
+        "Pause Young (Concurrent Start) (G1 Evacuation Pause)": 1,
+        "Pause Remark": 1,
+        "Pause Cleanup": 1,
+        "Pause Young (Prepare Mixed) (G1 Evacuation Pause)": 1
+      }
+    },
+    {
+      "count": 2,
+      "postGcMiB": [
+        229.0,
+        194.0
+      ],
+      "medianHeapFraction": 0.4130859375,
+      "collectionKinds": {
+        "Pause Young (Mixed) (G1 Evacuation Pause)": 2
+      }
+    }
+  ],
+  "packageSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+  "solverSha256": "d5a4ab606a39ed9d7f0612fbf0eb7d63d705ff1f69024237b155c8ea415d6520",
+  "observations": [
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 200,
+      "seed": 34813,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8159,
+        "99.9": 236927,
+        "99.99": 1421311,
+        "99.999": 1617919
+      },
+      "frozenM2Ns": {
+        "99": 1197,
+        "99.9": 101246,
+        "99.99": 1300814,
+        "99.999": 1534398
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1197,
+          "99.9": 136318,
+          "99.99": 1337678,
+          "99.999": 1562046
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1197,
+          "99.9": 142206,
+          "99.99": 1338702,
+          "99.999": 1564094
+        }
+      },
+      "gcMs": 30.178071,
+      "safepointMs": 31.023429,
+      "safepointCoreMs": 30.830846,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 144440.0,
+        "p90": 179388
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 52542.0,
+        "p90": 85666
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "13ce568216fa977e22696aa3370ea145845fb35b578e323e2137191949bc8fe5",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/worker/stalls.csv": "5af8e2c9a0f7b5ad0474569721ea878db9948db2482f5f75856c84832b07e541"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b3-s34813-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 200,
+      "seed": 34813,
+      "warnings": [
+        "Native CPU outside benchmark scope exceeded 10% upper bound"
+      ],
+      "measuredNs": {
+        "99": 8207,
+        "99.9": 5382143,
+        "99.99": 11345919,
+        "99.999": 12869631
+      },
+      "frozenM2Ns": {
+        "99": 586,
+        "99.9": 5107006,
+        "99.99": 11148622,
+        "99.999": 12789182
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 586,
+          "99.9": 5131582,
+          "99.99": 11173198,
+          "99.999": 12805566
+        },
+        "gcPlusSafepointTotal": {
+          "99": 586,
+          "99.9": 5213502,
+          "99.99": 11255118,
+          "99.999": 12887486
+        }
+      },
+      "gcMs": 55.846057,
+      "safepointMs": 56.592913,
+      "safepointCoreMs": 56.09397,
+      "gcAssociatedSparseEvents": 6,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 6,
+        "median": 151514.0,
+        "p90": 188462
+      },
+      "postGcReturnNs": {
+        "n": 6,
+        "median": 60325.5,
+        "p90": 93297
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b3-s34813-CAFFEINE/gc-through-measurement.log": "3193deac310bcc1bd6a3e060c9651bc79d2b4f337c87be55770a6cd42f58e014",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b3-s34813-CAFFEINE/worker/stalls.csv": "e2bfa185370ee1628a0f95818aeb37409b093d5d439e814e9468eec88f477b33"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b1-s34811-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 50,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7303,
+        "99.9": 1090559,
+        "99.99": 7860223,
+        "99.999": 10444799
+      },
+      "frozenM2Ns": {
+        "99": 475,
+        "99.9": 806206,
+        "99.99": 7634254,
+        "99.999": 10307006
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 475,
+          "99.9": 836414,
+          "99.99": 7662926,
+          "99.999": 10331582
+        },
+        "gcPlusSafepointTotal": {
+          "99": 475,
+          "99.9": 889662,
+          "99.99": 7736654,
+          "99.999": 10405310
+        }
+      },
+      "gcMs": 33.511127,
+      "safepointMs": 34.118147,
+      "safepointCoreMs": 33.694245,
+      "gcAssociatedSparseEvents": 5,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 5,
+        "median": 164471,
+        "p90": 187207
+      },
+      "postGcReturnNs": {
+        "n": 5,
+        "median": 80581,
+        "p90": 107201
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b1-s34811-CAFFEINE/gc-through-measurement.log": "75d2f7dfe194433758a50a0844119bf8f4271999195c730db149ceae3697023a",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b1-s34811-CAFFEINE/worker/stalls.csv": "338f220cc8c575ee0ffaf360a2d33ef5c48c1b2baef93b3f4d2a6d949ee62196"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 50,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7907,
+        "99.9": 153727,
+        "99.99": 1330175,
+        "99.999": 1563647
+      },
+      "frozenM2Ns": {
+        "99": 1093,
+        "99.9": 53598,
+        "99.99": 1250638,
+        "99.999": 1520062
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1093,
+          "99.9": 78526,
+          "99.99": 1274190,
+          "99.999": 1542590
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1093,
+          "99.9": 93246,
+          "99.99": 1285454,
+          "99.999": 1555902
+        }
+      },
+      "gcMs": 29.242263,
+      "safepointMs": 30.040386,
+      "safepointCoreMs": 29.911819,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 105362.5,
+        "p90": 140439
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 39457.5,
+        "p90": 53560
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "63e2ee7d76cbb8261f8e99d33dd81185babc4692ddde87407ce6b8aca9f35bd6",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "8a26df9385b445bcfe0ccc240c5ef3f2743e3de32c54f44c9211daff88dfa148"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 100,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8023,
+        "99.9": 223487,
+        "99.99": 1431551,
+        "99.999": 1744895
+      },
+      "frozenM2Ns": {
+        "99": 1127,
+        "99.9": 86590,
+        "99.99": 1311054,
+        "99.999": 1652158
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1127,
+          "99.9": 121406,
+          "99.99": 1348942,
+          "99.999": 1686974
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1127,
+          "99.9": 128190,
+          "99.99": 1349966,
+          "99.999": 1686974
+        }
+      },
+      "gcMs": 29.985998,
+      "safepointMs": 30.783357,
+      "safepointCoreMs": 30.657587,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 150211.0,
+        "p90": 171893
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 60404.0,
+        "p90": 84358
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "53184735d2b248e827bc1b036c42b77751a5a88fff420b8a8ff3370c3496b21c",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "1a1ca4b1df464172e331539a4c2b8619cb288b1f62e0c6baf1370fcb5b1dd9ce"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b1-s34811-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 100,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8295,
+        "99.9": 3766271,
+        "99.99": 11010047,
+        "99.999": 13082623
+      },
+      "frozenM2Ns": {
+        "99": 512,
+        "99.9": 3419454,
+        "99.99": 10845518,
+        "99.999": 12969406
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 512,
+          "99.9": 3460414,
+          "99.99": 10886478,
+          "99.999": 13010366
+        },
+        "gcPlusSafepointTotal": {
+          "99": 512,
+          "99.9": 3532094,
+          "99.99": 10968398,
+          "99.999": 13092286
+        }
+      },
+      "gcMs": 44.172933,
+      "safepointMs": 44.896985,
+      "safepointCoreMs": 44.405525,
+      "gcAssociatedSparseEvents": 5,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 5,
+        "median": 170006,
+        "p90": 195501
+      },
+      "postGcReturnNs": {
+        "n": 5,
+        "median": 54476,
+        "p90": 94853
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b1-s34811-CAFFEINE/gc-through-measurement.log": "d25da68cbaa949c53e9c6d8dd4cef56cfba95754bf5507ea93e6db0a5c666da3",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b1-s34811-CAFFEINE/worker/stalls.csv": "f3339e534a3235509615c9319435fe1f9fce962d8c941bb986cc2554c95c25b3"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 100,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8083,
+        "99.9": 157183,
+        "99.99": 1351679,
+        "99.999": 1624063
+      },
+      "frozenM2Ns": {
+        "99": 1127,
+        "99.9": 16695,
+        "99.99": 1229134,
+        "99.999": 1532350
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1127,
+          "99.9": 52126,
+          "99.99": 1262926,
+          "99.999": 1563070
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1127,
+          "99.9": 60670,
+          "99.99": 1268046,
+          "99.999": 1570238
+        }
+      },
+      "gcMs": 28.434374,
+      "safepointMs": 29.333093,
+      "safepointCoreMs": 29.134746,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 142779.5,
+        "p90": 177893
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 44798.0,
+        "p90": 87319
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "743ec7375d2355cf9b88c0c3ff2914f348305e40ec6f2f7a7bbf911c83738119",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "8465dd742fe8d915cb6a96f20d198b16062275bc0076d9566042ac4884e4c395"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b2-s34812-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 100,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7375,
+        "99.9": 4108287,
+        "99.99": 11517951,
+        "99.999": 13713407
+      },
+      "frozenM2Ns": {
+        "99": 512,
+        "99.9": 3771710,
+        "99.99": 11361614,
+        "99.999": 13649342
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 512,
+          "99.9": 3816766,
+          "99.99": 11402574,
+          "99.999": 13673918
+        },
+        "gcPlusSafepointTotal": {
+          "99": 512,
+          "99.9": 3865918,
+          "99.99": 11476302,
+          "99.999": 13747646
+        }
+      },
+      "gcMs": 45.336032,
+      "safepointMs": 45.911067,
+      "safepointCoreMs": 45.572729,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 148488.5,
+        "p90": 201356
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 58977.5,
+        "p90": 113256
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b2-s34812-CAFFEINE/gc-through-measurement.log": "8388ec16cfb31e385f1765afa9b9e903e66f28803f968a42e8d883865f37e9bd",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b2-s34812-CAFFEINE/worker/stalls.csv": "1dd139491898543e1a274bf6c111e1bf0dfa0e5f3ea8f0857699245c0a553ed8"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b2-s34812-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 50,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7915,
+        "99.9": 2006015,
+        "99.99": 7405567,
+        "99.999": 9248767
+      },
+      "frozenM2Ns": {
+        "99": 475,
+        "99.9": 1753406,
+        "99.99": 7212366,
+        "99.999": 9086398
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 475,
+          "99.9": 1797438,
+          "99.99": 7257422,
+          "99.999": 9127358
+        },
+        "gcPlusSafepointTotal": {
+          "99": 475,
+          "99.9": 1830206,
+          "99.99": 7286094,
+          "99.999": 9127358
+        }
+      },
+      "gcMs": 41.00652,
+      "safepointMs": 41.727801,
+      "safepointCoreMs": 41.309906,
+      "gcAssociatedSparseEvents": 7,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 7,
+        "median": 159323,
+        "p90": 207705
+      },
+      "postGcReturnNs": {
+        "n": 7,
+        "median": 66875,
+        "p90": 120086
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b2-s34812-CAFFEINE/gc-through-measurement.log": "5486f56ada76bb8327fa0d7d4111d2f891b2a33c80823500664326b05e4a6904",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b2-s34812-CAFFEINE/worker/stalls.csv": "5cb3689b97c039901807b3a078e69fdac22fd694e2b9e0658d6db185ac028542"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 50,
+      "seed": 34812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 7919,
+        "99.9": 276991,
+        "99.99": 1476607,
+        "99.999": 1719295
+      },
+      "frozenM2Ns": {
+        "99": 1093,
+        "99.9": 142334,
+        "99.99": 1362254,
+        "99.999": 1652158
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1093,
+          "99.9": 179262,
+          "99.99": 1399118,
+          "99.999": 1686974
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1093,
+          "99.9": 188734,
+          "99.99": 1401166,
+          "99.999": 1686974
+        }
+      },
+      "gcMs": 31.264089,
+      "safepointMs": 32.196428,
+      "safepointCoreMs": 31.934407,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 141707.0,
+        "p90": 154644
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 50893.5,
+        "p90": 69940
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "a0eaa492376994ab8bb3691ccf22a6433c728e779a60ea740fb57e0ee3acd3f5",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "4a796075d5300c47052b716eed24e07e9ff84adbc7b32614cf719ee51943e8af"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b3-s34813-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 50,
+      "seed": 34813,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 7383,
+        "99.9": 1106943,
+        "99.99": 8126463,
+        "99.999": 10706943
+      },
+      "frozenM2Ns": {
+        "99": 475,
+        "99.9": 772926,
+        "99.99": 7916878,
+        "99.999": 10601918
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 475,
+          "99.9": 815934,
+          "99.99": 7961934,
+          "99.999": 10642878
+        },
+        "gcPlusSafepointTotal": {
+          "99": 475,
+          "99.9": 877374,
+          "99.99": 8043854,
+          "99.999": 10724798
+        }
+      },
+      "gcMs": 34.308892,
+      "safepointMs": 35.234569,
+      "safepointCoreMs": 34.602397,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 161774.5,
+        "p90": 174882
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 68345.5,
+        "p90": 80642
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b3-s34813-CAFFEINE/gc-through-measurement.log": "cae57d49a343bcb6b9e727c3f724d2cf99965d27617bba0f7298504d26b82295",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b3-s34813-CAFFEINE/worker/stalls.csv": "25ba504fdbc10f86f14d87abb7ceef440ca89280061e1797cd34cc3485a9591e"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w50-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 50,
+      "seed": 34813,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7991,
+        "99.9": 264959,
+        "99.99": 1449983,
+        "99.999": 1707007
+      },
+      "frozenM2Ns": {
+        "99": 1093,
+        "99.9": 131198,
+        "99.99": 1329486,
+        "99.999": 1628606
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1093,
+          "99.9": 161214,
+          "99.99": 1365326,
+          "99.999": 1663422
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1093,
+          "99.9": 169150,
+          "99.99": 1369422,
+          "99.999": 1663422
+        }
+      },
+      "gcMs": 30.958295,
+      "safepointMs": 31.74598,
+      "safepointCoreMs": 31.60259,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 136919.5,
+        "p90": 161524
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 45991.0,
+        "p90": 74306
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "7fc9fc933e4a30f0b350397cdb6f56e1a17b107bc56a24cce3a21ecc9299f13c",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w50-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/worker/stalls.csv": "670e7a882b6f2e4253e08a42e637a2999787c8673f05939b97719dfb3ff94723"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b2-s34812-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 200,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8163,
+        "99.9": 5115903,
+        "99.99": 10575871,
+        "99.999": 12050431
+      },
+      "frozenM2Ns": {
+        "99": 586,
+        "99.9": 4824382,
+        "99.99": 10394958,
+        "99.999": 11912638
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 586,
+          "99.9": 4857150,
+          "99.99": 10444110,
+          "99.999": 11953598
+        },
+        "gcPlusSafepointTotal": {
+          "99": 586,
+          "99.9": 4914494,
+          "99.99": 10460494,
+          "99.999": 11953598
+        }
+      },
+      "gcMs": 54.348295,
+      "safepointMs": 54.963811,
+      "safepointCoreMs": 54.593221,
+      "gcAssociatedSparseEvents": 6,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 6,
+        "median": 171992.5,
+        "p90": 195488
+      },
+      "postGcReturnNs": {
+        "n": 6,
+        "median": 78866.0,
+        "p90": 109367
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b2-s34812-CAFFEINE/gc-through-measurement.log": "78ab7c95d6897fe5d6990654a54af55aee682ee6e9ae53942405dc5421207a5c",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b2-s34812-CAFFEINE/worker/stalls.csv": "ccd51e16a1c56ab8f65073be03762fd6fe2577b02e7ffb1a224246b4e4d22e8f"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 200,
+      "seed": 34812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8071,
+        "99.9": 192767,
+        "99.99": 1353727,
+        "99.999": 1595391
+      },
+      "frozenM2Ns": {
+        "99": 1197,
+        "99.9": 57182,
+        "99.99": 1239374,
+        "99.999": 1496510
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1197,
+          "99.9": 94654,
+          "99.99": 1276238,
+          "99.999": 1537470
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1197,
+          "99.9": 99198,
+          "99.99": 1280334,
+          "99.999": 1539518
+        }
+      },
+      "gcMs": 29.237948,
+      "safepointMs": 30.056628,
+      "safepointCoreMs": 29.913523,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 131782.5,
+        "p90": 175010
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 47783.0,
+        "p90": 86905
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "2177f017cffe3ebcd3b044b880e5e92b8239def47bcf8795f1570007fcedfeb2",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "94d8d3b98ca4f233d43bad43b6e78384e1c61a1404e9fb03c8e999f3e18ea977"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b1-s34811-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 200,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8607,
+        "99.9": 5918719,
+        "99.99": 10428415,
+        "99.999": 12050431
+      },
+      "frozenM2Ns": {
+        "99": 586,
+        "99.9": 5614910,
+        "99.99": 10263886,
+        "99.999": 11896254
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 586,
+          "99.9": 5659966,
+          "99.99": 10304846,
+          "99.999": 11953598
+        },
+        "gcPlusSafepointTotal": {
+          "99": 586,
+          "99.9": 5717310,
+          "99.99": 10378574,
+          "99.999": 12027326
+        }
+      },
+      "gcMs": 63.884992,
+      "safepointMs": 64.761207,
+      "safepointCoreMs": 64.199748,
+      "gcAssociatedSparseEvents": 7,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 7,
+        "median": 152857,
+        "p90": 204720
+      },
+      "postGcReturnNs": {
+        "n": 7,
+        "median": 55405,
+        "p90": 114780
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b1-s34811-CAFFEINE/gc-through-measurement.log": "ef1d1513bc870fcd81156e888752574766f40994b3f38a8fd74bcf51af3a83df",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b1-s34811-CAFFEINE/worker/stalls.csv": "1a91b13a0eb2edd0f5b9c9d79a5bae5c6fee0ac30d65f81a984298277e5fa2db"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w200-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 200,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8083,
+        "99.9": 231167,
+        "99.99": 1427455,
+        "99.999": 1914879
+      },
+      "frozenM2Ns": {
+        "99": 1197,
+        "99.9": 100734,
+        "99.99": 1304910,
+        "99.999": 1801662
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1197,
+          "99.9": 136638,
+          "99.99": 1342798,
+          "99.999": 1859006
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1197,
+          "99.9": 143742,
+          "99.99": 1353038,
+          "99.999": 1859006
+        }
+      },
+      "gcMs": 30.135981,
+      "safepointMs": 31.053104,
+      "safepointCoreMs": 30.86061,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 135558.5,
+        "p90": 175432
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 37460.5,
+        "p90": 77613
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "e8b256cc6127d4a4b2fd717cdb92994a97e6d0fcb0a81361fe5a370f15d4a15d",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w200-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "ed12da5471de9a0b0af56eba2bfc6c781f2e3bf80b93cfc885e01c4c005ce5c5"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b2-s34812-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 500,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 11039,
+        "99.9": 9019391,
+        "99.99": 12058623,
+        "99.999": 13393919
+      },
+      "frozenM2Ns": {
+        "99": 809,
+        "99.9": 8756542,
+        "99.99": 11885902,
+        "99.999": 13231550
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 809,
+          "99.9": 8797502,
+          "99.99": 11910478,
+          "99.999": 13256126
+        },
+        "gcPlusSafepointTotal": {
+          "99": 809,
+          "99.9": 8838462,
+          "99.99": 11967822,
+          "99.999": 13272510
+        }
+      },
+      "gcMs": 109.634215,
+      "safepointMs": 110.882825,
+      "safepointCoreMs": 110.112031,
+      "gcAssociatedSparseEvents": 10,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 10,
+        "median": 147444.5,
+        "p90": 193820
+      },
+      "postGcReturnNs": {
+        "n": 10,
+        "median": 60086.0,
+        "p90": 107751
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b2-s34812-CAFFEINE/gc-through-measurement.log": "87846d65b10d07b0a134fd45574d2931f74af43638a3ace269bb803621914213",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b2-s34812-CAFFEINE/worker/stalls.csv": "76097bdc1c492bf9031067d662a423d32b5ab77f077638f8dbda271611990697"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 500,
+      "seed": 34812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8247,
+        "99.9": 180607,
+        "99.99": 1360895,
+        "99.999": 1571839
+      },
+      "frozenM2Ns": {
+        "99": 1404,
+        "99.9": 53918,
+        "99.99": 1252686,
+        "99.999": 1489342
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1404,
+          "99.9": 88766,
+          "99.99": 1287502,
+          "99.999": 1527230
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1404,
+          "99.9": 91710,
+          "99.99": 1289550,
+          "99.999": 1527230
+        }
+      },
+      "gcMs": 28.852462,
+      "safepointMs": 29.58008,
+      "safepointCoreMs": 29.516176,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 124875.5,
+        "p90": 168097
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 39578.5,
+        "p90": 72199
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "793fa4c7d040e24f1375441804383d702c4820c8dea2a58cd1ffcfbafa7c1da8",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "bb19e40697148e8b7e5eaef4dc1940cf71144da1c92ec9d56632b69992694b9b"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 0,
+      "seed": 34812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 2313,
+        "99.9": 137087,
+        "99.99": 1375231,
+        "99.999": 1601535
+      },
+      "frozenM2Ns": {
+        "99": 1050,
+        "99.9": 16618,
+        "99.99": 1265998,
+        "99.999": 1512894
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1050,
+          "99.9": 40846,
+          "99.99": 1295694,
+          "99.999": 1544638
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1050,
+          "99.9": 48222,
+          "99.99": 1299790,
+          "99.999": 1548734
+        }
+      },
+      "gcMs": 28.392215,
+      "safepointMs": 29.214404,
+      "safepointCoreMs": 29.079762,
+      "gcAssociatedSparseEvents": 19,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 19,
+        "median": 139004,
+        "p90": 172338
+      },
+      "postGcReturnNs": {
+        "n": 19,
+        "median": 53904,
+        "p90": 86083
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "b9c11ddfcd6255d0ee2db19feaf4fb550aacdd497e7a0da09ea9c267431ec1f4",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b2-s34812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "cc088ad329411da5f942686dcd13e570a497cba74d53179d6946033535a9a17a"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b2-s34812-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 0,
+      "seed": 34812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 6763,
+        "99.9": 21391,
+        "99.99": 1727487,
+        "99.999": 2670591
+      },
+      "frozenM2Ns": {
+        "99": 399,
+        "99.9": 15967,
+        "99.99": 1577294,
+        "99.999": 2567614
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1612110,
+          "99.999": 2596286
+        },
+        "gcPlusSafepointTotal": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1677646,
+          "99.999": 2672062
+        }
+      },
+      "gcMs": 8.761777,
+      "safepointMs": 9.34949,
+      "safepointCoreMs": 8.927034,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 173252.5,
+        "p90": 178241
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 70786.5,
+        "p90": 94822
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b2-s34812-CAFFEINE/gc-through-measurement.log": "6944f4892b991289ed413bdeefcf04c0c405b9c6372f83fd51fb46da61667ba7",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b2-s34812-CAFFEINE/worker/stalls.csv": "2c1919ee7bf5fc6df52dea770d992a69372ead56dc65905bb3c7b4ef00154270"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 500,
+      "seed": 34811,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8311,
+        "99.9": 391935,
+        "99.99": 1624063,
+        "99.999": 2109439
+      },
+      "frozenM2Ns": {
+        "99": 1404,
+        "99.9": 240190,
+        "99.99": 1483086,
+        "99.999": 2025918
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1404,
+          "99.9": 277566,
+          "99.99": 1520974,
+          "99.999": 2064830
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1404,
+          "99.9": 286270,
+          "99.99": 1539406,
+          "99.999": 2076094
+        }
+      },
+      "gcMs": 32.94005,
+      "safepointMs": 33.890678,
+      "safepointCoreMs": 33.63904,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 157046.0,
+        "p90": 191078
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 56797.5,
+        "p90": 84828
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "b967c3cca8c69830f6f1a34913dca6adca63a9c8a00cc2c470fcaa03d9f86f77",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "cb048f275bf92ce2d19eae1baf6c9af95d6edc0159b96ee089d4c301df29464d"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b1-s34811-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 500,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 10407,
+        "99.9": 9093119,
+        "99.99": 12075007,
+        "99.999": 13492223
+      },
+      "frozenM2Ns": {
+        "99": 809,
+        "99.9": 8822078,
+        "99.99": 11926862,
+        "99.999": 13354430
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 809,
+          "99.9": 8863038,
+          "99.99": 11959630,
+          "99.999": 13403582
+        },
+        "gcPlusSafepointTotal": {
+          "99": 809,
+          "99.9": 8903998,
+          "99.99": 12000590,
+          "99.999": 13403582
+        }
+      },
+      "gcMs": 110.224871,
+      "safepointMs": 111.415003,
+      "safepointCoreMs": 110.67947,
+      "gcAssociatedSparseEvents": 10,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 10,
+        "median": 177476.0,
+        "p90": 187419
+      },
+      "postGcReturnNs": {
+        "n": 10,
+        "median": 89256.5,
+        "p90": 101978
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b1-s34811-CAFFEINE/gc-through-measurement.log": "9ab98aa3b1bc521b9576790f96d23d9bc2483dc4913d7aecc2ff1f40d8cd3985",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b1-s34811-CAFFEINE/worker/stalls.csv": "0e2803354f2695013866afd91e055f345fd6ef58461c25315f98c18d0aa7f5bd"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b3-s34813-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 100,
+      "seed": 34813,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8083,
+        "99.9": 3758079,
+        "99.99": 10952703,
+        "99.999": 13180927
+      },
+      "frozenM2Ns": {
+        "99": 512,
+        "99.9": 3456318,
+        "99.99": 10804558,
+        "99.999": 13092286
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 512,
+          "99.9": 3497278,
+          "99.99": 10845518,
+          "99.999": 13133246
+        },
+        "gcPlusSafepointTotal": {
+          "99": 512,
+          "99.9": 3558718,
+          "99.99": 10902862,
+          "99.999": 13190590
+        }
+      },
+      "gcMs": 44.326078,
+      "safepointMs": 44.997501,
+      "safepointCoreMs": 44.515534,
+      "gcAssociatedSparseEvents": 5,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 5,
+        "median": 157542,
+        "p90": 161300
+      },
+      "postGcReturnNs": {
+        "n": 5,
+        "median": 72386,
+        "p90": 75198
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b3-s34813-CAFFEINE/gc-through-measurement.log": "a471dd41b45e401f934533866b512ddceff0b29a5eb6bee9678600246e5de157",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b3-s34813-CAFFEINE/worker/stalls.csv": "f025de157f8ec67b9f6fa2c1ea527f10f7adfee8c2018671cd0f0e98380138d4"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w100-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 100,
+      "seed": 34813,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8099,
+        "99.9": 290303,
+        "99.99": 1488895,
+        "99.999": 2164735
+      },
+      "frozenM2Ns": {
+        "99": 1127,
+        "99.9": 147646,
+        "99.99": 1362254,
+        "99.999": 2083262
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1127,
+          "99.9": 180030,
+          "99.99": 1396046,
+          "99.999": 2122174
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1127,
+          "99.9": 192318,
+          "99.99": 1402190,
+          "99.999": 2122174
+        }
+      },
+      "gcMs": 31.307544,
+      "safepointMs": 32.305287,
+      "safepointCoreMs": 31.987879,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 134866.5,
+        "p90": 193861
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 48487.0,
+        "p90": 87259
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "69837d57840e35face9fe7e3a4aaceefba4102aaddd8f88da2924126b44829df",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w100-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/worker/stalls.csv": "26d3207b0c48301a5bc19c92e6cb07863b12ebeca5e3eaa71af24eba0f5f2811"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 500,
+      "seed": 34813,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8255,
+        "99.9": 167423,
+        "99.99": 1342463,
+        "99.999": 1569791
+      },
+      "frozenM2Ns": {
+        "99": 1404,
+        "99.9": 35134,
+        "99.99": 1220942,
+        "99.999": 1484222
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1404,
+          "99.9": 74270,
+          "99.99": 1262926,
+          "99.999": 1521086
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1404,
+          "99.9": 79582,
+          "99.99": 1265998,
+          "99.999": 1523134
+        }
+      },
+      "gcMs": 28.403631,
+      "safepointMs": 29.269955,
+      "safepointCoreMs": 29.134962,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 132047.0,
+        "p90": 183438
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 34461.0,
+        "p90": 86484
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "cc2706769fc7e609be9d77df8d8e9a27bebc1424ceb94fea93b04bbe0ceeb533",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/worker/stalls.csv": "f6979b4d6a86eb76741fb4669778d2f43cabaf94bd01886a560bb5f734d30784"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w500-warm120000-p4096-live0-b3-s34813-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 500,
+      "seed": 34813,
+      "warnings": [],
+      "measuredNs": {
+        "99": 10775,
+        "99.9": 9125887,
+        "99.99": 12115967,
+        "99.999": 13131775
+      },
+      "frozenM2Ns": {
+        "99": 809,
+        "99.9": 8895806,
+        "99.99": 11984206,
+        "99.999": 13059518
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 809,
+          "99.9": 8936766,
+          "99.99": 12016974,
+          "99.999": 13084094
+        },
+        "gcPlusSafepointTotal": {
+          "99": 809,
+          "99.9": 8994110,
+          "99.99": 12090702,
+          "99.999": 13166014
+        }
+      },
+      "gcMs": 110.786376,
+      "safepointMs": 112.14476,
+      "safepointCoreMs": 111.245469,
+      "gcAssociatedSparseEvents": 10,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 10,
+        "median": 152817.0,
+        "p90": 165035
+      },
+      "postGcReturnNs": {
+        "n": 10,
+        "median": 61519.0,
+        "p90": 79500
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b3-s34813-CAFFEINE/gc-through-measurement.log": "efcb81040a428755149c51759e2dd5a775392a29914929916d62b794cf17d9ab",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w500-warm120000-p4096-live0-b3-s34813-CAFFEINE/worker/stalls.csv": "82e1aca9915c5b634f8c1b5489ae8c6893d59a04511142de71d9cf951733ed9f"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b3-s34813-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 0,
+      "seed": 34813,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7215,
+        "99.9": 23343,
+        "99.99": 1686527,
+        "99.999": 2574335
+      },
+      "frozenM2Ns": {
+        "99": 399,
+        "99.9": 15967,
+        "99.99": 1515854,
+        "99.999": 2457022
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1538382,
+          "99.999": 2477502
+        },
+        "gcPlusSafepointTotal": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1616206,
+          "99.999": 2557374
+        }
+      },
+      "gcMs": 8.442513,
+      "safepointMs": 9.04389,
+      "safepointCoreMs": 8.605005,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 176640.0,
+        "p90": 192070
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 82666.0,
+        "p90": 94449
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b3-s34813-CAFFEINE/gc-through-measurement.log": "a8341bc7c15678407dd4a653c42a8b824a31e1e67b28fff5e3d084a57224d0ec",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b3-s34813-CAFFEINE/worker/stalls.csv": "09294a90dedfedf519402b24ee7cdd1b88255d02ced04ca99db3346df0f2e90b"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 0,
+      "seed": 34813,
+      "warnings": [],
+      "measuredNs": {
+        "99": 3039,
+        "99.9": 182143,
+        "99.99": 1409023,
+        "99.999": 2091007
+      },
+      "frozenM2Ns": {
+        "99": 1050,
+        "99.9": 44254,
+        "99.99": 1292622,
+        "99.999": 1991102
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1050,
+          "99.9": 79070,
+          "99.99": 1328462,
+          "99.999": 2028990
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1050,
+          "99.9": 83838,
+          "99.99": 1328462,
+          "99.999": 2028990
+        }
+      },
+      "gcMs": 29.171485,
+      "safepointMs": 30.007675,
+      "safepointCoreMs": 29.814053,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 133522.0,
+        "p90": 172663
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 45123.5,
+        "p90": 75652
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "e435cfb909e8e7b7a95e65a04c4f47a721e769a82e6f812757101c08fb92d879",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b3-s34813-CHRONICLE_IN_MEMORY/worker/stalls.csv": "b57837d88299ca8c8c42cbd202ed6d2accd140ff491c6db1650f8b11b60d45cc"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY",
+      "cohort": "validation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 0,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 2555,
+        "99.9": 140927,
+        "99.99": 1361919,
+        "99.999": 1615871
+      },
+      "frozenM2Ns": {
+        "99": 1050,
+        "99.9": 16618,
+        "99.99": 1244494,
+        "99.999": 1528254
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1050,
+          "99.9": 38766,
+          "99.99": 1281358,
+          "99.999": 1565118
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1050,
+          "99.9": 48894,
+          "99.99": 1292622,
+          "99.999": 1565118
+        }
+      },
+      "gcMs": 28.3069,
+      "safepointMs": 29.192304,
+      "safepointCoreMs": 28.998766,
+      "gcAssociatedSparseEvents": 19,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 19,
+        "median": 121275,
+        "p90": 180003
+      },
+      "postGcReturnNs": {
+        "n": 19,
+        "median": 34031,
+        "p90": 92818
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "67ff98455b4e47457d850459a8032f4b5aca5f114b297ea6d4560dbd4ac50126",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b1-s34811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "b19b6375c20ed778875e5fc5c1f1bcf5c404c449b02d075d1814995a9144d488"
+      }
+    },
+    {
+      "id": "predictor-validation-20261118-001/validation-w0-warm120000-p4096-live0-b1-s34811-CAFFEINE",
+      "cohort": "validation",
+      "backend": "CAFFEINE",
+      "writeBps": 0,
+      "seed": 34811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 4423,
+        "99.9": 18895,
+        "99.99": 1892351,
+        "99.999": 2607103
+      },
+      "frozenM2Ns": {
+        "99": 399,
+        "99.9": 15967,
+        "99.99": 1741134,
+        "99.999": 2495934
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1773902,
+          "99.999": 2524606
+        },
+        "gcPlusSafepointTotal": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1841486,
+          "99.999": 2598334
+        }
+      },
+      "gcMs": 10.85739,
+      "safepointMs": 11.496836,
+      "safepointCoreMs": 11.035834,
+      "gcAssociatedSparseEvents": 5,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 5,
+        "median": 166197,
+        "p90": 187844
+      },
+      "postGcReturnNs": {
+        "n": 5,
+        "median": 78967,
+        "p90": 83556
+      },
+      "inputs": {
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b1-s34811-CAFFEINE/gc-through-measurement.log": "227b6bdfbb5ba923df78661d6606223c5c0698c523568e396c4509320c3533a8",
+        "evidence-archives/predictor-validation-20261118-001/slots/validation-w0-warm120000-p4096-live0-b1-s34811-CAFFEINE/worker/stalls.csv": "df573cdcfe8fdbd842246759ae5ca2eda97d667ad4ae1a68ba1fec088826869d"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w500-p4096-live0-b2-s44812-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 500,
+      "seed": 44812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 9911,
+        "99.9": 8814591,
+        "99.99": 11649023,
+        "99.999": 12640255
+      },
+      "frozenM2Ns": {
+        "99": 809,
+        "99.9": 8584510,
+        "99.99": 11500878,
+        "99.999": 12543422
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 809,
+          "99.9": 8625470,
+          "99.99": 11533646,
+          "99.999": 12584382
+        },
+        "gcPlusSafepointTotal": {
+          "99": 809,
+          "99.9": 8682814,
+          "99.99": 11590990,
+          "99.999": 12617150
+        }
+      },
+      "gcMs": 115.495114,
+      "safepointMs": 116.674352,
+      "safepointCoreMs": 115.889987,
+      "gcAssociatedSparseEvents": 10,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 10,
+        "median": 145319.0,
+        "p90": 177516
+      },
+      "postGcReturnNs": {
+        "n": 10,
+        "median": 53875.0,
+        "p90": 85891
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b2-s44812-CAFFEINE/gc-through-measurement.log": "a16e8fdf2adb24cfbc0c6d0ac1a8c82fc9a67d8ede31edf29e8b2fe76d0d6472",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b2-s44812-CAFFEINE/worker/stalls.csv": "e3da89b72464a3a0a301200770de88d6076ec3adcddbda8f6323faf37607a03e"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w500-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 500,
+      "seed": 44812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 8351,
+        "99.9": 414975,
+        "99.99": 2334719,
+        "99.999": 4775935
+      },
+      "frozenM2Ns": {
+        "99": 1404,
+        "99.9": 284734,
+        "99.99": 2145614,
+        "99.999": 4646334
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1404,
+          "99.9": 323134,
+          "99.99": 2184526,
+          "99.999": 4687294
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1404,
+          "99.9": 323134,
+          "99.99": 2184526,
+          "99.999": 4687294
+        }
+      },
+      "gcMs": 33.911841,
+      "safepointMs": 34.63338,
+      "safepointCoreMs": 34.567495,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 121438.5,
+        "p90": 170491
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 34228.5,
+        "p90": 81175
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "0dbdd6e43738d5a6ba929497afb136295961d7ac6e0b48a3c48b7003f7ad9565",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "9ed9b486f66f801af43547aabb1777133ae433711e2cf743136c7397cd0a4b0a"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w500-p4096-live0-b1-s44811-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 500,
+      "seed": 44811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 9911,
+        "99.9": 8953855,
+        "99.99": 12492799,
+        "99.999": 14688255
+      },
+      "frozenM2Ns": {
+        "99": 809,
+        "99.9": 8723774,
+        "99.99": 12311886,
+        "99.999": 14566846
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 809,
+          "99.9": 8764734,
+          "99.99": 12344654,
+          "99.999": 14607806
+        },
+        "gcPlusSafepointTotal": {
+          "99": 809,
+          "99.9": 8813886,
+          "99.99": 12393806,
+          "99.999": 14607806
+        }
+      },
+      "gcMs": 109.453254,
+      "safepointMs": 110.742893,
+      "safepointCoreMs": 109.954562,
+      "gcAssociatedSparseEvents": 11,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 11,
+        "median": 174868,
+        "p90": 204243
+      },
+      "postGcReturnNs": {
+        "n": 11,
+        "median": 80779,
+        "p90": 110368
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b1-s44811-CAFFEINE/gc-through-measurement.log": "4dc9b2225e48f2ce7711a4916e637a08a1a336e32a95ee996817e519b7951432",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b1-s44811-CAFFEINE/worker/stalls.csv": "c6b1f33e49a2bc4a1bc8ab9e13530a7a947898e2afc941a0850e7acfb49be892"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w500-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 500,
+      "seed": 44811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 8351,
+        "99.9": 477439,
+        "99.99": 1835007,
+        "99.999": 3485695
+      },
+      "frozenM2Ns": {
+        "99": 1404,
+        "99.9": 327998,
+        "99.99": 1697102,
+        "99.999": 3419582
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1404,
+          "99.9": 361790,
+          "99.99": 1732942,
+          "99.999": 3458494
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1404,
+          "99.9": 369470,
+          "99.99": 1732942,
+          "99.999": 3458494
+        }
+      },
+      "gcMs": 34.886657,
+      "safepointMs": 35.718875,
+      "safepointCoreMs": 35.510751,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 152018.0,
+        "p90": 181138
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 65190.0,
+        "p90": 82845
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "3012bd12e420663209f228ee120f338eeeb0fc20a42c641076b5229e0d96d948",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w500-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "d54d50cbbfcc8d5068b7ceb3de4e1f81df448b4ab5c913fca203973847ed3c8c"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w0-p4096-live0-b2-s44812-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 0,
+      "seed": 44812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 5543,
+        "99.9": 18783,
+        "99.99": 1458175,
+        "99.999": 2332671
+      },
+      "frozenM2Ns": {
+        "99": 399,
+        "99.9": 15967,
+        "99.99": 1320270,
+        "99.999": 2239934
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1337678,
+          "99.999": 2258366
+        },
+        "gcPlusSafepointTotal": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1418574,
+          "99.999": 2338238
+        }
+      },
+      "gcMs": 7.614579,
+      "safepointMs": 8.173991,
+      "safepointCoreMs": 7.761828,
+      "gcAssociatedSparseEvents": 3,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 3,
+        "median": 163344,
+        "p90": 180951
+      },
+      "postGcReturnNs": {
+        "n": 3,
+        "median": 75551,
+        "p90": 82881
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b2-s44812-CAFFEINE/gc-through-measurement.log": "10954c5ac44d5c179abd6e689cd6c6b2e61719be63eadd389744398929c5ab78",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b2-s44812-CAFFEINE/worker/stalls.csv": "856af7d91dee56da2e4044d6eac19483d03d1ce72ba049af37b2986f9c7840de"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w0-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 0,
+      "seed": 44812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 2455,
+        "99.9": 189695,
+        "99.99": 1371135,
+        "99.999": 1619967
+      },
+      "frozenM2Ns": {
+        "99": 1050,
+        "99.9": 60702,
+        "99.99": 1255758,
+        "99.999": 1535422
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1050,
+          "99.9": 95678,
+          "99.99": 1292622,
+          "99.999": 1578430
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1050,
+          "99.9": 105470,
+          "99.99": 1293646,
+          "99.999": 1578430
+        }
+      },
+      "gcMs": 29.491799,
+      "safepointMs": 30.42018,
+      "safepointCoreMs": 30.189816,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 125149.0,
+        "p90": 180241
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 35691.0,
+        "p90": 83483
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "d44cacd1a96c4fd872d124b0c3bbe669ba6d6175c8623951d613d5f1c669f02f",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "bf303602f1b39ca38285936b50f670a8541407353492d521a3bd12c4ae312ff2"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w0-p4096-live0-b1-s44811-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 0,
+      "seed": 44811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 5407,
+        "99.9": 18575,
+        "99.99": 1567743,
+        "99.999": 2506751
+      },
+      "frozenM2Ns": {
+        "99": 399,
+        "99.9": 15967,
+        "99.99": 1386830,
+        "99.999": 2360766
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1440078,
+          "99.999": 2420158
+        },
+        "gcPlusSafepointTotal": {
+          "99": 399,
+          "99.9": 15967,
+          "99.99": 1516878,
+          "99.999": 2495934
+        }
+      },
+      "gcMs": 8.076147,
+      "safepointMs": 8.72564,
+      "safepointCoreMs": 8.30162,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 163936.0,
+        "p90": 225195
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 82105.0,
+        "p90": 144199
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b1-s44811-CAFFEINE/gc-through-measurement.log": "41f22bd070a023d8e8426f52615b2106da25b92b44b3bc6163408d46ce5a28b3",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b1-s44811-CAFFEINE/worker/stalls.csv": "0378fd7b7dcca966c3c76f2f4dbdcdd71e36928bde4c2e679bcc2c0238ff9d90"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w0-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 0,
+      "seed": 44811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 2421,
+        "99.9": 168575,
+        "99.99": 1348607,
+        "99.999": 1589247
+      },
+      "frozenM2Ns": {
+        "99": 1050,
+        "99.9": 33358,
+        "99.99": 1233230,
+        "99.999": 1498558
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1050,
+          "99.9": 67710,
+          "99.99": 1267022,
+          "99.999": 1535422
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1050,
+          "99.9": 75582,
+          "99.99": 1274190,
+          "99.999": 1536446
+        }
+      },
+      "gcMs": 28.891313,
+      "safepointMs": 29.773222,
+      "safepointCoreMs": 29.584809,
+      "gcAssociatedSparseEvents": 22,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 22,
+        "median": 149358.0,
+        "p90": 180953
+      },
+      "postGcReturnNs": {
+        "n": 22,
+        "median": 50540.5,
+        "p90": 84909
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "e4d1cf9bfef7d81ff2bfee4d59418305820ff503640fe5c8830bd45fde1552ff",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w0-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "4ffd1d3f9c6d96199d033f151f29c914bf4fba1a2ce9845363b3b337c44cb52f"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w50-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 50,
+      "seed": 44811,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 7923,
+        "99.9": 183423,
+        "99.99": 1411071,
+        "99.999": 1702911
+      },
+      "frozenM2Ns": {
+        "99": 1093,
+        "99.9": 41742,
+        "99.99": 1276238,
+        "99.999": 1597886
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1093,
+          "99.9": 76926,
+          "99.99": 1313102,
+          "99.999": 1622462
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1093,
+          "99.9": 85758,
+          "99.99": 1320270,
+          "99.999": 1632702
+        }
+      },
+      "gcMs": 29.051075,
+      "safepointMs": 29.999596,
+      "safepointCoreMs": 29.737956,
+      "gcAssociatedSparseEvents": 21,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 21,
+        "median": 152226,
+        "p90": 174531
+      },
+      "postGcReturnNs": {
+        "n": 21,
+        "median": 59721,
+        "p90": 85765
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "51ff8f89c0ba52ee3ddd5ba4cee55b0a6f1f4953b6a19700dcf010286b9ed12d",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b1-s44811-CHRONICLE_IN_MEMORY/worker/stalls.csv": "6f90e062a956f1308ddb604094f4af67f0a4399194aeb2ac7c20d061cb1dbf80"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w50-p4096-live0-b1-s44811-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 50,
+      "seed": 44811,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7267,
+        "99.9": 828415,
+        "99.99": 7352319,
+        "99.999": 9773055
+      },
+      "frozenM2Ns": {
+        "99": 475,
+        "99.9": 598334,
+        "99.99": 7204174,
+        "99.999": 9676222
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 475,
+          "99.9": 630590,
+          "99.99": 7232846,
+          "99.999": 9717182
+        },
+        "gcPlusSafepointTotal": {
+          "99": 475,
+          "99.9": 681790,
+          "99.99": 7310670,
+          "99.999": 9782718
+        }
+      },
+      "gcMs": 32.52585,
+      "safepointMs": 33.156224,
+      "safepointCoreMs": 32.724098,
+      "gcAssociatedSparseEvents": 5,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 5,
+        "median": 139842,
+        "p90": 159903
+      },
+      "postGcReturnNs": {
+        "n": 5,
+        "median": 50665,
+        "p90": 76876
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b1-s44811-CAFFEINE/gc-through-measurement.log": "83316c73b3946cc95127c938a2bf631a56fbde4e9cf720eb7fcc3eba3172847b",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b1-s44811-CAFFEINE/worker/stalls.csv": "86277b374b2bd470b785cff662703f279a7b1455e854fe752ffc3263c44e6825"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w50-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY",
+      "cohort": "confirmation",
+      "backend": "CHRONICLE_IN_MEMORY",
+      "writeBps": 50,
+      "seed": 44812,
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence"
+      ],
+      "measuredNs": {
+        "99": 7931,
+        "99.9": 303615,
+        "99.99": 1516543,
+        "99.999": 1952767
+      },
+      "frozenM2Ns": {
+        "99": 1093,
+        "99.9": 164798,
+        "99.99": 1393998,
+        "99.999": 1913278
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 1093,
+          "99.9": 199102,
+          "99.99": 1430862,
+          "99.999": 1931710
+        },
+        "gcPlusSafepointTotal": {
+          "99": 1093,
+          "99.9": 207294,
+          "99.99": 1441102,
+          "99.999": 1953214
+        }
+      },
+      "gcMs": 31.742544,
+      "safepointMs": 32.62108,
+      "safepointCoreMs": 32.425374,
+      "gcAssociatedSparseEvents": 21,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 21,
+        "median": 144911,
+        "p90": 166763
+      },
+      "postGcReturnNs": {
+        "n": 21,
+        "median": 65779,
+        "p90": 80255
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/gc-through-measurement.log": "bc33bc2f9a8890abc6a9e4be907eaa64513a35c62d9fefd75473ed8f03a46d36",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b2-s44812-CHRONICLE_IN_MEMORY/worker/stalls.csv": "09dcf03782e718511817f03af3e3ccd03c3ed29168ccc757b23408ee0dfc4a89"
+      }
+    },
+    {
+      "id": "predictor-drain-confirm-20261118-001/drain-confirm-w50-p4096-live0-b2-s44812-CAFFEINE",
+      "cohort": "confirmation",
+      "backend": "CAFFEINE",
+      "writeBps": 50,
+      "seed": 44812,
+      "warnings": [],
+      "measuredNs": {
+        "99": 7435,
+        "99.9": 152191,
+        "99.99": 9003007,
+        "99.999": 11558911
+      },
+      "frozenM2Ns": {
+        "99": 475,
+        "99.9": 16043,
+        "99.99": 8813902,
+        "99.999": 11494846
+      },
+      "variants": {
+        "gcPlusSafepointCore": {
+          "99": 475,
+          "99.9": 16043,
+          "99.99": 8838478,
+          "99.999": 11519422
+        },
+        "gcPlusSafepointTotal": {
+          "99": 475,
+          "99.9": 16043,
+          "99.99": 8920398,
+          "99.999": 11601342
+        }
+      },
+      "gcMs": 28.674525,
+      "safepointMs": 29.285059,
+      "safepointCoreMs": 28.870922,
+      "gcAssociatedSparseEvents": 4,
+      "unassociatedSparseEvents": 0,
+      "unassociatedSparseSpanNs": 0,
+      "extraGcEnvelopeNs": {
+        "n": 4,
+        "median": 149285.0,
+        "p90": 202157
+      },
+      "postGcReturnNs": {
+        "n": 4,
+        "median": 64874.0,
+        "p90": 116863
+      },
+      "inputs": {
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b2-s44812-CAFFEINE/gc-through-measurement.log": "b1e4b69cfe387b99b3a5558ec3f0d072a03c7b7317a546f96cba18d79994fef1",
+        "evidence-archives/predictor-drain-confirm-20261118-001/slots/drain-confirm-w50-p4096-live0-b2-s44812-CAFFEINE/worker/stalls.csv": "bc2c84e6f44e610649714e9ee75cc1e715133cf58ead7b513ff87f0f78c685f9"
+      }
+    }
+  ],
+  "summary": {
+    "validation": {
+      "all": {
+        "frozenM2": {
+          "99": {
+            "n": 30,
+            "medianAbsoluteNs": 6897.0,
+            "p90AbsoluteNs": 8021,
+            "medianRelativeError": 0.8865054296189476,
+            "p90RelativeError": 0.9382760699216396,
+            "medianAbsoluteLog2Error": 3.1703236220523694
+          },
+          "99.9": {
+            "n": 30,
+            "medianAbsoluteNs": 139188.5,
+            "p90AbsoluteNs": 303809,
+            "medianRelativeError": 0.35157608452903066,
+            "p90RelativeError": 0.7901483069829115,
+            "medianAbsoluteLog2Error": 0.6271675181250622
+          },
+          "99.99": {
+            "n": 30,
+            "medianAbsoluteNs": 136369.0,
+            "p90AbsoluteNs": 193201,
+            "medianRelativeError": 0.07947097615234094,
+            "p90RelativeError": 0.08694305659029561,
+            "medianAbsoluteLog2Error": 0.11946488660976148
+          },
+          "99.999": {
+            "n": 30,
+            "medianAbsoluteNs": 92225.0,
+            "p90AbsoluteNs": 137793,
+            "medianRelativeError": 0.03880438741437964,
+            "p90RelativeError": 0.055347525967275144,
+            "medianAbsoluteLog2Error": 0.05709807841446121
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 30,
+            "medianAbsoluteNs": 6897.0,
+            "p90AbsoluteNs": 8021,
+            "medianRelativeError": 0.8865054296189476,
+            "p90RelativeError": 0.9382760699216396,
+            "medianAbsoluteLog2Error": 3.1703236220523694
+          },
+          "99.9": {
+            "n": 30,
+            "medianAbsoluteNs": 104401.0,
+            "p90AbsoluteNs": 260801,
+            "medianRelativeError": 0.3038947087907067,
+            "p90RelativeError": 0.565890536556442,
+            "medianAbsoluteLog2Error": 0.5228401328339152
+          },
+          "99.99": {
+            "n": 30,
+            "medianAbsoluteNs": 101041.0,
+            "p90AbsoluteNs": 148145,
+            "medianRelativeError": 0.05555251428052267,
+            "p90RelativeError": 0.06347598584537668,
+            "medianAbsoluteLog2Error": 0.08245964355652759
+          },
+          "99.999": {
+            "n": 30,
+            "medianAbsoluteNs": 57921.0,
+            "p90AbsoluteNs": 96833,
+            "medianRelativeError": 0.020404197901884014,
+            "p90RelativeError": 0.03552654172403351,
+            "medianAbsoluteLog2Error": 0.02974191853959387
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 30,
+            "medianAbsoluteNs": 6897.0,
+            "p90AbsoluteNs": 8021,
+            "medianRelativeError": 0.8865054296189476,
+            "p90RelativeError": 0.9382760699216396,
+            "medianAbsoluteLog2Error": 3.1703236220523694
+          },
+          "99.9": {
+            "n": 30,
+            "medianAbsoluteNs": 97249.0,
+            "p90AbsoluteNs": 201409,
+            "medianRelativeError": 0.2927908267694531,
+            "p90RelativeError": 0.5397133021856454,
+            "medianAbsoluteLog2Error": 0.5005673172300037
+          },
+          "99.99": {
+            "n": 30,
+            "medianAbsoluteNs": 75441.0,
+            "p90AbsoluteNs": 90801,
+            "medianRelativeError": 0.037658066728139844,
+            "p90RelativeError": 0.057175078050535726,
+            "medianAbsoluteLog2Error": 0.055391199007547465
+          },
+          "99.999": {
+            "n": 30,
+            "medianAbsoluteNs": 43073.0,
+            "p90AbsoluteNs": 88641,
+            "medianRelativeError": 0.011095766874842221,
+            "p90RelativeError": 0.03314218721810669,
+            "medianAbsoluteLog2Error": 0.01610032327599827
+          }
+        }
+      },
+      "CAFFEINE": {
+        "frozenM2": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 7571,
+            "p90AbsoluteNs": 9966,
+            "medianRelativeError": 0.931915882421285,
+            "p90RelativeError": 0.9410025136773621,
+            "medianAbsoluteLog2Error": 3.8765378990675727
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 275137,
+            "p90AbsoluteNs": 336577,
+            "medianRelativeError": 0.08192636006199178,
+            "p90RelativeError": 0.3017472444380605,
+            "medianAbsoluteLog2Error": 0.12331821607133416
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 164529,
+            "p90AbsoluteNs": 209585,
+            "medianRelativeError": 0.017106203356678614,
+            "p90RelativeError": 0.08694305659029561,
+            "medianAbsoluteLog2Error": 0.024892555568198586
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 113217,
+            "p90AbsoluteNs": 162369,
+            "medianRelativeError": 0.01143469474245361,
+            "p90RelativeError": 0.042640816262341764,
+            "medianAbsoluteLog2Error": 0.016591820425881542
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 7571,
+            "p90AbsoluteNs": 9966,
+            "medianRelativeError": 0.931915882421285,
+            "p90RelativeError": 0.9410025136773621,
+            "medianAbsoluteLog2Error": 3.8765378990675727
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 250561,
+            "p90AbsoluteNs": 291521,
+            "medianRelativeError": 0.07095925868859697,
+            "p90RelativeError": 0.2628942953702223,
+            "medianAbsoluteLog2Error": 0.10618623025024294
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 123569,
+            "p90AbsoluteNs": 172721,
+            "medianRelativeError": 0.012458642886245493,
+            "p90RelativeError": 0.06678892518438634,
+            "medianAbsoluteLog2Error": 0.018086927010476577
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 82497,
+            "p90AbsoluteNs": 121409,
+            "medianRelativeError": 0.00803564619389962,
+            "p90RelativeError": 0.031643168681866424,
+            "medianAbsoluteLog2Error": 0.011639816524365588
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 7571,
+            "p90AbsoluteNs": 9966,
+            "medianRelativeError": 0.931915882421285,
+            "p90RelativeError": 0.9410025136773621,
+            "medianAbsoluteLog2Error": 3.8765378990675727
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 189121,
+            "p90AbsoluteNs": 234177,
+            "medianRelativeError": 0.05899514809943901,
+            "p90RelativeError": 0.25356458323594033,
+            "medianAbsoluteLog2Error": 0.08772593325678907
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 70321,
+            "p90AbsoluteNs": 119473,
+            "medianRelativeError": 0.008002965647824562,
+            "p90RelativeError": 0.028851736655615932,
+            "medianAbsoluteLog2Error": 0.011592287311305554
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 23105,
+            "p90AbsoluteNs": 121409,
+            "medianRelativeError": 0.002607339830297123,
+            "p90RelativeError": 0.009064486652487595,
+            "medianAbsoluteLog2Error": 0.0037567008706468124
+          }
+        }
+      },
+      "CHRONICLE_IN_MEMORY": {
+        "frozenM2": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 6874,
+            "p90AbsoluteNs": 6962,
+            "medianRelativeError": 0.8519114190275887,
+            "p90RelativeError": 0.8619775224144463,
+            "medianAbsoluteLog2Error": 2.755467695378866
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 134657,
+            "p90AbsoluteNs": 142657,
+            "medianRelativeError": 0.6513429651264905,
+            "p90RelativeError": 0.8820807936023615,
+            "medianAbsoluteLog2Error": 1.5201195036262407
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 120497,
+            "p90AbsoluteNs": 126641,
+            "medianRelativeError": 0.08447271865006756,
+            "p90RelativeError": 0.09052093055823512,
+            "medianAbsoluteLog2Error": 0.12732521805990493
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 85569,
+            "p90AbsoluteNs": 99905,
+            "medianRelativeError": 0.05248438294252783,
+            "p90RelativeError": 0.059124884653286185,
+            "medianAbsoluteLog2Error": 0.07777837274802235
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 6874,
+            "p90AbsoluteNs": 6962,
+            "medianRelativeError": 0.8519114190275887,
+            "p90RelativeError": 0.8619775224144463,
+            "medianAbsoluteLog2Error": 2.755467695378866
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 100609,
+            "p90AbsoluteNs": 110273,
+            "medianRelativeError": 0.48918537407221896,
+            "p90RelativeError": 0.7020432280230803,
+            "medianAbsoluteLog2Error": 0.9691282612104863
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 80561,
+            "p90AbsoluteNs": 92849,
+            "medianRelativeError": 0.05838482244274588,
+            "p90RelativeError": 0.06347598584537668,
+            "medianAbsoluteLog2Error": 0.08679052003977458
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 50753,
+            "p90AbsoluteNs": 60993,
+            "medianRelativeError": 0.02965891553686812,
+            "p90RelativeError": 0.03630520668600989,
+            "medianAbsoluteLog2Error": 0.043436136899235735
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 15,
+            "medianAbsoluteNs": 6874,
+            "p90AbsoluteNs": 6962,
+            "medianRelativeError": 0.8519114190275887,
+            "p90RelativeError": 0.8619775224144463,
+            "medianAbsoluteLog2Error": 2.755467695378866
+          },
+          "99.9": {
+            "n": 15,
+            "medianAbsoluteNs": 93569,
+            "p90AbsoluteNs": 98305,
+            "medianRelativeError": 0.4264095898195421,
+            "p90RelativeError": 0.6482379802607103,
+            "medianAbsoluteLog2Error": 0.8019071909674024
+          },
+          "99.99": {
+            "n": 15,
+            "medianAbsoluteNs": 76465,
+            "p90AbsoluteNs": 84657,
+            "medianRelativeError": 0.05485696584791937,
+            "p90RelativeError": 0.05823446247048986,
+            "medianAbsoluteLog2Error": 0.0813954173561348
+          },
+          "99.999": {
+            "n": 15,
+            "medianAbsoluteNs": 50753,
+            "p90AbsoluteNs": 57921,
+            "medianRelativeError": 0.02965891553686812,
+            "p90RelativeError": 0.03326804370305312,
+            "medianAbsoluteLog2Error": 0.043436136899235735
+          }
+        }
+      }
+    },
+    "confirmation": {
+      "all": {
+        "frozenM2": {
+          "99": {
+            "n": 12,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.8902799408494269,
+            "p90RelativeError": 0.9346360258703729,
+            "medianAbsoluteLog2Error": 3.237014202113537
+          },
+          "99.9": {
+            "n": 12,
+            "medianAbsoluteNs": 137482.5,
+            "p90AbsoluteNs": 230081,
+            "medianRelativeError": 0.3134290363928541,
+            "p90RelativeError": 0.8021177517425478,
+            "medianAbsoluteLog2Error": 0.5425195252188069
+          },
+          "99.99": {
+            "n": 12,
+            "medianAbsoluteNs": 143025.0,
+            "p90AbsoluteNs": 189105,
+            "medianRelativeError": 0.08090119463348107,
+            "p90RelativeError": 0.09555366101351385,
+            "medianAbsoluteLog2Error": 0.12170813961671008
+          },
+          "99.999": {
+            "n": 12,
+            "medianAbsoluteNs": 94785.0,
+            "p90AbsoluteNs": 129601,
+            "medianRelativeError": 0.02367916585715829,
+            "p90RelativeError": 0.058236737514017145,
+            "medianAbsoluteLog2Error": 0.0345818217417299
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 12,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.8902799408494269,
+            "p90RelativeError": 0.9346360258703729,
+            "medianAbsoluteLog2Error": 3.237014202113537
+          },
+          "99.9": {
+            "n": 12,
+            "medianAbsoluteNs": 105505.0,
+            "p90AbsoluteNs": 189121,
+            "medianRelativeError": 0.24051359847352083,
+            "p90RelativeError": 0.598339018241139,
+            "medianAbsoluteLog2Error": 0.39690763591165534
+          },
+          "99.99": {
+            "n": 12,
+            "medianAbsoluteNs": 117425.0,
+            "p90AbsoluteNs": 150193,
+            "medianRelativeError": 0.05687944687976236,
+            "p90RelativeError": 0.08143235211383498,
+            "medianAbsoluteLog2Error": 0.08448601990347546
+          },
+          "99.999": {
+            "n": 12,
+            "medianAbsoluteNs": 55873.0,
+            "p90AbsoluteNs": 86593,
+            "medianRelativeError": 0.014671543236165159,
+            "p90RelativeError": 0.03454391760489973,
+            "medianAbsoluteLog2Error": 0.02133460510669668
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 12,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.8902799408494269,
+            "p90RelativeError": 0.9346360258703729,
+            "medianAbsoluteLog2Error": 3.237014202113537
+          },
+          "99.9": {
+            "n": 12,
+            "medianAbsoluteNs": 96993.0,
+            "p90AbsoluteNs": 139969,
+            "medianRelativeError": 0.2237294625754982,
+            "p90RelativeError": 0.5516417025063028,
+            "medianAbsoluteLog2Error": 0.3653755295849491
+          },
+          "99.99": {
+            "n": 12,
+            "medianAbsoluteNs": 76465.0,
+            "p90AbsoluteNs": 102065,
+            "medianRelativeError": 0.04109505294934941,
+            "p90RelativeError": 0.06433022560744997,
+            "medianAbsoluteLog2Error": 0.060598987027028484
+          },
+          "99.999": {
+            "n": 12,
+            "medianAbsoluteNs": 34369.0,
+            "p90AbsoluteNs": 80449,
+            "medianRelativeError": 0.004896122276664163,
+            "p90RelativeError": 0.033223910443121805,
+            "medianAbsoluteLog2Error": 0.007081206011204976
+          }
+        }
+      },
+      "CAFFEINE": {
+        "frozenM2": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6876.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.9271120440722016,
+            "p90RelativeError": 0.9361129791526563,
+            "medianAbsoluteLog2Error": 3.778287030462141
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 183114.5,
+            "p90AbsoluteNs": 230081,
+            "medianRelativeError": 0.14516328552013147,
+            "p90RelativeError": 0.8945864078690593,
+            "medianAbsoluteLog2Error": 0.22630158508799264
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 164529.0,
+            "p90AbsoluteNs": 189105,
+            "medianRelativeError": 0.020577036871933484,
+            "p90RelativeError": 0.11539710271390145,
+            "medianAbsoluteLog2Error": 0.029996211139192902
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 96833.0,
+            "p90AbsoluteNs": 145985,
+            "medianRelativeError": 0.009086940270958868,
+            "p90RelativeError": 0.058236737514017145,
+            "medianAbsoluteLog2Error": 0.013170105874556658
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6876.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.9271120440722016,
+            "p90RelativeError": 0.9361129791526563,
+            "medianAbsoluteLog2Error": 3.778287030462141
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 162634.5,
+            "p90AbsoluteNs": 197825,
+            "medianRelativeError": 0.14516328552013147,
+            "p90RelativeError": 0.8945864078690593,
+            "medianAbsoluteLog2Error": 0.22630158508799264
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 124081.0,
+            "p90AbsoluteNs": 164529,
+            "medianRelativeError": 0.017262298569838134,
+            "p90RelativeError": 0.08263548613849504,
+            "medianAbsoluteLog2Error": 0.025122456723522694
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 65089.0,
+            "p90AbsoluteNs": 86593,
+            "medianRelativeError": 0.005597071333074587,
+            "p90RelativeError": 0.03454391760489973,
+            "medianAbsoluteLog2Error": 0.008097560035895573
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6876.0,
+            "p90AbsoluteNs": 9102,
+            "medianRelativeError": 0.9271120440722016,
+            "p90RelativeError": 0.9361129791526563,
+            "medianAbsoluteLog2Error": 3.778287030462141
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 133962.5,
+            "p90AbsoluteNs": 146625,
+            "medianRelativeError": 0.14516328552013147,
+            "p90RelativeError": 0.8945864078690593,
+            "medianAbsoluteLog2Error": 0.22630158508799264
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 54449.0,
+            "p90AbsoluteNs": 98993,
+            "medianRelativeError": 0.008549858465571429,
+            "p90RelativeError": 0.03244473105604681,
+            "medianAbsoluteLog2Error": 0.012388158910465503
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 16961.0,
+            "p90AbsoluteNs": 80449,
+            "medianRelativeError": 0.003028691058463991,
+            "p90RelativeError": 0.005477097177302545,
+            "medianAbsoluteLog2Error": 0.004362578336868237
+          }
+        }
+      },
+      "CHRONICLE_IN_MEMORY": {
+        "frozenM2": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 6947,
+            "medianRelativeError": 0.831876421985391,
+            "p90RelativeError": 0.8621863573319885,
+            "medianAbsoluteLog2Error": 2.5724060294482713
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 137017.0,
+            "p90AbsoluteNs": 149441,
+            "medianRelativeError": 0.5686080072084561,
+            "p90RelativeError": 0.8021177517425478,
+            "medianAbsoluteLog2Error": 1.262705015446707
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 128689.0,
+            "p90AbsoluteNs": 189105,
+            "medianRelativeError": 0.0825719873230133,
+            "p90RelativeError": 0.09555366101351385,
+            "medianAbsoluteLog2Error": 0.12433526188723815
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 87617.0,
+            "p90AbsoluteNs": 129601,
+            "medianRelativeError": 0.03966279590497099,
+            "p90RelativeError": 0.06167380444427219,
+            "medianAbsoluteLog2Error": 0.058509768083214106
+          }
+        },
+        "gcPlusSafepointCore": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 6947,
+            "medianRelativeError": 0.831876421985391,
+            "p90RelativeError": 0.8621863573319885,
+            "medianAbsoluteLog2Error": 2.5724060294482713
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 102689.0,
+            "p90AbsoluteNs": 115649,
+            "medianRelativeError": 0.4199253150498129,
+            "p90RelativeError": 0.598339018241139,
+            "medianAbsoluteLog2Error": 0.798078935062602
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 91825.0,
+            "p90AbsoluteNs": 150193,
+            "medianRelativeError": 0.0588785379962474,
+            "p90RelativeError": 0.06942882392168785,
+            "medianAbsoluteLog2Error": 0.0875492944205539
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 47681.0,
+            "p90AbsoluteNs": 88641,
+            "medianRelativeError": 0.02210028586419118,
+            "p90RelativeError": 0.04724204611985007,
+            "medianAbsoluteLog2Error": 0.03225102864444676
+          }
+        },
+        "gcPlusSafepointTotal": {
+          "99": {
+            "n": 6,
+            "medianAbsoluteNs": 6834.0,
+            "p90AbsoluteNs": 6947,
+            "medianRelativeError": 0.831876421985391,
+            "p90RelativeError": 0.8621863573319885,
+            "medianAbsoluteLog2Error": 2.5724060294482713
+          },
+          "99.9": {
+            "n": 6,
+            "medianAbsoluteNs": 94657.0,
+            "p90AbsoluteNs": 107969,
+            "medianRelativeError": 0.38062469283146466,
+            "p90RelativeError": 0.5516417025063028,
+            "medianAbsoluteLog2Error": 0.6987068331353391
+          },
+          "99.99": {
+            "n": 6,
+            "medianAbsoluteNs": 84145.0,
+            "p90AbsoluteNs": 150193,
+            "medianRelativeError": 0.05606776734736339,
+            "p90RelativeError": 0.06434899448716613,
+            "medianAbsoluteLog2Error": 0.08324496797203958
+          },
+          "99.999": {
+            "n": 6,
+            "medianAbsoluteNs": 47169.0,
+            "p90AbsoluteNs": 88641,
+            "medianRelativeError": 0.02210028586419118,
+            "p90RelativeError": 0.041228813484674186,
+            "medianAbsoluteLog2Error": 0.03225102864444676
+          }
+        }
+      }
+    }
+  },
+  "limits": [
+    "Posthoc diagnostic selected after seeing all42 results; neither new model nor validation.",
+    "Full safepoint envelopes include reaching time while individual workers may still execute. Core excludes reaching but log endpoints are approximate worker-stop proxies.",
+    "Union GC and safepoints avoids double counting; never add their totals.",
+    "Sparse events retain gaps>=1ms; lack of unassociated events does not rule out shorter non-GC stalls. Extra envelope includes legitimate service, pacing and runtime work; it is not pure overhead."
+  ]
+}
