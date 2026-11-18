@@ -2,6 +2,12 @@
 
 **Updated 18 November 2026.** The new [mechanism study](mechanism/README.md) is collected and audited: **64 research JVMs /32 paired comparisons**, plus three functional JVMs and six separate controls. The protocol, source-matched qualification, per-cohort reviews, portable/model checks and all-point table are retained. Operational delivery is recorded separately in [mechanism status](TAILCACHE_MECHANISM_STATUS.json).
 
+New [portable collection tooling](PORTABLE_EXPERIMENT.md) supports fresh host
+replications without the old build folders or systemd. Its diagnostic validation is
+separate from research observations; no new research campaign is implied by building
+the bundle. The explicit processor-budget and host-monitoring protocol is versioned
+separately from historical acceptance rules.
+
 The strongest finding is a **response ranking reversal from update locality at matched fresh-write allocation demand**. At5% writes and 4 KiB values, concentrating updates on 2048 keys favors Caffeine in 4/4 pairs; distributing them over 32768 keys favors Chronicle in 4/4. Both seeds repeat with reversed backend order, and Caffeine GC exposure falls 82–85%. This bundles survival, locality and policy traffic; it does not prove an isolated promotion mechanism. Larger heap lowers Caffeine total GC exposure but worsens its response p99.9 at 5% writes in both seeds. The 90-second transition cohorts favor Chronicle, while a new warning-free 30-second pair favors Caffeine at 0.5%; different seeds/time prevent isolating a duration effect. No universal boundary follows.
 
 Forty-two forks have warnings; collector failures and contrary results remain. Frozen models improve descriptive numerical error but call21/22 calibrated transport pair directions, compared with 22/22 for lower-total-GC. [Results/tables](mechanism/RESULTS.md), [figures](mechanism/FIGURES.md), [sequential reviews](mechanism/COHORT_REVIEWS.md), [final review](mechanism/REVIEW.md) and [portable reproduction](mechanism/README.md) are the current entry points. The [deep re-review](mechanism/REREVIEW_20261118.md) adds fail-closed artifact validation and clarifies warning coverage and duration confounding. No further same-host matrix is queued for this completed bounded scope.

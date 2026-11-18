@@ -14,6 +14,23 @@ The primary comparison uses:
 
 The project focuses on **latency distributions**, especially tail latency, rather than headline throughput alone.
 
+## Reproduce the experiment from a clone
+
+With Java 21 and Python 3.10+ available, run this from the repository root.
+
+```sh
+python3 scripts/tailcache_portable.py reproduce --out results/replication-01
+```
+
+The command runs the Java and portable Python tests, qualifies the timing harness,
+and collects the locality, write-ratio and pressure/payload comparisons in one
+counterbalanced schedule. It writes raw evidence and reports through p99.999.
+The full schedule takes about 3 hours 36 minutes of workload time. Add
+`--suite quick` for correctness and a short diagnostic run, or `--suite locality`
+for the eight-JVM locality test. Repeat the same command to reuse verified
+completed forks. The guide also covers the standalone ZIP and offline analysis.
+[Portable collection guide](docs/PORTABLE_EXPERIMENT.md)
+
 ## What TailCache measures
 
 TailCache is designed to answer questions such as:

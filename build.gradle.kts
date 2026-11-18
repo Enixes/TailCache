@@ -70,6 +70,45 @@ tasks.register("tailCacheFocusedBuild") {
     }
 }
 
+// Standalone collection bundle. No benchmark is run by these build tasks.
+val portableTools = sourceSets.create("portableTools") {
+    java.srcDir("scripts/java")
+    java.include("MechanismSelfTest.java", "MechanismStreamAudit.java", "TailCacheFocusedHdrVerify.java")
+    compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
+}
+val portableJar = tasks.register<Jar>("tailCachePortableJar") {
+    dependsOn(tasks.classes, portableTools.classesTaskName)
+    archiveFileName.set("tailcache.jar")
+    destinationDirectory.set(layout.buildDirectory.dir("portable"))
+    from(sourceSets.main.get().output, portableTools.output)
+    isPreserveFileTimestamps = false
+    isReproducibleFileOrder = true
+}
+tasks.register<Sync>("tailCachePortableStage") {
+    group = "benchmark"
+    description = "Stages the standalone portable experiment; does not run benchmarks."
+    dependsOn(portableJar)
+    into(layout.buildDirectory.dir("portable/stage"))
+    from(portableJar) { into("lib") }
+    from(configurations.runtimeClasspath) { into("lib") }
+    from("scripts/tailcache_portable.py") { rename { "tailcache.py" } }
+    from("scripts/tailcache12_analysis.py") { rename { "analysis.py" } }
+    from("experiments/portable") { into("configs") }
+    from("docs/PORTABLE_EXPERIMENT.md") { rename { "README.md" } }
+    from("src/main/java") { into("source/src/main/java") }
+    from("src/main/resources") { into("source/src/main/resources") }
+    from("src/test") { into("source/src/test") }
+    from("scripts/java") {
+        include("MechanismSelfTest.java", "MechanismStreamAudit.java", "TailCacheFocusedHdrVerify.java")
+        into("source/scripts/java")
+    }
+    from(files("build.gradle.kts", "settings.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat")) { into("source") }
+    from("gradle/wrapper") { into("source/gradle/wrapper") }
+    from(files("scripts/tailcache_portable.py", "scripts/tailcache12_analysis.py", "scripts/test_tailcache_portable.py")) { into("source/scripts") }
+    from("experiments/portable") { into("source/experiments/portable") }
+    from(files("docs/PORTABLE_EXPERIMENT.md", "docs/PORTABLE_EXPERIMENT_PLAN.md")) { into("source/docs") }
+}
+
 val jmh = sourceSets.create("jmh") {
     java.srcDir("src/jmh/java")
     resources.srcDir("src/jmh/resources")

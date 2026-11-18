@@ -4,11 +4,18 @@
 
 The newest [64-fork mechanism study](mechanism/README.md), [results](mechanism/RESULTS.md), [final review](mechanism/REVIEW.md) and [figures](mechanism/FIGURES.md) extend the paper with constrained-order update-set reversals, window/headroom sensitivity and frozen-model transport. Historical packages remain unchanged.
 
+For new host replications, use the [portable collection guide](PORTABLE_EXPERIMENT.md),
+[implementation plan](PORTABLE_EXPERIMENT_PLAN.md) and [validation/review](PORTABLE_EXPERIMENT_REVIEW.md).
+This runner is independent of dated build directories and does not modify the old evidence.
+
 The completed [18 November predictor study](predictor/RESULTS.md), [review](predictor/REVIEW.md) and [reproduction guide](predictor/README.md) describe the preceding evidence. The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
 
 | Document | Role |
 | --- | --- |
 | [README.md](../README.md) | Current guidance / entry point |
+| [docs/PORTABLE_EXPERIMENT.md](PORTABLE_EXPERIMENT.md) | Standalone build, collection, resumption and statistics guide |
+| [docs/PORTABLE_EXPERIMENT_PLAN.md](PORTABLE_EXPERIMENT_PLAN.md) | Portable collection implementation plan |
+| [docs/PORTABLE_EXPERIMENT_REVIEW.md](PORTABLE_EXPERIMENT_REVIEW.md) | Portable collection validation and limitations |
 | [docs/DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) | Current guidance / entry point |
 | [docs/METHODOLOGY.md](METHODOLOGY.md) | Current guidance / entry point |
 | [docs/PLAN.md](PLAN.md) | Current guidance / entry point |

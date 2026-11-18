@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "name": "functional-smoke",
+  "purpose": "diagnostic",
+  "heapMiB": 512,
+  "residents": 64,
+  "churnMiBPerSecond": 0,
+  "warmupMs": 1500,
+  "conditioningMs": 100,
+  "measureMs": 300,
+  "primeCalls": 0,
+  "seeds": [
+    61901,
+    61902
+  ],
+  "orderSeed": 61800,
+  "logging": "async",
+  "cells": [
+    {
+      "payloadBytes": 256,
+      "liveMiB": 0,
+      "writeBps": 500,
+      "updateHotset": 64,
+      "qps": 10000
+    }
+  ],
+  "quality": {
+    "minAvailableMiB": 1024,
+    "minDiskMiB": 512,
+    "compilerWarningMs": 80,
+    "maxOutsideCpuFraction": 0.1,
+    "maxChurnRelativeError": 0.1,
+    "minExpectedTailEvents": 20
+  },
+  "activeProcessorCount": 12
+}
