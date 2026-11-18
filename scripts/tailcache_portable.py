@@ -20,6 +20,7 @@ import sys
 import tempfile
 import threading
 import time
+import xml.etree.ElementTree as ET
 import zipfile
 
 sys.dont_write_bytecode = True
@@ -941,10 +942,22 @@ def pack(destination):
     print(json.dumps(dict(bundle=str(destination),sha256=sha(destination),id=manifest['id'])),flush=True)
 
 
-def checkout_bundle(out, java):
+def save_junit_reports(directory, setup):
+    reports = sorted(directory.glob('TEST-*.xml'))
+    require(reports, 'Gradle JUnit XML results are missing. Run the Gradle test task.')
+    checks = [ET.parse(report).getroot() for report in reports]
+    require(all(check.tag=='testsuite' for check in checks), 'Invalid Gradle JUnit XML results')
+    executed = sum(int(check.get('tests', '0'))-int(check.get('skipped', '0')) for check in checks)
+    failed = sum(int(check.get('failures', '0'))+int(check.get('errors', '0')) for check in checks)
+    require(executed>0 and failed==0, 'Gradle JUnit tests must pass before collection')
+    for report in reports:
+        shutil.copyfile(report, setup/report.name)
+
+
+def checkout_bundle(out, java, gradle_stage=None, gradle_test_results=None):
     """Build and test once, then preserve the exact bundle alongside the results."""
     root = HERE.parent
-    stage = root/'build/portable/stage'
+    stage = gradle_stage or root/'build/portable/stage'
     require(stage not in (out, *out.parents), 'Keep results outside the Gradle staging directory')
     bundle = out/'bundle'
     with host_lock():
@@ -956,7 +969,7 @@ def checkout_bundle(out, java):
         require(not (out/'suite.json').exists(), 'Retained suite bundle is missing')
         out.mkdir(parents=True, exist_ok=True)
         setup = pathlib.Path(tempfile.mkdtemp(prefix='setup-', dir=out))
-        print(f'Running portable Python checks and Gradle tests. Logs: {setup}', flush=True)
+        print(f'Collecting checkout test evidence in {setup}', flush=True)
         # The checks exercise lock contention. Give them an isolated lock path
         # while the real host lock protects setup from overlapping collection.
         with tempfile.TemporaryDirectory(dir=setup) as test_temp, (setup/'python.log').open('x') as log:
@@ -965,9 +978,12 @@ def checkout_bundle(out, java):
             env = dict(os.environ, TMPDIR=test_temp)
             status = subprocess.run(command, cwd=root, env=env, stdout=log, stderr=subprocess.STDOUT).returncode
         require(status==0, f'Portable Python checks failed. See {setup/"python.log"}')
-        env = dict(os.environ, JAVA_HOME=java['home'])
-        with (setup/'gradle.log').open('x') as log:
-            stage = build_stage(root, checks=True, env=env, log=log)
+        if gradle_stage is None:
+            env = dict(os.environ, JAVA_HOME=java['home'])
+            with (setup/'gradle.log').open('x') as log:
+                stage = build_stage(root, checks=True, env=env, log=log)
+        else:
+            save_junit_reports(gradle_test_results, setup)
         manifest = stage_manifest(root, stage)
         manifest['checkoutChecks'] = {
             'jdkId': java['id'],
@@ -1044,13 +1060,13 @@ def collect_suite(suite, out, java_arg):
         require(passed, 'A phase has incomplete workers or unusable pairs. See the suite summary.')
 
 
-def reproduce(suite, out, java_arg):
+def reproduce(suite, out, java_arg, gradle_stage=None, gradle_test_results=None):
     out = pathlib.Path(out).resolve()
     if (HERE/'bundle.json').exists():
         collect_suite(suite, out, java_arg)
         return 0
     java = java_identity(java_arg)
-    bundle = checkout_bundle(out, java)
+    bundle = checkout_bundle(out, java, gradle_stage, gradle_test_results)
     command = [sys.executable, str(bundle/'tailcache.py'), 'reproduce', '--suite', suite,
                '--out', str(out), '--java', java['executable']]
     return subprocess.run(command).returncode
@@ -1069,6 +1085,8 @@ def main():
     suite.add_argument('--suite', choices=SUITES, default='all')
     suite.add_argument('--out', help='New or existing suite directory')
     suite.add_argument('--java')
+    suite.add_argument('--gradle-stage', type=pathlib.Path, help=argparse.SUPPRESS)
+    suite.add_argument('--gradle-test-results', type=pathlib.Path, help=argparse.SUPPRESS)
     suite.add_argument('--plan', action='store_true', help='Print the frozen design without building or running')
     args=p.parse_args()
     if args.command=='pack':pack(args.out)
@@ -1081,7 +1099,9 @@ def main():
             print(json.dumps(suite_plan(configs, args.suite), indent=2))
         else:
             require(args.out, 'reproduce requires --out unless --plan is used')
-            return reproduce(args.suite, args.out, args.java)
+            require(bool(args.gradle_stage)==bool(args.gradle_test_results),
+                    'Gradle stage and test results must be supplied together')
+            return reproduce(args.suite, args.out, args.java, args.gradle_stage, args.gradle_test_results)
     else:report(args.run,args.out)
 
 
@@ -1089,5 +1109,5 @@ if __name__=='__main__':
     try:sys.exit(main())
     except KeyboardInterrupt:
         print('Interrupted. Retained evidence is in the output directory.',file=sys.stderr);sys.exit(130)
-    except (ValueError,OSError,KeyError) as error:
+    except (ValueError,OSError,KeyError,ET.ParseError) as error:
         print('STOPPED: '+str(error),file=sys.stderr);sys.exit(2)

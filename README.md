@@ -19,16 +19,15 @@ The project focuses on **latency distributions**, especially tail latency, rathe
 With Java 21 and Python 3.10+ available, run this from the repository root.
 
 ```sh
-python3 scripts/tailcache_portable.py reproduce --out results/replication-01
+./gradlew --no-daemon tailCacheReproduce
 ```
 
-The command runs the Java and portable Python tests, qualifies the timing harness,
-and collects the locality, write-ratio and pressure/payload comparisons in one
-counterbalanced schedule. It writes raw evidence and reports through p99.999.
-The full schedule takes about 3 hours 36 minutes of workload time. Add
-`--suite quick` for correctness and a short diagnostic run, or `--suite locality`
-for the eight-JVM locality test. Repeat the same command to reuse verified
-completed forks. The guide also covers the standalone ZIP and offline analysis.
+Gradle runs the Java tests and stages the experiment. The Python runner verifies
+the run and produces reports through p99.999. The full schedule takes about
+3 hours 36 minutes of workload time. Add `-PtailcacheSuite=quick` for a diagnostic
+run or `-PtailcacheSuite=locality` for the eight-JVM locality test. Add
+`-PtailcacheOut=results/my-replication` to choose a result directory.
+Repeat the same command to reuse verified completed forks.
 [Portable collection guide](docs/PORTABLE_EXPERIMENT.md)
 
 ## What TailCache measures

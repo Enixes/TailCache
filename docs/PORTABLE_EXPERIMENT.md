@@ -17,24 +17,30 @@ collection on those systems have not been validated here. Their host monitoring 
 From the repository root, the full reproduction takes one command.
 
 ```sh
-python3 scripts/tailcache_portable.py reproduce --out results/replication-01
+./gradlew --no-daemon tailCacheReproduce
 ```
 
-The command runs Gradle's Java test suite and the portable Python checks, saves a
-copy of the exact runtime bundle, then runs the functional check, timer floor,
-known-pause controls and diagnostic smoke before research collection. Use a quiet
-Linux host for research measurements.
+Gradle runs the Java unit tests and builds the runtime bundle. The runner checks
+its own scheduling, evidence validation and statistics, and saves the JUnit XML
+and Python test log with the bundle. It runs the Java functional check, timer floor,
+known-pause controls and diagnostic smoke before research collection.
+Use a quiet Linux host for research measurements.
 
 | Option | Research JVMs | Nominal workload time | Coverage |
 |---|---:|---:|---|
-| `--suite quick` | 0 | 8 seconds | Correctness, timing controls and four diagnostic workers |
-| `--suite locality` | 8 | 21 minutes | Quick checks and update-locality replication |
-| `--suite all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
+| `-PtailcacheSuite=quick` | 0 | 8 seconds | Correctness, timing controls and four diagnostic workers |
+| `-PtailcacheSuite=locality` | 8 | 21 minutes | Quick checks and update-locality replication |
+| `-PtailcacheSuite=all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
 
 Times exclude dependency downloads, correctness tests, setup, timing controls and
-evidence verification. Use `reproduce --plan` to inspect the full frozen design
-before building or running. Add `--java /path/to/jdk-21/bin/java` if your default
-Java is a different version.
+evidence verification. Use `./gradlew -q tailCacheReproductionPlan` to print the
+design and add `-PtailcacheSuite=quick` or `-PtailcacheSuite=locality` to preview
+those profiles. Gradle selects the Java 21 toolchain. Use `gradlew.bat` on Windows.
+Set `-PtailcachePython=/path/to/python` to select an alternate Python executable.
+
+The default result directory is `results/replication-01`. For example, run the
+diagnostic suite in its own directory with
+`./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=quick -PtailcacheOut=results/smoke-01`.
 
 The full suite uses one counterbalanced schedule. The shared 4 KiB, 5% write,
 zero-ballast, 50k requests/s cell has the same seeds and inputs across all three
@@ -49,6 +55,12 @@ and links to the phase reports and point conclusions. `suite.json` records the
 design, and `setup-*/` holds Python and Gradle check logs. A failed diagnostic phase
 stops the suite before research. An interrupted worker without a complete receipt
 needs a separate attempt, as described below.
+
+Gradle waits while the runner collects the measurements. For a dedicated run with
+Gradle exited during collection, use
+`python3 scripts/tailcache_portable.py reproduce --out results/replication-01`
+from the checkout. The standalone ZIP can run the same suite with
+`python3 tailcache.py reproduce --out ../results/replication-01` after extraction.
 
 ## Build a ZIP for offline transfer
 

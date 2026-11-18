@@ -84,7 +84,7 @@ val portableJar = tasks.register<Jar>("tailCachePortableJar") {
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
 }
-tasks.register<Sync>("tailCachePortableStage") {
+val portableStage = tasks.register<Sync>("tailCachePortableStage") {
     group = "benchmark"
     description = "Stages the standalone portable experiment; does not run benchmarks."
     dependsOn(portableJar)
@@ -107,6 +107,33 @@ tasks.register<Sync>("tailCachePortableStage") {
     from(files("scripts/tailcache_portable.py", "scripts/tailcache12_analysis.py", "scripts/test_tailcache_portable.py")) { into("source/scripts") }
     from("experiments/portable") { into("source/experiments/portable") }
     from(files("docs/PORTABLE_EXPERIMENT.md", "docs/PORTABLE_EXPERIMENT_PLAN.md")) { into("source/docs") }
+}
+
+val reproductionSuite = providers.gradleProperty("tailcacheSuite").orElse("all")
+val reproductionOutput = providers.gradleProperty("tailcacheOut").orElse("results/replication-01")
+val reproductionPython = providers.gradleProperty("tailcachePython")
+    .orElse(if (System.getProperty("os.name").startsWith("Windows")) "python" else "python3")
+
+tasks.register<Exec>("tailCacheReproduce") {
+    group = "benchmark"
+    description = "Tests, qualifies and collects the reproducible TailCache experiment."
+    dependsOn(tasks.test, portableStage)
+    commandLine(
+        reproductionPython.get(), "-B", "scripts/tailcache_portable.py", "reproduce",
+        "--suite", reproductionSuite.get(), "--out", reproductionOutput.get(),
+        "--java", java21Launcher.get().executablePath.asFile.absolutePath,
+        "--gradle-stage", portableStage.get().destinationDir.absolutePath,
+        "--gradle-test-results", tasks.test.get().reports.junitXml.outputLocation.get().asFile.absolutePath
+    )
+}
+
+tasks.register<Exec>("tailCacheReproductionPlan") {
+    group = "benchmark"
+    description = "Prints the frozen experiment design."
+    commandLine(
+        reproductionPython.get(), "-B", "scripts/tailcache_portable.py", "reproduce",
+        "--suite", reproductionSuite.get(), "--plan"
+    )
 }
 
 val jmh = sourceSets.create("jmh") {
