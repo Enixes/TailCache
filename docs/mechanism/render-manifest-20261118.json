@@ -1,0 +1,13 @@
+{
+  "inputSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "rendererSha256": "4248c3f2c12ee5e5b9a68e39b2786911e24b9f5eb1d6f2bf46b6c4a6207b84cc",
+  "matplotlibVersion": "3.10.7",
+  "outputs": {
+    "figures/c1-mechanism-response.png": "f75c99790d43667e910269099c9fd3fd9a0c1e12a6b0a86f5bc207665773a7a0",
+    "figures/c1-mechanism-response.svg": "63676469be0c53f8d3a1c3933bdf23162722c742422b55d6f9016e78a97a9e02",
+    "figures/c2-mechanism-extreme.png": "2fe595132c65255a9821952a5d09347f015d08fc9563c8ac2222f90df3d22a4b",
+    "figures/c2-mechanism-extreme.svg": "f463b0ea75a363f6e54721cc7af8b4a632ce4f93716880cf1a1005a6b69eb41f",
+    "figures/c3-conditional-transport.png": "1ed62b930a317d2fdd52403f7a7559a2e92316def7aeae32e48013474fdffdf9",
+    "figures/c3-conditional-transport.svg": "74fd2427f6ecb89c2cdae66f17afa65d31cdd001e5ca013e1f17c73948679d98"
+  }
+}

@@ -1,6 +1,6 @@
 {
   "taskComplete": false,
-  "phase": "QUALIFICATION_PASSED_READY_FOR_COLLECTION",
+  "phase": "LOCAL_ARTIFACT_QA_AND_PROTECTED_DELIVERY",
   "startedUtc": "2026-11-18T06:05:49.311001+00:00",
   "collectionDeadlineUtc": "2026-11-18T13:05:49.311001+00:00",
   "plan": "docs/TAILCACHE_MECHANISM_PLAN.md",
@@ -8,11 +8,9 @@
   "authorization": "User authorized autonomous experiment-review-code-repair cycles for about8hours and ordinary-usage recovery",
   "running": null,
   "pending": [
-    "Complete isolated implementation and source-matched functional/control qualification",
-    "Run logging8 and phase8; audit and select settings under frozen rules",
-    "Run hotset8(+8 ifworth), transition8, headroom8(+8 ifworth), payload8 with per-cohort review",
-    "Portable dataset/model verification/research review/manuscript/explorer/protected delivery",
-    "Push reviewed branch and stop recovery only when scopecomplete"
+    "Portable/model replay verification and final systems/research review",
+    "Update manuscript, entry docs, scientific figures and interactive explorer",
+    "Protected deployment, push draft review branch and stop recovery"
   ],
   "maxResearchJvms": 64,
   "oldScopesCompleteAndUnchanged": true,
@@ -30,5 +28,33 @@
     "rawAudit": "evidence-archives/mechanism-qualification-20261118-001/raw-audit.json",
     "passed": true
   },
-  "updatedUtc": "2026-11-18T06:39:50.706315+00:00"
+  "updatedUtc": "2026-11-18T10:09:36.871447+00:00",
+  "execution": {
+    "toolSessionId": 66825,
+    "nativeScope": "tailcache12-mechanism-sequence-20261118-001.scope",
+    "frozenCommit": "f11a538",
+    "singleDriver": true
+  },
+  "temporaryReportingSources": [
+    "/tmp/tailcache12_mechanism_report.py",
+    "/tmp/tailcache12_mechanism_explorer.py",
+    "/tmp/tailcache12_mechanism_ui.js",
+    "/tmp/tailcache12_mechanism_figures.py",
+    "/tmp/tailcache12_mechanism_dom_qa.cjs"
+  ],
+  "selectedLogging": "async",
+  "selectedPrimeCalls": 0,
+  "collectionComplete": true,
+  "researchForks": 64,
+  "temporaryReportingSourcesInstalled": true,
+  "completionEvidence": {
+    "datasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+    "portableVerification": "docs/mechanism/portable-verification.json",
+    "rawExportReview": "docs/mechanism/final-evidence-review.json",
+    "modelReplay": "docs/mechanism/model-replay.json",
+    "focusedTests": 13,
+    "researchForks": 64,
+    "controls": 6,
+    "functionalJvms": 3
+  }
 }

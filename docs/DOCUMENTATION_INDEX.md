@@ -2,7 +2,9 @@
 
 **Updated 18 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
 
-The completed [18 November predictor study](predictor/RESULTS.md), [review](predictor/REVIEW.md) and [reproduction guide](predictor/README.md) describe the newest evidence. The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
+The newest [64-fork mechanism study](mechanism/README.md), [results](mechanism/RESULTS.md), [final review](mechanism/REVIEW.md) and [figures](mechanism/FIGURES.md) extend the paper with constrained-order update-set reversals, window/headroom sensitivity and frozen-model transport. Historical packages remain unchanged.
+
+The completed [18 November predictor study](predictor/RESULTS.md), [review](predictor/REVIEW.md) and [reproduction guide](predictor/README.md) describe the preceding evidence. The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
 
 | Document | Role |
 | --- | --- |
@@ -195,3 +197,21 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 - [RESULTS.md](predictor/RESULTS.md): current completed predictor artifact, or explicitly frozen model/implementation record.
 - [REVIEW.md](predictor/REVIEW.md): current completed predictor artifact, or explicitly frozen model/implementation record.
 - [Original predictor plan](TAILCACHE_PREDICTOR_PLAN.md) and [fresh confirmation protocol](TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md): frozen prospective records.
+| [docs/TAILCACHE_MECHANISM_FINISH_PLAN.md](TAILCACHE_MECHANISM_FINISH_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/TAILCACHE_MECHANISM_PLAN.md](TAILCACHE_MECHANISM_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md](TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/TAILCACHE_PREDICTOR_PLAN.md](TAILCACHE_PREDICTOR_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/COHORT_REVIEWS.md](mechanism/COHORT_REVIEWS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/FIGURES.md](mechanism/FIGURES.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/IMPLEMENTATION_REVIEW.md](mechanism/IMPLEMENTATION_REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/README.md](mechanism/README.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/RESULTS.md](mechanism/RESULTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/mechanism/REVIEW.md](mechanism/REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/COMPILER_DIAGNOSTIC.md](predictor/COMPILER_DIAGNOSTIC.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md](predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/DRAIN_CANDIDATE.md](predictor/DRAIN_CANDIDATE.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/FIGURES.md](predictor/FIGURES.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/IMPLEMENTATION_REVIEW.md](predictor/IMPLEMENTATION_REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/README.md](predictor/README.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/RESULTS.md](predictor/RESULTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+| [docs/predictor/REVIEW.md](predictor/REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |

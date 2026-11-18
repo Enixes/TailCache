@@ -189,7 +189,7 @@ def smoke():
 
 def design(kind,rows,controls=0):
  inputs={str(p.relative_to(ROOT)):f.sha(p) for p in (BUILD/'compilation.json',BUILD/'functional-validation.json',BUILD/'runner-smoke-receipt.json',ROOT/'docs/mechanism/model-v1.json')}
- return dict(kind='mechanism-'+kind,maxWorkloadJvms=len(rows),controls=controls,functionalValidationJvms=3 if controls else 0,functionalReceiptReused=not controls,functionalValidationReceipt='build/mechanism-20261118/functional-validation.json',warmupMs=120000,conditioningMs=4000,measureMs=30000,perSlotTiming=True,primaryEndpoint='scheduled response p99.9; per-stage mechanism diagnostics',protocol='docs/TAILCACHE_MECHANISM_PLAN.md',discoveryInputs=inputs,schedule=rows)
+ return dict(kind='mechanism-'+kind,maxWorkloadJvms=len(rows),controls=controls,functionalValidationJvms=0,sharedFunctionalValidationJvms=3,functionalReceiptReused=True,functionalValidationReceipt='build/mechanism-20261118/functional-validation.json',warmupMs=120000,conditioningMs=4000,measureMs=30000,perSlotTiming=True,primaryEndpoint='scheduled response p99.9; per-stage mechanism diagnostics',protocol='docs/TAILCACHE_MECHANISM_PLAN.md',discoveryInputs=inputs,schedule=rows)
 
 def collect(kind,attempt,logging='sync',prime=0,confirmation=False):
  rows=schedule(kind,logging,prime,confirmation);out=ROOT/'evidence-archives'/attempt;camp=Campaign(out,design=design(kind,rows,4 if kind=='logging' else 0),classpath_file=BUILD/'classpath.txt')

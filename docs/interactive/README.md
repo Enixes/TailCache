@@ -54,3 +54,7 @@ The full-tail update is deployed and authenticated hosted checks passed: all-for
 ## Follow-up regeneration
 
 The main builder preserves and regenerates all three appended components. To refresh only the 17 November section, run `rtk proxy python3 scripts/tailcache12_service_explorer.py --site-out /tmp/tailcache-service-site-20261117`. Offline HTML embeds the complete new package and PNGs; hosted staging uses the same data hash with a separate protected `service-data.json` and figure files. Full-curve fetch verifies SHA-256 before decode. `scripts/tailcache12_service_dom_qa.cjs` documents the optional jsdom integration test; it is software testing, not browser visual review.
+
+## Mechanism extension —18 November2026
+
+The top mechanism section adds all 64 research forks/32 paired comparisons, separate cohort roles, channel/percentile selectors throughp99.999, all-point conclusions, conditional-model values, exact quantized tails and strict 100 µs/1 ms/10 ms bounds. It defaults to the reversed-order update-set repeat. The hosted full dataset is lazy-loaded with a SHA256 check; the standalone HTML embeds it. Empty update channels at 0% remain empty. Definitions explain update sets, headroom, priming, safepoint envelopes and collector failures. Existing historical sections/data remain preserved. New scientific figures and current manuscript downloads accompany the reviewed dataset. Authentication stays enabled for all deployments; no bypass/share links are created. See the current deployment and QA receipts for exact coverage.
