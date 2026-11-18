@@ -197,21 +197,17 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 - [RESULTS.md](predictor/RESULTS.md): current completed predictor artifact, or explicitly frozen model/implementation record.
 - [REVIEW.md](predictor/REVIEW.md): current completed predictor artifact, or explicitly frozen model/implementation record.
 - [Original predictor plan](TAILCACHE_PREDICTOR_PLAN.md) and [fresh confirmation protocol](TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md): frozen prospective records.
-| [docs/TAILCACHE_MECHANISM_FINISH_PLAN.md](TAILCACHE_MECHANISM_FINISH_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/TAILCACHE_MECHANISM_PLAN.md](TAILCACHE_MECHANISM_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md](TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/TAILCACHE_PREDICTOR_PLAN.md](TAILCACHE_PREDICTOR_PLAN.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/COHORT_REVIEWS.md](mechanism/COHORT_REVIEWS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/FIGURES.md](mechanism/FIGURES.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/IMPLEMENTATION_REVIEW.md](mechanism/IMPLEMENTATION_REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/README.md](mechanism/README.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/RESULTS.md](mechanism/RESULTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/mechanism/REVIEW.md](mechanism/REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/COMPILER_DIAGNOSTIC.md](predictor/COMPILER_DIAGNOSTIC.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md](predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/DRAIN_CANDIDATE.md](predictor/DRAIN_CANDIDATE.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/FIGURES.md](predictor/FIGURES.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/IMPLEMENTATION_REVIEW.md](predictor/IMPLEMENTATION_REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/README.md](predictor/README.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/RESULTS.md](predictor/RESULTS.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
-| [docs/predictor/REVIEW.md](predictor/REVIEW.md) | New mechanism scope plan, review or reproduction; see current state for claim boundaries |
+
+## Mechanism scope and supplemental review
+
+| Document | Role |
+| --- | --- |
+| [docs/TAILCACHE_MECHANISM_FINISH_PLAN.md](TAILCACHE_MECHANISM_FINISH_PLAN.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/TAILCACHE_MECHANISM_PLAN.md](TAILCACHE_MECHANISM_PLAN.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/COHORT_REVIEWS.md](mechanism/COHORT_REVIEWS.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/FIGURES.md](mechanism/FIGURES.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/IMPLEMENTATION_REVIEW.md](mechanism/IMPLEMENTATION_REVIEW.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/README.md](mechanism/README.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/RESULTS.md](mechanism/RESULTS.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/mechanism/REVIEW.md](mechanism/REVIEW.md) | Mechanism protocol, review or reproduction; current claims are in the current-state summary |
+| [docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md](predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md) | Dated posthoc review that motivated the completed mechanism scope |

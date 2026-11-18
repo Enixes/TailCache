@@ -1,25 +1,25 @@
 {
-  "taskComplete": false,
-  "phase": "LOCAL_ARTIFACT_QA_AND_PROTECTED_DELIVERY",
+  "taskComplete": true,
+  "phase": "COMPLETE",
   "startedUtc": "2026-11-18T06:05:49.311001+00:00",
   "collectionDeadlineUtc": "2026-11-18T13:05:49.311001+00:00",
   "plan": "docs/TAILCACHE_MECHANISM_PLAN.md",
   "finishPlan": "docs/TAILCACHE_MECHANISM_FINISH_PLAN.md",
   "authorization": "User authorized autonomous experiment-review-code-repair cycles for about8hours and ordinary-usage recovery",
   "running": null,
-  "pending": [
-    "Portable/model replay verification and final systems/research review",
-    "Update manuscript, entry docs, scientific figures and interactive explorer",
-    "Protected deployment, push draft review branch and stop recovery"
-  ],
+  "pending": [],
   "maxResearchJvms": 64,
   "oldScopesCompleteAndUnchanged": true,
   "recovery": {
-    "active": true,
+    "active": false,
     "requiresExplicitOrdinaryUsageAllowed": true,
     "timer": "tailcache12-recovery.timer",
     "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
-    "inspectVerified": true
+    "inspectVerified": true,
+    "stoppedUtc": "2026-11-18T10:27:04.286050+00:00",
+    "inactiveVerified": true,
+    "disabledVerified": true,
+    "enabledState": "not-found"
   },
   "qualification": {
     "functionalJvms": 3,
@@ -28,7 +28,7 @@
     "rawAudit": "evidence-archives/mechanism-qualification-20261118-001/raw-audit.json",
     "passed": true
   },
-  "updatedUtc": "2026-11-18T10:09:36.871447+00:00",
+  "updatedUtc": "2026-11-18T10:27:04.286063+00:00",
   "execution": {
     "toolSessionId": 66825,
     "nativeScope": "tailcache12-mechanism-sequence-20261118-001.scope",
@@ -56,5 +56,41 @@
     "researchForks": 64,
     "controls": 6,
     "functionalJvms": 3
-  }
+  },
+  "deployment": {
+    "id": "dpl_9z7q8PHr7EYGHSmJ4E1jase1v5qa",
+    "url": "https://tailcache-results.vercel.app/#mechanism-followup",
+    "sourceCommit": "8f72c98b88d33181ff75556bdf3c7be3c4f60cba",
+    "state": "READY",
+    "sourceFilesVerified": 33,
+    "signedOutRequestsBlocked": 66,
+    "authentication": "Vercel SSO for all deployments",
+    "realBrowserAvailable": false
+  },
+  "pullRequest": {
+    "url": "https://github.com/Enixes/TailCache/pull/10",
+    "draft": true,
+    "base": "tailcache-12-crossover"
+  },
+  "completedUtc": "2026-11-18T10:27:04.047193+00:00",
+  "researchScopeComplete": true,
+  "originalUnconditionalNoGoUnchanged": true,
+  "publication": {
+    "authorApproved": false,
+    "preprintDeposited": false,
+    "workingDraftOnly": true
+  },
+  "completed": [
+    "isolated implementation and source-matched functional/raw qualification",
+    "logging and phase-priming development with frozen decisions",
+    "update-set screen and reversed-order repetition",
+    "90-second transition repeatability",
+    "heap-headroom screen and fresh-seed confirmation",
+    "matched payload screen",
+    "independent raw/export/order/source/runtime audit",
+    "portable arithmetic, frozen-model replay and thirteen focused tests",
+    "manuscript corrections and agent-assisted systems/research reviews",
+    "scientific figures and hosted/standalone interactive QA",
+    "authenticated production deployment and draft PR update"
+  ]
 }
