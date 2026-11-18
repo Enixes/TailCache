@@ -58,9 +58,9 @@
     "functionalJvms": 3
   },
   "deployment": {
-    "id": "dpl_9z7q8PHr7EYGHSmJ4E1jase1v5qa",
+    "id": "dpl_6E1HAkdvRoNBDjWUP3zkk7vcqeJ3",
     "url": "https://tailcache-results.vercel.app/#mechanism-followup",
-    "sourceCommit": "8f72c98b88d33181ff75556bdf3c7be3c4f60cba",
+    "sourceCommit": "93a4e5695ef62b78b68cebe4005146875290c5ae",
     "state": "READY",
     "sourceFilesVerified": 33,
     "signedOutRequestsBlocked": 66,
@@ -94,7 +94,7 @@
     "authenticated production deployment and draft PR update"
   ],
   "lastRereview": {
-    "state": "LOCAL_VALIDATION_COMPLETE_DELIVERY_PENDING",
+    "state": "COMPLETE",
     "baseCommit": "49524ad",
     "plan": "docs/mechanism/REREVIEW_PLAN_20261118.md",
     "review": "docs/mechanism/REREVIEW_20261118.md",
@@ -104,6 +104,11 @@
     "portableNumericalFields": 3456,
     "modelReplayPassed": true,
     "recoveryReenabled": false,
-    "updatedUtc": "2026-11-18T16:44:02.671666+00:00"
+    "updatedUtc": "2026-11-18T16:44:02.671666+00:00",
+    "completedUtc": "2026-11-18T16:52:06.961448+00:00",
+    "sourceCommit": "93a4e5695ef62b78b68cebe4005146875290c5ae",
+    "deploymentId": "dpl_6E1HAkdvRoNBDjWUP3zkk7vcqeJ3",
+    "signedOutRequestsBlocked": 66,
+    "rawPackageAndFigureOutputsUnchanged": true
   }
 }

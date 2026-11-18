@@ -1,12 +1,12 @@
 {
   "provider": "Vercel",
-  "deploymentId": "dpl_9z7q8PHr7EYGHSmJ4E1jase1v5qa",
+  "deploymentId": "dpl_6E1HAkdvRoNBDjWUP3zkk7vcqeJ3",
   "status": "READY",
   "target": "production",
-  "sourceCommit": "8f72c98b88d33181ff75556bdf3c7be3c4f60cba",
+  "sourceCommit": "93a4e5695ef62b78b68cebe4005146875290c5ae",
   "url": "https://tailcache-results.vercel.app/",
   "reviewUrl": "https://tailcache-results.vercel.app/#mechanism-followup",
-  "deploymentUrl": "https://tailcache-results-b8h1yego8-enixes-projects.vercel.app",
+  "deploymentUrl": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app",
   "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
   "projectName": "tailcache-results",
   "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
@@ -14,10 +14,10 @@
   "files": [
     {
       "path": "index.html",
-      "bytes": 17879605,
-      "sha1": "6eefa8e8747db3647456f6c022deaefd2c40369f",
-      "sha256": "2e9c38632c4f436d36e990d2fd748db32f57ae49c2d4396b1f56d68fdf154275",
-      "remoteFileUid": "6eefa8e8747db3647456f6c022deaefd2c40369f"
+      "bytes": 17880995,
+      "sha1": "fa5cedb394cb329a0800d771fe309770e70cbf3a",
+      "sha256": "1ff8b331235d2be064a4ecb63334e4b5bf821dbadeadd2e23c68318505abe7a4",
+      "remoteFileUid": "fa5cedb394cb329a0800d771fe309770e70cbf3a"
     },
     {
       "path": "mechanism-data.json",
@@ -257,15 +257,16 @@
   "bypassOrShareLinksCreated": false,
   "mechanismDatasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
   "qa": {
-    "hostedDom": "docs/interactive/mechanism-dom-qa-20261118.json",
-    "standaloneDom": "docs/interactive/mechanism-offline-dom-qa-20261118.json",
-    "historicalPreservation": "docs/interactive/mechanism-preservation-qa-20261118.json",
-    "signedOut": "docs/interactive/mechanism-signedout-20261118.json",
+    "hostedDom": "docs/interactive/mechanism-rereview-dom-qa-20261118.json",
+    "standaloneDom": "docs/interactive/mechanism-rereview-offline-dom-qa-20261118.json",
+    "historicalPreservation": "docs/interactive/mechanism-rereview-preservation-qa-20261118.json",
+    "signedOut": "docs/interactive/mechanism-rereview-signedout-20261118.json",
     "signedOutRequests": 66,
     "remoteSourceFilesVerified": 33,
     "realBrowserAvailable": false,
-    "reason": "Browser access host unavailable; no apps/browsers in CUA inventory",
-    "scientificFiguresInspected": true
+    "reason": "Fresh CUA recheck: browser access host unavailable",
+    "scientificFiguresInspected": true,
+    "scientificOutputsReproducedByteForByte": true
   },
   "limits": "Staged DOM/data-flow, remote source UIDs and signed-out SSO verified. No new authenticated live-browser, screenshot or responsive-layout signoff; previous browser checks are historical. Static deployment READY does not constitute independent performance replication.",
   "history": [
@@ -1252,6 +1253,278 @@
           }
         }
       ]
+    },
+    {
+      "provider": "Vercel",
+      "deploymentId": "dpl_9z7q8PHr7EYGHSmJ4E1jase1v5qa",
+      "status": "READY",
+      "target": "production",
+      "sourceCommit": "8f72c98b88d33181ff75556bdf3c7be3c4f60cba",
+      "url": "https://tailcache-results.vercel.app/",
+      "reviewUrl": "https://tailcache-results.vercel.app/#mechanism-followup",
+      "deploymentUrl": "https://tailcache-results-b8h1yego8-enixes-projects.vercel.app",
+      "projectId": "prj_PoAFhLJvsixnvqErfmTh7sX4ozYL",
+      "projectName": "tailcache-results",
+      "teamId": "team_hqGnZiF9L84mshXvRYMJEU4V",
+      "teamSlug": "enixes-projects",
+      "files": [
+        {
+          "path": "index.html",
+          "bytes": 17879605,
+          "sha1": "6eefa8e8747db3647456f6c022deaefd2c40369f",
+          "sha256": "2e9c38632c4f436d36e990d2fd748db32f57ae49c2d4396b1f56d68fdf154275",
+          "remoteFileUid": "6eefa8e8747db3647456f6c022deaefd2c40369f"
+        },
+        {
+          "path": "mechanism-data.json",
+          "bytes": 16375822,
+          "sha1": "f1f38eb74db557a5c619974c45a3df268818238d",
+          "sha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+          "remoteFileUid": "f1f38eb74db557a5c619974c45a3df268818238d"
+        },
+        {
+          "path": "mechanism-figures/c1-mechanism-response.png",
+          "bytes": 262430,
+          "sha1": "9aa9c85147aa072b8b767e56d6af2009075f3263",
+          "sha256": "f75c99790d43667e910269099c9fd3fd9a0c1e12a6b0a86f5bc207665773a7a0",
+          "remoteFileUid": "9aa9c85147aa072b8b767e56d6af2009075f3263"
+        },
+        {
+          "path": "mechanism-figures/c1-mechanism-response.svg",
+          "bytes": 206401,
+          "sha1": "423de669dbe6f0b5ae5653f6c41bc5b6b110a09d",
+          "sha256": "63676469be0c53f8d3a1c3933bdf23162722c742422b55d6f9016e78a97a9e02",
+          "remoteFileUid": "423de669dbe6f0b5ae5653f6c41bc5b6b110a09d"
+        },
+        {
+          "path": "mechanism-figures/c2-mechanism-extreme.png",
+          "bytes": 277795,
+          "sha1": "c54d607d333e111295a74758f71914c7d1c46080",
+          "sha256": "2fe595132c65255a9821952a5d09347f015d08fc9563c8ac2222f90df3d22a4b",
+          "remoteFileUid": "c54d607d333e111295a74758f71914c7d1c46080"
+        },
+        {
+          "path": "mechanism-figures/c2-mechanism-extreme.svg",
+          "bytes": 192039,
+          "sha1": "b15d3e9a417d0795cc1d60f45db7d66e08034b6c",
+          "sha256": "f463b0ea75a363f6e54721cc7af8b4a632ce4f93716880cf1a1005a6b69eb41f",
+          "remoteFileUid": "b15d3e9a417d0795cc1d60f45db7d66e08034b6c"
+        },
+        {
+          "path": "mechanism-figures/c3-conditional-transport.png",
+          "bytes": 113428,
+          "sha1": "7dc4b925ce8fea5b49aa3158638c5ecb85396c2f",
+          "sha256": "1ed62b930a317d2fdd52403f7a7559a2e92316def7aeae32e48013474fdffdf9",
+          "remoteFileUid": "7dc4b925ce8fea5b49aa3158638c5ecb85396c2f"
+        },
+        {
+          "path": "mechanism-figures/c3-conditional-transport.svg",
+          "bytes": 115106,
+          "sha1": "e0320823dbca0af6de3b59b1a30da18369726fe5",
+          "sha256": "74fd2427f6ecb89c2cdae66f17afa65d31cdd001e5ca013e1f17c73948679d98",
+          "remoteFileUid": "e0320823dbca0af6de3b59b1a30da18369726fe5"
+        },
+        {
+          "path": "predictor-data.json",
+          "bytes": 2362332,
+          "sha1": "ebe60dfcb9149921af94c4f6f510dd40b5eeeb02",
+          "sha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+          "remoteFileUid": "ebe60dfcb9149921af94c4f6f510dd40b5eeeb02"
+        },
+        {
+          "path": "predictor-figures/b1-write-rate-reversal.png",
+          "bytes": 87732,
+          "sha1": "f21ee4fd57e2ff08b6ec9fa729b3c4d09975532b",
+          "sha256": "2a9885addaf66732950aac01abf60e7326d2bf18db3e028178d3c510362cf134",
+          "remoteFileUid": "f21ee4fd57e2ff08b6ec9fa729b3c4d09975532b"
+        },
+        {
+          "path": "predictor-figures/b1-write-rate-reversal.svg",
+          "bytes": 75359,
+          "sha1": "6e999a9f9514fa4d6fea29d53da4b9e78df92a48",
+          "sha256": "087923fd98292c3d83f71e97490cd471d04be09292053847d7ccc2a4a4d82242",
+          "remoteFileUid": "6e999a9f9514fa4d6fea29d53da4b9e78df92a48"
+        },
+        {
+          "path": "predictor-figures/b2-conditional-prediction.png",
+          "bytes": 188775,
+          "sha1": "e65f1ed208d5358ab1fe61990ca977e0f5ab4992",
+          "sha256": "f3319be7c90cae759bf131d2e0b2bdc8daf1eea220aeb1955d528981a920b099",
+          "remoteFileUid": "e65f1ed208d5358ab1fe61990ca977e0f5ab4992"
+        },
+        {
+          "path": "predictor-figures/b2-conditional-prediction.svg",
+          "bytes": 181548,
+          "sha1": "e46ad35f0c410102324794c08f4c91e2f93cf21d",
+          "sha256": "5e4aae2dfc69cb99ea78cf4bd7b9ebda028687dbd69fb21f5cf8d05ea8fef5fd",
+          "remoteFileUid": "e46ad35f0c410102324794c08f4c91e2f93cf21d"
+        },
+        {
+          "path": "predictor-figures/b3-pause-budget.png",
+          "bytes": 96436,
+          "sha1": "ff77b8cf8403f9f317f8f32d3e770686d1606123",
+          "sha256": "a76ff27ab2eff22cc450bb6a3eed871957ab812e217dc2e7d20d58be506363c6",
+          "remoteFileUid": "ff77b8cf8403f9f317f8f32d3e770686d1606123"
+        },
+        {
+          "path": "predictor-figures/b3-pause-budget.svg",
+          "bytes": 78579,
+          "sha1": "a31283b0fdd52ada94a080b55c2e320f8d9df2d0",
+          "sha256": "9a324062e651f44a2a449d8fa9304a3db80ff8eb594462e8ce391f5cbb16d70b",
+          "remoteFileUid": "a31283b0fdd52ada94a080b55c2e320f8d9df2d0"
+        },
+        {
+          "path": "predictor-figures/b4-extreme-tails.png",
+          "bytes": 89683,
+          "sha1": "ea4bd65fd163e5f89597995f118a377f573ba763",
+          "sha256": "23ac98a2e7fd72dff07e8905382ae536ea33240bacb763e9e2f57eddbbd4907a",
+          "remoteFileUid": "ea4bd65fd163e5f89597995f118a377f573ba763"
+        },
+        {
+          "path": "predictor-figures/b4-extreme-tails.svg",
+          "bytes": 64529,
+          "sha1": "0011d66c08e6ad11e96a3fc1f6f0393501c1969b",
+          "sha256": "7c06ef2c8d400873fe5f44a836289eafe673fc4ffee2418a2223dd676b3fe194",
+          "remoteFileUid": "0011d66c08e6ad11e96a3fc1f6f0393501c1969b"
+        },
+        {
+          "path": "service-data.json",
+          "bytes": 6780117,
+          "sha1": "1f8d3445a99990109d2ca19280dfd7d02daa40e9",
+          "sha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+          "remoteFileUid": "1f8d3445a99990109d2ca19280dfd7d02daa40e9"
+        },
+        {
+          "path": "service-figures/a1-harness-payload.png",
+          "bytes": 77075,
+          "sha1": "6d39781ddbb67b7643d690dd0498f6ed499bb7f7",
+          "sha256": "9c85b341c15d1f3f5678eaf24ccec441fa30e5e9f2e23a814c25cb9ac380b16d",
+          "remoteFileUid": "6d39781ddbb67b7643d690dd0498f6ed499bb7f7"
+        },
+        {
+          "path": "service-figures/a1-harness-payload.svg",
+          "bytes": 67262,
+          "sha1": "c527d564e63926a88dfa3ec9e45d34e58e521fe1",
+          "sha256": "268f0b70870a632f2bc8e51470b897ae92881befe2392f2421b3bb4ae1c1f061",
+          "remoteFileUid": "c527d564e63926a88dfa3ec9e45d34e58e521fe1"
+        },
+        {
+          "path": "service-figures/a2-cache-policy.png",
+          "bytes": 65467,
+          "sha1": "969f58143cead9fd5e857866a3b238a7839d7eeb",
+          "sha256": "70e4dab4f8e3109fe204521f8b48f481c0b2c12d85fba7d811f973d76333785b",
+          "remoteFileUid": "969f58143cead9fd5e857866a3b238a7839d7eeb"
+        },
+        {
+          "path": "service-figures/a2-cache-policy.svg",
+          "bytes": 55923,
+          "sha1": "dc298d0ce147831e3087e2e3cb1a5acac5bd8af3",
+          "sha256": "4cfc392e733286b86692d5f91f5f83856cd27c4a7b7b1eb1722a6863be813fa3",
+          "remoteFileUid": "dc298d0ce147831e3087e2e3cb1a5acac5bd8af3"
+        },
+        {
+          "path": "service-figures/a3-trace-response.png",
+          "bytes": 86494,
+          "sha1": "f1452bab68bec172ea639f49ef4f8843b4ebaa50",
+          "sha256": "1c807a715673f2fa86027f8bdbf526953504b3cd9240677acb4239d8576ab1b8",
+          "remoteFileUid": "f1452bab68bec172ea639f49ef4f8843b4ebaa50"
+        },
+        {
+          "path": "service-figures/a3-trace-response.svg",
+          "bytes": 71555,
+          "sha1": "8fb5d9e57675f8df575197090e639012a76a01a6",
+          "sha256": "dda877cc5b9d2457d37295efe34c42948b9c8ddab387c120fbb43670a6cb2b7c",
+          "remoteFileUid": "8fb5d9e57675f8df575197090e639012a76a01a6"
+        },
+        {
+          "path": "service-figures/a4-gc-denominators.png",
+          "bytes": 103163,
+          "sha1": "865b692519e1666fcaad07aea8bbd624dbb6169f",
+          "sha256": "60606513273627a629f40be2a28bc1716a21e4ca594ed13a416202c79aa9398a",
+          "remoteFileUid": "865b692519e1666fcaad07aea8bbd624dbb6169f"
+        },
+        {
+          "path": "service-figures/a4-gc-denominators.svg",
+          "bytes": 86527,
+          "sha1": "5edcd19e0a05337c23fbf67458df627069ed1df7",
+          "sha256": "2f9a110b19af233925a87ea1054a9a21acd0b3f7eb4330d3d2a6ceb3b1de3082",
+          "remoteFileUid": "5edcd19e0a05337c23fbf67458df627069ed1df7"
+        },
+        {
+          "path": "service-figures/a5-paced-payload.png",
+          "bytes": 80453,
+          "sha1": "ceb8c10a40e693df23631a854cd28cbd8ea11ba7",
+          "sha256": "36f7cc65c99cfc112d506a1832df8dc2dacb3d917998e96e8da0a95dbfc1b665",
+          "remoteFileUid": "ceb8c10a40e693df23631a854cd28cbd8ea11ba7"
+        },
+        {
+          "path": "service-figures/a5-paced-payload.svg",
+          "bytes": 62699,
+          "sha1": "84e012e0b77d92c2c865a12c9e97a4ccc0d59fb0",
+          "sha256": "19d1237990ed29fcd3a024da99e6469186ce67046b2a59ad44ca878cda54cb20",
+          "remoteFileUid": "84e012e0b77d92c2c865a12c9e97a4ccc0d59fb0"
+        },
+        {
+          "path": "service-figures/a6-larger-payload.png",
+          "bytes": 50816,
+          "sha1": "fd1af321f895cd11154d68ec10aa24d64dfa27c0",
+          "sha256": "46e89a29cd2ad0219fe56fe449422321d234864c4bf8841e464fd8d806ae3466",
+          "remoteFileUid": "fd1af321f895cd11154d68ec10aa24d64dfa27c0"
+        },
+        {
+          "path": "service-figures/a6-larger-payload.svg",
+          "bytes": 44494,
+          "sha1": "42fed7d19aa6b7ae3b35e4e8f5ebd6a9ae49b523",
+          "sha256": "de74f48c35bed15800d79b863833c2374632c35c544ec5c129b5c0e7f6a267b6",
+          "remoteFileUid": "42fed7d19aa6b7ae3b35e4e8f5ebd6a9ae49b523"
+        },
+        {
+          "path": "service-figures/a7-full-service-tail.png",
+          "bytes": 94747,
+          "sha1": "03a01a7e0cc7f76417a93684b9bc166b8193dd8f",
+          "sha256": "1457ffe3aaa12486c4e513ffbcb4eb89e3cc20e07d4b1f6a6d37684dbac69657",
+          "remoteFileUid": "03a01a7e0cc7f76417a93684b9bc166b8193dd8f"
+        },
+        {
+          "path": "service-figures/a7-full-service-tail.svg",
+          "bytes": 137294,
+          "sha1": "987d1c30f859309a30801ccb7bde3d9dbdfedaf0",
+          "sha256": "bf8bb5c2517d607f146e3dce83c612f31ec0dd042f1a87cd8f64d02dd4d7d806",
+          "remoteFileUid": "987d1c30f859309a30801ccb7bde3d9dbdfedaf0"
+        },
+        {
+          "path": "vercel.json",
+          "bytes": 338,
+          "sha1": "63d75456adc2c9fae82611b507c161890f4295f9",
+          "sha256": "dc92cf6d97b42b5301327dcdf8c282f8eaeb4312e6cc7a7edc7426de5d481c2b",
+          "remoteFileUid": "63d75456adc2c9fae82611b507c161890f4295f9"
+        }
+      ],
+      "aliases": [
+        "tailcache-results.vercel.app",
+        "tailcache-results-enixes-projects.vercel.app"
+      ],
+      "sourceFileUidsMatchSha1": true,
+      "ssoProtection": {
+        "enabled": true,
+        "deploymentType": "all"
+      },
+      "authenticationChanged": false,
+      "bypassOrShareLinksCreated": false,
+      "mechanismDatasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+      "qa": {
+        "hostedDom": "docs/interactive/mechanism-dom-qa-20261118.json",
+        "standaloneDom": "docs/interactive/mechanism-offline-dom-qa-20261118.json",
+        "historicalPreservation": "docs/interactive/mechanism-preservation-qa-20261118.json",
+        "signedOut": "docs/interactive/mechanism-signedout-20261118.json",
+        "signedOutRequests": 66,
+        "remoteSourceFilesVerified": 33,
+        "realBrowserAvailable": false,
+        "reason": "Browser access host unavailable; no apps/browsers in CUA inventory",
+        "scientificFiguresInspected": true
+      },
+      "limits": "Staged DOM/data-flow, remote source UIDs and signed-out SSO verified. No new authenticated live-browser, screenshot or responsive-layout signoff; previous browser checks are historical. Static deployment READY does not constitute independent performance replication."
     }
-  ]
+  ],
+  "review": "docs/mechanism/REREVIEW_20261118.md"
 }
