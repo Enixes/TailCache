@@ -35,6 +35,7 @@ class PortableTests(unittest.TestCase):
         self.assertEqual(design['diagnosticJvms'], 4)
         research = design['phases']['research']
         self.assertEqual(len(research['config']['cells']), 21)
+        self.assertEqual(research['config']['primeCalls'], 0)
         views = design['researchViews']
         baseline, = set.intersection(*(set(cells) for cells in views.values()))
         self.assertEqual(research['config']['cells'][baseline-1], {
@@ -68,7 +69,8 @@ class PortableTests(unittest.TestCase):
     def test_rejects_phase_fractional_arrivals(self):
         self.invalid(lambda c:(c.update(measureMs=1),c['cells'][0].update(qps=1)))
     def test_rejects_nonfinite_quality(self): self.invalid(lambda c:c['quality'].update(maxOutsideCpuFraction=float('nan')))
-    def test_rejects_excess_priming(self): self.invalid(lambda c:c.update(warmupMs=100))
+    def test_rejects_excess_priming(self):
+        self.invalid(lambda c:c.update(warmupMs=100, primeCalls=1))
 
     def test_duplicate_json_keys(self):
         file=self.root/'bad.json';file.write_text('{"seed":1,"seed":2}')
@@ -145,11 +147,37 @@ class PortableTests(unittest.TestCase):
         q=p.quality_screen(samples,2*10**9+2000,4*10**9,self.config,'linux-proc')
         self.assertTrue(any('CPU' in w for w in q['warnings']))
 
+    def test_outside_cpu_checks_last_bracket_after_worker_exit(self):
+        samples = self.samples()
+        del samples[-1]['processTicks']
+        q = p.quality_screen(samples, 2*10**9+2000, 4*10**9+2000, self.config, 'linux-proc')
+        self.assertEqual(q['outsideCpuUnattributedIntervals'], 1)
+        self.assertGreaterEqual(q['outsideCpuMaxUpperFraction'], 0.5)
+        self.assertIn('Outside-process CPU upper bound exceeded frozen ceiling', q['warnings'])
+        del samples[-1]['cpuBusy']
+        q = p.quality_screen(samples, 2*10**9+2000, 4*10**9+2000, self.config, 'linux-proc')
+        self.assertEqual(q['outsideCpuMissingIntervals'], 1)
+        self.assertIn('Missing outside-process CPU evidence', q['warnings'])
+
     def test_power_and_thermal_screen(self):
         samples=self.samples();samples[3]['externalPower']={'AC':'0'};samples[3]['throttle']['core']='1'
         q=p.quality_screen(samples,2*10**9+2000,4*10**9,self.config,'linux-proc')
         self.assertTrue(any('power disconnected' in w for w in q['warnings']))
         self.assertTrue(any('throttle' in w for w in q['warnings']))
+
+    def test_inactive_alternate_power_input_does_not_mean_disconnected(self):
+        self.assertFalse(p.power_disconnected({'AC': '1', 'USB-C': '0'}))
+        self.assertTrue(p.power_disconnected({'AC': '0', 'USB-C': '0'}))
+        self.assertFalse(p.power_disconnected({'AC': None}))
+
+    def test_capped_stall_detail_has_a_verifiable_count(self):
+        path = self.root/'stalls.csv'
+        path.write_text('operationIndex\n3\n5\n')
+        measurement = dict(stallEvents='5',unexportedStallEvents='3',operations='10')
+        self.assertEqual(p.stall_export(self.root, measurement, 2),dict(total=5,exported=2,omitted=3))
+        path.write_text('operationIndex\n3\n')
+        with self.assertRaisesRegex(ValueError, 'row count'):
+            p.stall_export(self.root, measurement, 2)
 
     def fake_result(self,path,spec,warning=False,failure=False):
         # These report fixtures model already-verified forks; real-bin reconstruction

@@ -14,6 +14,7 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 | --- | --- |
 | [README.md](../README.md) | Current guidance / entry point |
 | [docs/PORTABLE_EXPERIMENT.md](PORTABLE_EXPERIMENT.md) | Standalone build, collection, resumption and statistics guide |
+| [docs/PORTABLE_EXPERIMENT_DEEP_REVIEW.md](PORTABLE_EXPERIMENT_DEEP_REVIEW.md) | Research claims audit and portability review |
 | [docs/PORTABLE_EXPERIMENT_PLAN.md](PORTABLE_EXPERIMENT_PLAN.md) | Portable collection implementation plan |
 | [docs/PORTABLE_EXPERIMENT_REVIEW.md](PORTABLE_EXPERIMENT_REVIEW.md) | Portable collection validation and limitations |
 | [docs/DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) | Current guidance / entry point |

@@ -52,7 +52,7 @@ bundle and completed forks are verified and reused. Choose a new directory for a
 independent replication or a different suite. See the printed
 `suite-analysis-*/SUMMARY.md` for completion status, usable pairs, warning counts
 and links to the phase reports and point conclusions. `suite.json` records the
-design, and `setup-*/` holds Python and Gradle check logs. A failed diagnostic phase
+design, and `setup-*/` holds Python and Gradle test evidence. A failed diagnostic phase
 stops the suite before research. An interrupted worker without a complete receipt
 needs a separate attempt, as described below.
 
@@ -107,8 +107,9 @@ reproduction command combines their research cells in its own schedule. All time
 exclude setup, functional validation, four controls and post-run HDR verification.
 
 Defaults: G1, 512 MiB initial/max heap, one worker, 32768 residents, uniform reads,
-fresh immutable writes, 32 MiB/s independent churn, 120 s warmup (including four
-1 s priming calls), 4 s conditioning, 30 s measurement. Each treatment uses the
+fresh immutable writes, 32 MiB/s independent churn, 120 s warmup with zero explicit
+priming calls, 4 s conditioning, 30 s measurement. Zero priming follows the
+retained mechanism selection. Each treatment uses the
 same seeds in both backends. Backend order reverses across seed blocks, and cell
 order is deterministically shuffled. The stream never resets or wraps between
 phases. Chronicle uses ordinary `get`, with analytics disabled; its capacity/tiering
@@ -182,10 +183,15 @@ Warnings are shown both inclusively and in a separate warning-free pair summary.
 Host paging is screened over **conditioning through measurement**, using overlapping
 1 Hz brackets; whole-lifetime events are retained separately. Host-wide counters do
 not identify the worker as the cause. Outside CPU is a conservative whole-machine
-fraction, including read-bracket uncertainty, not an application slowdown estimate.
+fraction, including read-bracket uncertainty. The final interval can use all observed
+busy time as its bound if worker ticks are unavailable after exit. Missing system
+CPU counters within the protected window trigger a warning. CPU load concentrated
+on one core can still be obscured by the whole-machine denominator.
 Compiler time is approximate accumulated compiler-thread activity, not application
 pause time. Missing telemetry is explicit. GC evacuation failures remain reported
-pressure outcomes, not automatically disqualifying noise.
+pressure outcomes, not automatically disqualifying noise. If the stall-event detail
+reaches its export cap, the report records the omitted events and a warning. The
+full histogram remains usable after count validation.
 
 Each cell gets its own service and response comparison. A winner at one cell or
 percentile does not establish a universal crossover. Compare pressures within the

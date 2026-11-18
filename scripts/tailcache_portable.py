@@ -321,6 +321,11 @@ def snapshot(pid=None):
     return result
 
 
+def power_disconnected(supplies):
+    states = [state for state in supplies.values() if state in ('0', '1')]
+    return bool(states) and all(state=='0' for state in states)
+
+
 def quality_screen(samples, start, end, config, capability):
     warnings, startup = [], []
     if capability != 'linux-proc':
@@ -334,6 +339,8 @@ def quality_screen(samples, start, end, config, capability):
     if any(b['endNs']-a['startNs']>3_000_000_000 for a,b in intervals):
         warnings.append('Host sampling gap exceeds 3 seconds')
     outside = []
+    missing_cpu_intervals = 0
+    unattributed_cpu_intervals = 0
     for key in ('pswpin','pswpout','zswpin','zswpout'):
         if any(a.get(key) is None or b.get(key) is None for a,b in intervals):
             warnings.append('Missing host counter: '+key)
@@ -342,21 +349,33 @@ def quality_screen(samples, start, end, config, capability):
         if samples and samples[0].get(key) is not None and samples[-1].get(key) != samples[0][key]:
             startup.append('Whole-lifetime host paging counter changed: '+key)
     for a,b in intervals:
-        if a.get('cpuTotal') is None or b.get('cpuTotal') is None or a.get('processTicks') is None or b.get('processTicks') is None:
+        if any(s.get(k) is None for s in (a,b) for k in ('cpuTotal', 'cpuBusy')):
+            missing_cpu_intervals += 1
             continue
-        total=b['cpuTotal']-a['cpuTotal']
-        if total>0:
-            # Counters read at slightly different instants: upper bound includes bracket uncertainty.
-            uncertainty=(b['endNs']-b['startNs']+a['endNs']-a['startNs'])/max(1,b['startNs']-a['endNs'])
-            outside.append(max(0,(b['cpuBusy']-a['cpuBusy']-(b['processTicks']-a['processTicks']))/total)+uncertainty)
-    if not outside:
+        total = b['cpuTotal']-a['cpuTotal']
+        busy = b['cpuBusy']-a['cpuBusy']
+        if total<=0 or not 0<=busy<=total:
+            missing_cpu_intervals += 1
+            continue
+        before = a.get('processTicks')
+        after = b.get('processTicks')
+        if before is None or after is None or after<before:
+            # On the final sample the worker may already have exited. Charge all
+            # observed busy time to outside CPU rather than ignoring the bracket.
+            unattributed_cpu_intervals += 1
+            worker_ticks = 0
+        else:
+            worker_ticks = after-before
+        uncertainty = (b['endNs']-b['startNs']+a['endNs']-a['startNs'])/max(1,b['startNs']-a['endNs'])
+        outside.append(min(1, max(0, (busy-worker_ticks)/total)+uncertainty))
+    if not outside or missing_cpu_intervals:
         warnings.append('Missing outside-process CPU evidence')
-    elif max(outside)>config['quality']['maxOutsideCpuFraction']:
+    if outside and max(outside)>config['quality']['maxOutsideCpuFraction']:
         warnings.append('Outside-process CPU upper bound exceeded frozen ceiling')
     if any(not s.get('externalPower') for s in samples):
         # Servers commonly have no power-supply sensor; this is capability metadata, not a noisy run.
         startup.append('External power sensor unavailable')
-    if any(v=='0' for a,b in intervals for s in (a,b) for v in s.get('externalPower',{}).values()):
+    if any(power_disconnected(s.get('externalPower',{})) for a,b in intervals for s in (a,b)):
         warnings.append('External power disconnected during protected window')
     if any(a.get('throttle',{}).get(k) != v for a,b in intervals for k,v in b.get('throttle',{}).items()):
         warnings.append('Thermal throttle counter changed during protected window')
@@ -369,7 +388,9 @@ def quality_screen(samples, start, end, config, capability):
         warnings.append('Cgroup available memory below frozen reserve')
     return dict(warnings=sorted(set(warnings)),lifetimeDiagnostics=sorted(set(startup)),
                 protectedWindow='conditioning start through measurement end; overlapping 1Hz brackets',
-                outsideCpuMaxUpperFraction=max(outside,default=None),sensorAttribution='Host-wide; not causal attribution to worker')
+                outsideCpuMaxUpperFraction=max(outside,default=None),outsideCpuMissingIntervals=missing_cpu_intervals,
+                outsideCpuUnattributedIntervals=unattributed_cpu_intervals,
+                sensorAttribution='Host-wide; not causal attribution to worker')
 
 
 @contextlib.contextmanager
@@ -443,6 +464,18 @@ def analysis_module():
     return module
 
 
+def stall_export(worker, measurement, limit):
+    total = int(measurement['stallEvents'])
+    omitted = int(measurement['unexportedStallEvents'])
+    require(limit>0 and total>=0 and omitted==max(0,total-limit), 'Invalid stall export counts')
+    exported = csv_rows(worker/'stalls.csv')
+    require(len(exported)==total-omitted, 'Stall export row count differs from measurement')
+    indexes = [int(row['operationIndex']) for row in exported]
+    require(all(0<=index<int(measurement['operations']) for index in indexes)
+            and all(a<b for a,b in zip(indexes,indexes[1:])), 'Invalid stall export operation indexes')
+    return dict(total=total, exported=len(exported), omitted=omitted)
+
+
 def summarize(path, spec, config, capability, code):
     result=dict(spec=spec,exitCode=code,status='FAILED',warnings=[],startedUtc=load(path/'command.json')['startedUtc'])
     try:
@@ -465,7 +498,6 @@ def summarize(path, spec, config, capability, code):
             cursor=int(pos['end'])
             duration=1000 if phase.startswith('PRIME') else config['warmupMs']-config['primeCalls']*1000 if phase=='WARMUP' else config['conditioningMs'] if phase=='CONDITIONING' else config['measureMs']
             require(int(w['endNs'])>int(w['startNs']),'Invalid measurement clock')
-            require(int(w['unexportedStallEvents'])==0,'Stall export overflow')
             require(not spec['qps'] or count==int(w['scheduled'])==duration*spec['qps']//1000,'Missing scheduled operations')
         m=windows[-1];n=int(m['operations']);writes=int(m['writes'])
         require(n>0,'No operations')
@@ -475,6 +507,8 @@ def summarize(path, spec, config, capability, code):
         require(dict(union)==dict(bins['service']),'Read/update histogram union mismatch')
         actual=properties(worker/'configuration.txt')
         require(int(actual['maxHeapBytes'])==config['heapMiB']*1024**2,'Actual heap differs')
+        require(actual['backend']==spec['backend'] and actual['readContract']=='ordinary-get', 'Actual cache contract differs')
+        require(int(actual['primeCalls'])==config['primeCalls'], 'Actual priming differs')
         require(actual['streamPhaseReset']==actual['streamWrap']=='false','Finite/reset trace')
         require(int(actual['updateHotset'])==spec['updateHotset'],'Update population differs')
         require('chronicle.analytics.disable=true' in actual['jvmArgs'],'Analytics flag missing')
@@ -484,6 +518,9 @@ def summarize(path, spec, config, capability, code):
         conditioning=next(w for w in windows if w['phase']=='CONDITIONING')
         screen=quality_screen(samples,int(conditioning['startNs']),int(m['endNs']),config,capability)
         warnings=screen['warnings']
+        stalls = stall_export(worker, m, int(actual['eventLimit']))
+        if stalls['omitted']:
+            warnings.append('Stall event detail capped; complete histograms retained')
         elapsed=(int(m['endNs'])-int(m['startNs']))/1e9
         if int(m['compilerMs'])<0: warnings.append('Compiler activity unavailable')
         elif int(m['compilerMs'])>config['quality']['compilerWarningMs']: warnings.append('Measured compiler activity exceeds frozen ceiling; not app pause time')
@@ -500,7 +537,8 @@ def summarize(path, spec, config, capability, code):
         if any('dropped' in line.lower() and ('log' in line.lower() or 'messages' in line.lower()) for line in text.splitlines()):
             warnings.append('Logging reported dropped messages')
         result.update(status='COMPLETE',warnings=sorted(set(warnings)),host=screen,windows=windows,
-                      integrity=integrity,configuration=actual,latency={ch:hist_stats(v,config) for ch,v in bins.items()},
+                      integrity=integrity,configuration=actual,stallExport=stalls,
+                      latency={ch:hist_stats(v,config) for ch,v in bins.items()},
                       gc=gc,operationsPerSecond=n/elapsed,workerAllocatedBytes=int(m['workerAllocatedBytes']),
                       workerAllocatedBytesPerOperation=int(m['workerAllocatedBytes'])/n,
                       freshWritePayloadBytes=writes*spec['payloadBytes'],
@@ -613,6 +651,9 @@ def verify_derivatives(path, result, config):
     windows=csv_rows(path/'worker/windows.csv')
     require(windows==result['windows'],'Cached windows differ from raw')
     m=windows[-1];n=int(m['operations']);writes=int(m['writes'])
+    if 'stallExport' in result:
+        limit = int(properties(path/'worker/configuration.txt')['eventLimit'])
+        require(stall_export(path/'worker', m, limit)==result['stallExport'], 'Cached stall export counts differ')
     expected={'service':n,'gap':n,'response':n if result['spec']['qps'] else 0,'read-service':n-writes,'update-service':writes}
     bins={ch:histogram(path/'worker'/(ch+'-bins.csv'),expected[ch]) for ch in CHANNELS}
     for ch,values in bins.items():
@@ -636,7 +677,7 @@ def readiness(config, out):
         require(snap['MemAvailableKiB']>=config['quality']['minAvailableMiB']*1024,'Available RAM below reserve')
     if snap.get('cgroupAvailableKiB') is not None:
         require(snap['cgroupAvailableKiB']>=config['quality']['minAvailableMiB']*1024,'Cgroup RAM below reserve')
-    require(not any(v=='0' for v in snap['externalPower'].values()),'External power disconnected')
+    require(not power_disconnected(snap['externalPower']),'External power disconnected')
 
 
 def same_resources(a, b):

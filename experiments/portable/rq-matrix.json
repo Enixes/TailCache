@@ -8,7 +8,7 @@
   "warmupMs": 120000,
   "conditioningMs": 4000,
   "measureMs": 30000,
-  "primeCalls": 4,
+  "primeCalls": 0,
   "seeds": [
     61801,
     61802
