@@ -1,0 +1,34 @@
+{
+  "taskComplete": false,
+  "phase": "QUALIFICATION_PASSED_READY_FOR_COLLECTION",
+  "startedUtc": "2026-11-18T06:05:49.311001+00:00",
+  "collectionDeadlineUtc": "2026-11-18T13:05:49.311001+00:00",
+  "plan": "docs/TAILCACHE_MECHANISM_PLAN.md",
+  "finishPlan": "docs/TAILCACHE_MECHANISM_FINISH_PLAN.md",
+  "authorization": "User authorized autonomous experiment-review-code-repair cycles for about8hours and ordinary-usage recovery",
+  "running": null,
+  "pending": [
+    "Complete isolated implementation and source-matched functional/control qualification",
+    "Run logging8 and phase8; audit and select settings under frozen rules",
+    "Run hotset8(+8 ifworth), transition8, headroom8(+8 ifworth), payload8 with per-cohort review",
+    "Portable dataset/model verification/research review/manuscript/explorer/protected delivery",
+    "Push reviewed branch and stop recovery only when scopecomplete"
+  ],
+  "maxResearchJvms": 64,
+  "oldScopesCompleteAndUnchanged": true,
+  "recovery": {
+    "active": true,
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "timer": "tailcache12-recovery.timer",
+    "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "inspectVerified": true
+  },
+  "qualification": {
+    "functionalJvms": 3,
+    "qualificationControlJvms": 2,
+    "scheduleTests": 6,
+    "rawAudit": "evidence-archives/mechanism-qualification-20261118-001/raw-audit.json",
+    "passed": true
+  },
+  "updatedUtc": "2026-11-18T06:39:50.706315+00:00"
+}
