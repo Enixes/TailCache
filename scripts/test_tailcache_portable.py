@@ -46,6 +46,22 @@ class PortableTests(unittest.TestCase):
             self.assertEqual(original['cells'], [research['config']['cells'][i-1] for i in cell_ids])
         self.assertEqual(len({(r['cell'], r['seed'], r['backend']) for r in research['schedule']}), 84)
 
+    def test_individual_gradle_suites_preserve_their_named_profile(self):
+        configs = ROOT/'experiments/portable'
+        for name, forks in [('write-ratio', 20), ('locality-long', 16), ('rq-matrix', 64)]:
+            with self.subTest(suite=name):
+                profile = p.load(configs/f'{name}.json')
+                design = p.suite_plan(configs, name)
+                self.assertEqual(design['researchJvms'], forks)
+                self.assertEqual(design['phases']['research']['schedule'], p.schedule(profile))
+                self.assertEqual(list(design['researchViews']), [name])
+        short = p.load(configs/'locality.json')
+        long = p.load(configs/'locality-long.json')
+        self.assertEqual(long['cells'], short['cells'])
+        self.assertTrue(set(short['seeds']).isdisjoint(long['seeds']))
+        self.assertEqual(len(long['seeds']), 4)
+        self.assertEqual(long['measureMs'], 90_000)
+
     def test_reproduction_suite_rejects_different_seed_sets(self):
         configs = ROOT/'experiments/portable'
         for name in ('smoke', 'locality', 'write-ratio', 'rq-matrix'):

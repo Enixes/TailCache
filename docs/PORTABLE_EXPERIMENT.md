@@ -30,6 +30,9 @@ Use a quiet Linux host for research measurements.
 |---|---:|---:|---|
 | `-PtailcacheSuite=quick` | 0 | 8 seconds | Correctness, timing controls and four diagnostic workers |
 | `-PtailcacheSuite=locality` | 8 | 21 minutes | Quick checks and update-locality replication |
+| `-PtailcacheSuite=write-ratio` | 20 | 51 minutes | Response at 0%, 0.5%, 1%, 2%, and 5% writes |
+| `-PtailcacheSuite=locality-long` | 16 | 57 minutes | Update locality with four fresh seeds and 90-second measurement windows |
+| `-PtailcacheSuite=rq-matrix` | 64 | 2 hours 44 minutes | Payload and ballast under saturated service and fixed arrivals |
 | `-PtailcacheSuite=all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
 
 Times exclude dependency downloads, correctness tests, setup, timing controls and
@@ -42,10 +45,20 @@ The default result directory is `results/replication-01`. For example, run the
 diagnostic suite in its own directory with
 `./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=quick -PtailcacheOut=results/smoke-01`.
 
+Run each follow-up independently from a checkout with Java 21 and Python
+available. Choose a distinct output directory for each new host.
+
+```sh
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=write-ratio -PtailcacheOut=results/write-ratio-01
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=locality-long -PtailcacheOut=results/locality-long-01
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=rq-matrix -PtailcacheOut=results/rq-matrix-01
+```
+
 The full suite uses one counterbalanced schedule. The shared 4 KiB, 5% write,
 zero-ballast, 50k requests/s cell has the same seeds and inputs across all three
 profiles, so the suite measures it once. The summary maps every profile to its
 research cell numbers. Results are scoped to this suite's schedule and host.
+The longer locality profile has its own seeds and timing and runs separately.
 
 Repeat the same command with the same output directory to resume. The frozen
 bundle and completed forks are verified and reused. Choose a new directory for an
@@ -99,6 +112,7 @@ or another user. The runner is sequential and does not need a desktop or browser
 |---|---:|---:|---|
 | `smoke.json` | 0 (4 diagnostic workers) | about 8 seconds | Does this installation work? |
 | `locality.json` | 8 | about 21 minutes | Does the 2048/32768 update-population response reversal replicate? |
+| `locality-long.json` | 16 | about 57 minutes | Does that reversal hold over 90 seconds with four fresh seeds? |
 | `write-ratio.json` | 20 | about 51 minutes | How do 0/0.5/1/2/5% updates change the tails at 4 KiB? |
 | `rq-matrix.json` | 64 | about 164 minutes | Original payload/pressure questions, both saturated service and scheduled response |
 

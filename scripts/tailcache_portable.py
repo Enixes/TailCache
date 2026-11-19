@@ -29,7 +29,14 @@ VERSION = 'tailcache-portable-v1'
 BACKENDS = ('CAFFEINE', 'CHRONICLE_IN_MEMORY')
 CHANNELS = ('service', 'response', 'gap', 'read-service', 'update-service')
 QUANTILES = (50, 99, 99.9, 99.99, 99.999)
-SUITES = {'quick': (), 'locality': ('locality',), 'all': ('locality', 'write-ratio', 'rq-matrix')}
+SUITES = {
+    'quick': (),
+    'locality': ('locality',),
+    'write-ratio': ('write-ratio',),
+    'locality-long': ('locality-long',),
+    'rq-matrix': ('rq-matrix',),
+    'all': ('locality', 'write-ratio', 'rq-matrix'),
+}
 MAIN = 'io.github.enixes.tailcache.workload.MechanismCrossoverRunner'
 FLAGS = ['-Dchronicle.analytics.disable=true',
  '--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED',
