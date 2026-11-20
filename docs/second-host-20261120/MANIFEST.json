@@ -1,0 +1,519 @@
+{
+  "schemaVersion": 1,
+  "generatedUtc": "2026-11-20T17:02:06Z",
+  "collectionDate": "2026-11-20",
+  "host": {
+    "os": "Linux-7.2.15-76070215-generic-x86_64-with-glibc2.39",
+    "distro": "Pop!_OS 24.04 LTS",
+    "architecture": "x86_64",
+    "cpuModel": "AMD Ryzen 7 5800X 8-Core Processor",
+    "logicalCpuCount": 16,
+    "activeProcessorBudget": 12,
+    "memoryKiB": 32806388,
+    "memoryGiB": 31.29,
+    "python": "3.12.3",
+    "jdkVendorVersion": "Temurin-21.0.13+9",
+    "jdkRuntimeVersion": "21.0.13+9-LTS",
+    "jdkIdSha256": "bb2efb2ef51a3398aa0f4f2d895d723df1693f01af01221ab4ac25b917c0113c",
+    "jdkBinarySha256": "9cad3f2620d3ef2ed10b26f922af7e773d54fdaa05f615d6d6df014f3fec4155",
+    "hostIdSha256": "a6c0a3c1b4f7b60ae1c4376b73b39a93420987ffdfb4a22cadbf36a58c3fbe85"
+  },
+  "rawArchivesNote": "Full raw slot archives (~865 MB under git-ignored results/) remain on the collection host. All hashes below match the unmodified raw artifacts verified via scripts/tailcache_portable.py.",
+  "campaigns": {
+    "smoke": {
+      "sourceRelativeDir": "results/second-host-smoke",
+      "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
+      "manifestSha256": "0892f82aa638882c43da2c646c95ae03e5a9f6db97d21a008b8976e703a83ac3",
+      "summary": "smoke/SUMMARY.md",
+      "suiteResults": "smoke/suite-results.json",
+      "researchViews": {},
+      "phases": {
+        "smoke": {
+          "sourceResultsSha256": "cba5945f312ae1557611861f7a590391b64907a85e8c53d4f159ce01ef559eb7",
+          "sourceResultsBytes": 153216,
+          "report": "smoke/smoke/RESULTS.md",
+          "percentiles": "smoke/smoke/percentiles.csv",
+          "pointConclusions": "smoke/smoke/point-conclusions.json",
+          "compactResults": "smoke/smoke/results-compact.json",
+          "compactResultsSha256": "50cbf6fb1b50787ac6529fabffe4a897f7e209b173c1f2793aefbde438626836",
+          "compactResultsBytes": 153426,
+          "runSha256": "8e6818f36e4c2ef30df3d405bea8aed5f0700b0c378266d538cbde65667fa209",
+          "bundleId": "013c99c4cc573919452e269783de67388648515c801fab0c0df06148634fe22f",
+          "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+          "scheduled": 4,
+          "completed": 4,
+          "failed": 0,
+          "usablePairs": 2,
+          "plannedPairs": 2,
+          "warningFreePairs": 0,
+          "warningInstances": {
+            "Measured compiler activity exceeds frozen ceiling; not app pause time": 4,
+            "Outside-process CPU upper bound exceeded frozen ceiling": 2
+          }
+        }
+      }
+    },
+    "locality": {
+      "sourceRelativeDir": "results/second-host-locality",
+      "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
+      "manifestSha256": "99b817217d8966fc94a91a0940b781f55e95b426e4934338a024c86d63c0899c",
+      "summary": "locality/SUMMARY.md",
+      "suiteResults": "locality/suite-results.json",
+      "researchViews": {
+        "locality": [
+          1,
+          2
+        ]
+      },
+      "phases": {
+        "smoke": {
+          "sourceResultsSha256": "c8c9b1458f1208982c20f06437324600855f81287bfe2094ee196a9635c31b3b",
+          "sourceResultsBytes": 153133,
+          "report": "locality/smoke/RESULTS.md",
+          "percentiles": "locality/smoke/percentiles.csv",
+          "pointConclusions": "locality/smoke/point-conclusions.json",
+          "runSha256": "bc1beaf31a88c4ee83a39e074038c1a3b4928ae3b953f77bbe3e3a315e7b7bd7",
+          "bundleId": "013c99c4cc573919452e269783de67388648515c801fab0c0df06148634fe22f",
+          "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+          "scheduled": 4,
+          "completed": 4,
+          "failed": 0,
+          "usablePairs": 2,
+          "plannedPairs": 2,
+          "warningFreePairs": 0,
+          "warningInstances": {
+            "Measured compiler activity exceeds frozen ceiling; not app pause time": 4,
+            "Outside-process CPU upper bound exceeded frozen ceiling": 1
+          }
+        },
+        "research": {
+          "sourceResultsSha256": "0323cfb10411c70cef49d7b6c4381a0fa495a955c7da724a6f0cfc4a493d0908",
+          "sourceResultsBytes": 479955,
+          "report": "locality/research/RESULTS.md",
+          "percentiles": "locality/research/percentiles.csv",
+          "pointConclusions": "locality/research/point-conclusions.json",
+          "compactResults": "locality/research/results-compact.json",
+          "compactResultsSha256": "e036c316e6c08e88b0dd66bcb68fab9fff53daea0496d42906da698dfbd02d2c",
+          "compactResultsBytes": 307179,
+          "runSha256": "ca0fc26550a8f1d77b8bc4bab17c0edf770a53377b302100b9cf8b0fd8ca4b64",
+          "bundleId": "013c99c4cc573919452e269783de67388648515c801fab0c0df06148634fe22f",
+          "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+          "scheduled": 8,
+          "completed": 8,
+          "failed": 0,
+          "usablePairs": 4,
+          "plannedPairs": 4,
+          "warningFreePairs": 3,
+          "warningInstances": {
+            "Measured compiler activity exceeds frozen ceiling; not app pause time": 1
+          }
+        }
+      },
+      "review": "locality/CROSS_HOST_REVIEW.md"
+    },
+    "followups-01": {
+      "sourceRelativeDir": "results/second-host-followups-01",
+      "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+      "status": "followups-01/status.tsv",
+      "review": "followups-01/CAMPAIGN_REVIEW.md",
+      "interpretation": "followups-01/INTERPRETATION.md",
+      "suites": {
+        "write-ratio": {
+          "sourceRelativeDir": "results/second-host-followups-01/write-ratio",
+          "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+          "manifestSha256": "448457ca401f721314390ea04345335c96b278a569758816aeced742728c0385",
+          "summary": "followups-01/write-ratio/SUMMARY.md",
+          "suiteResults": "followups-01/write-ratio/suite-results.json",
+          "researchViews": {
+            "write-ratio": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "fe7f14ffaefd3ec2ad389ca5da82dd02aa2367cc5662f8693d466f50c7d9ffc1",
+              "sourceResultsBytes": 153366,
+              "report": "followups-01/write-ratio/smoke/RESULTS.md",
+              "percentiles": "followups-01/write-ratio/smoke/percentiles.csv",
+              "pointConclusions": "followups-01/write-ratio/smoke/point-conclusions.json",
+              "runSha256": "8ccabe9aae027ee03e5a12175e8ff6d62149fcbfe74569e0fac3ce0753aab933",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4,
+                "Outside-process CPU upper bound exceeded frozen ceiling": 2
+              }
+            },
+            "research": {
+              "sourceResultsSha256": "2f94fe91a9aacea1840428a4acf9e91e9d66d23b485e6328281802ba467a5183",
+              "sourceResultsBytes": 1105305,
+              "report": "followups-01/write-ratio/research/RESULTS.md",
+              "percentiles": "followups-01/write-ratio/research/percentiles.csv",
+              "pointConclusions": "followups-01/write-ratio/research/point-conclusions.json",
+              "compactResults": "followups-01/write-ratio/research/results-compact.json",
+              "compactResultsSha256": "b99e6cd26f17706db438e003d1256e1ce26c2162d0461a660b8a363c92146172",
+              "compactResultsBytes": 705047,
+              "runSha256": "f7b67f5454ce12704cfdf87a8e5877e72a80bc5d9ede84578182ea5e7529bd5b",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 20,
+              "completed": 20,
+              "failed": 0,
+              "usablePairs": 10,
+              "plannedPairs": 10,
+              "warningFreePairs": 6,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4
+              }
+            }
+          }
+        },
+        "locality-long": {
+          "sourceRelativeDir": "results/second-host-followups-01/locality-long",
+          "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+          "manifestSha256": "a1bccac5f72308f3ff34ccb5cec97b81656f03ea1c987e479244ad5f732abebb",
+          "summary": "followups-01/locality-long/SUMMARY.md",
+          "suiteResults": "followups-01/locality-long/suite-results.json",
+          "researchViews": {
+            "locality-long": [
+              1,
+              2
+            ]
+          },
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "4c956d9e1233e3dcef5e8c9cc180d3f11d4588c9e1d56e510f9ebe13c17fe8ce",
+              "sourceResultsBytes": 153208,
+              "report": "followups-01/locality-long/smoke/RESULTS.md",
+              "percentiles": "followups-01/locality-long/smoke/percentiles.csv",
+              "pointConclusions": "followups-01/locality-long/smoke/point-conclusions.json",
+              "runSha256": "c6d4036b79a679fbe3c7c8015249dc28a0e381e40b354133cd7f8b8d0ce80d63",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4,
+                "Outside-process CPU upper bound exceeded frozen ceiling": 1
+              }
+            },
+            "research": {
+              "sourceResultsSha256": "ceca3f43ff4fb5a5d1c21bd474a24e1df90a833906184df203f02593ca30067e",
+              "sourceResultsBytes": 1512202,
+              "report": "followups-01/locality-long/research/RESULTS.md",
+              "percentiles": "followups-01/locality-long/research/percentiles.csv",
+              "pointConclusions": "followups-01/locality-long/research/point-conclusions.json",
+              "compactResults": "followups-01/locality-long/research/results-compact.json",
+              "compactResultsSha256": "49b1eae2726ce6cfac36c6b09b39ae1926ea610cb2ea48e2f2d397f53fa95dad",
+              "compactResultsBytes": 467738,
+              "runSha256": "4a3b61b2eb62cea3fa04080c1a0bda1de6c0666606b693b5a34cfc06d94dda34",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 16,
+              "completed": 16,
+              "failed": 0,
+              "usablePairs": 8,
+              "plannedPairs": 8,
+              "warningFreePairs": 6,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 2
+              }
+            }
+          }
+        },
+        "rq-matrix": {
+          "sourceRelativeDir": "results/second-host-followups-01/rq-matrix",
+          "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+          "manifestSha256": "3f610cc70d8dddfc4291de91ffa53eb5a6b291098cfc10dd9fe377106fa7cac7",
+          "summary": "followups-01/rq-matrix/SUMMARY.md",
+          "suiteResults": "followups-01/rq-matrix/suite-results.json",
+          "researchViews": {
+            "rq-matrix": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16
+            ]
+          },
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "8f13e58b92ac1b8a83e4975dcc0decd4f77664c0accaec47d8faaef3a844b235",
+              "sourceResultsBytes": 153319,
+              "report": "followups-01/rq-matrix/smoke/RESULTS.md",
+              "percentiles": "followups-01/rq-matrix/smoke/percentiles.csv",
+              "pointConclusions": "followups-01/rq-matrix/smoke/point-conclusions.json",
+              "runSha256": "8af95e8339fed1f370445ef4241649ef3607deaba1e5fca435263dada2b23753",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4,
+                "Outside-process CPU upper bound exceeded frozen ceiling": 2
+              }
+            },
+            "research": {
+              "sourceResultsSha256": "eb77ca1c5bf1541eefe046f6be53d77bf27602bb8199766c16b328f3378c1fed",
+              "sourceResultsBytes": 18647386,
+              "report": "followups-01/rq-matrix/research/RESULTS.md",
+              "percentiles": "followups-01/rq-matrix/research/percentiles.csv",
+              "pointConclusions": "followups-01/rq-matrix/research/point-conclusions.json",
+              "compactResults": "followups-01/rq-matrix/research/results-compact.json",
+              "compactResultsSha256": "9894cc0502811c1c026039821325ed10e500a6be4c8e6f9dc9475922268e6306",
+              "compactResultsBytes": 2072470,
+              "runSha256": "d0f2906c5ca2209807e93e4b27d28a8a5bd2f5ca85dc90cf832972252c525f0a",
+              "bundleId": "97b82ebf4dfdc00f2ef6b33dc43e8c229a0b69f3c1002ac451519c8f07474512",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 64,
+              "completed": 64,
+              "failed": 0,
+              "usablePairs": 32,
+              "plannedPairs": 32,
+              "warningFreePairs": 15,
+              "warningInstances": {
+                "Churn demand dropped; endogenous outcome retained": 4,
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 2,
+                "Outside-process CPU upper bound exceeded frozen ceiling": 11
+              }
+            }
+          }
+        }
+      }
+    },
+    "pressure-write-02": {
+      "sourceRelativeDir": "results/second-host-pressure-write-02",
+      "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+      "status": "pressure-write-02/status.tsv",
+      "review": "pressure-write-02/CAMPAIGN_REVIEW.md",
+      "midpointDecision": "pressure-write-02/midpoint-decision.json",
+      "observerQualification": "pressure-write-02/observer-qualification.log",
+      "suites": {
+        "preflight": {
+          "sourceRelativeDir": "results/second-host-pressure-write-02/preflight",
+          "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+          "manifestSha256": "8f74dda0225f6f84981f34940af6908ec66c43078fe463a283ab529f80fa7ea3",
+          "summary": "pressure-write-02/preflight/SUMMARY.md",
+          "suiteResults": "pressure-write-02/preflight/suite-results.json",
+          "researchViews": {},
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "48270cca7a5b0830e1086e68a266529c171a2ed988cd3390e5f013985f539138",
+              "sourceResultsBytes": 154251,
+              "report": "pressure-write-02/preflight/smoke/RESULTS.md",
+              "percentiles": "pressure-write-02/preflight/smoke/percentiles.csv",
+              "pointConclusions": "pressure-write-02/preflight/smoke/point-conclusions.json",
+              "compactResults": "pressure-write-02/preflight/smoke/results-compact.json",
+              "compactResultsSha256": "f28eace43217e409ed63a1dea9fc416568ff588361dfda253f889434f7da5401",
+              "compactResultsBytes": 154483,
+              "runSha256": "c0ff7d1d00808d71c97ed1bbbd7fb6f082ea360d67081a76431517a1d470027d",
+              "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4
+              }
+            }
+          }
+        },
+        "saturated-write-pressure": {
+          "sourceRelativeDir": "results/second-host-pressure-write-02/saturated-write-pressure",
+          "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+          "manifestSha256": "f5624b2022db66a94ab0df3706d565d6b3d3059568734a73768e1d0a265bf559",
+          "summary": "pressure-write-02/saturated-write-pressure/SUMMARY.md",
+          "suiteResults": "pressure-write-02/saturated-write-pressure/suite-results.json",
+          "researchViews": {
+            "saturated-write-pressure": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          },
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "be67a05d53dd7c39e14485598e41be5e86f81b48f29890721bb372eddd0b77db",
+              "sourceResultsBytes": 154526,
+              "report": "pressure-write-02/saturated-write-pressure/smoke/RESULTS.md",
+              "percentiles": "pressure-write-02/saturated-write-pressure/smoke/percentiles.csv",
+              "pointConclusions": "pressure-write-02/saturated-write-pressure/smoke/point-conclusions.json",
+              "runSha256": "c4605991bf6d76d1a83a809c61fa521480fd2a1c96799a40d4977bf6a9eb9f5d",
+              "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4
+              }
+            },
+            "research": {
+              "sourceResultsSha256": "cb00f195ea80377a4d6847a019aaf0e638c45e7ed282f137e8636370cb7e6927",
+              "sourceResultsBytes": 57193650,
+              "report": "pressure-write-02/saturated-write-pressure/research/RESULTS.md",
+              "percentiles": "pressure-write-02/saturated-write-pressure/research/percentiles.csv",
+              "pointConclusions": "pressure-write-02/saturated-write-pressure/research/point-conclusions.json",
+              "compactResults": "pressure-write-02/saturated-write-pressure/research/results-compact.json",
+              "compactResultsSha256": "f6aa96847c9a9f617736ee8ea5db3fddfb5e4010faf1e2f782aeccfc4eeb3c0c",
+              "compactResultsBytes": 2555613,
+              "runSha256": "efb5b4a27bb873371691419b5c8754eb402ad5ad67d50f0ea029e8643e66a151",
+              "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 96,
+              "completed": 96,
+              "failed": 0,
+              "usablePairs": 48,
+              "plannedPairs": 48,
+              "warningFreePairs": 36,
+              "warningInstances": {
+                "Churn demand dropped; endogenous outcome retained": 11,
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 1,
+                "Outside-process CPU upper bound exceeded frozen ceiling": 2
+              },
+              "retryReview": {
+                "eligiblePairs": 1,
+                "maximumPairs": 4,
+                "attemptedPairs": 1,
+                "recoveredCleanPairs": 1,
+                "cleanSensitivityPairs": 37
+              }
+            }
+          }
+        },
+        "write-transition": {
+          "sourceRelativeDir": "results/second-host-pressure-write-02/write-transition",
+          "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+          "manifestSha256": "9a8219aaf510f4d9e988cab92becd0d83226a7a8c679a5f6808a6bff539aff5f",
+          "summary": "pressure-write-02/write-transition/SUMMARY.md",
+          "suiteResults": "pressure-write-02/write-transition/suite-results.json",
+          "researchViews": {
+            "write-transition": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ]
+          },
+          "phases": {
+            "smoke": {
+              "sourceResultsSha256": "dd14434eedd7be4f65699ba3c7cabe3cfa27910686ac916526af39f5dbfbe0c7",
+              "sourceResultsBytes": 154482,
+              "report": "pressure-write-02/write-transition/smoke/RESULTS.md",
+              "percentiles": "pressure-write-02/write-transition/smoke/percentiles.csv",
+              "pointConclusions": "pressure-write-02/write-transition/smoke/point-conclusions.json",
+              "runSha256": "5a63f402677bfe50e5c8b7a54fe990b0a1eefb1bb9dae7d03133c3e13931a9d2",
+              "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 4,
+              "completed": 4,
+              "failed": 0,
+              "usablePairs": 2,
+              "plannedPairs": 2,
+              "warningFreePairs": 0,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 4
+              }
+            },
+            "research": {
+              "sourceResultsSha256": "f5cc1c077965da8ef46aea98fb3b85545601b192d116283e3567feb24b11d41c",
+              "sourceResultsBytes": 2308733,
+              "report": "pressure-write-02/write-transition/research/RESULTS.md",
+              "percentiles": "pressure-write-02/write-transition/research/percentiles.csv",
+              "pointConclusions": "pressure-write-02/write-transition/research/point-conclusions.json",
+              "compactResults": "pressure-write-02/write-transition/research/results-compact.json",
+              "compactResultsSha256": "f6b54637b525a1a0d0b4a4deb13fdf0379d66539d28e6333592d48add1b9b463",
+              "compactResultsBytes": 1371913,
+              "runSha256": "3f3a718d2284a32135c7a6542cb43c10db51d210af0b32ebfb62fb366441b8d0",
+              "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+              "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+              "scheduled": 48,
+              "completed": 48,
+              "failed": 0,
+              "usablePairs": 24,
+              "plannedPairs": 24,
+              "warningFreePairs": 19,
+              "warningInstances": {
+                "Measured compiler activity exceeds frozen ceiling; not app pause time": 5
+              },
+              "retryReview": {
+                "eligiblePairs": 0,
+                "maximumPairs": 4,
+                "attemptedPairs": 0,
+                "recoveredCleanPairs": 0,
+                "cleanSensitivityPairs": 19
+              }
+            }
+          }
+        },
+        "saturated-pilot": {
+          "sourceResultsSha256": "1bf5491185b509d8bfb1b9dc3a306e3a6efb9521de511992b5942f6163957b29",
+          "sourceResultsBytes": 289590,
+          "report": "pressure-write-02/saturated-pilot/RESULTS.md",
+          "percentiles": "pressure-write-02/saturated-pilot/percentiles.csv",
+          "pointConclusions": "pressure-write-02/saturated-pilot/point-conclusions.json",
+          "compactResults": "pressure-write-02/saturated-pilot/results-compact.json",
+          "compactResultsSha256": "8684af64d3813cb9a8d4dee43edf974f1b4ca2bf543c1ae613cb554b3555acbf",
+          "compactResultsBytes": 154915,
+          "sourceRelativeDir": "results/second-host-pressure-write-02/saturated-pilot",
+          "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+          "runSha256": "3ec21716575d6fce1c21ea09541f18bfbe0881775de5b92dba7b6cbfcab61cf6",
+          "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+          "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+          "scheduled": 4,
+          "completed": 4,
+          "failed": 0,
+          "usablePairs": 2,
+          "plannedPairs": 2,
+          "warningFreePairs": 2
+        }
+      }
+    }
+  }
+}

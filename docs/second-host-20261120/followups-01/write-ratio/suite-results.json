@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "manifestSha256": "448457ca401f721314390ea04345335c96b278a569758816aeced742728c0385",
+  "phases": {
+    "smoke": {
+      "passed": true,
+      "scheduled": 4,
+      "completed": 4,
+      "failed": 0,
+      "usablePairs": 2,
+      "plannedPairs": 2,
+      "warningFreePairs": 0,
+      "report": "smoke/RESULTS.md",
+      "pointConclusions": "smoke/point-conclusions.json",
+      "resultsSha256": "fe7f14ffaefd3ec2ad389ca5da82dd02aa2367cc5662f8693d466f50c7d9ffc1"
+    },
+    "research": {
+      "passed": true,
+      "scheduled": 20,
+      "completed": 20,
+      "failed": 0,
+      "usablePairs": 10,
+      "plannedPairs": 10,
+      "warningFreePairs": 6,
+      "report": "research/RESULTS.md",
+      "pointConclusions": "research/point-conclusions.json",
+      "resultsSha256": "2f94fe91a9aacea1840428a4acf9e91e9d66d23b485e6328281802ba467a5183"
+    }
+  },
+  "researchViews": {
+    "write-ratio": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  }
+}

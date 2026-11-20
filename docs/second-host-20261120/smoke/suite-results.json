@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "manifestSha256": "0892f82aa638882c43da2c646c95ae03e5a9f6db97d21a008b8976e703a83ac3",
+  "phases": {
+    "smoke": {
+      "passed": true,
+      "scheduled": 4,
+      "completed": 4,
+      "failed": 0,
+      "usablePairs": 2,
+      "plannedPairs": 2,
+      "warningFreePairs": 0,
+      "report": "smoke/RESULTS.md",
+      "pointConclusions": "smoke/point-conclusions.json",
+      "resultsSha256": "cba5945f312ae1557611861f7a590391b64907a85e8c53d4f159ce01ef559eb7"
+    }
+  },
+  "researchViews": {}
+}

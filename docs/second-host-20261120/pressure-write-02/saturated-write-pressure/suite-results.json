@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "manifestSha256": "f5624b2022db66a94ab0df3706d565d6b3d3059568734a73768e1d0a265bf559",
+  "phases": {
+    "smoke": {
+      "passed": true,
+      "scheduled": 4,
+      "completed": 4,
+      "failed": 0,
+      "usablePairs": 2,
+      "plannedPairs": 2,
+      "warningFreePairs": 0,
+      "report": "smoke/RESULTS.md",
+      "pointConclusions": "smoke/point-conclusions.json",
+      "resultsSha256": "be67a05d53dd7c39e14485598e41be5e86f81b48f29890721bb372eddd0b77db"
+    },
+    "research": {
+      "passed": true,
+      "scheduled": 96,
+      "completed": 96,
+      "failed": 0,
+      "usablePairs": 48,
+      "plannedPairs": 48,
+      "warningFreePairs": 36,
+      "report": "research/RESULTS.md",
+      "pointConclusions": "research/point-conclusions.json",
+      "resultsSha256": "cb00f195ea80377a4d6847a019aaf0e638c45e7ed282f137e8636370cb7e6927"
+    }
+  },
+  "researchViews": {
+    "saturated-write-pressure": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  }
+}

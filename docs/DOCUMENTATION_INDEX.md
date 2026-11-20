@@ -225,3 +225,11 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 
 - [Review plan](mechanism/REREVIEW_PLAN_20261118.md).
 - [Findings, fixes and unchanged scientific boundaries](mechanism/REREVIEW_20261118.md).
+
+## Second-host portable replication (20 November 2026)
+
+- [Overview, cohort inventory, and bounded conclusions](second-host-20261120/README.md).
+- [Provenance and hash verification manifest](second-host-20261120/MANIFEST.json).
+- [Cross-host locality replication review](second-host-20261120/locality/CROSS_HOST_REVIEW.md).
+- [Follow-up campaign review (`write-ratio`, `locality-long`, `rq-matrix`)](second-host-20261120/followups-01/CAMPAIGN_REVIEW.md) and [interpretation](second-host-20261120/followups-01/INTERPRETATION.md).
+- [Tightened saturated pressure and write-transition campaign review](second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md).
