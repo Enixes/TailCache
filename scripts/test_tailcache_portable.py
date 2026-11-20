@@ -48,7 +48,8 @@ class PortableTests(unittest.TestCase):
 
     def test_individual_gradle_suites_preserve_their_named_profile(self):
         configs = ROOT/'experiments/portable'
-        for name, forks in [('write-ratio', 20), ('locality-long', 16), ('rq-matrix', 64)]:
+        for name, forks in [('write-ratio', 20), ('locality-long', 16), ('rq-matrix', 64),
+                            ('saturated-write-pressure', 96), ('write-transition', 48)]:
             with self.subTest(suite=name):
                 profile = p.load(configs/f'{name}.json')
                 design = p.suite_plan(configs, name)
@@ -85,6 +86,7 @@ class PortableTests(unittest.TestCase):
     def test_rejects_phase_fractional_arrivals(self):
         self.invalid(lambda c:(c.update(measureMs=1),c['cells'][0].update(qps=1)))
     def test_rejects_nonfinite_quality(self): self.invalid(lambda c:c['quality'].update(maxOutsideCpuFraction=float('nan')))
+    def test_rejects_excess_retry_budget(self): self.invalid(lambda c:c.update(maxExternalRetryPairs=9))
     def test_rejects_excess_priming(self):
         self.invalid(lambda c:c.update(warmupMs=100, primeCalls=1))
 
@@ -163,17 +165,28 @@ class PortableTests(unittest.TestCase):
         q=p.quality_screen(samples,2*10**9+2000,4*10**9,self.config,'linux-proc')
         self.assertTrue(any('CPU' in w for w in q['warnings']))
 
-    def test_outside_cpu_checks_last_bracket_after_worker_exit(self):
+    def test_outside_cpu_marks_unattributed_final_bracket_separately(self):
         samples = self.samples()
         del samples[-1]['processTicks']
         q = p.quality_screen(samples, 2*10**9+2000, 4*10**9+2000, self.config, 'linux-proc')
         self.assertEqual(q['outsideCpuUnattributedIntervals'], 1)
-        self.assertGreaterEqual(q['outsideCpuMaxUpperFraction'], 0.5)
-        self.assertIn('Outside-process CPU upper bound exceeded frozen ceiling', q['warnings'])
+        self.assertGreaterEqual(q['outsideCpuUnattributedMaxUpperFraction'], 0.5)
+        self.assertLess(q['outsideCpuMaxUpperFraction'], 0.1)
+        self.assertIn('Outside-process CPU attribution incomplete', q['warnings'])
+        self.assertNotIn('Outside-process CPU upper bound exceeded frozen ceiling', q['warnings'])
         del samples[-1]['cpuBusy']
         q = p.quality_screen(samples, 2*10**9+2000, 4*10**9+2000, self.config, 'linux-proc')
         self.assertEqual(q['outsideCpuMissingIntervals'], 1)
         self.assertIn('Missing outside-process CPU evidence', q['warnings'])
+
+    def test_observer_receipt_requires_sample_after_measurement_with_worker_counters(self):
+        worker = self.root/'worker'
+        worker.mkdir()
+        sample = self.samples()[-1]
+        p.save_new(worker/'observer-ack.json', sample)
+        self.assertTrue(p.observer_handoff_complete(self.root, [sample], sample['startNs']-1))
+        self.assertFalse(p.observer_handoff_complete(self.root, [], sample['startNs']-1))
+        self.assertFalse(p.observer_handoff_complete(self.root, [sample], sample['startNs']+1))
 
     def test_power_and_thermal_screen(self):
         samples=self.samples();samples[3]['externalPower']={'AC':'0'};samples[3]['throttle']['core']='1'
@@ -235,6 +248,38 @@ class PortableTests(unittest.TestCase):
         s=next(s for s in result['summaries'] if s['cell']==rows[0]['cell'] and s['channel']=='response')
         self.assertEqual(s['allUsablePairs']['medianRatio'],2)
         self.assertEqual(s['warningFreePairs']['n'],0)
+
+    def test_retries_are_capped_and_exclude_endogenous_warnings(self):
+        rows = p.schedule(self.config)
+        observations = {spec['label']:dict(status='COMPLETE', warnings=[]) for spec in rows}
+        cpu = 'Outside-process CPU upper bound exceeded frozen ceiling'
+        observations[rows[0]['label']]['warnings'] = [cpu, 'Churn demand dropped']
+        observations[rows[2]['label']]['warnings'] = [cpu]
+        observations[rows[4]['label']]['warnings'] = ['Outside-process CPU attribution incomplete']
+        observations[rows[6]['label']]['warnings'] = [cpu]
+        observations[rows[7]['label']]['status'] = 'FAILED'
+        plan = p.retry_plan(rows,observations,1)
+        self.assertEqual(plan['eligiblePairs'], 2)
+        self.assertEqual([x['slots'] for x in plan['selected']], [rows[2:4]])
+
+    def test_clean_retry_is_a_separate_sensitivity_observation(self):
+        self.config['maxExternalRetryPairs'] = 1
+        self.frozen_run()
+        rows = p.schedule(self.config)
+        for spec in rows[:2]:
+            self.fake_result(self.root/'slots'/spec['label'],spec)
+            self.fake_result(self.root/'external-retry'/spec['label'],spec)
+        original = {s['label']:p.load(self.root/'slots'/s['label']/'result.json') for s in rows[:2]}
+        original[rows[0]['label']]['warnings'] = ['Outside-process CPU attribution incomplete']
+        slot = self.root/'slots'/rows[0]['label']
+        (slot/'result.json').write_text(json.dumps(original[rows[0]['label']]))
+        (slot/'seal.json').write_text(json.dumps(dict(resultSha256=p.sha(slot/'result.json'))))
+        p.save_new(self.root/'external-retry-plan.json', p.retry_plan(rows,original,1))
+        report = p.report(self.root,self.root/'report')
+        self.assertFalse(report['pairs'][0]['warningFree'])
+        self.assertEqual(len(report['observations']), 2)
+        self.assertEqual(report['retryReview']['recoveredCleanPairs'], 1)
+        self.assertEqual(report['retryReview']['cleanSensitivityPairs'][0]['source'], 'external-retry')
 
     def test_failed_slot_is_not_replaced_or_included(self):
         self.frozen_run()

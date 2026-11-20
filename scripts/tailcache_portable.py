@@ -29,12 +29,22 @@ VERSION = 'tailcache-portable-v1'
 BACKENDS = ('CAFFEINE', 'CHRONICLE_IN_MEMORY')
 CHANNELS = ('service', 'response', 'gap', 'read-service', 'update-service')
 QUANTILES = (50, 99, 99.9, 99.99, 99.999)
+RETRYABLE_OBSERVER_WARNINGS = frozenset((
+    'Outside-process CPU upper bound exceeded frozen ceiling',
+    'Missing outside-process CPU evidence',
+    'Outside-process CPU attribution incomplete',
+    'Host sampling does not cover conditioning and measurement',
+    'Host sampling gap exceeds 3 seconds',
+    'Final observer sample unavailable',
+))
 SUITES = {
     'quick': (),
     'locality': ('locality',),
     'write-ratio': ('write-ratio',),
     'locality-long': ('locality-long',),
     'rq-matrix': ('rq-matrix',),
+    'saturated-write-pressure': ('saturated-write-pressure',),
+    'write-transition': ('write-transition',),
     'all': ('locality', 'write-ratio', 'rq-matrix'),
 }
 MAIN = 'io.github.enixes.tailcache.workload.MechanismCrossoverRunner'
@@ -105,9 +115,12 @@ def validate(config):
     require(isinstance(config,dict),'Configuration must be a JSON object')
     expected = {'schemaVersion','name','purpose','heapMiB','activeProcessorCount','residents','churnMiBPerSecond',
                 'warmupMs','conditioningMs','measureMs','primeCalls','seeds','orderSeed','logging','cells','quality'}
-    require(set(config) == expected and type(config['schemaVersion']) is int and config['schemaVersion'] == 1, 'Unknown/missing config fields or schema')
+    require(set(config)-{'maxExternalRetryPairs'} == expected and type(config['schemaVersion']) is int and config['schemaVersion'] == 1,
+            'Unknown/missing config fields or schema')
     require(isinstance(config['name'],str) and re.fullmatch(r'[a-zA-Z0-9-]{1,80}', config['name']) is not None, 'Invalid name')
     require(config['purpose'] in ('research', 'diagnostic'), 'Invalid purpose')
+    retries = config.get('maxExternalRetryPairs', 0)
+    require(integer(retries,0,8) and (retries==0 or config['purpose']=='research'), 'Invalid external retry budget')
     for key, lo, hi in [('heapMiB',128,16384),('activeProcessorCount',1,4096),('residents',16,32768),('churnMiBPerSecond',0,953),
                         ('warmupMs',1,3600000),('conditioningMs',1,3600000),('measureMs',1,3600000),
                         ('primeCalls',0,4),('orderSeed',0,2**63-1)]:
@@ -160,6 +173,7 @@ def plan(config):
     seconds = len(rows)*sum(config[k] for k in ('warmupMs','conditioningMs','measureMs'))/1000
     return dict(version=VERSION, config=config, schedule=rows,
                 workloadJvms=len(rows) if config['purpose']=='research' else 0, diagnosticJvms=len(rows) if config['purpose']=='diagnostic' else 0,
+                maximumExternalRetryJvms=2*config.get('maxExternalRetryPairs',0),
                 nominalWorkloadMinutes=seconds/60, setupAndVerificationAdditional=True,
                 controls='Functional test plus two controls per backend before workload; not research observations',
                 endpoints='service and scheduled-response separately; p99,p99.9,p99.99,p99.999',
@@ -346,6 +360,7 @@ def quality_screen(samples, start, end, config, capability):
     if any(b['endNs']-a['startNs']>3_000_000_000 for a,b in intervals):
         warnings.append('Host sampling gap exceeds 3 seconds')
     outside = []
+    unattributed = []
     missing_cpu_intervals = 0
     unattributed_cpu_intervals = 0
     for key in ('pswpin','pswpout','zswpin','zswpout'):
@@ -366,17 +381,18 @@ def quality_screen(samples, start, end, config, capability):
             continue
         before = a.get('processTicks')
         after = b.get('processTicks')
-        if before is None or after is None or after<before:
-            # On the final sample the worker may already have exited. Charge all
-            # observed busy time to outside CPU rather than ignoring the bracket.
-            unattributed_cpu_intervals += 1
-            worker_ticks = 0
-        else:
-            worker_ticks = after-before
         uncertainty = (b['endNs']-b['startNs']+a['endNs']-a['startNs'])/max(1,b['startNs']-a['endNs'])
-        outside.append(min(1, max(0, (busy-worker_ticks)/total)+uncertainty))
-    if not outside or missing_cpu_intervals:
+        if before is None or after is None or after<before:
+            # Keep the whole-machine bound, but distinguish missing attribution
+            # from a threshold crossing with worker CPU accounted for.
+            unattributed_cpu_intervals += 1
+            unattributed.append(min(1, busy/total+uncertainty))
+            continue
+        outside.append(min(1, max(0, (busy-(after-before))/total)+uncertainty))
+    if not intervals or missing_cpu_intervals:
         warnings.append('Missing outside-process CPU evidence')
+    if unattributed_cpu_intervals:
+        warnings.append('Outside-process CPU attribution incomplete')
     if outside and max(outside)>config['quality']['maxOutsideCpuFraction']:
         warnings.append('Outside-process CPU upper bound exceeded frozen ceiling')
     if any(not s.get('externalPower') for s in samples):
@@ -397,6 +413,7 @@ def quality_screen(samples, start, end, config, capability):
                 protectedWindow='conditioning start through measurement end; overlapping 1Hz brackets',
                 outsideCpuMaxUpperFraction=max(outside,default=None),outsideCpuMissingIntervals=missing_cpu_intervals,
                 outsideCpuUnattributedIntervals=unattributed_cpu_intervals,
+                outsideCpuUnattributedMaxUpperFraction=max(unattributed,default=None),
                 sensorAttribution='Host-wide; not causal attribution to worker')
 
 
@@ -556,7 +573,7 @@ def summarize(path, spec, config, capability, code):
     return result
 
 
-def worker_command(java, config, spec, path):
+def worker_command(java, config, spec, path, observer_handshake=False):
     cp=os.pathsep.join(str(p) for p in sorted((HERE/'lib').glob('*.jar')))
     # Relative log path avoids Windows drive-letter/colon unified-log escaping.
     command=[java,*FLAGS,'-XX:+UseG1GC',f'-XX:ActiveProcessorCount={config["activeProcessorCount"]}',
@@ -572,19 +589,31 @@ def worker_command(java, config, spec, path):
              'conditioning-ms':config['conditioningMs'],'measure-ms':config['measureMs'],
              'prime-calls':config['primeCalls'],'write-bps':spec['writeBps'],'update-hotset':spec['updateHotset'],
              'floor':str(spec.get('floor',False)).lower(),'supply-floor':'false','inject-stall-ms':spec.get('injectMs',0),'reuse':'false'}
+    if observer_handshake:
+        options['observer-handshake'] = 'true'
     for k,v in options.items(): command += ['--'+k,str(v)]
     return command
 
 
 def launch(path, spec, config, java, capability):
     path.mkdir()
-    command=worker_command(java,config,spec,path)
+    handshake = capability == 'linux-proc'
+    command=worker_command(java,config,spec,path,observer_handshake=handshake)
     save_new(path/'command.json',dict(command=command,startedUtc=now(),
         bootId=text_file('/proc/sys/kernel/random/boot_id'),capability=capability))
     samples=[];errors=[];finished=threading.Event();interrupted=False
+    ready = path/'worker'/'observer-ready'
+    ack = path/'worker'/'observer-ack.json'
     def observe():
         while not finished.is_set():
-            try: samples.append(snapshot(process.pid))
+            try:
+                # Check the marker before sampling so both counter reads follow
+                # the end of measurement, even if export takes time.
+                awaiting = handshake and ready.is_file() and not ack.exists()
+                sample = snapshot(process.pid)
+                samples.append(sample)
+                if awaiting and all(k in sample for k in ('cpuTotal','cpuBusy','processTicks')):
+                    save_new(ack, sample)
             except Exception as error: errors.append(str(error))
             finished.wait(1)
     with (path/'stdout.txt').open('x') as stdout,(path/'stderr.txt').open('x') as stderr:
@@ -603,6 +632,11 @@ def launch(path, spec, config, java, capability):
     save_new(path/'host.json',samples)
     result=summarize(path,spec,config,capability,code)
     result['warnings']+=['Observer error: '+e for e in errors]
+    if handshake and result['status']=='COMPLETE':
+        complete = observer_handoff_complete(path, samples, int(result['windows'][-1]['endNs']))
+        result['observerHandoffComplete'] = complete
+        if not complete:
+            result['warnings'].append('Final observer sample unavailable')
     # Independent compressed-HDR decode occurs after worker exits.
     if result['status']=='COMPLETE':
         cp=os.pathsep.join(str(p) for p in sorted((HERE/'lib').glob('*.jar')))
@@ -641,6 +675,16 @@ def launch(path, spec, config, java, capability):
     return result
 
 
+def observer_handoff_complete(path, samples, measurement_end):
+    worker = path/'worker'
+    ack = worker/'observer-ack.json'
+    if not ack.is_file() or (worker/'observer-timeout').exists():
+        return False
+    sample = load(ack)
+    return (sample in samples and sample['startNs'] >= measurement_end
+            and all(k in sample for k in ('cpuTotal','cpuBusy','processTicks')))
+
+
 def retained(path, spec=None):
     seal=load(path/'seal.json')
     require(sha(path/'result.json')==seal['resultSha256'],'Retained result changed')
@@ -658,6 +702,9 @@ def verify_derivatives(path, result, config):
     windows=csv_rows(path/'worker/windows.csv')
     require(windows==result['windows'],'Cached windows differ from raw')
     m=windows[-1];n=int(m['operations']);writes=int(m['writes'])
+    if 'observerHandoffComplete' in result:
+        handoff = observer_handoff_complete(path, load(path/'host.json'), int(m['endNs']))
+        require(handoff == result['observerHandoffComplete'], 'Final observer handoff differs')
     if 'stallExport' in result:
         limit = int(properties(path/'worker/configuration.txt')['eventLimit'])
         require(stall_export(path/'worker', m, limit)==result['stallExport'], 'Cached stall export counts differ')
@@ -711,6 +758,19 @@ def controls(out, java, config, capability):
     return rows
 
 
+def retry_plan(rows, observations, maximum):
+    """Select by warnings alone, in frozen schedule order, at most once per seed/cell."""
+    entries = []
+    for a,b in zip(rows[::2], rows[1::2], strict=True):
+        members = [observations.get(s['label']) for s in (a,b)]
+        if not all(r and r['status']=='COMPLETE' for r in members):
+            continue
+        warnings = sorted({w for r in members for w in r['warnings']})
+        if warnings and all(w in RETRYABLE_OBSERVER_WARNINGS or w.startswith('Observer error: ') for w in warnings):
+            entries.append(dict(slots=[a,b], originalWarnings=warnings))
+    return dict(eligiblePairs=len(entries),maximumPairs=maximum,selected=entries[:maximum])
+
+
 def run(config, out, java_arg=None, *, host_locked=False, report_destination=None):
     validate(config);out=pathlib.Path(out).resolve()
     require(HERE not in out.parents and out!=HERE,'Keep results outside the executable bundle')
@@ -756,23 +816,39 @@ def run(config, out, java_arg=None, *, host_locked=False, report_destination=Non
         require(set(q['controlResultSha256'])=={b+'-'+str(i) for b in BACKENDS for i in (0,20)},'Incomplete control qualification')
         for label,digest in q['controlResultSha256'].items():
             path=out/'controls'/label;require(sha(path/'result.json')==digest,'Control receipt changed');retained(path)
-        slots=out/'slots';slots.mkdir(exist_ok=True)
-        for index,spec in enumerate(schedule(config)):
+        def obtain(root, spec):
             require(bundle_identity()==bundle,'Bundle changed while running')
             # Check runtime bytes before every fresh or resumed slot.
             require(java_identity(java['executable'])['id']==java['id'],'JDK changed while running')
-            path=slots/spec['label']
+            path=root/spec['label']
             if path.exists():
                 require((path/'result.json').exists(),'Interrupted slot retained; explicit new cohort required: '+str(path))
-                result=retained(path,spec)
-            else:
-                readiness(config,out)
-                current=host_identity(out)
-                require(same_resources(current,host),
-                        'Host/resource settings changed during campaign')
-                result=launch(path,spec,config,java['executable'],host['capability'])
-            print(f'{index+1}/{len(schedule(config))} {spec["label"]}: {result["status"]}, {len(result["warnings"])} warnings',flush=True)
+                return retained(path,spec)
+            readiness(config,out)
+            require(same_resources(host_identity(out),host), 'Host/resource settings changed during campaign')
+            return launch(path,spec,config,java['executable'],host['capability'])
+
+        slots=out/'slots';slots.mkdir(exist_ok=True)
+        rows = schedule(config)
+        initial = {}
+        for index,spec in enumerate(rows):
+            result=obtain(slots,spec)
+            initial[spec['label']] = result
+            print(f'{index+1}/{len(rows)} {spec["label"]}: {result["status"]}, {len(result["warnings"])} warnings',flush=True)
             # Failed pressure outcomes are retained; other scheduled slots may still run.
+        if config.get('maxExternalRetryPairs',0):
+            retries = retry_plan(rows,initial,config['maxExternalRetryPairs'])
+            marker = out/'external-retry-plan.json'
+            if marker.exists():
+                require(load(marker)==retries,'Frozen external retry plan changed')
+            else:
+                save_new(marker,retries)
+            retry_slots = out/'external-retry'
+            retry_slots.mkdir(exist_ok=True)
+            for entry in retries['selected']:
+                for spec in entry['slots']:
+                    result = obtain(retry_slots,spec)
+                    print(f'Retry {spec["label"]}: {result["status"]}, {len(result["warnings"])} warnings',flush=True)
         return report(out, report_destination) if report_destination is not None else report(out)
 
 
@@ -849,6 +925,55 @@ def variation(values):
                 medianAbsoluteDeviation=statistics.median(abs(v-median) for v in values))
 
 
+def pair_result(a, b, by):
+    members=[by.get(a['label']),by.get(b['label'])]
+    good=all(r and r['status']=='COMPLETE' for r in members)
+    p=dict(cell=a['cell'],block=a['block'],seed=a['seed'],labels=[a['label'],b['label']],usable=good,
+           warningFree=good and not any(r['warnings'] for r in members),ratios={},invalidReason=None)
+    if good:
+        c,h=sorted(members,key=lambda r:BACKENDS.index(r['spec']['backend']))
+        if a['qps'] and ([(w['phase'],w['operations'],w['writes']) for w in c['windows']] !=
+                          [(w['phase'],w['operations'],w['writes']) for w in h['windows']] or
+                          c['integrity']['mutationVersionSha256']!=h['integrity']['mutationVersionSha256']):
+            p.update(usable=False,warningFree=False,invalidReason='Paired fixed-arrival write stream differs')
+        else:
+            for ch in CHANNELS:
+                p['ratios'][ch]={str(q):(h['latency'][ch]['percentiles'][str(q)]['ns']/c['latency'][ch]['percentiles'][str(q)]['ns']
+                    if c['latency'][ch]['count'] and h['latency'][ch]['count'] and
+                    c['latency'][ch]['percentiles'][str(q)]['ns']>0 and h['latency'][ch]['percentiles'][str(q)]['ns']>0
+                    else None) for q in QUANTILES}
+    return p
+
+
+def review_external_retries(out, frozen, original, pairs):
+    marker = out/'external-retry-plan.json'
+    if not marker.exists():
+        return None
+    config = frozen['config']
+    design = retry_plan(frozen['schedule'], original, config.get('maxExternalRetryPairs',0))
+    require(load(marker)==design,'Retained external retry plan differs')
+    attempts = []
+    clean = [dict(p, source='original') for p in pairs if p['warningFree']]
+    for entry in design['selected']:
+        a,b = entry['slots']
+        retry_results = {}
+        for spec in (a,b):
+            path = out/'external-retry'/spec['label']
+            if (path/'result.json').exists():
+                result = retained(path,spec)
+                verify_derivatives(path,result,config)
+                retry_results[spec['label']] = result
+        attempt = pair_result(a,b,retry_results)
+        attempts.append(dict(pair=attempt,originalWarnings=entry['originalWarnings'],
+                             warnings={label:r['warnings'] for label,r in retry_results.items()},
+                             statuses={label:r['status'] for label,r in retry_results.items()}))
+        if attempt['warningFree']:
+            clean.append(dict(attempt, source='external-retry'))
+    return dict(eligiblePairs=design['eligiblePairs'], maximumPairs=design['maximumPairs'],
+                attemptedPairs=len(attempts), recoveredCleanPairs=sum(p['source']=='external-retry' for p in clean),
+                cleanPairs=len(clean), attempts=attempts, cleanSensitivityPairs=clean)
+
+
 def report(out, destination=None):
     out=pathlib.Path(out).resolve();frozen=load(out/'run.json');config=validate(frozen['config'])
     require(frozen['schedule']==schedule(config),'Manifest schedule differs')
@@ -859,24 +984,9 @@ def report(out, destination=None):
             r=retained(path,spec);verify_derivatives(path,r,config);results.append(r)
         else:missing.append(spec['label'])
     by={r['spec']['label']:r for r in results};pairs=[];flat=[]
-    for a,b in zip(frozen['schedule'][::2],frozen['schedule'][1::2]):
-        members=[by.get(a['label']),by.get(b['label'])]
-        good=all(r and r['status']=='COMPLETE' for r in members)
-        p=dict(cell=a['cell'],block=a['block'],seed=a['seed'],labels=[a['label'],b['label']],usable=good,
-               warningFree=good and not any(r['warnings'] for r in members),ratios={},invalidReason=None)
-        if good:
-            c,h=sorted(members,key=lambda r:BACKENDS.index(r['spec']['backend']))
-            if a['qps'] and ([(w['phase'],w['operations'],w['writes']) for w in c['windows']] !=
-                              [(w['phase'],w['operations'],w['writes']) for w in h['windows']] or
-                              c['integrity']['mutationVersionSha256']!=h['integrity']['mutationVersionSha256']):
-                p.update(usable=False,warningFree=False,invalidReason='Paired fixed-arrival write stream differs')
-            else:
-                for ch in CHANNELS:
-                    p['ratios'][ch]={str(q):(h['latency'][ch]['percentiles'][str(q)]['ns']/c['latency'][ch]['percentiles'][str(q)]['ns']
-                        if c['latency'][ch]['count'] and h['latency'][ch]['count'] and
-                        c['latency'][ch]['percentiles'][str(q)]['ns']>0 and h['latency'][ch]['percentiles'][str(q)]['ns']>0
-                        else None) for q in QUANTILES}
-        pairs.append(p)
+    for a,b in zip(frozen['schedule'][::2], frozen['schedule'][1::2], strict=True):
+        pairs.append(pair_result(a,b,by))
+    retry_review = review_external_retries(out, frozen, by, pairs)
     summaries=[]
     for cell in range(1,len(config['cells'])+1):
         for ch in CHANNELS:
@@ -909,7 +1019,7 @@ def report(out, destination=None):
     reportdata=dict(version=VERSION,runSha256=sha(out/'run.json'),bundleId=frozen['bundleId'],hostId=frozen['host']['id'],
         purpose=config['purpose'],collectionComplete=complete,allSlotsSuccessful=complete and all(r['status']=='COMPLETE' for r in results),
         scheduled=len(frozen['schedule']),completed=sum(r['status']=='COMPLETE' for r in results),failed=sum(r['status']!='COMPLETE' for r in results),
-        missing=missing,pairs=pairs,summaries=summaries,observations=results,
+        missing=missing,pairs=pairs,summaries=summaries,observations=results,retryReview=retry_review,
         pointConclusions=points,contrasts=contrasts,
         timingControls=timing_controls,
         researchQuestionMap=dict(RQ1='Inspect liveMiB contrasts in service p99/p99.9 for each payload and pacing mode',
@@ -948,6 +1058,15 @@ def report(out, destination=None):
             lines.append('- '+json.dumps(contrast,sort_keys=True))
     if not any(c['observedRankingReversalBrackets'] for c in contrasts):
         lines.append('No adjacent fully observed ranking reversal is resolved in this run.')
+    if retry_review is not None:
+        first_pass = sum(p['warningFree'] for p in pairs)
+        lines += ['', '## External-noise retries', '',
+                  f"{retry_review['eligiblePairs']} eligible pairs. "
+                  f"{retry_review['attemptedPairs']} selected out of a cap of {retry_review['maximumPairs']}.",
+                  f"First-pass warning-free pairs: {first_pass}. "
+                  f"Recovered warning-free pairs: {retry_review['recoveredCleanPairs']}. "
+                  f"Clean sensitivity view: {retry_review['cleanPairs']} pairs.",
+                  'Original results above are preserved. The clean sensitivity view uses at most one attempt per seed and cell.']
     (destination/'RESULTS.md').write_text('\n'.join(lines)+'\n')
     print(json.dumps(dict(report=str(destination),collectionComplete=complete,successful=reportdata['completed'],failed=reportdata['failed'])),flush=True)
     return reportdata

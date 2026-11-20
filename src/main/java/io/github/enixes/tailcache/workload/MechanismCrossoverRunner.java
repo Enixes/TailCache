@@ -95,11 +95,29 @@ public final class MechanismCrossoverRunner {
                     +"\noperations="+workload.operations()+"\nwrites="+workload.writes()+"\nconsumed="+consumed+"\nmutationVersionSha256="+workload.mutationVersionDigest()+"\nresidentCount="+workload.size()+"\n");
                 Files.writeString(out.resolve("phase.txt"),"COMPLETE");
             }
+            if (Boolean.parseBoolean(options.getOrDefault("--observer-handshake", "false"))) {
+                awaitObserver(out);
+            }
         } catch (Throwable failure) {
             // A tiny failure record survives pressure OOM; stderr retains the full stack.
             try { Files.writeString(out.resolve("failure.txt"),"phase="+phase+"\nerror="+failure.getClass().getName()+"\nmessage="+failure.getMessage()+"\n"); }
             catch (Throwable ignored) { }
             throw failure;
+        }
+    }
+
+    private static void awaitObserver(Path output) throws java.io.IOException {
+        // Preserve the worker's CPU counters until the external observer can
+        // bracket the end of measurement. No waiting occurs in a timed phase.
+        Path ack = output.resolve("observer-ack.json");
+        Files.createFile(output.resolve("observer-ready"));
+        long started = System.nanoTime();
+        while (!Files.exists(ack)) {
+            if (System.nanoTime() - started >= 5_000_000_000L) {
+                Files.createFile(output.resolve("observer-timeout"));
+                return;
+            }
+            LockSupport.parkNanos(20_000_000L);
         }
     }
 

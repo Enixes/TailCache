@@ -33,6 +33,8 @@ Use a quiet Linux host for research measurements.
 | `-PtailcacheSuite=write-ratio` | 20 | 51 minutes | Response at 0%, 0.5%, 1%, 2%, and 5% writes |
 | `-PtailcacheSuite=locality-long` | 16 | 57 minutes | Update locality with four fresh seeds and 90-second measurement windows |
 | `-PtailcacheSuite=rq-matrix` | 64 | 2 hours 44 minutes | Payload and ballast under saturated service and fixed arrivals |
+| `-PtailcacheSuite=saturated-write-pressure` | 96 | 4 hours 6 minutes | Saturated service at 256 B/4 KiB, 0/288 MiB, and 1%/5%/10% writes |
+| `-PtailcacheSuite=write-transition` | 48 | 2 hours 3 minutes | Fixed-arrival response from 0.5% to 2% writes with four fresh seeds |
 | `-PtailcacheSuite=all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
 
 Times exclude dependency downloads, correctness tests, setup, timing controls and
@@ -59,6 +61,21 @@ zero-ballast, 50k requests/s cell has the same seeds and inputs across all three
 profiles, so the suite measures it once. The summary maps every profile to its
 research cell numbers. Results are scoped to this suite's schedule and host.
 The longer locality profile has its own seeds and timing and runs separately.
+
+The saturated write-pressure and paced write-transition profiles use a 2%
+whole-host CPU bound. After the first pass, each profile allows one retry of
+both backends for up to four seed/cell pairs. Eligibility requires two complete
+forks and warnings limited to CPU interference or observer coverage. GC, JIT,
+churn and failed workloads stay in the original evidence. Selection follows the
+frozen schedule order and uses no measured latency. The original reports keep
+all first-pass results. The separate clean sensitivity view uses an original
+warning-free pair or its warning-free retry, once per seed and cell. Both
+profiles together allow at most 16 retry JVMs, about 41 timed minutes.
+
+```sh
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=saturated-write-pressure -PtailcacheOut=results/saturated-write-pressure-01
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=write-transition -PtailcacheOut=results/write-transition-01
+```
 
 Repeat the same command with the same output directory to resume. The frozen
 bundle and completed forks are verified and reused. Choose a new directory for an
@@ -197,9 +214,11 @@ Warnings are shown both inclusively and in a separate warning-free pair summary.
 Host paging is screened over **conditioning through measurement**, using overlapping
 1 Hz brackets; whole-lifetime events are retained separately. Host-wide counters do
 not identify the worker as the cause. Outside CPU is a conservative whole-machine
-fraction, including read-bracket uncertainty. The final interval can use all observed
-busy time as its bound if worker ticks are unavailable after exit. Missing system
-CPU counters within the protected window trigger a warning. CPU load concentrated
+fraction, including read-bracket uncertainty. On native Linux the worker waits
+after timing, for up to five seconds, for an observer sample taken after measurement
+while worker counters are still readable. Missing attribution uses a separate
+warning and whole-machine bound. Missing system CPU counters within the protected
+window also trigger a warning. CPU load concentrated
 on one core can still be obscured by the whole-machine denominator.
 Compiler time is approximate accumulated compiler-thread activity, not application
 pause time. Missing telemetry is explicit. GC evacuation failures remain reported
