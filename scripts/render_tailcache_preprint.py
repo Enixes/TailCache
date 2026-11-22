@@ -44,10 +44,10 @@ STYLES = {
     "subsection": ParagraphStyle("Subsection", fontName="Helvetica-Bold", fontSize=11.5,
                                  leading=14, textColor=INK, spaceBefore=12, spaceAfter=5,
                                  keepWithNext=True),
-    "body": ParagraphStyle("Body", fontName="Times-Roman", fontSize=11, leading=15,
+    "body": ParagraphStyle("Body", fontName="Times-Roman", fontSize=11, leading=14.5,
                            textColor=INK, spaceAfter=8, allowWidows=False, allowOrphans=False),
     "reference": ParagraphStyle("Reference", fontName="Times-Roman", fontSize=9.5, leading=12.5,
-                                textColor=INK, spaceAfter=5, allowWidows=False, allowOrphans=False),
+                                textColor=INK, spaceAfter=3.5, allowWidows=False, allowOrphans=False),
     "cell": ParagraphStyle("Cell", fontName="Helvetica", fontSize=8.5, leading=11,
                            textColor=INK),
     "numeric": ParagraphStyle("Number", fontName="Helvetica", fontSize=8.5, leading=11,
@@ -179,7 +179,7 @@ def mixed_figure(data):
 
 def payload_figure(data):
     drawing = Drawing(FRAME, 176)
-    plot_label(drawing, 4, 163, "Chronicle / Caffeine service p99.9", fontName="Helvetica-Bold", fillColor=INK)
+    plot_label(drawing, 4, 163, "Chronicle / Caffeine combined service p99.9", fontName="Helvetica-Bold", fillColor=INK)
     plot_label(drawing, FRAME - 5, 163, "Lower ratios favor Chronicle", textAnchor="end")
     groups = []
     for payload, label in ((256, "256 B"), (4096, "4 KiB")):
@@ -225,16 +225,21 @@ def inline(value):
 
 def table(block):
     rows = []
+    widths = {
+        5: [115, 65, 99, 109, 99],
+        6: [55, 89, 79, 88, 80, 96],
+    }
+    text_columns = {5: 1, 6: 2}
     for index, line in enumerate(block.splitlines()):
         if index == 1:
             continue
         fields = line.strip("|").split("|")
-        styles = ["cell"] + ["numeric"] * (len(fields) - 1)
+        text_count = text_columns[len(fields)]
+        styles = ["cell"] * text_count + ["numeric"] * (len(fields) - text_count)
         entries = [inline(field.strip()) for field in fields]
         rows.append([Paragraph(f"<b>{value}</b>" if index == 0 else value, STYLES[style])
                      for value, style in zip(entries, styles, strict=True)])
-    widths = [115, 65, 99, 109, 99]
-    result = Table(rows, colWidths=widths, repeatRows=1, hAlign="LEFT", spaceAfter=12)
+    result = Table(rows, colWidths=widths[len(rows[0])], repeatRows=1, hAlign="LEFT", spaceAfter=12)
     result.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#E8EFF1")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [WHITE, colors.HexColor("#F3F6F7")]),
@@ -302,7 +307,7 @@ def main():
     ), strict=True))
     if args.update_svg:
         titles = ("Scheduled-response p99.9 by update set", "G1 mixed-collection pause time",
-                  "Saturated service p99.9 by payload", "Scheduled-response p99.9 by added heap data")
+                  "Saturated combined service p99.9 by payload", "Scheduled-response p99.9 by added heap data")
         for (name, chart), title in zip(charts.items(), titles, strict=True):
             renderSVG.drawToFile(chart, str(PAPER / "figures" / name), title=title)
     render(args.output, charts)

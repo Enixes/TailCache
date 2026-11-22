@@ -1,5 +1,13 @@
 # Literature verification and novelty boundary
 
+## 23 November citation update
+
+The [current Related work section](MANUSCRIPT.md#2-related-work) connects the prior literature to three distinct parts of the study:
+
+- **Tail latency and workload design.** [Dean and Barroso](https://research.google/pubs/the-tail-at-scale/) motivate reporting tails, and [Li et al.](https://courses.cs.washington.edu/courses/cse452/23wi/papers/sharma-et-al-tales-of-the-tail.pdf) distinguish several sources of server stalls. The scheduled-response measurement follows intended arrival timestamps, with HdrHistogram recording the directly observed durations.
+- **JVM measurement.** [Georges et al.](https://users.elis.ugent.be/~leeckhou/papers/oopsla07-stat.pdf) distinguish variation within and between JVM invocations. [Barrett et al.](https://doi.org/10.1145/3133876) and Traini et al. motivate reporting warmup and steady-state limitations alongside fork-level outcomes.
+- **Memory management.** [TeraCache](https://www.usenix.org/conference/hotstorage20/presentation/kolokasis), [Yak](https://www.usenix.org/conference/osdi16/technical-sessions/presentation/nguyen), and [NG2C](https://www.dpss.inesc-id.pt/~rbruno/papers/rbruno-ismm17.pdf) provide context for serialization and object-lifetime costs. TailCache varies where writes land in two existing in-memory cache configurations.
+
 ## 15 November review update
 
 Rechecked the primary Nunez preprint/DOI record, USENIX open/closed proceedings entry and Traini publisher record. The TeraHeap author page was temporarily unavailable to the fetcher; its previously verified citation is retained, with the publication DOI checked as the alternative. This is not a claim of a new exhaustive literature search.

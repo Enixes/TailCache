@@ -38,7 +38,7 @@ def mixed_time(directory, filename):
 
 def metrics(record, second_host=False):
     channels = {}
-    for label in ("service", "read-service", "response"):
+    for label in ("service", "read-service", "update-service", "response"):
         stats = record["latency"].get(label)
         if stats and stats["count"]:
             results = (stats["percentiles"] if second_host else stats["percentilesNs"])

@@ -25,6 +25,18 @@ python3 scripts/render_tailcache_preprint_reader.py
 To regenerate the chart data directly from a portability checkout, pass
 `--evidence /path/to/checkout/docs/second-host-20261120` to the HTML renderer.
 
+Reproduce the [timing and G1 audit](timing-audit.json) with Python 3.10 or later:
+
+```sh
+python3 scripts/tailcache_preprint_timing_audit.py /path/to/checkout/docs/second-host-20261120/archive > /tmp/tailcache-timing-audit.json
+cmp docs/preprint/timing-audit.json /tmp/tailcache-timing-audit.json
+```
+
+The [versioned archive](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive)
+contains all four inputs. The audit checks archive and raw-file digests and
+exports first-pass per-fork latency splits, upper-tail bin counts, G1 age
+summaries, pause exposure, and the unresolved write-sweep stall.
+
 ## Follow-up: paced response at 10% writes
 
 Test whether the scheduled-response p99.9 locality reversal survives at a

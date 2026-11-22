@@ -52,8 +52,8 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
 <header>
   <div class="wrap">
     <div class="top"><span class="brand">TailCache</span><a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md">Read manuscript</a></div>
-    <h1>When the faster cache call gives the slower response</h1>
-    <p>At 4 KiB and the same 5% write rate, Caffeine led when writes targeted a small set of keys. Chronicle led when updates reached across the cache. Compare what happened to the calls, the requests waiting for them, and the garbage collector.</p>
+    <h1>Same write rate, different winner</h1>
+    <p>At 4 KiB and the same 5% write rate, Caffeine led when writes targeted a small set of keys. Chronicle led when updates reached across the cache. Compare operation time, scheduled response, and garbage collection.</p>
   </div>
 </header>
 <nav class="wrap" aria-label="Charts">
@@ -66,23 +66,23 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   <p class="intro">The cache always held 32,768 entries. Reads could access any key. Only the eligible write set changed between the two groups.</p>
   <div class="controls">
     <label>Run<select name="run"><option value="second">Second host · 30 s</option><option value="long">Second host · 90 s</option><option value="first">First host · 30 s</option></select></label>
-    <label>Measurement<select name="metric"><option value="response">Scheduled response</option><option value="service">Cache-call latency</option><option value="gc">Total GC pause time</option><option value="mixed">G1 mixed pause time</option></select></label>
+    <label>Measurement<select name="metric"><option value="response">Scheduled response</option><option value="service">Operation latency</option><option value="gc">Total GC pause time</option><option value="mixed">G1 mixed pause time</option></select></label>
     <label>Percentile<select name="quantile"><option value="2">p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
   </div>
   <div class="chart-slot"></div>
   <p class="source">4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/locality/CROSS_HOST_REVIEW.md">Evidence and replication</a></p>
 </section>
 <section id="payload">
-  <h2>Value size changes the call-time winner</h2>
-  <p class="intro">A hit on Caffeine returns the stored array. Ordinary Chronicle reads allocate a Java array and copy in the value. The relative cost changes with value size and with which part of the latency distribution you examine.</p>
+  <h2>Value size changes the operation-time winner</h2>
+  <p class="intro">A hit on Caffeine returns the stored array. Ordinary Chronicle reads allocate a Java array and copy in the value. Update timing includes allocating and filling a fresh array on both backends.</p>
   <div class="controls">
     <label>Added heap data<select name="heap"><option value="0">0 MiB</option><option value="288">288 MiB</option></select></label>
     <label>Writes<select name="writes"><option value="1">1%</option><option value="5" selected>5%</option><option value="10">10%</option></select></label>
-    <label>Operations<select name="metric"><option value="service">All calls</option><option value="read-service">Reads only</option></select></label>
+    <label>Operations<select name="metric"><option value="service">All operations</option><option value="read-service">Reads only</option><option value="update-service">Updates only</option></select></label>
     <label>Percentile<select name="quantile"><option value="0">p50</option><option value="1">p99</option><option value="2" selected>p99.9</option></select></label>
   </div>
   <div class="chart-slot"></div>
-  <p class="source">Saturated worker on the second host. Each call starts when the previous one ends. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md">Full matrix and warning review</a></p>
+  <p class="source">One saturated worker on the second host. At 4 KiB, updates account for 90.2–99.6% of observations in histogram bins strictly above the combined p99.9. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md">Full matrix and warning review</a></p>
 </section>
 <section id="pressure">
   <h2>Why the old pressure bracket changed</h2>
@@ -115,7 +115,7 @@ const evidence = JSON.parse(document.getElementById("evidence").textContent);
 const colors = {c:"#a84b24", h:"#087368"};
 const names = {c:"Caffeine", h:"Chronicle"};
 const quantiles = ["p50", "p99", "p99.9", "p99.99", "p99.999"];
-const metricNames = {response:"Scheduled response",service:"Cache-call latency","read-service":"Read latency",gc:"Total GC pause time",mixed:"G1 mixed pause time"};
+const metricNames = {response:"Scheduled response",service:"Operation latency","read-service":"Read latency","update-service":"Update latency",gc:"Total GC pause time",mixed:"G1 mixed pause time"};
 const number = new Intl.NumberFormat("en-US");
 const latency = value => value >= 1000
   ? (value / 1000).toFixed(value >= 10000 ? 1 : 2) + " ms"
@@ -132,7 +132,7 @@ function config(section) {
       response: q === 2
         ? "At p99.9, Caffeine leads with 2,048 eligible keys. Chronicle leads with 32,768 on both hosts."
         : "At deeper percentiles, a single pause can affect enough requests to change the winner. The 90-second runs include Chronicle losses at both extremes.",
-      service: "Service timing starts when the call starts. Compare it with response to see how waiting changes the result.",
+      service: "Operation timing includes workload dispatch, value construction on writes, the cache call, and consuming the result. Scheduled response also counts waiting after the intended arrival.",
       gc: "Caffeine spends more time paused when writes reach all keys. A request scheduled during a pause starts accumulating wait time.",
       mixed: "Mixed collections reclaim selected old regions as well as young regions. Caffeine spends more time in these pauses with distributed writes. The logs measure pause types and durations."
     };
@@ -141,9 +141,12 @@ function config(section) {
   if (section.id === "payload") {
     const heap = Number(selected("heap"));
     const writes = Number(selected("writes"));
-    let takeaway = q === 0 ? "The median describes a typical call. The p99.9 control shows how the slow calls compare."
-      : metric === "read-service" ? "The read tail can favor Chronicle at 256 B. Larger copies and allocations help explain the 4 KiB difference."
-      : "For all calls at p99 and p99.9, Chronicle leads at 256 B and Caffeine leads at 4 KiB in the tested matrix.";
+    let takeaway = q === 0 ? "The median describes a typical operation. Select p99.9 to compare the tail."
+      : metric === "update-service" ? "Each update includes construction of a fresh value and the cache overwrite."
+      : metric === "read-service" ? (q === 2
+        ? "At read p99.9, Chronicle leads every 256 B pair and Caffeine leads every 4 KiB pair."
+        : "Read timing includes dispatch, fetching the array, and consuming a byte for the checksum.")
+      : "At combined p99 and p99.9, Chronicle leads at 256 B and Caffeine leads at 4 KiB in the tested matrix.";
     if (heap === 288 && writes >= 5) takeaway += " The 4 KiB Caffeine runs dropped some background allocation demand at this setting.";
     return {rows:evidence.payload.filter(r=>r.heap===heap && r.writes===writes), metric, q, group:"payload",
       label:v=>v===256?"256 B":"4 KiB", takeaway};

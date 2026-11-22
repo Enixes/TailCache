@@ -29,6 +29,15 @@
   note = {Practitioner study; accessed 11 November 2026}
 }
 
+@inproceedings{kolokasis2020,
+  author = {Iacovos G. Kolokasis and Anastasios Papagiannis and Polyvios Pratikakis and Angelos Bilas and Foivos Zakkak},
+  title = {Say Goodbye to Off-heap Caches! On-heap Caches Using Memory-Mapped I/O},
+  booktitle = {12th USENIX Workshop on Hot Topics in Storage and File Systems (HotStorage 20)},
+  publisher = {USENIX Association},
+  year = {2020},
+  url = {https://www.usenix.org/conference/hotstorage20/presentation/kolokasis}
+}
+
 @inproceedings{kolokasis2023,
   author = {Iacovos G. Kolokasis and Giannos Evdorou and Shoaib Akram and Christos Kozanitis and Anastasios Papagiannis and Foivos S. Zakkak and Polyvios Pratikakis and Angelos Bilas},
   title = {{TeraHeap}: Reducing Memory Pressure in Managed Big Data Frameworks},
@@ -36,6 +45,53 @@
   year = {2023},
   doi = {10.1145/3582016.3582045},
   url = {https://foivos.zakkak.net/publication/teraheap-2023-asplos/}
+}
+
+@inproceedings{nguyen2016,
+  author = {Khanh Nguyen and Lu Fang and Guoqing Xu and Brian Demsky and Shan Lu and Sanazsadat Alamian and Onur Mutlu},
+  title = {{Yak}: A High-Performance Big-Data-Friendly Garbage Collector},
+  booktitle = {12th USENIX Symposium on Operating Systems Design and Implementation (OSDI 16)},
+  publisher = {USENIX Association},
+  year = {2016},
+  url = {https://www.usenix.org/conference/osdi16/technical-sessions/presentation/nguyen}
+}
+
+@inproceedings{bruno2017,
+  author = {Rodrigo Bruno and Luís Picciochi Oliveira and Paulo Ferreira},
+  title = {{NG2C}: Pretenuring Garbage Collection with Dynamic Generations for {HotSpot} Big Data Applications},
+  booktitle = {Proceedings of the 2017 ACM SIGPLAN International Symposium on Memory Management},
+  year = {2017},
+  doi = {10.1145/3092255.3092272},
+  url = {https://www.dpss.inesc-id.pt/~rbruno/papers/rbruno-ismm17.pdf}
+}
+
+@inproceedings{cai2022,
+  author = {Zixian Cai and Stephen M. Blackburn and Michael D. Bond and Martin Maas},
+  title = {Distilling the Real Cost of Production Garbage Collectors},
+  booktitle = {2022 IEEE International Symposium on Performance Analysis of Systems and Software (ISPASS)},
+  year = {2022},
+  doi = {10.1109/ISPASS55109.2022.00005},
+  url = {https://arxiv.org/abs/2112.07880}
+}
+
+@article{dean2013,
+  author = {Jeffrey Dean and Luiz André Barroso},
+  title = {The Tail at Scale},
+  journal = {Communications of the ACM},
+  volume = {56},
+  number = {2},
+  pages = {74--80},
+  year = {2013},
+  doi = {10.1145/2408776.2408794},
+  url = {https://research.google/pubs/the-tail-at-scale/}
+}
+
+@inproceedings{li2014,
+  author = {Jialin Li and Naveen Kr. Sharma and Dan R. K. Ports and Steven D. Gribble},
+  title = {Tales of the Tail: Hardware, {OS}, and Application-level Sources of Tail Latency},
+  booktitle = {Proceedings of the ACM Symposium on Cloud Computing},
+  year = {2014},
+  url = {https://courses.cs.washington.edu/courses/cse452/23wi/papers/sharma-et-al-tales-of-the-tail.pdf}
 }
 
 @inproceedings{schroeder2006,
@@ -47,6 +103,33 @@
   url = {https://www.usenix.org/conference/nsdi-06/open-versus-closed-cautionary-tale}
 }
 
+@misc{hdrhistogram,
+  author = {Gil Tene and {HdrHistogram contributors}},
+  title = {{HdrHistogram} 2.2.2},
+  url = {https://github.com/HdrHistogram/HdrHistogram/blob/HdrHistogram-2.2.2/src/main/java/org/HdrHistogram/AbstractHistogram.java},
+  note = {Pinned 2.2.2 implementation and official project documentation; rank semantics checked 15 November 2026}
+}
+
+@inproceedings{georges2007,
+  author = {Andy Georges and Dries Buytaert and Lieven Eeckhout},
+  title = {Statistically Rigorous {Java} Performance Evaluation},
+  booktitle = {Proceedings of the 22nd Annual ACM SIGPLAN Conference on Object-Oriented Programming Systems and Applications},
+  year = {2007},
+  doi = {10.1145/1297027.1297033},
+  url = {https://users.elis.ugent.be/~leeckhou/papers/oopsla07-stat.pdf}
+}
+
+@article{barrett2017,
+  author = {Edd Barrett and Carl Friedrich Bolz-Tereick and Rebecca Killick and Sarah Mount and Laurence Tratt},
+  title = {Virtual Machine Warmup Blows Hot and Cold},
+  journal = {Proceedings of the ACM on Programming Languages},
+  volume = {1},
+  number = {OOPSLA},
+  year = {2017},
+  doi = {10.1145/3133876},
+  url = {https://arxiv.org/abs/1602.00602}
+}
+
 @article{traini2023,
   author = {Luca Traini and Vittorio Cortellessa and Daniele Di Pompeo and Michele Tucci},
   title = {Towards effective assessment of steady state performance in {Java} software: are we there yet?},
@@ -55,15 +138,6 @@
   doi = {10.1007/s10664-022-10247-x},
   note = {Published online 28 November 2022},
   url = {https://link.springer.com/article/10.1007/s10664-022-10247-x}
-}
-
-@inproceedings{cai2022,
-  author = {Zixian Cai and Stephen M. Blackburn and Michael D. Bond and Martin Maas},
-  title = {Distilling the Real Cost of Production Garbage Collectors},
-  booktitle = {2022 IEEE International Symposium on Performance Analysis of Systems and Software (ISPASS)},
-  year = {2022},
-  doi = {10.1109/ISPASS55109.2022.00005},
-  url = {https://arxiv.org/abs/2112.07880}
 }
 
 @misc{chronicle2026,
@@ -81,20 +155,11 @@
   url = {https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html}
 }
 
-@inproceedings{kolokasis2020,
-  author = {Iacovos G. Kolokasis and Anastasios Papagiannis and Polyvios Pratikakis and Angelos Bilas and Foivos Zakkak},
-  title = {Say Goodbye to Off-heap Caches! On-heap Caches Using Memory-Mapped I/O},
-  booktitle = {12th USENIX Workshop on Hot Topics in Storage and File Systems (HotStorage 20)},
-  publisher = {USENIX Association},
-  year = {2020},
-  url = {https://www.usenix.org/conference/hotstorage20/presentation/kolokasis}
-}
-
-@misc{hdrhistogram,
-  author = {{HdrHistogram contributors}},
-  title = {{HdrHistogram}: A High Dynamic Range Histogram},
-  url = {https://github.com/HdrHistogram/HdrHistogram/blob/HdrHistogram-2.2.2/src/main/java/org/HdrHistogram/AbstractHistogram.java},
-  note = {Pinned 2.2.2 implementation and official project documentation; rank semantics checked 15 November 2026}
+@misc{openjdkAgeTable,
+  author = {{OpenJDK}},
+  title = {{HotSpot} age table and tenuring threshold},
+  howpublished = {JDK 21 update source},
+  url = {https://github.com/openjdk/jdk21u/blob/master/src/hotspot/share/gc/shared/ageTable.cpp}
 }
 
 @inproceedings{zhao2022,
