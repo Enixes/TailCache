@@ -80,13 +80,12 @@ Ratios below are `Chronicle / Caffeine` (values below 1 favor Chronicle).
 
 ## Verification and packaging notes
 
-- Before packaging, every retained slot across all campaigns (264 first-pass
-  slots plus the bounded retry pair) was re-verified against the raw files on
-  disk using `scripts/tailcache_portable.py` (`retained`, `verify_derivatives`,
-  `hdr-verification.json`, `stream-verification.json`, `review_external_retries`,
-  and SHA-256 checks on `suite.json`, `run.json`, and `results.json`).
-- Full raw collection archives (~865 MB under git-ignored `results/`) remain on
-  the collection host.
+- The archive audit covers 288 first-pass slots (252 research, 32 smoke, and
+  4 observer pilot), 2 external-noise retry slots, and 60 timing controls.
+- The [raw evidence archive](archive/README.md) contains the histograms, GC
+  logs, and run protocols used to reconstruct the reports offline. The complete
+  collection directories (~865 MB under git-ignored `results/`) also remain
+  on the collection host.
 - Each suite directory preserves verbatim `SUMMARY.md`, `suite-results.json`,
   `RESULTS.md`, `percentiles.csv`, and `point-conclusions.json`.
 - Each primary phase also includes `results-compact.json`, which preserves all
