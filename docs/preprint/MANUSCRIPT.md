@@ -8,7 +8,9 @@ An off-heap cache can relieve Java heap pressure while incurring higher access a
 
 ## 1. Introduction
 
-Cache choice depends on how often values are read, where they are stored, and how often retained values are replaced. For the byte arrays used here, Caffeine holds the values on the Java heap and a hit returns the stored array. In-memory Chronicle Map holds the stored values off-heap and its ordinary get materializes a fresh Java array on a hit. This trades on-heap retention of cache values for allocation and copying on reads. A workload can pay for those costs during the call itself, in garbage collection, or in the time a request waits before its call starts.
+Caffeine is an in-process Java cache library. It stores entries on the Java heap, the memory managed by Java's garbage collector, and supports eviction when the cache reaches a configured size [9]. Chronicle Map is a concurrent Java key-value store that keeps entries outside the Java heap. It supports in-memory and file-backed storage [10].
+
+We compare size-bounded Caffeine and in-memory Chronicle Map with byte-array values. A Caffeine hit returns the stored array. An ordinary Chronicle hit allocates a new Java array and copies the stored value into it. This trades heap retention for allocation and copying on reads. Both costs can affect call latency and how long a request waits before its call starts.
 
 Our original questions are whether increasing application heap pressure produces a p99 or p99.9 service-latency crossover (**RQ1**) and how payload size changes the ordering (**RQ2**). A later question asks whether the update working set changes the scheduled-response ranking at matched arrivals and offered write demand (**RQ3**). We retain the original pressure outcome, report the two-host locality result and its limits, and make the second-host raw measurements available for offline reconstruction.
 
@@ -134,3 +136,7 @@ At matched write demand and zero added application ballast, concentrating versus
 [7] OpenHFT. ChronicleMap interface, 2026.1. [Versioned API source](https://github.com/OpenHFT/Chronicle-Map/blob/chronicle-map-2026.1/src/main/java/net/openhft/chronicle/map/ChronicleMap.java).
 
 [8] Oracle. Garbage-First (G1) Garbage Collector. Java 21 Garbage Collection Tuning Guide. [Garbage collection cycle](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html).
+
+[9] Caffeine project. Caffeine cache library. [Project documentation](https://github.com/ben-manes/caffeine#cache).
+
+[10] OpenHFT. Chronicle Map features. [Project documentation](https://github.com/OpenHFT/Chronicle-Map/blob/ea/docs/CM_Features.adoc).
