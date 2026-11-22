@@ -1,79 +1,83 @@
 # TailCache research handoff
 
-Updated 22 November 2026 after the second-host experiments and raw evidence audit.
-This is the resume point for the Codex task **Start experiment on new host**.
+Updated 23 November 2026 before the split-write experiment on Pop!_OS.
 
 ## Start here
 
-- `codex/tailcache-portability` holds the reproducible suites and second-host
-  evidence. Commit `d78ab90` adds the measured results and `4c3ab67` archives
-  the raw evidence. [Portability PR #11](https://github.com/Enixes/TailCache/pull/11)
-- `codex/tailcache-preprint` holds the manuscript. The manuscript predates the
-  second-host results. The two branches share some portability changes, so
-  inspect their history before integrating the new evidence.
-  [Manuscript PR #10](https://github.com/Enixes/TailCache/pull/10)
-- Relative links in this handoff point to tracked files. Start with the
-  [second-host conclusions](second-host-20261120/README.md),
-  [raw archive and audit](second-host-20261120/archive/README.md), and
-  [working manuscript](preprint/MANUSCRIPT.md).
+- `codex/tailcache-portability` holds the launcher, the split-write suite,
+  and the second-host results. Read the [run plan](PORTABLE_EXPERIMENT.md#split-write-timing-on-the-pop_os-host)
+  and [second-host conclusions](second-host-20261120/README.md).
+  The raw evidence is pinned at commit `4c3ab67`. [Portability PR #11](https://github.com/Enixes/TailCache/pull/11)
+- `codex/tailcache-preprint` holds the current manuscript, PDF, and interactive
+  companion on [Preprint PR #10](https://github.com/Enixes/TailCache/pull/10).
+  It already includes the two-host results and the Agy review revisions.
+  [Manuscript](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md)
+  · [Claim map](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/CLAIMS.md)
+- The split-write experiment is implemented and planned. No Pop!_OS research
+  forks had been launched at this handoff. The Gradle plan, 57 launcher tests,
+  Java functional checks, and four short Mac diagnostic forks passed. Two
+  existing Java tests depend on Linux `/proc` and must pass on the target.
 
-## What the study can claim
+## Findings carried forward
 
 | Question | Current answer |
 |---|---|
-| Does extra heap pressure flip p99 or p99.9 for ordinary cache-call latency? | The study did not establish a robust pressure-induced reversal. On the second host, at 4 KiB Caffeine led every pair at 0 and 288 MiB of extra retained application data across 1%, 5%, and 10% writes. |
-| Does payload size affect service latency rankings? | Yes. In the same saturated-service matrix, Chronicle led all 24 pairs at 256 B and Caffeine led all 24 at 4 KiB. Some high-pressure 4 KiB runs dropped churn demand. A general payload threshold remains unresolved. |
-| What flips scheduled-response p99.9? | At 4 KiB, 5% writes, and 50,000 intended arrivals/s, Caffeine led when writes targeted 2,048 keys and Chronicle led when writes targeted all 32,768. The effect replicated on the second host at 30 and 90 seconds with matched fresh-write demand. |
-| Where is the write-rate crossover? | In the second-host 4 KiB sweep, Caffeine led 4/4 warning-free pairs at 1.25% writes and Chronicle led 4/4 at 1.5%. The 0.75% and 1% cells were mixed. The bracket applies to that setup, and earlier prospective boundary forecasts failed. |
+| Does added heap pressure reverse ordinary saturated p99 or p99.9? | No robust reversal was observed in the tested range. The 4 KiB second-host matrix favors Caffeine at 0 and 288 MiB across 1%, 5%, and 10% writes. Some high-pressure forks missed a small fraction of churn demand. |
+| Does payload size change saturated latency rankings? | In the 48 first-pass pairs, Chronicle led at 256 B and Caffeine at 4 KiB, including read-only p99.9. The original combined timing includes fresh-array construction on every write. |
+| What reverses scheduled-response p99.9? | At 4 KiB, 5% writes, and 50,000 arrivals/s, Caffeine led with 2,048 eligible write keys and Chronicle led with 32,768. The direction repeated on both hosts, including the 90-second second-host cohort. |
+| What supports the GC explanation? | On the second host, broad writes raised Caffeine mixed-GC pause overlap and shifted its reported tenuring threshold from 15 to 1. Chronicle's threshold remained 15. The logs describe aggregate heap behaviour. Individual cache-object promotion remains unresolved. |
+| Where is the write-rate transition? | In the second-host 4 KiB sweep, Caffeine led all four pairs at 1.25% writes and Chronicle led all four at 1.5%. The 0.75% and 1% cells were mixed. The bracket is specific to the tested setup. |
 
-A GC pause can delay many scheduled requests while overlapping few timed cache
-calls. The observed pause shapes and backlog help explain the two rankings.
-Update locality, value lifetime, and cache policy activity still vary together.
-The observed-GC models do not provide a reliable before-run selector.
-The p99.99 and p99.999 results include contrary runs with completion gaps
-unexplained by logged GC or safepoints. The original Task 12 unconditional
-pressure-crossover decision remains **NO_GO**.
-[Mechanism data and limits](mechanism/RESULTS.md)
+Retain the unexplained Chronicle stalls, warning-bearing evidence, and the
+distinction between Java heap occupancy and process RSS. The unconditional
+Task 12 pressure-crossover decision remains **NO_GO**. The
+[archive verifier](second-host-20261120/archive/README.md) reproduced 350 JVM
+records offline. Reuse this evidence for the questions it answers.
 
-## Resume on another host
+## Resume the Pop!_OS work
 
-Clone the evidence branch, or update an existing clean checkout, before opening
-the project in Codex.
+Open the existing clean checkout on the Ryzen 7 5800X host. Fetch the two
+branches before editing or collecting. An existing independent working tree
+should be preserved before switching branches.
 
 ```sh
-git clone --branch codex/tailcache-portability git@github.com:Enixes/TailCache.git
-cd TailCache
-python3 scripts/tailcache_verify_archive.py
+git fetch origin
+git switch codex/tailcache-portability
+git merge --ff-only origin/codex/tailcache-portability
+./gradlew -q tailCacheReproductionPlan -PtailcacheSuite=split-write-timing
 ```
 
-The verifier uses only the clone and Python 3.10+. It reconstructs the tracked
-percentiles and point conclusions from **252 research JVMs, two retry JVMs,
-36 diagnostic JVMs, and 60 timing controls**. Keep any private Codex session
-backup separate from the clone. If only the clone is available, use the resume
-prompt below.
+Inspect active benchmark processes and `results/split-write-popos-01` before
+starting collection. Match native Linux, Temurin 21.0.13+9, G1, and the
+12-CPU JVM budget used for the original saturated matrix. Use the run plan's
+single Gradle command after confirming host readiness and run authorization.
+Allow 65–75 minutes with cached dependencies. The command runs an eight-JVM
+instrumentation pilot before 16 research JVMs. A failed pilot stops research.
+Use the original output directory and frozen bundle to reuse sealed slots.
+Keep any interrupted attempt, warnings, and the bounded external retry receipts.
 
-The next task is to integrate the second-host evidence into the manuscript
-abstract, results and figures, claims table, and reproducibility section on the
-preprint branch. Cite the frozen archive. Report host-specific outcomes and
-warning-free coverage, and retain the high-pressure churn and extreme-tail
-caveats. Then complete author review, artifact access and licensing, and approval
-for deposit. The manuscript is still a working draft.
+After qualification and reconciliation, use the new research cohort as the
+primary source for the paper's write-cost comparison at 256 B and 4 KiB,
+5% writes, and zero ballast. Present array construction, adapter `put()`,
+read-only and whole-operation measurements from the same forks. Retain
+the earlier matrix for the broader pressure and write-rate comparisons and the
+two-host scheduled cohorts for the response reversal. Keep pilot evidence in its
+qualification role. Update the preprint and companion after the research outcome
+is known. Author review, artifact access and licensing, and deposit remain
+publication steps.
 
-No repeat of the completed suites is needed for that revision. For a new
-replication, inspect active processes and retained manifests first, state the
-question and plan before collection, and use a fresh output directory on each
-host. The [portable run guide](PORTABLE_EXPERIMENT.md) has the Gradle commands and
-Java 21 requirements. When resuming an interrupted run, preserve the same host,
-original output directory and frozen settings. Keep original attempts and
-bounded retries separate, and report paired results separately by host and
-cohort.
+## Resume the conversation
 
-## Prompt for a new Codex chat
+Restore the separately transferred private Codex session backup, then run
+`codex resume -C "$PWD" <session-id>` from the updated checkout. Keep the
+session and its tool history outside Git. The backup includes the exact ID
+and recovery instructions. If the session backup is unavailable, open Codex
+from the checkout with the prompt below.
 
-> Continue TailCache from the 22 November handoff in
-> `docs/SESSION_HANDOFF.md`. Read the second-host conclusions, verified archive
-> index, and manuscript. Plan the manuscript integration before making changes.
-> Use the replicated update-locality reversal as the main result and preserve
-> the bounded negative answer for pressure-induced service crossover. Check PR
-> and branch history before moving evidence to the preprint branch. Verify the
-> archive offline in place of rerunning completed benchmarks.
+> Continue TailCache from the 23 November handoff in `docs/SESSION_HANDOFF.md`.
+> Read the split-write run plan and inspect live workers and the retained
+> result directory first. The implementation and Agy manuscript revisions are
+> ready. Use the native Pop!_OS host and the frozen pilot and research design
+> when collection is authorized. Preserve original evidence and gates. If the
+> split results qualify, use them for the manuscript's write-cost comparison
+> and retain the prior cohorts for the other claims.

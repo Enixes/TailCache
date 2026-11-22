@@ -35,6 +35,7 @@ Use a quiet Linux host for research measurements.
 | `-PtailcacheSuite=rq-matrix` | 64 | 2 hours 44 minutes | Payload and ballast under saturated service and fixed arrivals |
 | `-PtailcacheSuite=saturated-write-pressure` | 96 | 4 hours 6 minutes | Saturated service at 256 B/4 KiB, 0/288 MiB, and 1%/5%/10% writes |
 | `-PtailcacheSuite=write-transition` | 48 | 2 hours 3 minutes | Fixed-arrival response from 0.5% to 2% writes with four fresh seeds |
+| `-PtailcacheSuite=split-write-timing` | 16 | 62 minutes including pilot | Separate fresh-value construction from the cache write at 256 B and 4 KiB |
 | `-PtailcacheSuite=all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
 
 Times exclude dependency downloads, correctness tests, setup, timing controls and
@@ -91,6 +92,80 @@ Gradle exited during collection, use
 `python3 scripts/tailcache_portable.py reproduce --out results/replication-01`
 from the checkout. The standalone ZIP can run the same suite with
 `python3 tailcache.py reproduce --out ../results/replication-01` after extraction.
+
+## Split write timing on the Pop!_OS host
+
+Use the Ryzen 7 5800X Pop!_OS host from the saturated matrix, with the original
+Temurin 21.0.13+9 JDK, G1 settings, and native Linux monitoring. Use Python 3.10
+or later. Run directly on the quiet host with stable power and cooling. The
+runner records the actual JDK and host identity. Confirm Gradle selects the
+same Java 21 toolchain shown by `java -version` before starting.
+
+```sh
+./gradlew -q tailCacheReproductionPlan -PtailcacheSuite=split-write-timing
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=split-write-timing -PtailcacheOut=results/split-write-popos-01
+```
+
+The second command builds, tests, qualifies, collects, and reports in order.
+There are 120 s of warmup, 4 s of conditioning, and 30 s of measurement per
+pilot or research fork. Budget 65–75 minutes with dependencies cached. A
+single eligible research retry pair can add another 5–6 minutes.
+
+| Stage | Work | Advance when |
+|---|---|---|
+| Build and smoke | JVM and launcher tests, functional equivalence check, timer floor and injected pause, four short smoke forks | Existing diagnostic checks pass |
+| Instrumentation pilot | 4 KiB, two fresh seeds, both backends, original and split timings, eight JVMs | All pairs are complete and warning-free. Per seed and backend, throughput and combined p99.9 stay within 10%, and update p99.9 within 15%. The Chronicle/Caffeine combined p99.9 ratio changes by at most 5% per seed. |
+| Research | 256 B and 4 KiB, four fresh seeds per payload, both backends, 16 JVMs | Forks are reconciled against raw histograms and logical replay. At most one eligible research pair is repeated for external observer noise. |
+| Interpretation | Compare the construction, cache write, and original operation distributions by payload | Keep pilot diagnostic. Qualify the research direction by clock resolution, tail support, and agreement across seeds and the warning-free sensitivity view. |
+
+Both workloads have 32,768 residents, uniform reads, 5% nominal writes across
+the full key set, zero added heap ballast, 32 MiB/s offered churn, a fixed 512 MiB
+heap, and a 12-CPU JVM budget. Saturated backends can complete different prefixes
+of the same seeded operation stream. Each overwrite still creates a new array.
+The `write-value-construction` interval covers allocation and filling. The
+`write-cache-put` interval covers the adapter call, including the library's
+copy or update work. Both durations can include pauses that occur during the
+interval. The original operation timer retains both costs and any scheduled
+response channel retains its original endpoint. These profiles are saturated.
+
+The added histograms are updated after the original operation end timestamp.
+The pilot measures the aggregate effect of the extra clock reads and recording
+on the running worker. Each split fork also measures 4,096 back-to-back clock
+read intervals outside the workload. A split p99 closer than four times the
+clock p99 is flagged, and split endpoints with inadequate resolution or tail
+support remain unresolved. Treat these comparisons as direct measurements of
+each stage. Percentiles cannot be subtracted to recover a stage's latency.
+
+Open the printed `suite-analysis-*/SUMMARY.md`. The pilot links to
+`write-timing-qualification.json` with the per-seed timing shifts and gate
+result. The research report includes each endpoint's paired ratios,
+`point-conclusions.json`, and `percentiles.csv`. Check p99 and p99.9 first.
+If the clean directions vary or the timer floor dominates, report the affected
+endpoint as inconclusive. The 288 MiB pressure condition and the first-host
+i7 are follow-up confirmation if a new claim requires them.
+
+If the pilot fails, the command stops before research and retains all diagnostic
+forks. Keep the failure evidence and investigate the recorded timing shift or
+warning before planning a fresh attempt. Repeating the identical command reuses
+verified sealed slots. An unsealed interrupted slot stops the resume, as in the
+other portable suites. Preserve that attempt and its completed slots before
+planning any recollection.
+
+### Use in the preprint
+
+After the pilot passes and the research forks are reconciled, use the split
+research cohort as the primary evidence for the 256 B and 4 KiB write-cost
+comparison. Build the comparison table from that one cohort. Show fresh-value
+construction and adapter `put()` separately, alongside read-only and whole-
+operation timings from the same forks. State the direction at each endpoint
+with its clock, tail and warning checks. Keep mixed or unresolved findings
+visible.
+
+The split cohort covers 5% writes at zero added ballast. Keep the original
+saturated matrix as evidence for the broader pressure and write-rate claims.
+Keep the two-host scheduled-response locality reversal and the G1, write-rate
+bracket, and memory findings tied to their own cohorts. The instrumentation
+pilot serves as qualification evidence.
 
 ## Build a ZIP for offline transfer
 

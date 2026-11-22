@@ -4,6 +4,7 @@
 import collections
 import math
 import shutil
+import sys
 import tarfile
 import tempfile
 from pathlib import Path, PurePosixPath
@@ -113,4 +114,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.version_info < (3, 10):
+        raise SystemExit("Python 3.10 or later is required for TailCache archive verification.")
     main()

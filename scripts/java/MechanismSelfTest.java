@@ -15,6 +15,28 @@ public final class MechanismSelfTest {
     for(int i=0;i<50003;i++)check(Arrays.equals(old.executeNext(),next.executeNext()),"Full-set legacy equivalence");
     check(old.verifyContents()==next.verifyContents(),"Legacy final values");
    }
-  System.out.println("{\"passed\":true,\"pairedCases\":6,\"legacyFullSetEquivalent\":true,\"researchObservations\":0}");
+  for (var backend : new CrossoverBackend[]{CrossoverBackend.CAFFEINE, CrossoverBackend.CHRONICLE_IN_MEMORY}) {
+   try (var original = new MechanismWorkload(backend, config, 500, 128);
+        var instrumented = new MechanismWorkload(backend, config, 500, 128)) {
+    var timing = new MechanismWorkload.WriteTiming();
+    long samples = 0;
+    for (int i = 0; i < 20003; i++) {
+     long priorWrites = instrumented.writes();
+     timing.constructionNs = -1;
+     timing.cachePutNs = -1;
+     check(Arrays.equals(original.executeNext(), instrumented.executeNext(timing)), "Split timing value mismatch");
+     if (instrumented.writes() > priorWrites) {
+      check(timing.constructionNs >= 0 && timing.cachePutNs >= 0, "Missing write durations");
+      samples++;
+     } else {
+      check(timing.constructionNs == -1 && timing.cachePutNs == -1, "Read recorded a write duration");
+     }
+    }
+    check(samples > 0 && samples == original.writes() && samples == instrumented.writes(), "Split timing count mismatch");
+    check(original.verifyContents() == instrumented.verifyContents()
+        && original.mutationVersionDigest().equals(instrumented.mutationVersionDigest()), "Split timing mutations differ");
+   }
+  }
+  System.out.println("{\"passed\":true,\"pairedCases\":6,\"legacyFullSetEquivalent\":true,\"splitWriteEquivalent\":true,\"researchObservations\":0}");
  }
 }

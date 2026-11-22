@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "name": "split-write-timing-pilot",
+  "purpose": "diagnostic",
+  "heapMiB": 512,
+  "activeProcessorCount": 12,
+  "residents": 32768,
+  "churnMiBPerSecond": 32,
+  "warmupMs": 120000,
+  "conditioningMs": 4000,
+  "measureMs": 30000,
+  "primeCalls": 0,
+  "seeds": [62111, 62112],
+  "orderSeed": 62110,
+  "logging": "async",
+  "cells": [
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 500, "updateHotset": 32768, "qps": 0},
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 500, "updateHotset": 32768, "qps": 0, "splitWriteTiming": true}
+  ],
+  "quality": {
+    "minAvailableMiB": 1024,
+    "minDiskMiB": 512,
+    "compilerWarningMs": 80,
+    "maxOutsideCpuFraction": 0.02,
+    "maxChurnRelativeError": 0.1,
+    "minExpectedTailEvents": 20
+  }
+}

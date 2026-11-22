@@ -9,6 +9,11 @@ import java.util.HexFormat;
 
 /** Ordinary access with equal-cost index generation and no retained payload/trace bank. */
 public final class MechanismWorkload implements AutoCloseable {
+    static final class WriteTiming {
+        long constructionNs;
+        long cachePutNs;
+    }
+
     private final CrossoverConfig config;
     private final CacheAdapter cache;
     private final Long[] keys;
@@ -35,11 +40,26 @@ public final class MechanismWorkload implements AutoCloseable {
         }catch(RuntimeException|Error e){cache.close();throw e;}
     }
     public byte[] executeNext() {
+        return executeNext(null);
+    }
+
+    byte[] executeNext(WriteTiming timing) {
         long position=operations++;int index=stream.keyAt(position);Long key=keys[index];
         if(stream.isReadAt(position)){byte[] value=cache.get(key);if(value==null)throw new IllegalStateException("Cache miss");return value;}
         index=index%updateHotset;key=keys[index];
-        long version=writes+1;byte[] fresh=values.create(key,version,config.payloadBytes());
-        cache.put(key,fresh);versions[index]=version;writes=version;return fresh;
+        long version = writes + 1;
+        long constructionStart = timing == null ? 0 : System.nanoTime();
+        byte[] fresh = values.create(key, version, config.payloadBytes());
+        long putStart = timing == null ? 0 : System.nanoTime();
+        cache.put(key, fresh);
+        if (timing != null) {
+            long putEnd = System.nanoTime();
+            timing.constructionNs = putStart - constructionStart;
+            timing.cachePutNs = putEnd - putStart;
+        }
+        versions[index] = version;
+        writes = version;
+        return fresh;
     }
     public Object executeSupplyFloorNext() {
         long position=operations++;int index=stream.keyAt(position);

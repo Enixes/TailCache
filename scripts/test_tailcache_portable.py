@@ -63,6 +63,63 @@ class PortableTests(unittest.TestCase):
         self.assertEqual(len(long['seeds']), 4)
         self.assertEqual(long['measureMs'], 90_000)
 
+    def test_split_write_timing_has_a_separate_matched_pilot(self):
+        design = p.suite_plan(ROOT/'experiments/portable','split-write-timing')
+        self.assertEqual(list(design['phases']),['smoke','write-timing-pilot','research'])
+        pilot = design['phases']['write-timing-pilot']
+        research = design['phases']['research']
+        self.assertEqual(pilot['diagnosticJvms'],8)
+        self.assertEqual(research['workloadJvms'],16)
+        self.assertEqual(research['maximumExternalRetryJvms'],2)
+        self.assertTrue(set(pilot['config']['seeds']).isdisjoint(research['config']['seeds']))
+        self.assertEqual({c['payloadBytes'] for c in research['config']['cells']},{256,4096})
+        self.assertTrue(all(c.get('splitWriteTiming') for c in research['config']['cells']))
+        with self.assertRaisesRegex(ValueError,'qualify instrumentation'):
+            p.run(research['config'],self.root/'unqualified')
+
+    def test_split_write_timing_flag_and_histogram_counts(self):
+        original = p.schedule(self.config)[0]
+        split = dict(original,splitWriteTiming=True)
+        original_command = p.worker_command('/java',self.config,original,self.root)
+        split_command = p.worker_command('/java',self.config,split,self.root)
+        self.assertEqual(split_command,original_command+['--split-write-timing','true'])
+        counts = p.latency_counts(split,100,5)
+        self.assertEqual([counts[ch] for ch in p.WRITE_CHANNELS],[5,5])
+        self.assertEqual(counts[p.WRITE_CLOCK_CHANNEL],p.WRITE_CLOCK_SAMPLES)
+        self.assertEqual(set(p.latency_counts(original,100,5)),set(p.CHANNELS))
+        with self.assertRaisesRegex(ValueError,'No writes observed'):
+            p.latency_counts(split,100,0)
+        self.invalid(lambda config:config['cells'][0].update(splitWriteTiming=True,writeBps=0))
+
+    def test_split_timing_pilot_rejects_differential_drift_and_warnings(self):
+        def row(backend, split):
+            return dict(spec=dict(seed=1,backend=backend,splitWriteTiming=split),
+                        operationsPerSecond=1000,latency={
+                            channel:dict(percentiles={'99.9':dict(ns=100)})
+                            for channel in ('service','update-service')})
+        rows=[row(backend,split) for backend in p.BACKENDS for split in (False,True)]
+        result=dict(allSlotsSuccessful=True,pairs=[dict(warningFree=True)],observations=rows)
+        self.assertTrue(p.qualify_write_timing(result)['passed'])
+        rows[-1]['latency']['service']['percentiles']['99.9']['ns']=107
+        audit=p.qualify_write_timing(result)
+        self.assertFalse(audit['passed'])
+        self.assertIn('Chronicle/Caffeine',audit['failures'][0])
+        result['pairs'][0]['warningFree']=False
+        self.assertIn('warning-free',p.qualify_write_timing(result)['failures'][0])
+
+    def test_split_report_marks_clock_limited_endpoint_unresolved(self):
+        self.config=p.load(ROOT/'experiments/portable/split-write-timing.json')
+        self.frozen_run()
+        for spec in p.schedule(self.config):
+            self.fake_result(self.root/'slots'/spec['label'],spec)
+        result=p.report(self.root,self.root/'report')
+        stages={point['channel']:point for point in result['pointConclusions']
+                if point['cell']==1 and point['quantile']==99.9}
+        self.assertEqual(stages['write-value-construction']['completePairDirectionsFavor'],'CAFFEINE')
+        self.assertEqual(stages['write-cache-put']['completePairDirectionsFavor'],'UNRESOLVED')
+        self.assertIn('Clock floor',stages['write-cache-put']['conclusion'])
+        self.assertIn('write-clock-floor',(self.root/'report/percentiles.csv').read_text())
+
     def test_reproduction_suite_rejects_different_seed_sets(self):
         configs = ROOT/'experiments/portable'
         for name in ('smoke', 'locality', 'write-ratio', 'rq-matrix'):
@@ -219,6 +276,12 @@ class PortableTests(unittest.TestCase):
                     windows=[dict(phase='MEASUREMENT',operations='1000',writes='50')],
                     integrity=dict(mutationVersionSha256='same'),latency={ch:p.hist_stats([(100 if spec['backend']==p.BACKENDS[0] else 200,1000)],self.config) for ch in p.CHANNELS},
                     rawSha256=p.inventory(path))
+        if spec.get('splitWriteTiming'):
+            construction=(400 if spec['backend']==p.BACKENDS[0] else 600)
+            put=(100 if spec['backend']==p.BACKENDS[0] else 150)
+            result['latency']['write-value-construction']=p.hist_stats([(construction,100000)],self.config)
+            result['latency']['write-cache-put']=p.hist_stats([(put,100000)],self.config)
+            result['latency'][p.WRITE_CLOCK_CHANNEL]=p.hist_stats([(30,p.WRITE_CLOCK_SAMPLES)],self.config)
         p.save_new(path/'result.json',result);p.save_new(path/'seal.json',dict(resultSha256=p.sha(path/'result.json')))
         return result
 

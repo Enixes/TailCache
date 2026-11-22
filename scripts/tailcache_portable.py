@@ -28,6 +28,16 @@ HERE = pathlib.Path(__file__).resolve().parent
 VERSION = 'tailcache-portable-v1'
 BACKENDS = ('CAFFEINE', 'CHRONICLE_IN_MEMORY')
 CHANNELS = ('service', 'response', 'gap', 'read-service', 'update-service')
+WRITE_CHANNELS = ('write-value-construction', 'write-cache-put')
+WRITE_CLOCK_CHANNEL = 'write-clock-floor'
+WRITE_CLOCK_SAMPLES = 4096
+WRITE_TAIL_CLOCK_MULTIPLE = 4
+WRITE_PILOT_LIMITS = {
+    'operationsPerSecond': .10,
+    'serviceP999': .10,
+    'updateServiceP999': .15,
+    'backendRatioDrift': .05,
+}
 QUANTILES = (50, 99, 99.9, 99.99, 99.999)
 RETRYABLE_OBSERVER_WARNINGS = frozenset((
     'Outside-process CPU upper bound exceeded frozen ceiling',
@@ -45,6 +55,7 @@ SUITES = {
     'rq-matrix': ('rq-matrix',),
     'saturated-write-pressure': ('saturated-write-pressure',),
     'write-transition': ('write-transition',),
+    'split-write-timing': ('split-write-timing',),
     'all': ('locality', 'write-ratio', 'rq-matrix'),
 }
 MAIN = 'io.github.enixes.tailcache.workload.MechanismCrossoverRunner'
@@ -136,13 +147,16 @@ def validate(config):
     require(all(isinstance(c,dict) for c in cells),'Cells must be JSON objects')
     require(len({canonical(c) for c in cells}) == len(cells), 'Duplicate cells')
     for c in cells:
-        require(set(c) == {'payloadBytes','liveMiB','writeBps','updateHotset','qps'}, 'Unknown/missing cell fields')
+        require(set(c)-{'splitWriteTiming'} == {'payloadBytes','liveMiB','writeBps','updateHotset','qps'}, 'Unknown/missing cell fields')
         for key, lo, hi in [('payloadBytes',16,32768),('liveMiB',0,2047),('writeBps',0,10000),
                             ('updateHotset',1,config['residents']),('qps',0,1000000)]:
             require(integer(c[key],lo,hi), 'Invalid cell ' + key)
         require(c['qps'] == 0 or 10**9 % c['qps'] == 0, 'QPS must divide one billion exactly')
         require(c['qps'] == 0 or all(config[k]*c['qps']%1000 == 0 for k in ('warmupMs','conditioningMs','measureMs')),
                 'Each phase must contain an integer number of arrivals')
+        if 'splitWriteTiming' in c:
+            require(c['splitWriteTiming'] is True and c['writeBps'] > 0,
+                    'Split write timing requires actual writes and must be true when specified')
     q = config['quality']
     require(isinstance(q,dict),'Quality must be a JSON object')
     require(set(q) == {'minAvailableMiB','minDiskMiB','compilerWarningMs','maxOutsideCpuFraction',
@@ -171,12 +185,15 @@ def plan(config):
     validate(config)
     rows = schedule(config)
     seconds = len(rows)*sum(config[k] for k in ('warmupMs','conditioningMs','measureMs'))/1000
+    endpoints = 'service and scheduled-response separately; p99,p99.9,p99.99,p99.999'
+    if any(cell.get('splitWriteTiming') for cell in config['cells']):
+        endpoints += '; write-value-construction and write-cache-put, primary p99 and p99.9'
     return dict(version=VERSION, config=config, schedule=rows,
                 workloadJvms=len(rows) if config['purpose']=='research' else 0, diagnosticJvms=len(rows) if config['purpose']=='diagnostic' else 0,
                 maximumExternalRetryJvms=2*config.get('maxExternalRetryPairs',0),
                 nominalWorkloadMinutes=seconds/60, setupAndVerificationAdditional=True,
                 controls='Functional test plus two controls per backend before workload; not research observations',
-                endpoints='service and scheduled-response separately; p99,p99.9,p99.99,p99.999',
+                endpoints=endpoints,
                 limits='No pooled quantiles; same inputs do not imply identical hardware/performance')
 
 
@@ -201,11 +218,30 @@ def suite_plan(config_dir, suite):
                 cells.append(cell)
             views[name].append(cells.index(cell)+1)
     if shared is not None:
+        if suite == 'split-write-timing':
+            pilot = plan(load(config_dir/'split-write-timing-pilot.json'))
+            pilot_config = pilot['config']
+            check_keys = {'name','purpose','seeds','orderSeed','maxExternalRetryPairs'}
+            require(pilot_config['purpose']=='diagnostic' and set(pilot_config['seeds']).isdisjoint(shared['seeds']),
+                    'Write timing pilot must use separate diagnostic seeds')
+            require({k:v for k,v in pilot_config.items() if k not in check_keys|{'cells'}}
+                    == {k:v for k,v in shared.items() if k not in check_keys},
+                    'Write timing pilot must match research JVM, duration and quality settings')
+            require(len(pilot_config['cells'])==2, 'Write timing pilot needs two timing modes')
+            old, split = pilot_config['cells']
+            require(split == dict(old, splitWriteTiming=True) and split in cells
+                    and all(c.get('splitWriteTiming') for c in cells),
+                    'Write pilot must compare original and split timing on one research cell')
+            phases['write-timing-pilot'] = pilot
         phases['research'] = plan(dict(shared, name='reproduction-'+suite, cells=cells))
-    return dict(suite=suite, phases=phases, researchViews=views,
+    result = dict(suite=suite, phases=phases, researchViews=views,
                 researchJvms=sum(p['workloadJvms'] for p in phases.values()),
-                diagnosticJvms=smoke['diagnosticJvms'],
+                diagnosticJvms=sum(p['diagnosticJvms'] for p in phases.values()),
                 nominalWorkloadMinutes=sum(p['nominalWorkloadMinutes'] for p in phases.values()))
+    if suite == 'split-write-timing':
+        result['writePilotLimits'] = WRITE_PILOT_LIMITS
+        result['writeTailClockMultiple'] = WRITE_TAIL_CLOCK_MULTIPLE
+    return result
 
 
 def capture(command, timeout=20):
@@ -500,6 +536,23 @@ def stall_export(worker, measurement, limit):
     return dict(total=total, exported=len(exported), omitted=omitted)
 
 
+def latency_counts(spec, operations, writes):
+    counts = {'service': operations, 'response': operations if spec['qps'] else 0,
+              'gap': operations, 'read-service': operations-writes, 'update-service': writes}
+    if spec.get('splitWriteTiming'):
+        require(writes > 0, 'No writes observed for split timing')
+        counts.update(dict.fromkeys(WRITE_CHANNELS, writes))
+        counts[WRITE_CLOCK_CHANNEL] = WRITE_CLOCK_SAMPLES
+    return counts
+
+
+def write_timer_resolved(latency, quantile='99', channels=WRITE_CHANNELS):
+    floor = latency[WRITE_CLOCK_CHANNEL]['percentiles']['99']['ns']
+    return floor is not None and floor > 0 and all(
+        latency[channel]['percentiles'][quantile]['ns'] >= WRITE_TAIL_CLOCK_MULTIPLE*floor
+        for channel in channels)
+
+
 def summarize(path, spec, config, capability, code):
     result=dict(spec=spec,exitCode=code,status='FAILED',warnings=[],startedUtc=load(path/'command.json')['startedUtc'])
     try:
@@ -525,8 +578,8 @@ def summarize(path, spec, config, capability, code):
             require(not spec['qps'] or count==int(w['scheduled'])==duration*spec['qps']//1000,'Missing scheduled operations')
         m=windows[-1];n=int(m['operations']);writes=int(m['writes'])
         require(n>0,'No operations')
-        counts={'service':n,'gap':n,'response':n if spec['qps'] else 0,'read-service':n-writes,'update-service':writes}
-        bins={ch:histogram(worker/(ch+'-bins.csv'),counts[ch]) for ch in CHANNELS}
+        counts=latency_counts(spec,n,writes)
+        bins={ch:histogram(worker/(ch+'-bins.csv'),count) for ch,count in counts.items()}
         union=collections.Counter(dict(bins['read-service']));union.update(dict(bins['update-service']))
         require(dict(union)==dict(bins['service']),'Read/update histogram union mismatch')
         actual=properties(worker/'configuration.txt')
@@ -535,6 +588,8 @@ def summarize(path, spec, config, capability, code):
         require(int(actual['primeCalls'])==config['primeCalls'], 'Actual priming differs')
         require(actual['streamPhaseReset']==actual['streamWrap']=='false','Finite/reset trace')
         require(int(actual['updateHotset'])==spec['updateHotset'],'Update population differs')
+        require(actual.get('splitWriteTiming','false')==str(spec.get('splitWriteTiming',False)).lower(),
+                'Actual write timing mode differs')
         require('chronicle.analytics.disable=true' in actual['jvmArgs'],'Analytics flag missing')
         integrity=properties(worker/'integrity.txt')
         require(int(integrity['residentCount'])==config['residents'],'Resident count changed')
@@ -560,9 +615,12 @@ def summarize(path, spec, config, capability, code):
         text=(path/'stderr.txt').read_text(errors='replace')+(path/'gc.log').read_text(errors='replace')
         if any('dropped' in line.lower() and ('log' in line.lower() or 'messages' in line.lower()) for line in text.splitlines()):
             warnings.append('Logging reported dropped messages')
+        latency={ch:hist_stats(v,config) for ch,v in bins.items()}
+        if spec.get('splitWriteTiming') and not write_timer_resolved(latency):
+            warnings.append('Split write p99 too close to the clock floor; API tail unresolved')
         result.update(status='COMPLETE',warnings=sorted(set(warnings)),host=screen,windows=windows,
                       integrity=integrity,configuration=actual,stallExport=stalls,
-                      latency={ch:hist_stats(v,config) for ch,v in bins.items()},
+                      latency=latency,
                       gc=gc,operationsPerSecond=n/elapsed,workerAllocatedBytes=int(m['workerAllocatedBytes']),
                       workerAllocatedBytesPerOperation=int(m['workerAllocatedBytes'])/n,
                       freshWritePayloadBytes=writes*spec['payloadBytes'],
@@ -591,6 +649,8 @@ def worker_command(java, config, spec, path, observer_handshake=False):
              'floor':str(spec.get('floor',False)).lower(),'supply-floor':'false','inject-stall-ms':spec.get('injectMs',0),'reuse':'false'}
     if observer_handshake:
         options['observer-handshake'] = 'true'
+    if spec.get('splitWriteTiming'):
+        options['split-write-timing'] = 'true'
     for k,v in options.items(): command += ['--'+k,str(v)]
     return command
 
@@ -644,7 +704,10 @@ def launch(path, spec, config, java, capability):
         save_new(path/'hdr-verification.json',verification)
         try:
             require(verification.get('exitCode')==0,'Compressed HDR verification failed')
-            for row in csv_rows(path/'hdr-endpoints.csv'):
+            rows=csv_rows(path/'hdr-endpoints.csv')
+            require(sorted(pathlib.Path(row['path']).stem for row in rows)==sorted(result['latency']),
+                    'Compressed HDR channels differ')
+            for row in rows:
                 ch=pathlib.Path(row['path']).stem
                 stats=result['latency'][ch]
                 require(int(row['count'])==stats['count'],'HDR total differs')
@@ -708,8 +771,13 @@ def verify_derivatives(path, result, config):
     if 'stallExport' in result:
         limit = int(properties(path/'worker/configuration.txt')['eventLimit'])
         require(stall_export(path/'worker', m, limit)==result['stallExport'], 'Cached stall export counts differ')
-    expected={'service':n,'gap':n,'response':n if result['spec']['qps'] else 0,'read-service':n-writes,'update-service':writes}
-    bins={ch:histogram(path/'worker'/(ch+'-bins.csv'),expected[ch]) for ch in CHANNELS}
+    spec=result['spec']
+    expected=latency_counts(spec,n,writes)
+    require(set(result['latency'])==set(expected),'Cached histogram channels differ from timing mode')
+    if spec.get('splitWriteTiming'):
+        require(properties(path/'worker/configuration.txt').get('splitWriteTiming')=='true',
+                'Retained split timing flag missing')
+    bins={ch:histogram(path/'worker'/(ch+'-bins.csv'),count) for ch,count in expected.items()}
     for ch,values in bins.items():
         require(hist_stats(values,config)==result['latency'][ch],'Cached histogram statistics differ: '+ch)
     union=collections.Counter(dict(bins['read-service']));union.update(dict(bins['update-service']))
@@ -771,8 +839,11 @@ def retry_plan(rows, observations, maximum):
     return dict(eligiblePairs=len(entries),maximumPairs=maximum,selected=entries[:maximum])
 
 
-def run(config, out, java_arg=None, *, host_locked=False, report_destination=None):
+def run(config, out, java_arg=None, *, host_locked=False, report_destination=None, split_qualified=False):
     validate(config);out=pathlib.Path(out).resolve()
+    require(config['purpose']!='research' or split_qualified
+            or not any(c.get('splitWriteTiming') for c in config['cells']),
+            'Use the split-write-timing suite to qualify instrumentation before research')
     require(HERE not in out.parents and out!=HERE,'Keep results outside the executable bundle')
     with (contextlib.nullcontext() if host_locked else host_lock()):
         bundle=bundle_identity();java=java_identity(java_arg)
@@ -855,7 +926,7 @@ def run(config, out, java_arg=None, *, host_locked=False, report_destination=Non
 def point_conclusions(config, summaries, results):
     points=[]
     for s in summaries:
-        if s['channel'] not in ('service','response'):continue
+        if s['channel'] not in ('service','response',*WRITE_CHANNELS):continue
         cell=config['cells'][s['cell']-1]
         if not cell['qps'] and s['channel']=='response':continue
         values=s['allUsablePairs'];n=values['n'];expected=len(config['seeds'])
@@ -863,15 +934,24 @@ def point_conclusions(config, summaries, results):
                 'CAFFEINE' if n==expected and values['caffeineWins']==n else 'UNRESOLVED')
         by={}
         tail_flags=[]
+        resolution_flags=[]
         for b in BACKENDS:
             rs=[r for r in results if r['status']=='COMPLETE' and r['spec']['cell']==s['cell'] and r['spec']['backend']==b]
             vs=[r['latency'][s['channel']]['percentiles'][str(s['quantile'])] for r in rs]
             by[b]=statistics.median(v['ns'] for v in vs if v['ns'] is not None) if any(v['ns'] is not None for v in vs) else None
             tail_flags += [v['tailSupportWarning'] for v in vs]
+            if s['channel'] in WRITE_CHANNELS:
+                resolution_flags += [not write_timer_resolved(r['latency'],str(s['quantile']),(s['channel'],)) for r in rs]
+        if s['channel'] in WRITE_CHANNELS and (any(resolution_flags) or any(tail_flags)):
+            winner='UNRESOLVED'
+            conclusion='Clock floor or rare-tail support limits direction'
+        else:
+            conclusion=('All planned seed pairs agree' if winner!='UNRESOLVED'
+                        else 'Mixed, missing or failed pairs; no resolved direction')
         points.append(dict(cell=s['cell'],inputs=cell,channel=s['channel'],quantile=s['quantile'],
             completePairDirectionsFavor=winner,medianForkQuantileNs=by,pairedSummary=values,
             cleanPairs=s['warningFreePairs']['n'],tailSupportWarning=any(tail_flags),
-            conclusion='All planned seed pairs agree' if winner!='UNRESOLVED' else 'Mixed, missing or failed pairs; no resolved direction',
+            conclusion=conclusion,
             limit='Descriptive finite-window result; not a significance test or universal threshold'))
     contrasts=[]
     for axis in ('liveMiB','payloadBytes','writeBps','updateHotset'):
@@ -937,7 +1017,8 @@ def pair_result(a, b, by):
                           c['integrity']['mutationVersionSha256']!=h['integrity']['mutationVersionSha256']):
             p.update(usable=False,warningFree=False,invalidReason='Paired fixed-arrival write stream differs')
         else:
-            for ch in CHANNELS:
+            channels=CHANNELS+WRITE_CHANNELS if a.get('splitWriteTiming') else CHANNELS
+            for ch in channels:
                 p['ratios'][ch]={str(q):(h['latency'][ch]['percentiles'][str(q)]['ns']/c['latency'][ch]['percentiles'][str(q)]['ns']
                     if c['latency'][ch]['count'] and h['latency'][ch]['count'] and
                     c['latency'][ch]['percentiles'][str(q)]['ns']>0 and h['latency'][ch]['percentiles'][str(q)]['ns']>0
@@ -989,7 +1070,8 @@ def report(out, destination=None):
     retry_review = review_external_retries(out, frozen, by, pairs)
     summaries=[]
     for cell in range(1,len(config['cells'])+1):
-        for ch in CHANNELS:
+        channels=CHANNELS+WRITE_CHANNELS if config['cells'][cell-1].get('splitWriteTiming') else CHANNELS
+        for ch in channels:
             for q in QUANTILES:
                 ps=[p for p in pairs if p['cell']==cell and p['usable'] and p['ratios'][ch][str(q)] is not None]
                 backend_variation={b:variation([r['latency'][ch]['percentiles'][str(q)]['ns'] for r in results
@@ -1000,7 +1082,7 @@ def report(out, destination=None):
                     warningFreePairs=paired_summary([p['ratios'][ch][str(q)] for p in ps if p['warningFree']])))
     for r in results:
         if r['status']!='COMPLETE':continue
-        for ch in CHANNELS:
+        for ch in r['latency']:
             for q in QUANTILES:
                 t=r['latency'][ch]['percentiles'][str(q)]
                 flat.append(dict(label=r['spec']['label'],cell=r['spec']['cell'],seed=r['spec']['seed'],backend=r['spec']['backend'],
@@ -1039,7 +1121,7 @@ def report(out, destination=None):
            '| Cell | Channel | Percentile | Pairs | Median ratio | Range | Clean pairs |',
            '|---|---|---:|---:|---:|---|---:|']
     for s in summaries:
-        if s['channel'] not in ('service','response') or s['quantile']==50:continue
+        if s['channel'] not in ('service','response',*WRITE_CHANNELS) or s['quantile']==50:continue
         v=s['allUsablePairs'];n=v['n']
         lines.append(f'| {s["cell"]} | {s["channel"]} | {s["quantile"]} | {n} | '+
                      (f'{v["medianRatio"]:.4g} | {v["minimumRatio"]:.4g}–{v["maximumRatio"]:.4g}' if n else '— | —')+
@@ -1165,6 +1247,50 @@ def checkout_bundle(out, java, gradle_stage=None, gradle_test_results=None):
     return bundle
 
 
+def qualify_write_timing(result):
+    limits = WRITE_PILOT_LIMITS
+    failures = []
+    changes = []
+    ranking = []
+    if not result['allSlotsSuccessful'] or any(not p['warningFree'] for p in result['pairs']):
+        failures.append('All pilot pairs must be complete and warning-free')
+        return dict(passed=False, failures=failures, changes=changes, backendRatioDrift=ranking)
+
+    def endpoints(row):
+        return dict(operationsPerSecond=row['operationsPerSecond'],
+                    serviceP999=row['latency']['service']['percentiles']['99.9']['ns'],
+                    updateServiceP999=row['latency']['update-service']['percentiles']['99.9']['ns'])
+
+    groups = collections.defaultdict(dict)
+    for observation in result['observations']:
+        spec = observation['spec']
+        groups[spec['seed']][spec['backend'],spec.get('splitWriteTiming',False)] = observation
+    for seed, arms in sorted(groups.items()):
+        if set(arms) != {(b, split) for b in BACKENDS for split in (False, True)}:
+            failures.append(f'Seed {seed}: incomplete split-timing comparison')
+            continue
+        service_ratio = {}
+        for backend in BACKENDS:
+            off = endpoints(arms[backend,False])
+            on = endpoints(arms[backend,True])
+            if any(value is None or value <= 0 for value in (*off.values(),*on.values())):
+                failures.append(f'Seed {seed} {backend}: incomplete timing endpoints')
+                continue
+            shifts = {key:on[key]/before-1 for key,before in off.items()}
+            service_ratio[backend] = on['serviceP999']/off['serviceP999']
+            changes.append(dict(seed=seed,backend=backend,relativeChange=shifts))
+            for endpoint, change in shifts.items():
+                if abs(change)>limits[endpoint]:
+                    failures.append(f'Seed {seed} {backend}: {endpoint} shifted by {change:+.1%}')
+        if len(service_ratio)==len(BACKENDS):
+            drift=service_ratio[BACKENDS[1]]/service_ratio[BACKENDS[0]]-1
+            ranking.append(dict(seed=seed,relativeChange=drift))
+            if abs(drift)>limits['backendRatioDrift']:
+                failures.append(f'Seed {seed}: Chronicle/Caffeine service p99.9 ratio shifted by {drift:+.1%}')
+    require(groups,'Missing split-timing pilot observations')
+    return dict(passed=not failures,failures=failures,changes=changes,backendRatioDrift=ranking)
+
+
 def collect_suite(suite, out, java_arg):
     out = pathlib.Path(out).resolve()
     require(out!=HERE and HERE not in out.parents, 'Keep results outside the executable bundle')
@@ -1186,7 +1312,7 @@ def collect_suite(suite, out, java_arg):
             require(same_resources(frozen['host'],host), 'Frozen host resources changed')
             require(frozen['checkoutChecks']==checkout_checks, 'Checkout test evidence changed')
         else:
-            require(not any((out/phase).exists() for phase in ('smoke', 'research')),
+            require(not any((out/phase).exists() for phase in config['phases']),
                     'Phase directory already exists without a suite manifest')
             save_new(manifest, dict(version=VERSION, startedUtc=now(), plan=config, bundleId=bundle_id,
                                     jdkId=java['id'], host=host, checkoutChecks=checkout_checks))
@@ -1198,8 +1324,15 @@ def collect_suite(suite, out, java_arg):
             require(same_resources(host,host_identity(out)), 'Host resources changed between suite phases')
             print(f'Running {phase}', flush=True)
             result = run(design['config'], out/phase, java['executable'],
-                         host_locked=True, report_destination=reports/phase)
+                         host_locked=True, report_destination=reports/phase,
+                         split_qualified=phases.get('write-timing-pilot',{}).get('passed',False))
             passed = result['allSlotsSuccessful'] and all(pair['usable'] for pair in result['pairs'])
+            if phase == 'write-timing-pilot':
+                audit = qualify_write_timing(result)
+                save_new(reports/phase/'write-timing-qualification.json', audit)
+                if not audit['passed']:
+                    print('Write timing qualification failed: '+'; '.join(audit['failures']),flush=True)
+                passed = passed and audit['passed']
             phases[phase] = dict(passed=passed, scheduled=result['scheduled'], completed=result['completed'],
                                  failed=result['failed'], usablePairs=sum(p['usable'] for p in result['pairs']),
                                  plannedPairs=len(result['pairs']), warningFreePairs=sum(p['warningFree'] for p in result['pairs']),
@@ -1217,6 +1350,8 @@ def collect_suite(suite, out, java_arg):
             lines.append(f'| {phase} | {result["completed"]}/{result["scheduled"]} | '
                          f'{result["usablePairs"]}/{result["plannedPairs"]} | {result["warningFreePairs"]} | '
                          f'[Results]({result["report"]}) |')
+        if 'write-timing-pilot' in phases:
+            lines.extend(['', '[Split write timing qualification](write-timing-pilot/write-timing-qualification.json)'])
         if config['researchViews']:
             lines.extend(['', 'Research cell numbers by profile', ''])
             for name, cells in config['researchViews'].items():
@@ -1224,7 +1359,7 @@ def collect_suite(suite, out, java_arg):
         with (reports/'SUMMARY.md').open('x', encoding='utf-8') as stream:
             stream.write('\n'.join(lines)+'\n')
         print(f'Suite summary: {reports/"SUMMARY.md"}', flush=True)
-        require(passed, 'A phase has incomplete workers or unusable pairs. See the suite summary.')
+        require(passed, 'A phase failed collection or qualification. See the suite summary.')
 
 
 def reproduce(suite, out, java_arg, gradle_stage=None, gradle_test_results=None):

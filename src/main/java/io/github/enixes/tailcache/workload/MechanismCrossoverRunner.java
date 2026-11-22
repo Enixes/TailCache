@@ -17,6 +17,7 @@ public final class MechanismCrossoverRunner {
     private static volatile long consumed;
     private static final long MAX_NS = 60_000_000_000L;
     private static final int EVENT_LIMIT = 10_000;
+    static final int WRITE_CLOCK_FLOOR_SAMPLES = 4096;
     public static final int TRACE_SIZE = 1_000_003;
     private MechanismCrossoverRunner() { }
 
@@ -24,7 +25,8 @@ public final class MechanismCrossoverRunner {
                   long writes, long allocation, long compilerMs, long churnPayload,
                   long churnJvm, long churnDropped, long backlog, long eventCount, long overflowEvents,
                   long[] eventStarts, long[] eventEnds, long[] eventGapStarts, long[] eventIndexes,
-                  Histogram service, Histogram gaps, Histogram response, Histogram readService, Histogram updateService) { }
+                  Histogram service, Histogram gaps, Histogram response, Histogram readService, Histogram updateService,
+                  Histogram valueConstruction, Histogram cachePut) { }
 
     public static void main(String[] args) throws Exception {
         if (args.length % 2 != 0) throw new IllegalArgumentException("Expected option/value pairs");
@@ -46,6 +48,10 @@ public final class MechanismCrossoverRunner {
             long inject=Long.parseLong(options.getOrDefault("--inject-stall-ms","0"))*1_000_000;
             boolean floor=Boolean.parseBoolean(options.getOrDefault("--floor","false"));
             boolean supply=Boolean.parseBoolean(options.getOrDefault("--supply-floor","false"));
+            boolean splitWriteTiming = Boolean.parseBoolean(options.getOrDefault("--split-write-timing", "false"));
+            if (splitWriteTiming && (floor || supply || writeBps == 0)) {
+                throw new IllegalArgumentException("Split write timing requires actual cache writes");
+            }
             int primeCalls=Integer.parseInt(options.getOrDefault("--prime-calls","0"));
             long primeNs=1_000_000_000L;
             if(primeCalls<0||primeCalls>4||warm<primeCalls*primeNs)throw new IllegalArgumentException("Priming contract");
@@ -65,6 +71,10 @@ public final class MechanismCrossoverRunner {
                     +"\noptions="+options+"\njvmArgs="+ManagementFactory.getRuntimeMXBean().getInputArguments()
                     +"\nmaxHeapBytes="+Runtime.getRuntime().maxMemory()+"\nprimeCalls="+primeCalls+"\neventThresholdNs=100000\neventLimit="+EVENT_LIMIT+"\njdk="+System.getProperty("java.runtime.version")+"\npacing="+(rate>0?"fixed-arrival-spin-no-skips":"closed-loop")
                     +"\ncontinuousChurn=true\nlightweightLifecycleTrials=3\nreadContract="+(reuse?"borrowed-getUsing-buffer":"ordinary-get")+"\n");
+                if (splitWriteTiming) {
+                    Files.writeString(out.resolve("configuration.txt"), "splitWriteTiming=true\n",
+                            java.nio.file.StandardOpenOption.APPEND);
+                }
                 churn.start();List<String> windows=new ArrayList<>();
                 windows.add("phase,startNs,endNs,offeredEndNs,operations,scheduled,writes,workerAllocatedBytes,compilerMs,churnPayloadBytes,churnJvmAllocatedBytes,churnDroppedBytes,maxBacklog,stallEvents,unexportedStallEvents");
                 List<String> phases=new ArrayList<>();for(int p=0;p<primeCalls;p++)phases.add("PRIME"+p);phases.addAll(List.of("WARMUP","CONDITIONING","MEASUREMENT"));
@@ -74,13 +84,17 @@ public final class MechanismCrossoverRunner {
                     long duration=name.startsWith("PRIME")?primeNs:name.equals("WARMUP")?warm-primeCalls*primeNs:name.equals("CONDITIONING")?conditioning:measured;
                     if (duration==0) continue;
                     // Stream position deliberately continues across every phase.
-                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0,reuse,payload,supply);
+                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0,reuse,payload,supply,splitWriteTiming);
                     Files.writeString(out.resolve("stream-"+name+".txt"),"start="+streamStart+"\nend="+workload.operations()+"\nwriteBps="+writeBps+"\n");
                     windows.add(String.format(Locale.ROOT,"%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",name,r.start,r.end,r.offeredEnd,
                         r.operations,r.scheduled,r.writes,r.allocation,r.compilerMs,r.churnPayload,r.churnJvm,r.churnDropped,r.backlog,r.eventCount,r.overflowEvents));
                     // No formatting/file IO occurs inside run's measured envelope.
                     if (name.equals("MEASUREMENT")) {
                         for (var entry:Map.of("service",r.service,"gap",r.gaps,"response",r.response,"read-service",r.readService,"update-service",r.updateService).entrySet()) export(out,entry.getKey(),entry.getValue());
+                        if (splitWriteTiming) {
+                            export(out, "write-value-construction", r.valueConstruction);
+                            export(out, "write-cache-put", r.cachePut);
+                        }
                         StringBuilder events=new StringBuilder("operationStartNs,operationEndNs,previousEndNs,operationIndex\n");
                         for (int i=0;i<Math.min(r.eventCount,EVENT_LIMIT);i++) events.append(r.eventStarts[i]).append(',').append(r.eventEnds[i]).append(',').append(r.eventGapStarts[i]).append(',').append(r.eventIndexes[i]).append('\n');
                         Files.writeString(out.resolve("stalls.csv"),events);
@@ -89,6 +103,9 @@ public final class MechanismCrossoverRunner {
                     }
                 }
                 churn.stop();
+                if (splitWriteTiming) {
+                    export(out, "write-clock-floor", measureWriteClockFloor());
+                }
                 Files.write(out.resolve("windows.csv"),windows);
                 phase="VERIFY";Files.writeString(out.resolve("phase.txt"),phase);
                 Files.writeString(out.resolve("integrity.txt"),"contentChecksum="+workload.verifyContents()+"\napplicationChecksum="+workload.applicationChecksum()
@@ -121,13 +138,17 @@ public final class MechanismCrossoverRunner {
         }
     }
 
-    static Result run(MechanismWorkload workload,ApplicationChurn churn,long duration,long qps,boolean floor,long inject,boolean reuse,int payload,boolean supply) {
+    static Result run(MechanismWorkload workload,ApplicationChurn churn,long duration,long qps,boolean floor,long inject,boolean reuse,int payload,boolean supply,
+                      boolean splitWriteTiming) {
         // Same caller buffer footprint in both arms; ordinary reads do not use it.
         byte[] using=new byte[payload];
         Histogram readService=new Histogram(1,MAX_NS,3),updateService=new Histogram(1,MAX_NS,3);
         readService.setAutoResize(false);updateService.setAutoResize(false);
         Histogram service=new Histogram(1,MAX_NS,3),gaps=new Histogram(1,MAX_NS,3),response=new Histogram(1,MAX_NS,3);
         service.setAutoResize(false);gaps.setAutoResize(false);response.setAutoResize(false);
+        MechanismWorkload.WriteTiming timing = splitWriteTiming ? new MechanismWorkload.WriteTiming() : null;
+        Histogram valueConstruction = splitWriteTiming ? new Histogram(1, MAX_NS, 3) : null;
+        Histogram cachePut = splitWriteTiming ? new Histogram(1, MAX_NS, 3) : null;
         long[] starts=new long[EVENT_LIMIT],ends=new long[EVENT_LIMIT],previous=new long[EVENT_LIMIT],indexes=new long[EVENT_LIMIT];
         var before=churn.snapshot();long writes=workload.writes(),allocated=WorkerAllocationCounter.currentBytes();
         var compiler=ManagementFactory.getCompilationMXBean();long compileBefore=compiler.getTotalCompilationTime();
@@ -144,10 +165,14 @@ public final class MechanismCrossoverRunner {
                 injected=true;
             }
             if (supply) { Object value=workload.executeSupplyFloorNext(); checksum+=value instanceof byte[] array?array[0]:((Long)value).longValue(); }
-            else checksum+=floor?1:workload.executeNext()[0];
+            else checksum+=floor?1:workload.executeNext(timing)[0];
             end=System.nanoTime();
             long currentWrites=workload.writes();
             (currentWrites==lastWrites?readService:updateService).recordValue(end-opStart);
+            if (splitWriteTiming && currentWrites != lastWrites) {
+                valueConstruction.recordValue(timing.constructionNs);
+                cachePut.recordValue(timing.cachePutNs);
+            }
             lastWrites=currentWrites;
             service.recordValue(end-opStart);gaps.recordValue(end-prevEnd);
             if (schedule!=null) {
@@ -164,9 +189,24 @@ public final class MechanismCrossoverRunner {
         var after=churn.snapshot();consumed=checksum;
         if (service.getTotalCount()!=readService.getTotalCount()+updateService.getTotalCount()
                 || updateService.getTotalCount()!=workload.writes()-writes) throw new IllegalStateException("Read/update conservation failed");
+        if (splitWriteTiming && (valueConstruction.getTotalCount() != updateService.getTotalCount()
+                || cachePut.getTotalCount() != updateService.getTotalCount())) {
+            throw new IllegalStateException("Split write histogram count differs from update count");
+        }
         return new Result(start,end,offeredEnd,count,schedule==null?0:schedule.requests(),workload.writes()-writes,
             workerAllocation,compiled,after.allocatedBytes()-before.allocatedBytes(),after.jvmAllocatedBytes()-before.jvmAllocatedBytes(),
-            after.droppedBytes()-before.droppedBytes(),maxBacklog,events,Math.max(0,events-EVENT_LIMIT),starts,ends,previous,indexes,service,gaps,response,readService,updateService);
+            after.droppedBytes()-before.droppedBytes(),maxBacklog,events,Math.max(0,events-EVENT_LIMIT),starts,ends,previous,indexes,service,gaps,response,readService,updateService,
+            valueConstruction,cachePut);
+    }
+
+    private static Histogram measureWriteClockFloor() {
+        Histogram floor = new Histogram(1, MAX_NS, 3);
+        for (int sample = 0; sample < WRITE_CLOCK_FLOOR_SAMPLES; sample++) {
+            long start = System.nanoTime();
+            long end = System.nanoTime();
+            floor.recordValue(end - start);
+        }
+        return floor;
     }
 
     private static void export(Path out,String name,Histogram h) throws Exception {
