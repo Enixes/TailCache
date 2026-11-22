@@ -30,25 +30,34 @@ run or `-PtailcacheSuite=locality` for the eight-JVM locality test. Add
 Repeat the same command to reuse verified completed forks.
 [Portable collection guide](docs/PORTABLE_EXPERIMENT.md)
 
-## What TailCache measures
+## Research scope and current results
 
-TailCache is designed to answer questions such as:
+The [working preprint](docs/preprint/MANUSCRIPT.md) compares Caffeine with
+ordinary in-memory Chronicle Map. It asks how payload and application heap
+pressure affect service latency and whether the update working set can reverse
+scheduled-response latency at matched write demand.
 
-- How do on-heap and off-heap caches differ for hits, misses and updates?
-- How much of Chronicle Map's ordinary `get` cost comes from materializing a Java value from off-heap storage?
-- Does warm, file-backed Chronicle Map behave differently from its non-persisted in-memory mode?
-- How do uniform and skewed access distributions affect latency tails?
-- How do 95/5 and 70/30 read/existing-key-put mixes behave under one-thread and same-JVM shared-cache contention?
+At 4 KiB, 5% writes, and 50,000 intended arrivals/s, Caffeine leads response
+p99.9 when 2,048 keys are eligible for updates. Chronicle leads when all 32,768
+keys are eligible. This direction repeated on two machines. A separate
+saturated-service matrix shows Chronicle leading at 256 B and Caffeine at
+4 KiB across the tested pressure endpoints and write fractions. A robust
+pressure-induced service p99/p99.9 crossover remains unestablished.
+[Second-host results](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) · [Draft PR #10](https://github.com/Enixes/TailCache/pull/10)
 
-The smoke harness keeps the working set below the configured entry setting so validation runs avoid eviction/capacity exhaustion. The reportable experiment will freeze backend-specific occupancy semantics explicitly before comparing latency distributions, because Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent controls.
+The benchmark suite also supports the following questions.
 
-## Current results and manuscript (18 November 2026)
+| Benchmark question | Evidence today and relevance to the preprint |
+| --- | --- |
+| How do hits, misses and updates differ? | The paper compares hits and existing-key overwrites, and retains read/update channels. Misses have operation-level validation. A general three-operation latency ranking is outside the paper. [Task 05](docs/TAILCACHE_05.md) |
+| How much of ordinary Chronicle get cost comes from materialization? | Allocation profiling attributes payload-sized hit allocation to materialization. The fraction of latency attributable to materialization remains open. Earlier reuse runs use a different ownership contract. [Claim map](docs/preprint/CLAIMS.md) |
+| Does warm file-backed Chronicle differ from in-memory mode? | Prefault diagnostics improved, with zero major faults and process-read bytes in the cleaner diagnostic forks. The JIT stability gate remained open. A persisted-versus-in-memory latency ranking is outside the paper. [Task 08 review](docs/TAILCACHE_08_FINAL_REVIEW.md) |
+| How does Zipfian access affect tails? | The harness supports uniform and Zipfian traces. The paper changes write eligibility while keeping reads uniform, so its result covers update locality under those read semantics. [Task 05](docs/TAILCACHE_05.md) |
+| How do 95/5 and 70/30 behave with shared-cache contention? | Both mixes and shared-cache mode are implemented and smoke-tested. The paper uses one cache worker and separate write-rate treatments. The mixed contention question remains open. [Task 05](docs/TAILCACHE_05.md) |
 
-The [current research state](docs/TAILCACHE_CURRENT_STATE.md) and [new mechanism study](docs/mechanism/README.md) report 64 research JVMs,32 paired comparisons and preserved warnings/counterexamples. At5% writes, concentrating updates on 2048 keys favors Caffeine response p99.9; spreading them over 32768 keys favors Chronicle. Every direction repeats in both seeds with reversed backend order, at matched fresh-write allocation demand. Larger heap reduces Caffeine GC exposure yet worsens its 5%-write p99.9 in both seeds. No universal write threshold or original saturated-service crossover follows.
-
-[All-point conclusions](docs/mechanism/RESULTS.md), [portable reproduction](docs/mechanism/README.md), [figures](docs/mechanism/FIGURES.md), [research review](docs/mechanism/REVIEW.md) and [working manuscript](docs/preprint/MANUSCRIPT.md) expose the evidence and model limits. [Offline interactive results](docs/TAILCACHE_RESULTS_EXPLORER.html#mechanism-followup), [protected hosted results](https://tailcache-results.vercel.app/#mechanism-followup) and [draft PR #10](https://github.com/Enixes/TailCache/pull/10) are the review surface. The [deep re-review](docs/mechanism/REREVIEW_20261118.md) strengthens artifact validation and scopes duration/warning interpretations without changing measurements. The earlier [60-fork predictor study](docs/predictor/RESULTS.md) stays separate and unchanged.
-
-The [17 November extension](docs/service-followup/RESULTS_20261117.md) remains separate:184 research JVMs plus 30 controls across payload, pressure, policy, JMH, paced load and trace controls. No robust pressure-induced ordinary-service p99/p99.9 crossover was established. The new response/write-rate result does not replace those service questions or repair original unconditional Task 12 **NO_GO**. The manuscript is an agent-reviewed working draft, without author approval, submission or preprint deposit. Historical sections below keep their dated scope.
+The [paper package](docs/preprint/README.md) links the figures, evidence and
+follow-up plan. The [interactive explorer](docs/TAILCACHE_RESULTS_EXPLORER.html#mechanism-followup)
+and the historical results below retain their dated scopes.
 
 ## Task 12 results: heap-pressure crossover study
 

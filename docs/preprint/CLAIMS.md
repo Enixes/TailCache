@@ -1,6 +1,29 @@
 # Claim-to-evidence map
 
-Prepared from frozen derived inputs; each evidence identity is `(dataset, batch, label)`. The complete identities, warning counts and source groups are in [claims.json](claims.json). No claims are upgraded to confirmatory or causal status.
+## Current manuscript claims
+
+| Claim | Evidence | Boundary |
+| --- | --- | --- |
+| Scheduled-response p99.9 reverses when writes target 2,048 versus 32,768 keys. | [20 paired observations behind Figure 1](locality-pairs.csv). First host has 8 pairs, second host has 4 at 30 s and 8 at 90 s. [Second-host review](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) | 4 KiB, 5% writes, zero ballast, 50,000 intended arrivals/s. First-host repeat seeds are not independent new seeds. Update locality, survival, and policy activity vary together. |
+| Payload changes the saturated service ranking at p99 and p99.9. | [48 first-pass pairs and retry sensitivity](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md) | 256 B Chronicle 24/24, 4 KiB Caffeine 24/24. Some high-pressure 4 KiB cells have churn drops. Earlier JMH results have their own measurement scope. |
+| The 1.25% and 1.5% second-host cells favor opposite backends at response p99.9. | [Paced sweep](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/write-transition/research/RESULTS.md) | Four warning-free pairs per endpoint. The 0.75% and 1% cells are mixed. The bracket applies to this setup. |
+| The original response pressure bracket is specific to the earlier short trace. | Earlier midpoint claims C01-C03 below and [full-key second-host matrix](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/followups-01/INTERPRETATION.md) | Chronicle leads response p99.9 at every 4 KiB ballast point in the later full-key matrix. At p99.99/p99.999 the later 90-second locality experiment has contrary warning-free pairs. |
+| The memory and API boundaries still apply. | Claims C08-C12 below and [original acceptance](../TAILCACHE_12_FINAL_ACCEPTANCE.json) | Worker allocation and sampled RSS are separate from retained heap. Reuse changes the ownership contract. The original unconditional status remains NO_GO. |
+
+### Figure 1 evidence identities
+
+- First host: [mechanism-data-20261118.json](../mechanism/mechanism-data-20261118.json), SHA-256 `1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d`.
+- Second host, 30 s: `locality/research/results-compact.json`, SHA-256 `e036c316e6c08e88b0dd66bcb68fab9fff53daea0496d42906da698dfbd02d2c`.
+- Second host, 90 s: `followups-01/locality-long/research/results-compact.json`, SHA-256 `49b1eae2726ce6cfac36c6b09b39ae1926ea610cb2ea48e2f2d397f53fa95dad`.
+
+The [second-host manifest](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/MANIFEST.json)
+records the corresponding full-report hashes.
+
+## Historical claims for the original paper package
+
+The frozen [claims.json](claims.json) stores the original evidence identities,
+warning counts, and source groups for C01-C14. These claims retain their
+original scope.
 
 | ID | Allowed statement | Evidence / figure | Limit |
 | --- | --- | --- | --- |

@@ -1,5 +1,13 @@
 # Paper figures and captions
 
+## Figure 1 in the 22 November review draft
+
+[The cross-host locality plot](figures/fig08_cross_host_locality.svg) shows all
+20 paired values of Chronicle/Caffeine scheduled-response p99.9. Filled dots
+show warning-free pairs and open dots show warning-bearing pairs. The source
+is [the exact per-pair table](locality-pairs.csv). The figures below retain
+their earlier numbering and scope.
+
 Vector PDF and SVG plus 240 dpi PNG are supplied. Figures 1–6 are candidate main-text figures; Figure 7 is an appendix sensitivity. Final manuscript placement remains author review.
 
 ## Figure 1. Fresh response crossover: endpoints repeat; 104 MiB remains mixed

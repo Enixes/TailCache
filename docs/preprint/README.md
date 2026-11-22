@@ -1,6 +1,46 @@
 # TailCache preprint working package
 
-Prepared 11 November 2026; extended 18 November 2026. **Working material, not an author-approved or submitted preprint.**
+The 22 November draft integrates the two-host update-locality replication and
+the second-host pressure and write-rate studies. The [manuscript](MANUSCRIPT.md),
+[claims](CLAIMS.md), and [figure data](locality-pairs.csv) form the current review
+package. The [18 November manuscript](https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/preprint/MANUSCRIPT.md)
+preserves the expanded account of earlier experiments. The paper remains a
+working draft for author review.
+
+## Review PDF
+
+[Download the review draft](../../output/pdf/tailcache-preprint-review.pdf).
+The PDF and first figure are rendered from the Markdown manuscript and
+`locality-pairs.csv` with Python 3.10+ and ReportLab 4.4.9.
+
+```sh
+python3 scripts/render_tailcache_preprint.py --update-svg
+```
+
+Before deposit, obtain a systems review of the contribution and measurement
+boundaries, confirm author names, affiliations, contributions and disclosure,
+then review the license and public access for the selected artifacts. The
+review PDF still needs author approval and final release metadata.
+
+## Follow-up: paced response at 10% writes
+
+Test whether the scheduled-response p99.9 locality reversal survives at a
+higher write fraction. Cross 5% and 10% nominal writes with 2,048 and 32,768
+eligible update keys. Keep 4 KiB values, 32,768 residents, uniform reads,
+50,000 intended arrivals/s, zero ballast, G1, a 512 MiB heap, and the same
+offered churn. A matched design with three fresh seed pairs per cell would
+use 24 research JVMs. Freeze the protocol, qualifications and retry cap before
+any collection. Pair both backends within each seed and balance backend order.
+
+At 10%, the offered workload doubles to about 5,000 fresh writes/s. The mean
+per-key replacement interval falls from about 13.1 to 6.6 seconds in the
+full-key arm. Report p99.9 response as the primary outcome alongside GC pause
+time and length, operation allocation, achieved churn and tail exceptions.
+Higher fresh allocation and shorter value lifetimes can pull in different
+directions, so the response direction is an empirical question. This is a
+follow-up and is outside the evidence needed for this draft.
+
+## Earlier experiments and audits
 
 Extended 17 November with [184 new research forks across eight cohorts](../service-followup/RESULTS_20261117.md), [58 point groups](../service-followup/followup-data-20261117.md), [seven supplementary figures](../service-followup/FIGURES_20261117.md), [new claims](../service-followup/CLAIMS_20261117.md) and a [final technical review](../service-followup/FINAL_REVIEW_20261117.md). The earlier package was revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
 
@@ -8,7 +48,7 @@ The new [64-fork mechanism study](../mechanism/README.md), [all-point/model tabl
 
 The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#mechanism-followup) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
 
-- [Manuscript draft](MANUSCRIPT.md): methods and related work, initial results narrative and explicit remaining edits.
+- [Manuscript draft](MANUSCRIPT.md) with methods, main results, limitations, and references.
 - [Claim-to-evidence map](CLAIMS.md) and [machine-readable identities](claims.json).
 - [Figures and full captions](FIGURES.md), vector PDF/SVG plus PNG in `figures/`.
 - [Literature verification and novelty comparison](LITERATURE.md); [BibTeX](references.bib).
@@ -45,7 +85,7 @@ On the evidence host, reconcile all exported observations/distributions and rege
 rtk proxy python3 scripts/tailcache12_preprint_source_audit.py
 ```
 
-This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. Their off-host backup/public artifact, a independent performance replication and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup. No raw-evidence deposit or formal preprint publication is performed by these commands.
+This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. The later second-host replication has a separate versioned raw archive. Public artifact selection and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup. No raw-evidence deposit or formal preprint publication is performed by these commands.
 
 ## Paper boundary
 
