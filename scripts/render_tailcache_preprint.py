@@ -44,6 +44,8 @@ STYLES = {
                                  keepWithNext=True),
     "body": ParagraphStyle("Body", fontName="Times-Roman", fontSize=11, leading=15,
                            textColor=INK, spaceAfter=8, allowWidows=False, allowOrphans=False),
+    "reference": ParagraphStyle("Reference", fontName="Times-Roman", fontSize=9.5, leading=12.5,
+                                textColor=INK, spaceAfter=5, allowWidows=False, allowOrphans=False),
     "cell": ParagraphStyle("Cell", fontName="Helvetica", fontSize=8.5, leading=11,
                            textColor=INK),
     "numeric": ParagraphStyle("Number", fontName="Helvetica", fontSize=8.5, leading=11,
@@ -268,7 +270,10 @@ def render(output, charts):
             story.append(KeepTogether([charts[figure[1]], caption]))
         else:
             heading = re.match(r"^(#{1,3}) ", block)
-            style = ("title", "section", "subsection")[len(heading[1]) - 1] if heading else "body"
+            if heading:
+                style = ("title", "section", "subsection")[len(heading[1]) - 1]
+            else:
+                style = "reference" if re.match(r"^\[\d+\] ", block) else "body"
             value = block[heading.end():] if heading else block
             story.append(Paragraph(inline(value.replace("\n", " ")), STYLES[style]))
 

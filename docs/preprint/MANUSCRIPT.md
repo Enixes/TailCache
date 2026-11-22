@@ -4,33 +4,37 @@
 
 ## Abstract
 
-An off-heap cache can relieve Java heap pressure while incurring higher access and materialization costs. We compare Caffeine and ordinary in-memory Chronicle Map under G1, separating cache-call latency from response latency measured against scheduled arrivals. With 32,768 resident entries, 4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application ballast, changing only the eligible write set reverses the response p99.9 ranking. Caffeine leads when writes target 2,048 keys, while Chronicle leads when writes target all 32,768. The direction repeats on two hosts, including four fresh seeds at 90 seconds. With distributed writes, the second-host 30-second cohorts record response p99.9 of 3.09-3.65 ms for Caffeine and 7.48-7.90 µs for Chronicle. In a separate 48-pair saturated-service matrix, Chronicle leads at 256 B and Caffeine leads at 4 KiB across both tested pressure levels and all three write fractions. On the second host, mixed collections account for most of the added Caffeine pause time when writes are spread out. The experiment changes update locality, value lifetime, and cache policy activity together. We distinguish call and response tails and report the update set alongside the write fraction.
+Java applications use caches to avoid repeated work. Storing cached values outside the Java heap reduces how much cached data stays live on the Java heap, while a read can require a fresh copy of the value. We compare Caffeine and in-memory Chronicle Map to determine how this trade-off affects cache-call latency and response time under scheduled arrivals.
+
+We ran both caches with 32,768 entries, 4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. With 2,048 eligible write keys, Caffeine had the lower response p99.9. When all keys were eligible, Chronicle had the lower response p99.9. This reversal repeated on two machines. On the second machine, the 30-second full-key runs gave response p99.9 of 3.09-3.65 ms for Caffeine and 7.48-7.90 µs for Chronicle. Most of Caffeine's additional pause time in the full-key runs came from G1 mixed collections.
+
+In a separate 48-pair experiment that timed cache calls back to back, Chronicle led at 256 B and Caffeine led at 4 KiB across the tested heap pressures and write rates. These results show that the cache choice can depend on which keys receive writes, how large the values are, and whether latency includes the time a request waits before its call begins.
 
 ## 1. Introduction
 
-Caffeine is an in-process Java cache library. It stores entries on the Java heap, the memory managed by Java's garbage collector, and supports eviction when the cache reaches a configured size [9]. Chronicle Map is a concurrent Java key-value store that keeps entries outside the Java heap. It supports in-memory and file-backed storage [10].
+Caffeine is an in-process Java cache library. It stores entries on the Java heap, the memory managed by Java's garbage collector, and supports eviction when the cache reaches a configured size [1]. Chronicle Map is a concurrent Java key-value store that keeps entries outside the Java heap. It supports in-memory and file-backed storage [2].
 
-We compare size-bounded Caffeine and in-memory Chronicle Map with byte-array values. A Caffeine hit returns the stored array. An ordinary Chronicle hit allocates a new Java array and copies the stored value into it. This trades heap retention for allocation and copying on reads. Both costs can affect call latency and how long a request waits before its call starts.
+In this study, we compare size-bounded Caffeine with in-memory Chronicle Map using the same byte-array values and workload. A Caffeine hit returns the array already in the cache. An ordinary Chronicle hit allocates a new Java array and copies the stored value into it. The time spent making that copy can affect the duration of a call. Garbage collection can also make a request wait before its call begins. We measure both so that a faster call does not hide a slower response.
 
-Our original questions are whether increasing application heap pressure produces a p99 or p99.9 service-latency crossover (**RQ1**) and how payload size changes the ordering (**RQ2**). A later question asks whether the update working set changes the scheduled-response ranking at matched arrivals and offered write demand (**RQ3**). We retain the original pressure outcome, report the two-host locality result and its limits, and make the second-host raw measurements available for offline reconstruction.
+We first ask whether adding application data to the Java heap causes a crossover at service p99 or p99.9 (**RQ1**), and whether changing the value size changes the ranking (**RQ2**). We then test whether changing the set of keys eligible for writes can reverse the scheduled-response ranking at the same arrival and write rates (**RQ3**). The last experiment was repeated on a second machine to check whether the direction held when the hardware and runtime changed.
 
 ## 2. Related work
 
-Prioritized garbage collection provides explicit runtime support for the competing retention and collection costs of software caches [1]. A practitioner comparison of Caffeine and OHC already demonstrates that cache size and collection costs can change the preferred storage placement [2]. TeraHeap tackles related materialization and memory-pressure costs through a new heap design [3]. Our contribution is a specific empirical comparison of existing cache configurations at matched fresh-write demand, with a controlled update-set intervention and independent hardware replication.
+Prioritized garbage collection provides explicit runtime support for the competing retention and collection costs of software caches [3]. A practitioner comparison of Caffeine and OHC already demonstrates that cache size and collection costs can change the preferred storage placement [4]. TeraHeap tackles related materialization and memory-pressure costs through a new heap design [5]. Our contribution is a specific empirical comparison of existing cache configurations at matched fresh-write demand, with a controlled update-set intervention and independent hardware replication.
 
-Open and closed workload models can yield materially different latency results [4]. We apply that distinction to the measurement boundary of a cache call and a scheduled request. Java warmup and steady state are also known sources of experimental error [5]. We report compilation warnings, earlier qualification failures, and warning-free sensitivity alongside the measurements. Prior collector studies motivate examining application latency alongside pause summaries [6].
+Open and closed workload models can yield materially different latency results [6]. We apply that distinction to the measurement boundary of a cache call and a scheduled request. Java warmup and steady state are also known sources of experimental error [7]. We report compilation warnings, earlier qualification failures, and warning-free sensitivity alongside the measurements. Prior collector studies motivate examining application latency alongside pause summaries [8].
 
 ## 3. Methods
 
 ### 3.1 Cache semantics and timing
 
-We use Java 21, Caffeine 3.2.4, Chronicle Map 2026.1, and HdrHistogram 2.2.2. Chronicle uses its ordinary get API [7]. Both configurations start with 32,768 resident entries and allocate a fresh immutable byte array per measured overwrite. Reads hit resident entries. Cache placement, layout, and maintenance differ across the two libraries. The experiments use one cache worker and allow JVM and library helper threads.
+We use Java 21, Caffeine 3.2.4, Chronicle Map 2026.1, and HdrHistogram 2.2.2. Chronicle uses its ordinary get API [9]. Both configurations start with 32,768 resident entries and allocate a fresh immutable byte array per measured overwrite. Reads hit resident entries. Cache placement, layout, and maintenance differ across the two libraries. The experiments use one cache worker and allow JVM and library helper threads.
 
-Service latency measures completion minus call start. In the saturated experiment, the worker issues the next call immediately. Scheduled response measures completion minus the request's intended arrival. It retains overdue work in order. At 50,000 arrivals/s, the intended interval is 20 µs. A pause can delay multiple scheduled requests, including requests whose actual calls start after the pause. The schedule is generated in process. A network client, concurrent callers, and miss handling are outside this measurement. The p99.9 is the observed latency at roughly the boundary of the slowest one in 1,000 operations.
+We measure service latency from the start of a cache call until it finishes. In the saturated experiment, the worker starts the next call as soon as it finishes the previous one. For scheduled response, we measure from the time a request was due until its call finishes. We schedule one request every 20 µs at 50,000 arrivals/s and run overdue requests in order. A garbage-collection pause can therefore delay requests whose calls have yet to start. The in-process schedule measures one worker serving hits and overwrites. The p99.9 is the latency at roughly the boundary of the slowest one in 1,000 operations.
 
 ### 3.2 Locality intervention and replication
 
-A deterministic indexed stream generates operation flags and keys. Both backends see the same stream for each seed. In both treatments, reads sample uniformly across all resident keys. For writes, the key index is mapped into either a fixed prefix of 2,048 eligible keys or the full set of 32,768. We use 4 KiB values, 5% nominal writes, G1, a fixed 512 MiB heap, and zero added application ballast. The offered background allocation is 32 MiB/s. The write rate is about 2,500 overwrites/s, giving nominal mean per-key replacement intervals of 0.82 s and 13.1 s. These intervals describe the update stream. Individual object survival and promotion are separate quantities.
+We generate reads and writes from a seeded stream so that each backend receives the same workload for a given seed. Reads sample all 32,768 keys uniformly. Writes can replace a value within a fixed set of 2,048 keys or across all 32,768 keys. Both treatments use 4 KiB values, 5% nominal writes, G1, a fixed 512 MiB heap, zero added application data, and 32 MiB/s of offered background allocation. At about 2,500 writes/s, the expected time between overwrites of a key is 0.82 s in the smaller set and 13.1 s in the full set. Those intervals describe replacement in the workload. Individual values can survive for different durations.
 
 The first Linux host supplies two seeds with reversed backend-order repeats. The second Linux host is a Ryzen 7 5800X with a 12-CPU JVM budget and Temurin 21.0.13+9. Its 30-second replication uses two fresh seeds, and a separate 90-second cohort uses four additional seeds. Both hosts use 120 seconds of warmup and four seconds of conditioning with zero priming for the locality result. Host, JVM build, seed, and window length differences limit comparisons of effect magnitude. We keep each cohort and pair separate.
 
@@ -44,7 +48,7 @@ Each comparison pairs two JVM runs within a seed and workload. We report individ
 
 ### 4.1 Write locality reverses scheduled-response p99.9 on two hosts
 
-Each cohort favors Caffeine with 2,048 eligible write keys and Chronicle with 32,768. Figure 1 plots all 20 paired comparisons. The first-host repeated seeds document repeatability under reversed order. The fresh second-host seeds test whether the direction survives a hardware and runtime change.
+Figure 1 shows the response p99.9 for all 20 paired comparisons. In every cohort, Caffeine leads when writes target 2,048 keys and Chronicle leads when writes target all 32,768. On the first machine, we repeated each seed with the backend order reversed. On the second machine, we used fresh seeds and checked the result again with 90-second measurement windows.
 
 ![Figure 1. Scheduled-response p99.9 by eligible write set and cohort.](figures/fig08_cross_host_locality.svg)
 
@@ -59,7 +63,7 @@ Each cohort favors Caffeine with 2,048 eligible write keys and Chronicle with 32
 | Second, 90 s | 2,048 | 6.44-8.13 µs | 7.24-9.66 µs | 3/4 |
 | Second, 90 s | 32,768 | 2.90-3.20 ms | 7.50-9.43 µs | 3/4 |
 
-With all keys eligible on the second host, Caffeine's service p99.9 is 6.36-7.42 µs in the 30-second paced runs, while its response p99.9 exceeds 3 ms. Chronicle's response p99.9 stays near 8 µs. The divergence between service and response is consistent with requests spending more time waiting to begin their calls.
+When writes reach all keys, the second-host 30-second runs give Caffeine a service p99.9 of 6.36-7.42 µs and a response p99.9 above 3 ms. Chronicle's response p99.9 stays near 8 µs. Caffeine's calls are still fast once they begin. The difference between the call and response measurements is consistent with requests spending more time waiting for the worker.
 
 Caffeine's measured GC pause overlap increases from 8.21-9.91 ms with concentrated writes to 59.57-65.13 ms with distributed writes. Chronicle remains at 12.79-13.15 ms. Within each backend and seed, measured allocation per operation is unchanged by the treatment.
 
@@ -69,7 +73,7 @@ Figure 2 groups archived GC pauses by recorded type and shows that Caffeine's ti
 
 **Figure 2.** Each point is one fork. Both panels use the same scale. Open marks belong to pairs with recorded warnings. Chronicle's mixed-collection time is zero in these runs.
 
-A Caffeine value stays live while the cache holds it. If it survives young collections, it can move to the old generation. A later overwrite can make the former value unreachable, allowing reclamation. G1 mixed collections reclaim young and selected old regions [8]. Distributed writes lengthen the time until replacement and could give more values time to age, while ongoing overwrites can turn some of those older values into garbage. The increase in mixed-collection time is consistent with that explanation. Per-value promotion and the contribution of cache policy activity remain unmeasured.
+One explanation is that spreading writes out gives more Caffeine values time to reach the old generation before they are replaced. While the cache holds a value, that value is live. A later write can make the former value unreachable so that it can be reclaimed. G1 mixed collections reclaim young regions and selected old regions [10]. The increase in mixed pause time is consistent with longer-lived values being repeatedly replaced. Our measurements do not track individual objects through promotion, and changing where writes land can also change the work done by the cache policy.
 
 The extreme tail has exceptions. Chronicle leads at scheduled response p99.99 and p99.999 in three of four 90-second pairs in each update-set arm. The two contrary Chronicle forks have completion gaps of 18.783 ms and 19.730 ms without overlapping logged GC pauses or JVM safepoints. At 30 seconds, roughly 15 operations lie beyond the nominal p99.999 rank per fork, and several affected operations can come from a single stall.
 
@@ -81,9 +85,9 @@ At p99 and p99.9, Chronicle leads every 256 B pair (24/24) and Caffeine leads ev
 
 **Figure 3.** First-pass pairs at 5% writes. Each point is a Chronicle-to-Caffeine p99.9 ratio. The dashed line marks equal latency. Open marks indicate a recorded warning in either run of the pair.
 
-Read timings help explain the payload effect. At 256 B, 5% writes, and zero ballast, the median of the four fork-level read p50s is about 0.10 µs for each backend. For read p99.9, Chronicle is at 0.65 µs and Caffeine at 1.80 µs. The advantage is visible in the slower reads. At this size, Chronicle retains a lower read tail despite the cost of copying the value. Earlier policy and JMH comparisons show that small-value rankings depend on the cache settings and measurement harness. The cause of Caffeine's slower reads at this point remains unresolved.
+To understand the 256 B result, we compare reads at 5% writes and zero added heap data. The median of the four fork-level read p50s is about 0.10 µs for each cache. At read p99.9, Chronicle takes 0.65 µs and Caffeine takes 1.80 µs. The gap appears among the slower reads even though Chronicle copies the value. Earlier experiments with different Caffeine policies and JMH measurement settings changed the small-value ranking. The results establish the advantage for this configuration, while the cost of each step in the read path remains unresolved.
 
-At 4 KiB and the same write rate and ballast, the median read p50 across forks is 0.13 µs for Caffeine and 0.59 µs for Chronicle. Chronicle's worker allocates about 4,122 bytes per operation, compared with 206 for Caffeine, across reads and writes. The higher allocation and read latency are consistent with Chronicle allocating and copying larger values on ordinary hits. The experiment measures the complete call, so it does not partition the latency difference among copying, allocation, lookup, and policy work.
+At 4 KiB, the value is 16 times larger. With the same write rate and added heap data, the median read p50 is 0.13 µs for Caffeine and 0.59 µs for Chronicle. Across reads and writes, Chronicle allocates about 4,122 bytes per operation and Caffeine allocates about 206. Both measurements are consistent with the higher cost of creating and filling larger arrays on ordinary Chronicle reads. We timed the complete call, so the measurements cannot assign a fraction of the difference to copying, allocation, lookup, or policy work.
 
 ### 4.3 A write-rate bracket and the limits of pause-based prediction
 
@@ -93,7 +97,9 @@ The distinct timing boundaries explain how a GC-heavy run can still have a small
 
 ### 4.4 How the newer measurements change the earlier pressure result
 
-In the earlier short-trace runs, 4 KiB response p99.9 favored Caffeine at 0 MiB and Chronicle at 208 MiB. The 104 MiB pairs were mixed. In the second-host 5%-write, full-key continuous-stream matrix, Chronicle leads at 0, 96, 208, and 288 MiB in both seeds. The earlier trace repeated about every 0.8 s and wrote to roughly 1,940 keys per seed. The later stream spread updates across all 32,768 keys, and its response advantage for Chronicle was already present at zero ballast. The earlier 0-to-208 MiB bracket therefore applies to its own workload. The controlled locality test in Section 4.1 independently changes the eligible write set at zero ballast.
+We initially examined the effect of adding retained application data using a short, repeating trace. For 4 KiB values, Caffeine led at response p99.9 with 0 MiB of added data, Chronicle led with 208 MiB, and the pairs disagreed at 104 MiB. The trace repeated about every 0.8 s and wrote to roughly 1,940 keys per seed.
+
+In the newer second-host experiment, we kept the 5% write fraction and spread updates across all 32,768 keys. As Figure 4 shows, Chronicle led at 0, 96, 208, and 288 MiB in both seeds. The earlier bracket therefore applies to the short-replay workload. In Section 4.1, changing the eligible write set on a single machine was sufficient to reverse the response ranking at zero ballast.
 
 ![Figure 4. Scheduled-response p99.9 in the two application-pressure studies.](figures/fig11_response_pressure.svg)
 
@@ -107,7 +113,7 @@ The strongest result concerns one worker, two libraries, G1, a bounded synthetic
 
 The original unconditional Task 12 qualification remains NO_GO. Earlier conditional results, JMH versus every-operation differences, and resolved or unresolved follow-up points are preserved in the supplements. Small-value service rankings depend on measurement and cache configuration. The main experiments compare hit and overwrite traffic with ordinary in-memory access. Miss performance, persisted-map timing, read skew, and shared-cache contention remain separate questions. Earlier buffer reuse runs use a different caller ownership contract. In the midpoint follow-up, Chronicle had lower retained Java-heap occupancy and higher sampled RSS. An equal-total-memory comparison remains open.
 
-For small values, measure the call tail under the cache policy the application needs. For larger values, compare call latency with scheduled response and check whether replacing long-lived values coincides with pauses and queueing. Report intended arrival rate, write fraction, and the set of keys eligible for writes. The same write fraction can yield different response rankings. A focused future experiment would test whether the locality reversal survives at 10% writes. The current result is supported by the two-host evidence at 5%.
+For small values, the required cache policy matters when comparing call latency. For larger values, we also need to ask whether requests wait through GC pauses and whether the workload repeatedly replaces long-lived cached values. Reporting the arrival rate, write fraction, and eligible write set makes this distinction visible. Two workloads can have the same write fraction and favor different caches.
 
 ## 6. Reproducibility and disclosure
 
@@ -117,26 +123,30 @@ The authors will confirm contributions, artifact access and licensing, and the d
 
 ## 7. Conclusion
 
-At matched write demand and zero added application ballast, concentrating versus distributing updates flipped which cache had lower scheduled-response p99.9 on both hosts. At 256 B, Chronicle led the saturated-service comparison. At 4 KiB, Caffeine led that comparison even though it lost scheduled-response p99.9 under distributed writes. The results show why cache comparisons need to report both the timing boundary and which keys receive writes.
+We compared two Java caches by measuring both the time spent inside the call and the time from scheduled arrival to completion. At 4 KiB and 5% writes, Caffeine had the lower response p99.9 when the write set was small, and Chronicle led when writes were spread across the cache. This reversal held on both machines at zero added application pressure. In back-to-back calls, Chronicle led at 256 B and Caffeine led at 4 KiB. Increasing the added application data did not establish a robust service crossover in the tested range. The results show why value size, placement of writes, and the definition of latency matter when choosing a cache.
+
+### Future work
+
+We plan to compare 5% and 10% writes at both update-set sizes under the same arrival rate. Increasing the write rate creates more fresh values and shortens the time before a value is replaced. That comparison can show whether the response reversal persists under heavier write traffic.
 
 ## References
 
-[1] D. Nunez, S. Z. Guyer, and E. D. Berger. Prioritized Garbage Collection: Explicit GC Support for Software Caches. OOPSLA, 2016. [DOI](https://doi.org/10.1145/2983990.2984028).
+[1] Caffeine project. Caffeine cache library. [Project documentation](https://github.com/ben-manes/caffeine#cache).
 
-[2] M. Knasiecki. GC, hands off my data! Allegro engineering blog, 2022. [Article](https://blog.allegro.tech/2022/06/gc-hands-off-my-data.html).
+[2] OpenHFT. Chronicle Map features. [Project documentation](https://github.com/OpenHFT/Chronicle-Map/blob/ea/docs/CM_Features.adoc).
 
-[3] I. G. Kolokasis et al. TeraHeap: Reducing Memory Pressure in Managed Big Data Frameworks. ASPLOS, 2023. [DOI](https://doi.org/10.1145/3582016.3582045).
+[3] D. Nunez, S. Z. Guyer, and E. D. Berger. Prioritized Garbage Collection: Explicit GC Support for Software Caches. OOPSLA, 2016. [DOI](https://doi.org/10.1145/2983990.2984028).
 
-[4] B. Schroeder, A. Wierman, and M. Harchol-Balter. Open Versus Closed: A Cautionary Tale. NSDI, 2006. [USENIX](https://www.usenix.org/conference/nsdi-06/open-versus-closed-cautionary-tale).
+[4] M. Knasiecki. GC, hands off my data! Allegro engineering blog, 2022. [Article](https://blog.allegro.tech/2022/06/gc-hands-off-my-data.html).
 
-[5] L. Traini, V. Cortellessa, D. Di Pompeo, and M. Tucci. Towards effective assessment of steady state performance in Java software: are we there yet? Empirical Software Engineering, 2023. [DOI](https://doi.org/10.1007/s10664-022-10247-x).
+[5] I. G. Kolokasis et al. TeraHeap: Reducing Memory Pressure in Managed Big Data Frameworks. ASPLOS, 2023. [DOI](https://doi.org/10.1145/3582016.3582045).
 
-[6] Z. Cai, S. M. Blackburn, M. D. Bond, and M. Maas. Distilling the Real Cost of Production Garbage Collectors. ISPASS, 2022. [DOI](https://doi.org/10.1109/ISPASS55109.2022.00005).
+[6] B. Schroeder, A. Wierman, and M. Harchol-Balter. Open Versus Closed: A Cautionary Tale. NSDI, 2006. [USENIX](https://www.usenix.org/conference/nsdi-06/open-versus-closed-cautionary-tale).
 
-[7] OpenHFT. ChronicleMap interface, 2026.1. [Versioned API source](https://github.com/OpenHFT/Chronicle-Map/blob/chronicle-map-2026.1/src/main/java/net/openhft/chronicle/map/ChronicleMap.java).
+[7] L. Traini, V. Cortellessa, D. Di Pompeo, and M. Tucci. Towards effective assessment of steady state performance in Java software: are we there yet? Empirical Software Engineering, 2023. [DOI](https://doi.org/10.1007/s10664-022-10247-x).
 
-[8] Oracle. Garbage-First (G1) Garbage Collector. Java 21 Garbage Collection Tuning Guide. [Garbage collection cycle](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html).
+[8] Z. Cai, S. M. Blackburn, M. D. Bond, and M. Maas. Distilling the Real Cost of Production Garbage Collectors. ISPASS, 2022. [DOI](https://doi.org/10.1109/ISPASS55109.2022.00005).
 
-[9] Caffeine project. Caffeine cache library. [Project documentation](https://github.com/ben-manes/caffeine#cache).
+[9] OpenHFT. ChronicleMap interface, 2026.1. [Versioned API source](https://github.com/OpenHFT/Chronicle-Map/blob/chronicle-map-2026.1/src/main/java/net/openhft/chronicle/map/ChronicleMap.java).
 
-[10] OpenHFT. Chronicle Map features. [Project documentation](https://github.com/OpenHFT/Chronicle-Map/blob/ea/docs/CM_Features.adoc).
+[10] Oracle. Garbage-First (G1) Garbage Collector. Java 21 Garbage Collection Tuning Guide. [Garbage collection cycle](https://docs.oracle.com/en/java/javase/21/gctuning/garbage-first-g1-garbage-collector1.html).
