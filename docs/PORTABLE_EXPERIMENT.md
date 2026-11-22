@@ -172,6 +172,31 @@ Keep the two-host scheduled-response locality reversal and the G1, write-rate
 bracket, and memory findings tied to their own cohorts. The instrumentation
 pilot serves as qualification evidence.
 
+### Sampled split timing after the Pop!_OS pilot
+
+The all-write pilot on 23 November completed eight warning-free forks. The
+Chronicle/Caffeine service p99.9 ratio shifted by 11.2% and 7.5%, above the
+frozen 5% limit. The all-write suite stopped before its research phase.
+
+The sampled follow-up times one of every eight writes, with the initial
+ordinal in each phase set by the seed modulo eight. The whole-operation and
+read/write service histograms still record every operation. This systematic
+sample estimates the split intervals with fewer clock reads and histogram
+updates. Periodic workload effects can still align with the sampling cadence.
+Require the two split histogram counts to match the selected-write count
+exactly and flag p99.9 with fewer than 20 expected observations beyond the
+quantile. Report sample counts and clock limits alongside split percentiles.
+
+```sh
+./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=sampled-split-write-timing -PtailcacheOut=results/sampled-split-write-popos-01
+```
+
+The sampled suite uses fresh seeds and the same eight-JVM pilot and overhead
+limits. Allow 65–75 minutes if the pilot advances to all 16 research forks. If
+the sampled pilot fails, stop split timing and record the failed qualification
+in the paper's methods discussion. Resolved sampled results apply to the
+split endpoint at p99/p99.9 for these workloads.
+
 ## Optional follow-up under heavier reads and writes
 
 Test whether the 4 KiB scheduled-response p99.9 locality reversal persists

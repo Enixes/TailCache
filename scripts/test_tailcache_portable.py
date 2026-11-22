@@ -104,6 +104,25 @@ class PortableTests(unittest.TestCase):
             p.latency_counts(split,100,0)
         self.invalid(lambda config:config['cells'][0].update(splitWriteTiming=True,writeBps=0))
 
+    def test_sampled_split_timing_uses_fresh_seeds_and_exact_sample_counts(self):
+        configs = ROOT/'experiments/portable'
+        frozen = p.suite_plan(configs,'sampled-split-write-timing')
+        original = p.suite_plan(configs,'split-write-timing')
+        for phase in ('write-timing-pilot','research'):
+            self.assertTrue(set(frozen['phases'][phase]['config']['seeds']).isdisjoint(
+                original['phases'][phase]['config']['seeds']))
+        self.assertEqual(frozen['writePilotLimits'], original['writePilotLimits'])
+        spec = frozen['phases']['research']['schedule'][0]
+        self.assertEqual(spec['splitWriteSampleEvery'], 8)
+        # For seed modulo stride == 3, write ordinals 4 and 12 are selected.
+        sampled = dict(spec, seed=3)
+        counts = p.latency_counts(sampled, 100, 15)
+        self.assertEqual([counts[channel] for channel in p.WRITE_CHANNELS], [2, 2])
+        self.assertEqual(counts['update-service'], 15)
+        self.assertEqual(p.worker_command('/java', self.config, sampled, self.root)[-4:],
+                         ['--split-write-timing', 'true', '--split-write-sample-every', '8'])
+        self.invalid(lambda config:config['cells'][0].update(splitWriteSampleEvery=8))
+
     def test_split_timing_pilot_rejects_differential_drift_and_warnings(self):
         def row(backend, split):
             return dict(spec=dict(seed=1,backend=backend,splitWriteTiming=split),

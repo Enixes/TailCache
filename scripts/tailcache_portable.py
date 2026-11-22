@@ -32,6 +32,7 @@ WRITE_CHANNELS = ('write-value-construction', 'write-cache-put')
 WRITE_CLOCK_CHANNEL = 'write-clock-floor'
 WRITE_CLOCK_SAMPLES = 4096
 WRITE_TAIL_CLOCK_MULTIPLE = 4
+WRITE_TIMING_SUITES = ('split-write-timing', 'sampled-split-write-timing')
 WRITE_PILOT_LIMITS = {
     'operationsPerSecond': .10,
     'serviceP999': .10,
@@ -57,6 +58,7 @@ SUITES = {
     'saturated-write-pressure': ('saturated-write-pressure',),
     'write-transition': ('write-transition',),
     'split-write-timing': ('split-write-timing',),
+    'sampled-split-write-timing': ('sampled-split-write-timing',),
     'all': ('locality', 'write-ratio', 'rq-matrix'),
 }
 MAIN = 'io.github.enixes.tailcache.workload.MechanismCrossoverRunner'
@@ -148,7 +150,8 @@ def validate(config):
     require(all(isinstance(c,dict) for c in cells),'Cells must be JSON objects')
     require(len({canonical(c) for c in cells}) == len(cells), 'Duplicate cells')
     for c in cells:
-        require(set(c)-{'splitWriteTiming'} == {'payloadBytes','liveMiB','writeBps','updateHotset','qps'}, 'Unknown/missing cell fields')
+        require(set(c)-{'splitWriteTiming','splitWriteSampleEvery'} == {'payloadBytes','liveMiB','writeBps','updateHotset','qps'},
+                'Unknown/missing cell fields')
         for key, lo, hi in [('payloadBytes',16,32768),('liveMiB',0,2047),('writeBps',0,10000),
                             ('updateHotset',1,config['residents']),('qps',0,1000000)]:
             require(integer(c[key],lo,hi), 'Invalid cell ' + key)
@@ -158,6 +161,9 @@ def validate(config):
         if 'splitWriteTiming' in c:
             require(c['splitWriteTiming'] is True and c['writeBps'] > 0,
                     'Split write timing requires actual writes and must be true when specified')
+        if 'splitWriteSampleEvery' in c:
+            require(c.get('splitWriteTiming') and integer(c['splitWriteSampleEvery'],2,64),
+                    'Split write sampling requires split timing and a stride of 2..64')
     q = config['quality']
     require(isinstance(q,dict),'Quality must be a JSON object')
     require(set(q) == {'minAvailableMiB','minDiskMiB','compilerWarningMs','maxOutsideCpuFraction',
@@ -219,8 +225,8 @@ def suite_plan(config_dir, suite):
                 cells.append(cell)
             views[name].append(cells.index(cell)+1)
     if shared is not None:
-        if suite == 'split-write-timing':
-            pilot = plan(load(config_dir/'split-write-timing-pilot.json'))
+        if suite in WRITE_TIMING_SUITES:
+            pilot = plan(load(config_dir/(suite+'-pilot.json')))
             pilot_config = pilot['config']
             check_keys = {'name','purpose','seeds','orderSeed','maxExternalRetryPairs'}
             require(pilot_config['purpose']=='diagnostic' and set(pilot_config['seeds']).isdisjoint(shared['seeds']),
@@ -230,8 +236,10 @@ def suite_plan(config_dir, suite):
                     'Write timing pilot must match research JVM, duration and quality settings')
             require(len(pilot_config['cells'])==2, 'Write timing pilot needs two timing modes')
             old, split = pilot_config['cells']
-            require(split == dict(old, splitWriteTiming=True) and split in cells
-                    and all(c.get('splitWriteTiming') for c in cells),
+            require('splitWriteTiming' not in old
+                    and {k:v for k,v in split.items() if k not in ('splitWriteTiming','splitWriteSampleEvery')} == old
+                    and split in cells and all(c.get('splitWriteTiming')
+                        and c.get('splitWriteSampleEvery') == split.get('splitWriteSampleEvery') for c in cells),
                     'Write pilot must compare original and split timing on one research cell')
             phases['write-timing-pilot'] = pilot
         phases['research'] = plan(dict(shared, name='reproduction-'+suite, cells=cells))
@@ -239,7 +247,7 @@ def suite_plan(config_dir, suite):
                 researchJvms=sum(p['workloadJvms'] for p in phases.values()),
                 diagnosticJvms=sum(p['diagnosticJvms'] for p in phases.values()),
                 nominalWorkloadMinutes=sum(p['nominalWorkloadMinutes'] for p in phases.values()))
-    if suite == 'split-write-timing':
+    if suite in WRITE_TIMING_SUITES:
         result['writePilotLimits'] = WRITE_PILOT_LIMITS
         result['writeTailClockMultiple'] = WRITE_TAIL_CLOCK_MULTIPLE
     return result
@@ -541,8 +549,11 @@ def latency_counts(spec, operations, writes):
     counts = {'service': operations, 'response': operations if spec['qps'] else 0,
               'gap': operations, 'read-service': operations-writes, 'update-service': writes}
     if spec.get('splitWriteTiming'):
-        require(writes > 0, 'No writes observed for split timing')
-        counts.update(dict.fromkeys(WRITE_CHANNELS, writes))
+        stride = spec.get('splitWriteSampleEvery',1)
+        offset = spec['seed'] % stride
+        sampled = (writes + stride - 1 - offset)//stride
+        require(sampled > 0, 'No writes observed for split timing')
+        counts.update(dict.fromkeys(WRITE_CHANNELS, sampled))
         counts[WRITE_CLOCK_CHANNEL] = WRITE_CLOCK_SAMPLES
     return counts
 
@@ -591,6 +602,8 @@ def summarize(path, spec, config, capability, code):
         require(int(actual['updateHotset'])==spec['updateHotset'],'Update population differs')
         require(actual.get('splitWriteTiming','false')==str(spec.get('splitWriteTiming',False)).lower(),
                 'Actual write timing mode differs')
+        require(int(actual.get('splitWriteSampleEvery',1))==spec.get('splitWriteSampleEvery',1),
+                'Actual split write sample stride differs')
         require('chronicle.analytics.disable=true' in actual['jvmArgs'],'Analytics flag missing')
         integrity=properties(worker/'integrity.txt')
         require(int(integrity['residentCount'])==config['residents'],'Resident count changed')
@@ -619,6 +632,9 @@ def summarize(path, spec, config, capability, code):
         latency={ch:hist_stats(v,config) for ch,v in bins.items()}
         if spec.get('splitWriteTiming') and not write_timer_resolved(latency):
             warnings.append('Split write p99 too close to the clock floor; API tail unresolved')
+        if 'splitWriteSampleEvery' in spec and any(
+                latency[ch]['percentiles']['99.9']['tailSupportWarning'] for ch in WRITE_CHANNELS):
+            warnings.append('Sampled split write p99.9 has insufficient tail support')
         result.update(status='COMPLETE',warnings=sorted(set(warnings)),host=screen,windows=windows,
                       integrity=integrity,configuration=actual,stallExport=stalls,
                       latency=latency,
@@ -652,6 +668,8 @@ def worker_command(java, config, spec, path, observer_handshake=False):
         options['observer-handshake'] = 'true'
     if spec.get('splitWriteTiming'):
         options['split-write-timing'] = 'true'
+    if 'splitWriteSampleEvery' in spec:
+        options['split-write-sample-every'] = spec['splitWriteSampleEvery']
     for k,v in options.items(): command += ['--'+k,str(v)]
     return command
 
@@ -776,8 +794,10 @@ def verify_derivatives(path, result, config):
     expected=latency_counts(spec,n,writes)
     require(set(result['latency'])==set(expected),'Cached histogram channels differ from timing mode')
     if spec.get('splitWriteTiming'):
-        require(properties(path/'worker/configuration.txt').get('splitWriteTiming')=='true',
-                'Retained split timing flag missing')
+        actual = properties(path/'worker/configuration.txt')
+        require(actual.get('splitWriteTiming')=='true'
+                and int(actual.get('splitWriteSampleEvery',1))==spec.get('splitWriteSampleEvery',1),
+                'Retained split timing mode or sample stride differs')
     bins={ch:histogram(path/'worker'/(ch+'-bins.csv'),count) for ch,count in expected.items()}
     for ch,values in bins.items():
         require(hist_stats(values,config)==result['latency'][ch],'Cached histogram statistics differ: '+ch)
@@ -844,7 +864,7 @@ def run(config, out, java_arg=None, *, host_locked=False, report_destination=Non
     validate(config);out=pathlib.Path(out).resolve()
     require(config['purpose']!='research' or split_qualified
             or not any(c.get('splitWriteTiming') for c in config['cells']),
-            'Use the split-write-timing suite to qualify instrumentation before research')
+            'Use a split-write timing suite to qualify instrumentation before research')
     require(HERE not in out.parents and out!=HERE,'Keep results outside the executable bundle')
     with (contextlib.nullcontext() if host_locked else host_lock()):
         bundle=bundle_identity();java=java_identity(java_arg)

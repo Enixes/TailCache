@@ -49,8 +49,12 @@ public final class MechanismCrossoverRunner {
             boolean floor=Boolean.parseBoolean(options.getOrDefault("--floor","false"));
             boolean supply=Boolean.parseBoolean(options.getOrDefault("--supply-floor","false"));
             boolean splitWriteTiming = Boolean.parseBoolean(options.getOrDefault("--split-write-timing", "false"));
+            int writeSampleEvery = Integer.parseInt(options.getOrDefault("--split-write-sample-every", "1"));
             if (splitWriteTiming && (floor || supply || writeBps == 0)) {
                 throw new IllegalArgumentException("Split write timing requires actual cache writes");
+            }
+            if (writeSampleEvery < 1 || writeSampleEvery > 64 || (writeSampleEvery != 1 && !splitWriteTiming)) {
+                throw new IllegalArgumentException("Invalid split write sample stride");
             }
             int primeCalls=Integer.parseInt(options.getOrDefault("--prime-calls","0"));
             long primeNs=1_000_000_000L;
@@ -74,6 +78,10 @@ public final class MechanismCrossoverRunner {
                 if (splitWriteTiming) {
                     Files.writeString(out.resolve("configuration.txt"), "splitWriteTiming=true\n",
                             java.nio.file.StandardOpenOption.APPEND);
+                    if (writeSampleEvery > 1) {
+                        Files.writeString(out.resolve("configuration.txt"), "splitWriteSampleEvery=" + writeSampleEvery + "\n",
+                                java.nio.file.StandardOpenOption.APPEND);
+                    }
                 }
                 churn.start();List<String> windows=new ArrayList<>();
                 windows.add("phase,startNs,endNs,offeredEndNs,operations,scheduled,writes,workerAllocatedBytes,compilerMs,churnPayloadBytes,churnJvmAllocatedBytes,churnDroppedBytes,maxBacklog,stallEvents,unexportedStallEvents");
@@ -84,7 +92,8 @@ public final class MechanismCrossoverRunner {
                     long duration=name.startsWith("PRIME")?primeNs:name.equals("WARMUP")?warm-primeCalls*primeNs:name.equals("CONDITIONING")?conditioning:measured;
                     if (duration==0) continue;
                     // Stream position deliberately continues across every phase.
-                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0,reuse,payload,supply,splitWriteTiming);
+                    Result r=run(workload,churn,duration,rate,floor,name.equals("MEASUREMENT")?inject:0,reuse,payload,supply,
+                            splitWriteTiming,writeSampleEvery,config.seed());
                     Files.writeString(out.resolve("stream-"+name+".txt"),"start="+streamStart+"\nend="+workload.operations()+"\nwriteBps="+writeBps+"\n");
                     windows.add(String.format(Locale.ROOT,"%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d",name,r.start,r.end,r.offeredEnd,
                         r.operations,r.scheduled,r.writes,r.allocation,r.compilerMs,r.churnPayload,r.churnJvm,r.churnDropped,r.backlog,r.eventCount,r.overflowEvents));
@@ -139,18 +148,20 @@ public final class MechanismCrossoverRunner {
     }
 
     static Result run(MechanismWorkload workload,ApplicationChurn churn,long duration,long qps,boolean floor,long inject,boolean reuse,int payload,boolean supply,
-                      boolean splitWriteTiming) {
+                      boolean splitWriteTiming, int writeSampleEvery, long seed) {
         // Same caller buffer footprint in both arms; ordinary reads do not use it.
         byte[] using=new byte[payload];
         Histogram readService=new Histogram(1,MAX_NS,3),updateService=new Histogram(1,MAX_NS,3);
         readService.setAutoResize(false);updateService.setAutoResize(false);
         Histogram service=new Histogram(1,MAX_NS,3),gaps=new Histogram(1,MAX_NS,3),response=new Histogram(1,MAX_NS,3);
         service.setAutoResize(false);gaps.setAutoResize(false);response.setAutoResize(false);
-        MechanismWorkload.WriteTiming timing = splitWriteTiming ? new MechanismWorkload.WriteTiming() : null;
+        long writesBeforePhase = workload.writes();
+        MechanismWorkload.WriteTiming timing = splitWriteTiming
+                ? new MechanismWorkload.WriteTiming(writesBeforePhase, writeSampleEvery, seed) : null;
         Histogram valueConstruction = splitWriteTiming ? new Histogram(1, MAX_NS, 3) : null;
         Histogram cachePut = splitWriteTiming ? new Histogram(1, MAX_NS, 3) : null;
         long[] starts=new long[EVENT_LIMIT],ends=new long[EVENT_LIMIT],previous=new long[EVENT_LIMIT],indexes=new long[EVENT_LIMIT];
-        var before=churn.snapshot();long writes=workload.writes(),allocated=WorkerAllocationCounter.currentBytes();
+        var before=churn.snapshot();long writes=writesBeforePhase,allocated=WorkerAllocationCounter.currentBytes();
         var compiler=ManagementFactory.getCompilationMXBean();long compileBefore=compiler.getTotalCompilationTime();
         long start=System.nanoTime(),offeredEnd=start+duration,step=qps==0?0:1_000_000_000L/qps;
         ArrivalSchedule schedule=qps==0?null:new ArrivalSchedule(start,step,(duration+step-1)/step);
@@ -169,7 +180,7 @@ public final class MechanismCrossoverRunner {
             end=System.nanoTime();
             long currentWrites=workload.writes();
             (currentWrites==lastWrites?readService:updateService).recordValue(end-opStart);
-            if (splitWriteTiming && currentWrites != lastWrites) {
+            if (timing != null && currentWrites != lastWrites && timing.recorded) {
                 valueConstruction.recordValue(timing.constructionNs);
                 cachePut.recordValue(timing.cachePutNs);
             }
@@ -189,9 +200,11 @@ public final class MechanismCrossoverRunner {
         var after=churn.snapshot();consumed=checksum;
         if (service.getTotalCount()!=readService.getTotalCount()+updateService.getTotalCount()
                 || updateService.getTotalCount()!=workload.writes()-writes) throw new IllegalStateException("Read/update conservation failed");
-        if (splitWriteTiming && (valueConstruction.getTotalCount() != updateService.getTotalCount()
-                || cachePut.getTotalCount() != updateService.getTotalCount())) {
-            throw new IllegalStateException("Split write histogram count differs from update count");
+        if (splitWriteTiming) {
+            long sampledWrites = Math.max(0, (workload.writes() - timing.firstWrite + writeSampleEvery) / writeSampleEvery);
+            if (valueConstruction.getTotalCount() != sampledWrites || cachePut.getTotalCount() != sampledWrites) {
+                throw new IllegalStateException("Split write histogram count differs from scheduled sample count");
+            }
         }
         return new Result(start,end,offeredEnd,count,schedule==null?0:schedule.requests(),workload.writes()-writes,
             workerAllocation,compiled,after.allocatedBytes()-before.allocatedBytes(),after.jvmAllocatedBytes()-before.jvmAllocatedBytes(),

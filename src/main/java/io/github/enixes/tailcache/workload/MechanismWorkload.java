@@ -10,8 +10,18 @@ import java.util.HexFormat;
 /** Ordinary access with equal-cost index generation and no retained payload/trace bank. */
 public final class MechanismWorkload implements AutoCloseable {
     static final class WriteTiming {
+        final long firstWrite;
+        final int sampleEvery;
+        long nextWrite;
+        boolean recorded;
         long constructionNs;
         long cachePutNs;
+
+        WriteTiming(long writesBeforePhase, int sampleEvery, long seed) {
+            this.firstWrite = writesBeforePhase + 1 + Math.floorMod(seed, sampleEvery);
+            this.sampleEvery = sampleEvery;
+            this.nextWrite = firstWrite;
+        }
     }
 
     private final CrossoverConfig config;
@@ -48,15 +58,18 @@ public final class MechanismWorkload implements AutoCloseable {
         if(stream.isReadAt(position)){byte[] value=cache.get(key);if(value==null)throw new IllegalStateException("Cache miss");return value;}
         index=index%updateHotset;key=keys[index];
         long version = writes + 1;
-        long constructionStart = timing == null ? 0 : System.nanoTime();
+        boolean sample = timing != null && version == timing.nextWrite;
+        long constructionStart = sample ? System.nanoTime() : 0;
         byte[] fresh = values.create(key, version, config.payloadBytes());
-        long putStart = timing == null ? 0 : System.nanoTime();
+        long putStart = sample ? System.nanoTime() : 0;
         cache.put(key, fresh);
-        if (timing != null) {
+        if (sample) {
             long putEnd = System.nanoTime();
             timing.constructionNs = putStart - constructionStart;
             timing.cachePutNs = putEnd - putStart;
+            timing.nextWrite += timing.sampleEvery;
         }
+        if (timing != null) timing.recorded = sample;
         versions[index] = version;
         writes = version;
         return fresh;
