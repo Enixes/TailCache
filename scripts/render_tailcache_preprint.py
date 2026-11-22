@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the TailCache review manuscript and its paired locality figure."""
+"""Render the TailCache manuscript and its figures."""
 
 import argparse
 import csv
@@ -26,7 +26,7 @@ FIGURES = (
     "fig10_saturated_payload.svg",
     "fig11_response_pressure.svg",
 )
-DEFAULT_PDF = ROOT / "output/pdf/tailcache-preprint-review.pdf"
+DEFAULT_PDF = ROOT / "output/pdf/tailcache-preprint.pdf"
 INK = colors.HexColor("#17242F")
 MUTED = colors.HexColor("#495A67")
 RULE = colors.HexColor("#CFD8DD")
@@ -217,6 +217,7 @@ def inline(value):
     value = escape(value)
     value = re.sub(r"\[([^\]]+)\]\((https://[^)]+)\)", r'<a href="\2" color="#026059">\1</a>', value)
     value = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r"\1", value)
+    value = re.sub(r"`([^`]+)`", r'<font name="Courier">\1</font>', value)
     return re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", value)
 
 
@@ -249,7 +250,7 @@ def page_footer(canvas, doc):
     canvas.setFillColor(MUTED)
     canvas.setStrokeColor(RULE)
     canvas.line(doc.leftMargin, 47, A4[0] - doc.rightMargin, 47)
-    canvas.drawString(doc.leftMargin, 32, "TailCache  |  Working draft for author review")
+    canvas.drawString(doc.leftMargin, 32, "TailCache")
     canvas.drawRightString(A4[0] - doc.rightMargin, 32, str(doc.page))
     canvas.restoreState()
 

@@ -1,6 +1,6 @@
 # TailCache: Update Locality Reverses Tail-Latency Rankings in Java Caches
 
-**Working draft for author review | 22 November 2026**
+22 November 2026
 
 ## Abstract
 
@@ -111,15 +111,17 @@ The earlier p99.99 and p99.999 Chronicle advantages already appear at zero balla
 
 The strongest result concerns one worker, two libraries, G1, a bounded synthetic workload, and fixed intended arrival intervals. The eligible-key intervention changes overwrite interval, write locality, and policy activity together. The two-host replication supports the response direction under the tested setup. It does not isolate one JVM mechanism or estimate a production SLA. High-percentile observations remain correlated within stalls and are descriptive across a small number of seed pairs.
 
-The original unconditional Task 12 qualification remains NO_GO. Earlier conditional results, JMH versus every-operation differences, and resolved or unresolved follow-up points are preserved in the supplements. Small-value service rankings depend on measurement and cache configuration. The main experiments compare hit and overwrite traffic with ordinary in-memory access. Miss performance, persisted-map timing, read skew, and shared-cache contention remain separate questions. Earlier buffer reuse runs use a different caller ownership contract. In the midpoint follow-up, Chronicle had lower retained Java-heap occupancy and higher sampled RSS. An equal-total-memory comparison remains open.
+The original pressure campaign did not meet all its planned acceptance criteria. Its conditional results and the differences between JMH sampling and every-operation timing are reported in the supplementary evidence. Small-value service rankings depend on measurement and cache configuration. The main experiments compare hit and overwrite traffic with ordinary in-memory access. Miss performance, persisted-map timing, read skew, and shared-cache contention remain separate questions. Earlier buffer reuse runs use a different caller ownership contract. In the midpoint follow-up, Chronicle had lower retained Java-heap occupancy and higher sampled RSS. An equal-total-memory comparison remains open.
 
 For small values, the required cache policy matters when comparing call latency. For larger values, we also need to ask whether requests wait through GC pauses and whether the workload repeatedly replaces long-lived cached values. Reporting the arrival rate, write fraction, and eligible write set makes this distinction visible. Two workloads can have the same write fraction and favor different caches.
 
-## 6. Reproducibility and disclosure
+## 6. Data and code availability
 
-The second-host archive contains raw HDR histograms and bins, GC and age logs, measurement windows, and frozen schedules. The offline verifier reproduces the reported percentile tables, point conclusions, and retry comparisons from 252 research runs, two retry runs, 36 diagnostic runs, and 60 timing controls. The [versioned archive and instructions](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive) identify the source commits and evidence checksums. The [current verifier](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/scripts/tailcache_verify_archive.py) supports offline reconstruction on Linux and macOS. The [first-host mechanism dataset](https://github.com/Enixes/TailCache/tree/5772fb212692244a29b6ab61d416340db600f0c8/docs/mechanism) provides the earlier pairs and reviews. The [paper evidence map](CLAIMS.md) identifies the inputs behind the figures. The [interactive companion](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/html/tailcache-preprint-reader.html) exposes the paired measurements and provides filters for latency, payload, and workload. Source collection inventories and launcher logs remain on the respective hosts.
+The second-host archive contains raw HDR histograms and bins, GC and age logs, measurement windows, and frozen schedules. The offline verifier reproduces the reported percentile tables, point conclusions, and retry comparisons from 252 research runs, two retry runs, 36 diagnostic runs, and 60 timing controls. The [versioned archive and instructions](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive) identify the source commits and evidence checksums. The [current verifier](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/scripts/tailcache_verify_archive.py) supports offline reconstruction on Linux and macOS. The [first-host mechanism dataset](https://github.com/Enixes/TailCache/tree/5772fb212692244a29b6ab61d416340db600f0c8/docs/mechanism) provides the first-host measurements and paired comparisons. The [TailCache repository](https://github.com/Enixes/TailCache) provides the benchmark and analysis code. The [claim map](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/CLAIMS.md) identifies the inputs behind the figures. The [interactive companion](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/html/tailcache-preprint-reader.html) exposes the paired measurements and provides filters for latency, payload, and workload. Source collection inventories and launcher logs remain on the respective hosts.
 
-The authors will confirm contributions, artifact access and licensing, and the description of AI-assisted implementation, analysis, and editing before deposit. The current manuscript is for review.
+### AI assistance
+
+We used an AI assistant to help implement the benchmark and analysis tooling, examine the evidence, and edit the manuscript.
 
 ## 7. Conclusion
 
@@ -127,7 +129,11 @@ We compared two Java caches by measuring both the time spent inside the call and
 
 ### Future work
 
-We plan to compare 5% and 10% writes at both update-set sizes under the same arrival rate. Increasing the write rate creates more fresh values and shortens the time before a value is replaced. That comparison can show whether the response reversal persists under heavier write traffic.
+We plan to build a model that can recommend a cache before a benchmark is run. The inputs would include representative instances of the application's plain old Java object (POJO), the expected write fraction, and the targeted latency measure. Sample values can help estimate encoded size and read allocation for objects with strings, decimal values, and nested records. The arrival rate, distribution of updates across keys, and heap and collector settings help distinguish workloads with the same write fraction. We would evaluate the model on held-out object shapes and workloads, report predicted service and scheduled-response rankings separately, and give an inconclusive result when the evidence cannot distinguish the caches.
+
+We also plan a matched comparison of Caffeine reads, ordinary Chronicle Map reads, and Chronicle Map's `getUsing()` [9]. We would measure workloads that consume each value immediately and workloads that keep results across later reads. That lets us measure how much buffer reuse saves and include the cost of a separate copy when an application needs to retain a value.
+
+A separate experiment would compare in-memory and persisted Chronicle Map. The warm persisted test would touch mapped pages before measurement and record the filesystem, mount, and storage settings. Opening a persisted map and accessing pages for the first time would be measured separately. Finally, comparing 5% and 10% writes at both update-set sizes under the same arrival rate would test whether the response reversal persists under heavier write traffic.
 
 ## References
 

@@ -1,15 +1,13 @@
-# TailCache preprint working package
+# TailCache preprint
 
-The 22 November draft integrates the two-host update-locality replication and
-the second-host pressure and write-rate studies. The [manuscript](MANUSCRIPT.md),
-[claims](CLAIMS.md), and [figure data](locality-pairs.csv) form the current review
-package. The [18 November manuscript](https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/preprint/MANUSCRIPT.md)
-preserves the expanded account of earlier experiments. The paper remains a
-working draft for author review.
+The preprint combines the two-host update-locality replication and
+the second-host pressure and write-rate studies. The [claim map](CLAIMS.md)
+links the results to their underlying measurements. The [18 November manuscript](https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/preprint/MANUSCRIPT.md)
+preserves the expanded account of earlier experiments.
 
-## Read the review draft
+## Read the preprint
 
-- [Review PDF](../../output/pdf/tailcache-preprint-review.pdf) with four figures.
+- [Preprint PDF](../../output/pdf/tailcache-preprint.pdf) with four figures.
 - [Interactive companion](../../output/html/tailcache-preprint-reader.html).
   Download the HTML and open it in a browser. Change the workload, percentile,
   or timing boundary and open the paired measurements under each graph. The
@@ -27,11 +25,6 @@ python3 scripts/render_tailcache_preprint_reader.py
 To regenerate the chart data directly from a portability checkout, pass
 `--evidence /path/to/checkout/docs/second-host-20261120` to the HTML renderer.
 
-Before deposit, obtain a systems review of the contribution and measurement
-boundaries, confirm author names, affiliations, contributions and disclosure,
-then review the license and public access for the selected artifacts. The
-review PDF still needs author approval and final release metadata.
-
 ## Follow-up: paced response at 10% writes
 
 Test whether the scheduled-response p99.9 locality reversal survives at a
@@ -47,8 +40,8 @@ per-key replacement interval falls from about 13.1 to 6.6 seconds in the
 full-key arm. Report p99.9 response as the primary outcome alongside GC pause
 time and length, operation allocation, achieved churn and tail exceptions.
 Higher fresh allocation and shorter value lifetimes can pull in different
-directions, so the response direction is an empirical question. This is a
-follow-up and is outside the evidence needed for this draft.
+directions, so the response direction is an empirical question. The manuscript also describes the proposed cache-selection model,
+caller-buffer reuse comparison, and persisted-map experiments.
 
 ## Earlier experiments and audits
 

@@ -1,6 +1,6 @@
 # Paper figures and captions
 
-## Figures in the 22 November review draft
+## Preprint figures
 
 1. [Cross-host locality](figures/fig08_cross_host_locality.svg) shows all 20
    paired ratios of Chronicle to Caffeine scheduled-response p99.9.
