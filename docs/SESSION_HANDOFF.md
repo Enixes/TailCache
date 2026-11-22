@@ -66,9 +66,10 @@ qualification role. Update the preprint and companion after the research outcome
 is known. Author review, artifact access and licensing, and deposit remain
 publication steps.
 
-The optional next experiment is the [higher-arrival-rate locality suite](PORTABLE_EXPERIMENT.md#optional-follow-up-at-a-higher-arrival-rate).
-It varies read demand at approximately 2,500 writes/s. Review the split-write
-results first and run the load follow-up in its own result directory.
+The optional next experiment is the [read and write locality sensitivity suite](PORTABLE_EXPERIMENT.md#optional-follow-up-under-heavier-reads-and-writes).
+It adds a 100,000-arrival arm at approximately 2,500 writes/s and a 20% write
+arm at 50,000 arrivals/s. Review the split-write results first and run the
+follow-up in its own result directory.
 
 ## Resume the conversation
 

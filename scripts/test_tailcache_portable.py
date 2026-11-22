@@ -77,14 +77,16 @@ class PortableTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'qualify instrumentation'):
             p.run(research['config'],self.root/'unqualified')
 
-    def test_locality_arrival_rate_suite_keeps_nominal_writes_fixed(self):
+    def test_locality_arrival_rate_suite_matches_each_comparison(self):
         configs=ROOT/'experiments/portable'
         design=p.suite_plan(configs,'locality-arrival-rate')
         research=design['phases']['research']['config']
-        self.assertEqual(design['researchJvms'],16)
-        self.assertEqual({(c['qps'],c['updateHotset']) for c in research['cells']},
-                         {(rate,hotset) for rate in (50000,100000) for hotset in (2048,32768)})
-        self.assertTrue(all(c['qps']*c['writeBps']==2500*10000 for c in research['cells']))
+        self.assertEqual(design['researchJvms'],24)
+        self.assertEqual({(c['qps'],c['writeBps'],c['updateHotset']) for c in research['cells']},
+                         {(rate,writes,hotset) for rate,writes in ((50000,500),(100000,250),(50000,2000))
+                          for hotset in (2048,32768)})
+        ordinary=[c for c in research['cells'] if c['writeBps']!=2000]
+        self.assertTrue(all(c['qps']*c['writeBps']==2500*10000 for c in ordinary))
         locality=p.load(configs/'locality.json')
         self.assertTrue(set(locality['seeds']).isdisjoint(research['seeds']))
 

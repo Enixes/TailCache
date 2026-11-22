@@ -32,7 +32,7 @@ Use a quiet Linux host for research measurements.
 | `-PtailcacheSuite=locality` | 8 | 21 minutes | Quick checks and update-locality replication |
 | `-PtailcacheSuite=write-ratio` | 20 | 51 minutes | Response at 0%, 0.5%, 1%, 2%, and 5% writes |
 | `-PtailcacheSuite=locality-long` | 16 | 57 minutes | Update locality with four fresh seeds and 90-second measurement windows |
-| `-PtailcacheSuite=locality-arrival-rate` | 16 | 41 minutes | Locality at 50k and 100k arrivals/s with the same nominal writes/s |
+| `-PtailcacheSuite=locality-arrival-rate` | 24 | 62 minutes | Locality under heavier reads and at 20% writes, with a shared baseline |
 | `-PtailcacheSuite=rq-matrix` | 64 | 2 hours 44 minutes | Payload and ballast under saturated service and fixed arrivals |
 | `-PtailcacheSuite=saturated-write-pressure` | 96 | 4 hours 6 minutes | Saturated service at 256 B/4 KiB, 0/288 MiB, and 1%/5%/10% writes |
 | `-PtailcacheSuite=write-transition` | 48 | 2 hours 3 minutes | Fixed-arrival response from 0.5% to 2% writes with four fresh seeds |
@@ -168,10 +168,10 @@ Keep the two-host scheduled-response locality reversal and the G1, write-rate
 bracket, and memory findings tied to their own cohorts. The instrumentation
 pilot serves as qualification evidence.
 
-## Optional follow-up at a higher arrival rate
+## Optional follow-up under heavier reads and writes
 
 Test whether the 4 KiB scheduled-response p99.9 locality reversal persists
-when read demand is higher. Use the same Pop!_OS host and runtime. Run the
+when read demand or write demand increases. Use the same Pop!_OS host and runtime. Run the
 split-write experiment first and review its results before scheduling this
 independent follow-up.
 
@@ -180,21 +180,27 @@ independent follow-up.
 ./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=locality-arrival-rate -PtailcacheOut=results/locality-arrival-popos-01
 ```
 
-Cross 50,000 and 100,000 intended arrivals/s with 2,048 and 32,768 eligible
-write keys. At 50,000 arrivals/s use 5% writes, and at 100,000 use 2.5%.
-Both settings offer approximately 2,500 writes/s. Check achieved writes
-per second from the measurement windows. The higher rate adds about
-50,000 reads/s while preserving the approximate overwrite interval per
-eligible key. This contrasts two read intensities at matched nominal write
-intensity. Use 4 KiB values, zero ballast, and the same heap and churn
-settings as the second-host locality experiment.
+Use each setting below with 2,048 and 32,768 eligible write keys.
 
-Use two fresh paired seeds per cell, 16 research JVMs in total. Both
-arrival rates have contemporaneous baseline results. Allow 45–55 minutes
+| Setting | Arrivals/s | Writes | Nominal writes/s |
+|---|---:|---:|---:|
+| Shared baseline | 50,000 | 5% | 2,500 |
+| Heavier reads | 100,000 | 2.5% | 2,500 |
+| Heavier write mix | 50,000 | 20% | 10,000 |
+
+Compare heavier reads against the baseline to add about 50,000 reads/s
+at matched nominal write intensity. Compare 20% against 5% at the same
+arrival rate to increase write intensity fourfold. The 20% mix also reduces
+read traffic from about 47,500 to 40,000 reads/s. Check achieved writes per
+second from the measurement windows. Use 4 KiB values, zero ballast, and the
+same heap and churn settings as the second-host locality experiment.
+
+Use two fresh paired seeds per cell, 24 research JVMs in total. Both
+comparisons use the same contemporaneous baseline. Allow 65–75 minutes
 with dependencies cached, plus about five minutes for at most one eligible
 external-noise retry pair. Use scheduled-response p99.9 as the primary
 endpoint. Compare which backend wins at both write-set sizes within each
-load, then examine achieved writes, worker allocation, GC pauses, and
+setting, then examine achieved writes, worker allocation, GC pauses, and
 backlog. Report a censored arm as a completion failure and keep its evidence.
 The two-seed results describe the tested workloads. Choose additional
 independent seeds only if the result changes the paper's interpretation.
