@@ -3,6 +3,7 @@
 
 import argparse
 import csv
+import json
 import math
 import re
 from html import escape
@@ -19,7 +20,12 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Table
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPER = ROOT / "docs/preprint"
-FIGURE = PAPER / "figures/fig08_cross_host_locality.svg"
+FIGURES = (
+    "fig08_cross_host_locality.svg",
+    "fig09_mixed_collection_time.svg",
+    "fig10_saturated_payload.svg",
+    "fig11_response_pressure.svg",
+)
 DEFAULT_PDF = ROOT / "output/pdf/tailcache-preprint-review.pdf"
 INK = colors.HexColor("#17242F")
 MUTED = colors.HexColor("#495A67")
@@ -97,6 +103,114 @@ def locality_figure():
     return graph
 
 
+def plot_label(drawing, x, y, value, **options):
+    style = dict(fillColor=MUTED, fontName="Helvetica", fontSize=8)
+    style.update(options)
+    drawing.add(String(x, y, value, **style))
+
+
+def scatter_panel(drawing, bounds, groups, ticks, tick_text, log=False, left_axis=True, reference=None):
+    left, right, bottom, top = bounds
+    transform = math.log10 if log else float
+    low, high = transform(ticks[0]), transform(ticks[-1])
+
+    def y(value):
+        return bottom + (transform(value) - low) / (high - low) * (top - bottom)
+
+    step = (right - left) / len(groups)
+    for tick in ticks:
+        line = Line(left, y(tick), right, y(tick),
+                    strokeColor=MUTED if tick == reference else RULE, strokeWidth=0.7)
+        if tick == reference:
+            line.strokeDashArray = [3, 3]
+        drawing.add(line)
+        if left_axis:
+            plot_label(drawing, left - 6, y(tick) - 2.6, tick_text(tick), textAnchor="end")
+    for i, (label, families) in enumerate(groups):
+        x = left + step * (i + 0.5)
+        for j, text in enumerate(label.split("|")):
+            plot_label(drawing, x, bottom - 14 - 11 * j, text, textAnchor="middle")
+        for cohort, family in enumerate(families):
+            center = x + (cohort - (len(families) - 1) / 2) * min(step / 4, 16)
+            for index, (value, color, clean) in enumerate(family):
+                jitter = (index - (len(family) - 1) / 2) * 4.5
+                drawing.add(Circle(center + jitter, y(value), 2.9, fillColor=color if clean else WHITE,
+                                   strokeColor=color, strokeWidth=0.9))
+
+
+def backend_marks(rows, measure):
+    clean = lambda row: not (row["c"]["warnings"] or row["h"]["warnings"])
+    return [
+        [(measure(row[backend]), color, clean(row)) for row in rows]
+        for backend, color in (("c", RUST), ("h", TEAL))
+    ]
+
+
+def panel_heading(drawing, mid, label):
+    plot_label(drawing, mid, 162, label, textAnchor="middle", fontName="Helvetica-Bold",
+               fillColor=INK, fontSize=10)
+
+
+def measured_backend_legend(drawing):
+    plot_label(drawing, FRAME - 123, 181, "Caffeine", fillColor=RUST, fontName="Helvetica-Bold")
+    plot_label(drawing, FRAME - 64, 181, "Chronicle", fillColor=TEAL, fontName="Helvetica-Bold")
+
+
+def mixed_figure(data):
+    drawing = Drawing(FRAME, 193)
+    plot_label(drawing, 4, 181, "Time in mixed GC pauses (ms)", fontName="Helvetica-Bold", fillColor=INK)
+    measured_backend_legend(drawing)
+    for index, (name, title) in enumerate((("second", "30-second windows"), ("long", "90-second windows"))):
+        left, right = ((43, 250), (265, 480))[index]
+        panel_heading(drawing, (left + right) / 2, title)
+        rows = data["locality"][name]
+        groups = [
+            (f"{key:,} keys", backend_marks([r for r in rows if r["key"] == key], lambda fork: fork["mixed"]))
+            for key in (2048, 32768)
+        ]
+        scatter_panel(drawing, (left, right, 36, 148), groups, [0, 30, 60, 90, 120], str,
+                      left_axis=index == 0)
+    return drawing
+
+
+def payload_figure(data):
+    drawing = Drawing(FRAME, 176)
+    plot_label(drawing, 4, 163, "Chronicle / Caffeine service p99.9", fontName="Helvetica-Bold", fillColor=INK)
+    plot_label(drawing, FRAME - 5, 163, "Lower ratios favor Chronicle", textAnchor="end")
+    groups = []
+    for payload, label in ((256, "256 B"), (4096, "4 KiB")):
+        for heap in (0, 288):
+            marks = []
+            for row in data["payload"]:
+                if (row["payload"], row["heap"], row["writes"]) == (payload, heap, 5):
+                    ratio = row["h"]["service"][2] / row["c"]["service"][2]
+                    marks.append((ratio, TEAL if ratio < 1 else RUST,
+                                  not (row["c"]["warnings"] or row["h"]["warnings"])))
+            groups.append((f"{label}|{heap} MiB", [marks]))
+    scatter_panel(drawing, (40, 480, 38, 143), groups, [0.25, 0.5, 0.75, 1, 1.25],
+                  str, reference=1)
+    return drawing
+
+
+def pressure_figure(data):
+    drawing = Drawing(FRAME, 193)
+    plot_label(drawing, 4, 181, "Scheduled-response p99.9 (log scale)", fontName="Helvetica-Bold", fillColor=INK)
+    measured_backend_legend(drawing)
+    for index, (name, title) in enumerate((("short", "Earlier short replay"), ("full", "Newer full-key updates"))):
+        left, right = ((59, 252), (266, 483))[index]
+        panel_heading(drawing, (left + right) / 2, title)
+        rows = data["pressure"][name]
+        groups = [
+            (f"{heap} MiB", backend_marks([r for r in rows if r["heap"] == heap],
+                                        lambda fork: fork["response"][2] / 1000))
+            for heap in sorted({r["heap"] for r in rows})
+        ]
+        scatter_panel(drawing, (left, right, 36, 148), groups, [5, 10, 100, 1000, 10000, 30000],
+                      lambda v: f"{v:g} µs" if v < 1000 else f"{v / 1000:g} ms",
+                      log=True, left_axis=index == 0)
+    return drawing
+
+
 def inline(value):
     value = escape(value)
     value = re.sub(r"\[([^\]]+)\]\((https://[^)]+)\)", r'<a href="\2" color="#026059">\1</a>', value)
@@ -138,7 +252,7 @@ def page_footer(canvas, doc):
     canvas.restoreState()
 
 
-def render(output, chart):
+def render(output, charts):
     blocks = (PAPER / "MANUSCRIPT.md").read_text().strip().split("\n\n")
     title = blocks[0].removeprefix("# ")
     story = []
@@ -147,10 +261,11 @@ def render(output, chart):
         if block.startswith("| "):
             story.append(table(block))
         elif block.startswith("!["):
-            if not block.endswith(f"(figures/{FIGURE.name})"):
+            figure = re.fullmatch(r"!\[[^\]]+\]\(figures/([^()]+)\)", block)
+            if not figure or figure[1] not in charts:
                 raise ValueError(f"Unexpected manuscript figure: {block}")
             caption = Paragraph(inline(next(remaining)), STYLES["body"])
-            story.append(KeepTogether([chart, caption]))
+            story.append(KeepTogether([charts[figure[1]], caption]))
         else:
             heading = re.match(r"^(#{1,3}) ", block)
             style = ("title", "section", "subsection")[len(heading[1]) - 1] if heading else "body"
@@ -170,10 +285,16 @@ def main():
     parser.add_argument("--output", type=Path, default=DEFAULT_PDF)
     parser.add_argument("--update-svg", action="store_true")
     args = parser.parse_args()
-    chart = locality_figure()
+    data = json.loads((PAPER / "review-chart-data.json").read_text())
+    charts = dict(zip(FIGURES, (
+        locality_figure(), mixed_figure(data), payload_figure(data), pressure_figure(data)
+    ), strict=True))
     if args.update_svg:
-        renderSVG.drawToFile(chart, str(FIGURE), title="Scheduled-response p99.9 by update set")
-    render(args.output, chart)
+        titles = ("Scheduled-response p99.9 by update set", "G1 mixed-collection pause time",
+                  "Saturated service p99.9 by payload", "Scheduled-response p99.9 by added heap data")
+        for (name, chart), title in zip(charts.items(), titles, strict=True):
+            renderSVG.drawToFile(chart, str(PAPER / "figures" / name), title=title)
+    render(args.output, charts)
 
 
 if __name__ == "__main__":

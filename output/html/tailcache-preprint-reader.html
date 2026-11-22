@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TailCache | Interactive preprint</title>
+<style>
+:root{color-scheme:light;--ink:#162a31;--muted:#516368;--paper:#f5f6f2;--line:#dce1d9;--caffeine:#a84b24;--chronicle:#087368;--dark:#142c30}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,sans-serif}
+a{color:var(--chronicle);text-underline-offset:.2em}
+a:focus-visible,select:focus-visible,summary:focus-visible,canvas:focus-visible{outline:3px solid #11796d;outline-offset:4px}
+.wrap{width:min(1060px,calc(100% - 52px));margin-inline:auto}
+header{background:var(--dark);color:#f9fbf7;padding:20px 0 41px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #536867;padding-bottom:15px}
+.brand{font-weight:730;letter-spacing:.01em}
+.top a{color:#f3fcf6;font-size:14px}
+h1,h2{font-family:Georgia,serif;font-weight:500;letter-spacing:-.025em;line-height:1.12;margin:0}
+h1{font-size:clamp(2.1rem,5.5vw,4rem);max-width:780px;margin:29px 0 14px}
+header p{max-width:720px;color:#e0ebe5;margin:0}
+nav ul{display:flex;flex-wrap:wrap;gap:6px 24px;padding:14px 0;margin:0;list-style:none;border-bottom:1px solid var(--line)}
+nav a{color:var(--ink);font-weight:650;font-size:.9rem}
+main{padding:27px 0 45px}
+section{margin:0 0 32px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:clamp(15px,3vw,30px);scroll-margin-top:14px}
+h2{font-size:clamp(1.55rem,3.5vw,2.3rem)}
+.intro{color:var(--muted);max-width:760px;margin:8px 0 19px}
+.controls{display:flex;flex-wrap:wrap;gap:12px 16px;margin-bottom:15px}
+.controls label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;font-weight:680;flex:0 1 auto}
+select{min-height:40px;padding:6px 28px 6px 9px;background:#f8faf7;color:var(--ink);border:1px solid #bac7bd;border-radius:7px;font:inherit}
+.plot{position:relative;border:1px solid var(--line);border-radius:10px;padding:12px 12px 0;background:#fafbf9}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:5px 16px;font-size:.78rem;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;vertical-align:baseline;margin-right:5px;background:var(--caffeine);border-radius:50%}
+.dot.h{background:var(--chronicle);border-radius:1px;transform:rotate(45deg)}
+.dot.warning{background:transparent;border:1px solid var(--muted)}
+canvas{display:block;width:100%;height:245px;touch-action:pan-y}
+.inspection{min-height:27px;line-height:1.35;font-size:.8rem;color:var(--muted);margin:0 0 10px}
+.takeaway{margin:14px 0;border-left:3px solid var(--chronicle);background:#edf6f2;padding:9px 12px;font-size:.9rem}
+details{font-size:.85rem}
+summary{cursor:pointer;font-weight:700;padding:5px 0}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;text-align:left;line-height:1.4}
+th,td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:680;color:var(--muted)}
+.source{font-size:.82rem;color:var(--muted);margin:10px 0 0}
+footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;color:var(--muted)}
+@media(max-width:600px){.wrap{width:calc(100% - 24px)}header{padding-bottom:28px}.controls label{flex:1 1 auto;min-width:min(100%,115px)}select{padding-right:6px}canvas{height:220px}.plot{padding-inline:6px}th,td{padding:6px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top"><span class="brand">TailCache</span><a href="https://github.com/Enixes/TailCache/pull/10">Review manuscript</a></div>
+    <h1>When the faster cache call gives the slower response</h1>
+    <p>At 4 KiB and the same 5% write rate, Caffeine led when writes targeted a small set of keys. Chronicle led when updates reached across the cache. Compare what happened to the calls, the requests waiting for them, and the garbage collector.</p>
+  </div>
+</header>
+<nav class="wrap" aria-label="Charts">
+  <ul><li><a href="#locality">Where writes land</a></li><li><a href="#payload">Value size</a></li><li><a href="#pressure">Added heap pressure</a></li></ul>
+</nav>
+<main class="wrap">
+<noscript><p>Enable JavaScript to filter the charts, or read the measured results in the <a href="https://github.com/Enixes/TailCache/pull/10">manuscript</a>.</p></noscript>
+<section id="locality">
+  <h2>Where writes land</h2>
+  <p class="intro">The cache always held 32,768 entries. Reads could access any key. Only the eligible write set changed between the two groups.</p>
+  <div class="controls">
+    <label>Run<select name="run"><option value="second">Second host · 30 s</option><option value="long">Second host · 90 s</option><option value="first">First host · 30 s</option></select></label>
+    <label>Measurement<select name="metric"><option value="response">Scheduled response</option><option value="service">Cache-call latency</option><option value="gc">Total GC pause time</option><option value="mixed">G1 mixed pause time</option></select></label>
+    <label>Percentile<select name="quantile"><option value="2">p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/locality/CROSS_HOST_REVIEW.md">Evidence and replication</a></p>
+</section>
+<section id="payload">
+  <h2>Value size changes the call-time winner</h2>
+  <p class="intro">A hit on Caffeine returns the stored array. Ordinary Chronicle reads allocate a Java array and copy in the value. The relative cost changes with value size and with which part of the latency distribution you examine.</p>
+  <div class="controls">
+    <label>Added heap data<select name="heap"><option value="0">0 MiB</option><option value="288">288 MiB</option></select></label>
+    <label>Writes<select name="writes"><option value="1">1%</option><option value="5" selected>5%</option><option value="10">10%</option></select></label>
+    <label>Operations<select name="metric"><option value="service">All calls</option><option value="read-service">Reads only</option></select></label>
+    <label>Percentile<select name="quantile"><option value="0">p50</option><option value="1">p99</option><option value="2" selected>p99.9</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">Saturated worker on the second host. Each call starts when the previous one ends. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md">Full matrix and warning review</a></p>
+</section>
+<section id="pressure">
+  <h2>Why the old pressure bracket changed</h2>
+  <p class="intro">Added heap data is extra application memory kept alive alongside the cache. Switch the workload to see how the winner at zero added pressure changed.</p>
+  <div class="controls">
+    <label>Workload<select name="run"><option value="short">Earlier short replay</option><option value="full">Newer full-key updates</option></select></label>
+    <label>Response percentile<select name="quantile"><option value="2">p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">4 KiB values, about 5% writes, and 50,000 intended arrivals/s. Cohorts use different traces and collection hosts. <a href="https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/TAILCACHE_MIDPOINT_RESULTS.md">Earlier evidence</a> · <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/followups-01/INTERPRETATION.md">Newer evidence</a></p>
+</section>
+</main>
+<footer class="wrap">Working preprint for author review. <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/pdf/tailcache-preprint-review.pdf">PDF review copy</a> · <a href="https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive">Raw measurements and provenance</a></footer>
+<template id="chart">
+  <div class="plot">
+    <div class="legend"><span><i class="dot" aria-hidden="true"></i>Caffeine</span><span><i class="dot h" aria-hidden="true"></i>Chronicle</span><span><i class="dot warning" aria-hidden="true"></i>Pair with a warning</span><span class="scale"></span></div>
+    <canvas tabindex="0" role="img"></canvas>
+    <p class="inspection" aria-live="polite"></p>
+  </div>
+  <p class="takeaway" aria-live="polite"></p>
+  <details><summary>View paired measurements</summary><div class="table-wrap"><table>
+    <thead><tr><th scope="col">Setting</th><th scope="col">Seed / block</th><th scope="col">Caffeine</th><th scope="col">Chronicle</th><th scope="col">Recorded warnings</th></tr></thead>
+    <tbody></tbody>
+  </table></div></details>
+</template>
+<script type="application/json" id="evidence">{"locality":{"first":[{"key":2048,"seed":54821,"block":2,"c":{"service":[230,7171,9135,25967,33727],"read-service":[226,1706,2651,19311,27103],"response":[282,8143,26463,3590143,4280319],"gc":20.925266,"warnings":["zswpin counter changed"]},"h":{"service":[933,8007,10511,27615,1396735],"read-service":[925,1870,7547,21983,1410047],"response":[981,8255,244095,1398783,1647615],"gc":29.870606,"warnings":["zswpin counter changed"]}},{"key":2048,"seed":54822,"block":2,"c":{"service":[225,7207,9319,27119,35295],"read-service":[221,1744,2261,16767,26399],"response":[274,8383,24751,3618815,4403199],"gc":17.623244,"warnings":["zswpin counter changed"]},"h":{"service":[937,8035,10439,26543,1293311],"read-service":[928,1595,7091,19711,1215487],"response":[985,8279,172031,1342463,1646591],"gc":28.863419,"warnings":[]}},{"key":32768,"seed":54821,"block":2,"c":{"service":[294,7171,8535,25839,33631],"read-service":[288,1417,2569,16143,24751],"response":[343,11079,9076735,11960319,12992511],"gc":118.058989,"warnings":[]},"h":{"service":[920,8027,9271,26671,1236991],"read-service":[911,1597,7039,21375,1269759],"response":[970,8295,161791,1347583,1613823],"gc":28.600678,"warnings":[]}},{"key":32768,"seed":54822,"block":2,"c":{"service":[294,7223,9663,28335,37087],"read-service":[288,1851,4995,19119,28335],"response":[342,11039,8904703,11649023,12746751],"gc":117.470247,"warnings":["zswpin counter changed"]},"h":{"service":[925,8031,10471,25215,1284095],"read-service":[916,1571,6907,19807,1284095],"response":[973,8271,133503,1284095,1626111],"gc":27.761908,"warnings":[]}},{"key":2048,"seed":54821,"block":1,"c":{"service":[232,7183,8655,25663,33759],"read-service":[228,1428,2403,15935,25423],"response":[285,8527,28063,3665919,4272127],"gc":21.250818,"warnings":["Measured compiler activity exceeds80ms; retain as short-run evidence"]},"h":{"service":[924,8015,9519,26415,1114111],"read-service":[915,1594,7451,19887,1113087],"response":[971,8223,74815,1270783,1585151],"gc":26.570385,"warnings":["zswpin counter changed"]}},{"key":2048,"seed":54822,"block":1,"c":{"service":[224,7135,8511,25535,34271],"read-service":[220,1422,2231,18527,26271],"response":[273,8247,25535,3418111,4272127],"gc":16.858827,"warnings":[]},"h":{"service":[933,8023,10439,27071,1277951],"read-service":[924,1563,7183,22063,1277951],"response":[981,8295,134527,1293311,1537023],"gc":28.112245,"warnings":["zswpin counter changed"]}},{"key":32768,"seed":54821,"block":1,"c":{"service":[291,7195,8687,24255,33823],"read-service":[285,1787,2541,16127,24719],"response":[339,11791,9699327,12722175,13631487],"gc":125.52097,"warnings":["zswpin counter changed"]},"h":{"service":[928,8099,10975,29375,1325055],"read-service":[919,3665,8163,26559,1334271],"response":[976,8343,226559,1373183,1645567],"gc":29.684117,"warnings":["zswpin counter changed"]}},{"key":32768,"seed":54822,"block":1,"c":{"service":[291,7231,8775,26159,34143],"read-service":[284,1847,2627,16319,25599],"response":[340,10007,9183231,12189695,13131775],"gc":110.966433,"warnings":["Measured compiler activity exceeds80ms; retain as short-run evidence"]},"h":{"service":[933,8043,9311,26447,1292287],"read-service":[924,1583,7143,19935,1341439],"response":[981,8279,125375,1301503,1511423],"gc":27.557879,"warnings":["zswpin counter changed"]}}],"second":[{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61801,"block":1,"c":{"service":[110,5463,6343,7207,7907],"read-service":[101,1002,1202,2075,2717],"response":[145,5507,6531,1415167,1988607],"gc":9.909102,"warnings":[],"mixed":4.028545},"h":{"service":[601,6323,8863,10471,625663],"read-service":[591,1252,1873,2445,625663],"response":[634,6399,9255,540671,719359],"gc":12.920559,"warnings":[],"mixed":0.0}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61801,"block":1,"c":{"service":[180,5483,7415,8727,14615],"read-service":[180,1082,1423,2135,3597],"response":[215,5575,3094527,5709823,6238207],"gc":59.567449,"warnings":[],"mixed":36.138801},"h":{"service":[611,6415,7195,8087,617471],"read-service":[601,1272,1874,2445,617471],"response":[645,6495,7475,545279,706047],"gc":13.077293,"warnings":[],"mixed":0.0}},{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61802,"block":2,"c":{"service":[100,5431,6335,8423,9551],"read-service":[100,1001,1172,2004,2645],"response":[138,5475,6415,1308671,1960959],"gc":8.21197,"warnings":[],"mixed":3.901657},"h":{"service":[611,6743,7275,8159,605695],"read-service":[611,1282,1903,2495,601599],"response":[651,6811,7611,530943,702463],"gc":12.785289,"warnings":["Measured compiler activity exceeds frozen ceiling; not app pause time"],"mixed":0.0}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61802,"block":2,"c":{"service":[161,5471,6355,6803,8335],"read-service":[160,1072,1423,2215,3347],"response":[201,5547,3647487,6262783,7081983],"gc":65.130243,"warnings":[],"mixed":39.679589},"h":{"service":[611,6883,7427,8431,648191],"read-service":[601,1283,1903,2485,648191],"response":[649,6939,7895,555007,726527],"gc":13.145412,"warnings":[],"mixed":0.0}}],"long":[{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61811,"block":1,"c":{"service":[180,5511,7575,9071,13863],"read-service":[180,1102,1463,2275,3327],"response":[219,5687,3203071,6107135,10387455],"gc":166.9612,"warnings":[],"mixed":108.530948},"h":{"service":[631,6235,6983,8035,550399],"read-service":[631,1322,1904,2475,551423],"response":[673,6327,8775,10338303,17940479],"gc":36.383547,"warnings":[],"mixed":0.0}},{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61811,"block":1,"c":{"service":[110,5451,6355,7135,7875],"read-service":[110,1052,1302,2215,2937],"response":[148,5495,6455,1352703,2015231],"gc":26.786269,"warnings":[],"mixed":8.327492},"h":{"service":[601,6143,6863,7747,540159],"read-service":[592,1272,1864,2455,540159],"response":[638,6195,7243,477183,650239],"gc":35.892286,"warnings":[],"mixed":0.0}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61812,"block":2,"c":{"service":[171,5563,6435,7327,8767],"read-service":[170,1112,1472,2405,3307],"response":[211,5823,2897919,5726207,6352895],"gc":167.435989,"warnings":[],"mixed":114.783146},"h":{"service":[601,6683,8839,10703,554495],"read-service":[592,1272,1864,2475,555007],"response":[639,6787,9303,507647,690175],"gc":37.4643,"warnings":[],"mixed":0.0}},{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61812,"block":2,"c":{"service":[101,5443,6335,6875,7987],"read-service":[101,1022,1252,2105,2705],"response":[144,5483,6435,1396735,2025471],"gc":27.19033,"warnings":[],"mixed":10.470883},"h":{"service":[641,6235,8903,10295,535551],"read-service":[641,1333,1943,2505,549375],"response":[681,6307,9663,11304959,18890751],"gc":36.489382,"warnings":[],"mixed":0.0}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61813,"block":3,"c":{"service":[170,5771,6563,7527,10631],"read-service":[161,1092,1463,2305,3337],"response":[205,6155,3069951,5906431,6590463],"gc":171.399006,"warnings":["Measured compiler activity exceeds frozen ceiling; not app pause time"],"mixed":110.330388},"h":{"service":[611,6235,8255,14519,522239],"read-service":[601,3627,4499,14167,528383],"response":[646,6307,9431,466687,641023],"gc":35.505488,"warnings":[],"mixed":0.0}},{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61813,"block":3,"c":{"service":[121,5451,6383,7235,9623],"read-service":[120,1052,1333,2195,2925],"response":[163,5499,6471,1298431,1959935],"gc":24.896929,"warnings":[],"mixed":8.266899},"h":{"service":[601,6255,7075,8027,534015],"read-service":[601,1273,1903,2525,529407],"response":[642,6331,7435,482303,659455],"gc":36.198436,"warnings":[],"mixed":0.0}},{"key":2048,"payload":4096,"heap":0,"writes":5.0,"seed":61814,"block":4,"c":{"service":[130,5631,7547,9223,11167],"read-service":[121,1062,1363,2175,2957],"response":[167,5719,8131,1308671,1969151],"gc":24.963954,"warnings":[],"mixed":8.330049},"h":{"service":[611,6223,8759,10239,535551],"read-service":[601,1273,1894,2475,534527],"response":[646,6279,9207,476159,651775],"gc":35.334258,"warnings":["Measured compiler activity exceeds frozen ceiling; not app pause time"],"mixed":0.0}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61814,"block":4,"c":{"service":[180,5471,6363,6855,8519],"read-service":[171,1103,1463,2255,3297],"response":[214,5543,3129343,5873663,6561791],"gc":176.643025,"warnings":[],"mixed":117.038614},"h":{"service":[601,6211,7003,7867,544255],"read-service":[601,1272,1864,2445,556031],"response":[642,6279,7503,495359,674303],"gc":36.830286,"warnings":[],"mixed":0.0}}]},"payload":[{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61921,"block":1,"c":{"service":[130,6231,7135,10535,473599],"read-service":[121,1012,1613,4271,6323],"gc":4520.13894,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[611,6955,7855,12695,823295],"read-service":[602,1353,2285,6815,728063],"gc":621.970838,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":1.0,"seed":61921,"block":1,"c":{"service":[100,972,1994,3167,4899],"read-service":[100,962,1994,3127,4891],"gc":16.900599,"warnings":[]},"h":{"service":[110,591,782,3929,5763],"read-service":[110,221,701,3887,5443],"gc":251.081642,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":1.0,"seed":61921,"block":1,"c":{"service":[120,5251,6203,7515,10423],"read-service":[120,1132,1803,3779,5491],"gc":641.563087,"warnings":[]},"h":{"service":[582,5875,7075,8951,523519],"read-service":[581,1302,2055,5683,523519],"gc":267.142316,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":10.0,"seed":61921,"block":1,"c":{"service":[161,6295,7323,10887,504063],"read-service":[150,1072,1373,4251,5883],"gc":1852.892373,"warnings":[]},"h":{"service":[611,6923,7895,11351,533503],"read-service":[591,1312,2095,5223,528895],"gc":161.570973,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":1.0,"seed":61921,"block":1,"c":{"service":[110,5283,6315,7655,11343],"read-service":[110,1683,1974,3867,5891],"gc":2216.9653,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[601,6023,7355,11575,818175],"read-service":[601,1363,2325,7015,806399],"gc":764.558668,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":10.0,"seed":61921,"block":1,"c":{"service":[101,971,1963,3787,4951],"read-service":[100,942,1953,3547,4851],"gc":52.908071,"warnings":[]},"h":{"service":[110,651,882,4271,6343],"read-service":[101,201,691,3817,5251],"gc":236.18344,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":1.0,"seed":61921,"block":1,"c":{"service":[100,932,1964,3327,5143],"read-service":[100,932,1964,3137,5131],"gc":8.473818,"warnings":[]},"h":{"service":[100,591,761,3807,4799],"read-service":[100,180,661,3769,4691],"gc":110.340459,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":5.0,"seed":61921,"block":1,"c":{"service":[100,982,1974,3767,5323],"read-service":[100,962,1974,3607,5259],"gc":30.453852,"warnings":[]},"h":{"service":[110,671,862,4271,6655],"read-service":[110,230,702,3857,5563],"gc":256.599104,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":10.0,"seed":61921,"block":1,"c":{"service":[170,6383,7627,11359,2934783],"read-service":[160,1072,1443,4519,7515],"gc":5294.399259,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[611,6995,8431,13039,824319],"read-service":[601,1342,2175,6155,714239],"gc":500.692877,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61921,"block":1,"c":{"service":[140,6243,7147,10391,16671],"read-service":[131,1042,1353,3917,5723],"gc":1500.580688,"warnings":[]},"h":{"service":[601,6915,7575,11327,527359],"read-service":[601,1313,2075,5551,525311],"gc":204.494324,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":5.0,"seed":61921,"block":1,"c":{"service":[100,952,1633,3097,4711],"read-service":[100,942,1633,3027,4679],"gc":18.211118,"warnings":[]},"h":{"service":[100,632,782,3837,5111],"read-service":[100,181,671,3737,4699],"gc":90.983358,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":10.0,"seed":61921,"block":1,"c":{"service":[100,922,1653,3647,5179],"read-service":[100,912,1663,3095,5051],"gc":27.8943,"warnings":[]},"h":{"service":[100,631,842,3879,5091],"read-service":[100,171,651,3697,4479],"gc":93.681404,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":1.0,"seed":61922,"block":2,"c":{"service":[120,5271,5783,6683,9975],"read-service":[120,1002,1774,3827,5383],"gc":652.782412,"warnings":[]},"h":{"service":[601,5931,7295,9719,544255],"read-service":[601,1323,2105,6003,544255],"gc":268.439732,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61922,"block":2,"c":{"service":[120,6255,7355,10615,481791],"read-service":[120,1082,1663,4069,6383],"gc":4533.23451,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[601,6895,7675,11783,719871],"read-service":[591,1333,2135,6103,699903],"gc":547.034416,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":1.0,"seed":61922,"block":2,"c":{"service":[110,5271,6223,7427,10975],"read-service":[110,1643,1934,3547,5611],"gc":2228.282835,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[601,5943,7327,11599,818175],"read-service":[601,1363,2245,7203,795135],"gc":791.178652,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61922,"block":2,"c":{"service":[130,6143,6823,9495,13447],"read-service":[130,992,1303,3867,5463],"gc":1562.036783,"warnings":[]},"h":{"service":[601,6935,7595,11367,549375],"read-service":[592,1303,2075,5471,543231],"gc":208.553826,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":10.0,"seed":61922,"block":2,"c":{"service":[110,952,1724,3737,5303],"read-service":[101,932,1733,3357,5151],"gc":49.551463,"warnings":[]},"h":{"service":[110,671,892,4379,6755],"read-service":[110,201,701,3817,5411],"gc":229.008276,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":5.0,"seed":61922,"block":2,"c":{"service":[100,912,1914,3447,5171],"read-service":[100,902,1913,3087,5119],"gc":36.435995,"warnings":[]},"h":{"service":[100,621,812,3877,6175],"read-service":[100,221,691,3797,5243],"gc":264.002629,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":5.0,"seed":61922,"block":2,"c":{"service":[100,922,1634,3087,4671],"read-service":[100,921,1643,3007,4639],"gc":18.362306,"warnings":[]},"h":{"service":[100,611,712,3817,4851],"read-service":[100,161,631,3687,4559],"gc":91.955926,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":10.0,"seed":61922,"block":2,"c":{"service":[100,962,1954,3837,5303],"read-service":[100,942,1953,3507,5163],"gc":27.74026,"warnings":[]},"h":{"service":[100,621,801,3877,5043],"read-service":[100,160,611,3467,4451],"gc":75.313767,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":1.0,"seed":61922,"block":2,"c":{"service":[100,932,1853,3027,4859],"read-service":[100,932,1844,3007,4831],"gc":15.414412,"warnings":[]},"h":{"service":[101,601,791,3867,6003],"read-service":[101,230,692,3837,5471],"gc":284.852991,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":10.0,"seed":61922,"block":2,"c":{"service":[161,6335,7587,11439,2961407],"read-service":[151,1072,1463,4559,6987],"gc":5350.396673,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[631,7135,8623,13071,735231],"read-service":[612,1353,2195,6215,692735],"gc":426.558469,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":10.0,"seed":61922,"block":2,"c":{"service":[160,6255,7247,10503,568319],"read-service":[150,1042,1343,3947,5651],"gc":1902.045552,"warnings":[]},"h":{"service":[632,7095,8391,11703,551423],"read-service":[621,1353,2145,5471,550911],"gc":161.54319,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":1.0,"seed":61922,"block":2,"c":{"service":[91,931,1563,3017,4659],"read-service":[91,922,1553,3005,4651],"gc":8.127963,"warnings":[]},"h":{"service":[100,581,761,3777,5019],"read-service":[100,180,651,3747,4851],"gc":108.140849,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":10.0,"seed":61923,"block":3,"c":{"service":[160,6243,7475,10711,514559],"read-service":[150,1042,1353,4199,6091],"gc":1874.572408,"warnings":[]},"h":{"service":[602,6895,7807,11263,537087],"read-service":[591,1312,2065,5111,534015],"gc":163.306831,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":1.0,"seed":61923,"block":3,"c":{"service":[100,1753,1984,3677,5391],"read-service":[100,1753,1984,3637,5383],"gc":15.491728,"warnings":[]},"h":{"service":[101,581,772,3859,5691],"read-service":[101,230,691,3827,5383],"gc":251.319219,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":1.0,"seed":61923,"block":3,"c":{"service":[120,5271,6143,7175,10335],"read-service":[120,1573,1853,4099,5671],"gc":650.549401,"warnings":[]},"h":{"service":[601,6003,7427,9695,531455],"read-service":[601,1332,2165,6023,531967],"gc":264.380973,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61923,"block":3,"c":{"service":[131,6195,7083,10055,13751],"read-service":[130,1002,1372,3969,5763],"gc":1523.440639,"warnings":[]},"h":{"service":[591,6823,7495,11167,540159],"read-service":[591,1302,2055,5331,537087],"gc":208.028227,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":10.0,"seed":61923,"block":3,"c":{"service":[100,951,1693,3377,4751],"read-service":[91,932,1693,3035,4679],"gc":26.533806,"warnings":[]},"h":{"service":[100,661,812,3929,5243],"read-service":[100,160,612,3707,4639],"gc":83.450856,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":5.0,"seed":61923,"block":3,"c":{"service":[100,912,1623,3077,4691],"read-service":[100,911,1623,2995,4659],"gc":34.91771,"warnings":[]},"h":{"service":[100,641,811,3889,6075],"read-service":[100,220,691,3777,5231],"gc":256.906193,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":5.0,"seed":61923,"block":3,"c":{"service":[100,1072,2014,3807,5551],"read-service":[100,1022,2014,3607,5511],"gc":16.664924,"warnings":[]},"h":{"service":[100,642,761,3877,5163],"read-service":[100,171,651,3787,4759],"gc":83.579819,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":1.0,"seed":61923,"block":3,"c":{"service":[100,902,1894,2997,4631],"read-service":[100,901,1894,2987,4631],"gc":8.547769,"warnings":[]},"h":{"service":[100,571,711,3717,4539],"read-service":[100,180,651,3447,4459],"gc":99.199852,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":10.0,"seed":61923,"block":3,"c":{"service":[100,932,1863,3487,4863],"read-service":[100,922,1854,3077,4739],"gc":53.823264,"warnings":[]},"h":{"service":[110,681,931,4431,7075],"read-service":[110,220,702,3907,5563],"gc":224.427167,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":10.0,"seed":61923,"block":3,"c":{"service":[161,6335,7527,11295,2932735],"read-service":[160,1082,1453,4439,7155],"gc":5344.060299,"warnings":["Churn demand dropped; endogenous outcome retained","Measured compiler activity exceeds frozen ceiling; not app pause time"]},"h":{"service":[621,6987,8367,13111,803327],"read-service":[611,1342,2175,6155,685567],"gc":486.251694,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61923,"block":3,"c":{"service":[130,6263,7187,10591,479743],"read-service":[130,1032,1533,4131,6423],"gc":4544.146803,"warnings":["Churn demand dropped; endogenous outcome retained","Outside-process CPU upper bound exceeded frozen ceiling"]},"h":{"service":[621,6943,7787,12655,803327],"read-service":[611,1352,2205,6655,735231],"gc":620.343665,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":1.0,"seed":61923,"block":3,"c":{"service":[110,5271,6303,7727,11279],"read-service":[110,1733,2003,3817,5891],"gc":2247.228955,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[601,5923,7123,11263,819199],"read-service":[601,1363,2315,7075,798207],"gc":779.072809,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":5.0,"seed":61924,"block":4,"c":{"service":[101,961,1924,3557,4851],"read-service":[100,951,1923,3177,4811],"gc":31.760734,"warnings":[]},"h":{"service":[111,671,862,4351,6503],"read-service":[110,240,711,3929,5563],"gc":239.549312,"warnings":["Outside-process CPU upper bound exceeded frozen ceiling"]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61924,"block":4,"c":{"service":[130,6175,6915,9951,14247],"read-service":[130,1002,1362,4039,5751],"gc":1549.399484,"warnings":[]},"h":{"service":[592,6943,7615,11383,546815],"read-service":[591,1312,2075,5543,546303],"gc":208.869675,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":10.0,"seed":61924,"block":4,"c":{"service":[160,6383,7635,11423,2990079],"read-service":[150,1072,1462,4551,7335],"gc":5302.936587,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[631,7095,8631,13431,836095],"read-service":[612,1353,2235,6243,724479],"gc":494.556884,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":1.0,"seed":61924,"block":4,"c":{"service":[91,902,1983,3025,4679],"read-service":[91,902,1983,3015,4671],"gc":8.768668,"warnings":[]},"h":{"service":[110,601,801,3879,5139],"read-service":[110,200,672,3849,4951],"gc":105.082146,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":10.0,"seed":61924,"block":4,"c":{"service":[110,1002,1913,3867,5263],"read-service":[101,982,1904,3717,5103],"gc":24.746296,"warnings":[]},"h":{"service":[100,621,792,3887,5031],"read-service":[100,160,621,3487,4451],"gc":73.270291,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":1.0,"seed":61924,"block":4,"c":{"service":[120,5271,6143,7447,10023],"read-service":[120,1573,1794,3777,5263],"gc":670.073611,"warnings":[]},"h":{"service":[601,5971,7455,10039,546303],"read-service":[601,1332,2115,6103,545791],"gc":268.9339,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":1.0,"seed":61924,"block":4,"c":{"service":[100,992,1994,3487,4911],"read-service":[100,982,1994,3437,4911],"gc":15.70901,"warnings":[]},"h":{"service":[100,581,772,3847,5943],"read-service":[100,241,691,3817,5391],"gc":303.930235,"warnings":[]}},{"key":32768,"payload":256,"heap":0,"writes":5.0,"seed":61924,"block":4,"c":{"service":[100,912,1954,3297,4859],"read-service":[100,911,1954,3047,4791],"gc":19.154751,"warnings":[]},"h":{"service":[100,631,781,3837,5071],"read-service":[100,180,652,3727,4631],"gc":89.693809,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":10.0,"seed":61924,"block":4,"c":{"service":[160,6303,7355,10631,486399],"read-service":[150,1052,1363,4007,5843],"gc":1873.87592,"warnings":[]},"h":{"service":[631,7007,8247,11575,551423],"read-service":[612,1352,2115,5403,547839],"gc":162.206142,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61924,"block":4,"c":{"service":[130,6263,7223,10495,491775],"read-service":[130,1072,1513,4119,6483],"gc":4509.782001,"warnings":["Churn demand dropped; endogenous outcome retained"]},"h":{"service":[611,6855,7655,12295,808447],"read-service":[602,1343,2195,6555,725503],"gc":622.550706,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":1.0,"seed":61924,"block":4,"c":{"service":[110,5271,6295,7615,11183],"read-service":[110,1693,2014,3897,5831],"gc":2176.965876,"warnings":[]},"h":{"service":[611,5923,7307,11447,638975],"read-service":[611,1373,2325,7063,638975],"gc":621.521553,"warnings":[]}},{"key":32768,"payload":256,"heap":288,"writes":10.0,"seed":61924,"block":4,"c":{"service":[101,932,1864,3807,5303],"read-service":[100,921,1864,3457,5151],"gc":49.280835,"warnings":[]},"h":{"service":[110,662,912,4319,6743],"read-service":[101,230,702,3827,5391],"gc":236.083609,"warnings":[]}}],"pressure":{"short":[{"heap":0,"seed":24301,"block":1,"c":{"service":[229,7207,8607,25279,34335],"response":[280,8067,26239,3411967,3928063],"gc":21.063267,"warnings":[]},"h":{"service":[928,8015,9935,26671,1330175],"response":[976,8271,301055,1459199,1940479],"gc":31.441772,"warnings":[]}},{"heap":0,"seed":24301,"block":2,"c":{"service":[215,7175,8511,26095,33919],"response":[267,8071,33183,3500031,4136959],"gc":25.083008,"warnings":[]},"h":{"service":[930,8035,9407,27039,1271807],"response":[981,8311,281855,1464319,1928191],"gc":31.052668,"warnings":[]}},{"heap":0,"seed":24301,"block":3,"c":{"service":[244,7223,9567,28079,35711],"response":[293,8359,23823,3016703,3680255],"gc":16.569145,"warnings":[]},"h":{"service":[901,10551,13375,29295,1379327],"response":[949,10719,325119,1484799,1932287],"gc":31.696924,"warnings":[]}},{"heap":104,"seed":24301,"block":1,"c":{"service":[215,7199,8527,25935,34143],"response":[268,8503,359167,3299327,3672063],"gc":30.870403,"warnings":["Measured compiler activity exceeds80ms; retain as short-run evidence"]},"h":{"service":[916,7979,9319,26735,1314815],"response":[964,8215,153343,1258495,1494015],"gc":28.074414,"warnings":[]}},{"heap":104,"seed":24301,"block":2,"c":{"service":[220,7147,8375,25375,33599],"response":[272,8375,426239,3428351,3846143],"gc":31.118923,"warnings":[]},"h":{"service":[916,7959,9335,27007,1347583],"response":[966,8223,190335,1303551,1517567],"gc":29.049076,"warnings":[]}},{"heap":104,"seed":24301,"block":3,"c":{"service":[215,7203,9255,27119,34207],"response":[264,8447,33311,3121151,3579903],"gc":25.711209,"warnings":[]},"h":{"service":[922,8055,10367,27119,1430527],"response":[970,8335,283135,1401855,1705983],"gc":31.003194,"warnings":["Measured compiler activity exceeds80ms; retain as short-run evidence"]}},{"heap":208,"seed":24301,"block":1,"c":{"service":[225,7191,8607,25455,34975],"response":[276,8687,1114111,3219455,3545087],"gc":44.043092,"warnings":[]},"h":{"service":[925,8023,9479,26831,1262591],"response":[973,8263,239231,1243135,1793023],"gc":30.894954,"warnings":[]}},{"heap":208,"seed":24301,"block":2,"c":{"service":[211,7167,9239,25839,34175],"response":[259,8487,921087,3225599,3680255],"gc":40.718684,"warnings":[]},"h":{"service":[910,10295,13103,28927,1241087],"response":[960,10583,334335,1413119,1931263],"gc":32.735741,"warnings":[]}},{"heap":208,"seed":24301,"block":3,"c":{"service":[214,7203,9407,28015,34495],"response":[265,8727,1188863,3315711,3811327],"gc":44.780858,"warnings":[]},"h":{"service":[916,8031,9983,26511,93631],"response":[964,8271,308479,1321983,1904639],"gc":32.069794,"warnings":[]}}],"full":[{"key":32768,"payload":4096,"heap":208,"writes":5.0,"seed":61801,"block":1,"c":{"service":[161,6151,6763,7595,12527],"read-service":[160,1132,1503,2425,5003],"response":[202,6283,11051007,20070399,21692415],"gc":127.076647,"warnings":[]},"h":{"service":[651,6215,6715,7767,564735],"read-service":[651,1343,1943,2505,549375],"response":[690,6267,7315,546815,705023],"gc":15.822291,"warnings":[]}},{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61801,"block":1,"c":{"service":[160,5651,6495,7415,1454079],"read-service":[160,1102,1463,2315,4751],"response":[197,6331,16695295,22691839,23953407],"gc":193.408239,"warnings":[]},"h":{"service":[611,6723,7335,8687,730623],"read-service":[611,1302,1894,2715,730623],"response":[653,6879,271615,756223,863743],"gc":39.496716,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61801,"block":1,"c":{"service":[171,5463,6355,6883,9183],"read-service":[170,1113,1473,2415,3297],"response":[210,5535,2797567,5697535,6397951],"gc":53.515257,"warnings":[]},"h":{"service":[611,6175,6663,7687,642047],"read-service":[602,1283,1883,2455,636415],"response":[648,6223,7223,554495,843263],"gc":13.376213,"warnings":[]}},{"key":32768,"payload":4096,"heap":96,"writes":5.0,"seed":61801,"block":1,"c":{"service":[180,5603,7507,9255,14951],"read-service":[171,1092,1463,2285,3397],"response":[214,5951,2951167,5156863,5787647],"gc":67.311427,"warnings":[]},"h":{"service":[601,6203,6783,7955,600575],"read-service":[591,1253,1864,2505,578559],"response":[634,6259,7471,514303,690175],"gc":12.977185,"warnings":[]}},{"key":32768,"payload":4096,"heap":0,"writes":5.0,"seed":61802,"block":2,"c":{"service":[171,5543,6683,7515,12495],"read-service":[170,1103,1483,2415,3737],"response":[211,5815,3180543,6131711,7159807],"gc":57.349701,"warnings":["Measured compiler activity exceeds frozen ceiling; not app pause time"]},"h":{"service":[601,6163,6675,7655,622591],"read-service":[592,1263,1844,2415,615423],"response":[638,6219,7111,518143,669183],"gc":12.585824,"warnings":[]}},{"key":32768,"payload":4096,"heap":208,"writes":5.0,"seed":61802,"block":2,"c":{"service":[160,5511,6375,6975,14551],"read-service":[160,1072,1463,2535,5351],"response":[200,5871,9027583,17874943,20234239],"gc":116.832132,"warnings":[]},"h":{"service":[601,6235,7135,10223,562175],"read-service":[601,1282,1883,2465,581631],"response":[642,6307,8815,546303,713215],"gc":15.648549,"warnings":[]}},{"key":32768,"payload":4096,"heap":96,"writes":5.0,"seed":61802,"block":2,"c":{"service":[180,5871,6535,7467,8599],"read-service":[180,1112,1493,2315,3287],"response":[218,6207,3078143,5382143,5939199],"gc":68.433903,"warnings":[]},"h":{"service":[611,6423,8887,10583,644095],"read-service":[601,1273,1883,2445,638975],"response":[645,6503,9303,536063,681471],"gc":12.875793,"warnings":["Measured compiler activity exceeds frozen ceiling; not app pause time"]}},{"key":32768,"payload":4096,"heap":288,"writes":5.0,"seed":61802,"block":2,"c":{"service":[161,5603,6455,8999,1544191],"read-service":[160,1072,1453,2305,5111],"response":[202,6391,19775487,24068095,25673727],"gc":226.390214,"warnings":[]},"h":{"service":[641,6783,7387,8759,691711],"read-service":[631,1333,1984,2715,686591],"response":[677,6887,230527,758271,937983],"gc":36.220804,"warnings":[]}}]}}</script>
+<script>
+"use strict";
+const evidence = JSON.parse(document.getElementById("evidence").textContent);
+const colors = {c:"#a84b24", h:"#087368"};
+const names = {c:"Caffeine", h:"Chronicle"};
+const quantiles = ["p50", "p99", "p99.9", "p99.99", "p99.999"];
+const metricNames = {response:"Scheduled response",service:"Cache-call latency","read-service":"Read latency",gc:"Total GC pause time",mixed:"G1 mixed pause time"};
+const number = new Intl.NumberFormat("en-US");
+const latency = value => value >= 1000
+  ? (value / 1000).toFixed(value >= 10000 ? 1 : 2) + " ms"
+  : value.toFixed(value < 1 ? 3 : 2) + " µs";
+const warnings = row => ["c", "h"].flatMap(backend => row[backend].warnings.map(note => names[backend] + ": " + note));
+
+function config(section) {
+  const selected = name => section.querySelector('select[name="' + name + '"]')?.value;
+  const q = Number(selected("quantile"));
+  const run = selected("run");
+  const metric = selected("metric") || "response";
+  if (section.id === "locality") {
+    const message = {
+      response: q === 2
+        ? "At p99.9, Caffeine leads with 2,048 eligible keys. Chronicle leads with 32,768 on both hosts."
+        : "At deeper percentiles, a single pause can affect enough requests to change the winner. The 90-second runs include Chronicle losses at both extremes.",
+      service: "Service timing starts when the call starts. Compare it with response to see how waiting changes the result.",
+      gc: "Caffeine spends more time paused when writes reach all keys. A request scheduled during a pause starts accumulating wait time.",
+      mixed: "Mixed collections reclaim selected old regions as well as young regions. Caffeine spends more time in these pauses with distributed writes. The logs measure pause types and durations."
+    };
+    return {rows:evidence.locality[run], metric, q, group:"key", label:v=>number.format(v)+" keys", takeaway:message[metric]};
+  }
+  if (section.id === "payload") {
+    const heap = Number(selected("heap"));
+    const writes = Number(selected("writes"));
+    let takeaway = q === 0 ? "The median describes a typical call. The p99.9 control shows how the slow calls compare."
+      : metric === "read-service" ? "The read tail can favor Chronicle at 256 B. Larger copies and allocations help explain the 4 KiB difference."
+      : "For all calls at p99 and p99.9, Chronicle leads at 256 B and Caffeine leads at 4 KiB in the tested matrix.";
+    if (heap === 288 && writes >= 5) takeaway += " The 4 KiB Caffeine runs dropped some background allocation demand at this setting.";
+    return {rows:evidence.payload.filter(r=>r.heap===heap && r.writes===writes), metric, q, group:"payload",
+      label:v=>v===256?"256 B":"4 KiB", takeaway};
+  }
+  const takeaway = run === "short" ? (q === 2
+    ? "The short replay gives Caffeine the lead at 0 MiB and Chronicle the lead at 208 MiB. The 104 MiB pairs disagree."
+    : "In these earlier runs Chronicle's extreme-tail lead is already present at 0 MiB.")
+    : "With full-key updates, Chronicle already leads at 0 MiB. The earlier pressure bracket applies to the short replay.";
+  return {rows:evidence.pressure[run], metric, q, group:"heap", label:v=>v+" MiB", takeaway};
+}
+
+function mount(section) {
+  section.querySelector(".chart-slot").append(document.getElementById("chart").content.cloneNode(true));
+  const canvas = section.querySelector("canvas");
+  const context = canvas.getContext("2d");
+  const table = section.querySelector("tbody");
+  const note = section.querySelector(".inspection");
+  const hint = "Hover over a dot, use the arrow keys on the chart, or open the data table.";
+  let state, values, groups, positions, active = -1;
+  const valueFor = (row, backend) => state.metric === "gc" || state.metric === "mixed"
+    ? row[backend][state.metric]
+    : row[backend][state.metric][state.q] / 1000;
+  const isPause = () => state.metric === "gc" || state.metric === "mixed";
+  const pretty = value => isPause() ? value.toFixed(2) + " ms" : latency(value);
+
+  function draw() {
+    const {width, height} = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    context.setTransform(ratio,0,0,ratio,0,0);
+    const bounds = {left:width<430?57:68,right:width-12,top:17,bottom:height-38};
+    const extents = values.map(p=>p.value);
+    const limits = isPause()
+      ? [0, Math.ceil(Math.max(...extents) / 10) * 10 || 10]
+      : [Math.floor(Math.log10(Math.min(...extents))),Math.ceil(Math.log10(Math.max(...extents)))];
+    if (limits[0]===limits[1]) limits[0]--;
+    const y = value => bounds.bottom - (value-limits[0]) / (limits[1]-limits[0]) * (bounds.bottom-bounds.top);
+    const step = (bounds.right - bounds.left) / groups.length;
+    const x = index => bounds.left + step * (index + 0.5);
+    const ticks = isPause() ? [0,1,2,3,4].map(i=>limits[1]*i/4)
+      : Array.from({length:limits[1]-limits[0]+1},(_,i)=>limits[0]+i);
+    context.font = (width<430?"10":"11") + "px system-ui, sans-serif";
+    context.textAlign = "right";
+    context.textBaseline = "middle";
+    for (const tick of ticks) {
+      context.beginPath();context.moveTo(bounds.left,y(tick));context.lineTo(bounds.right,y(tick));
+      context.strokeStyle = "#dce2da";context.stroke();
+      context.fillStyle = "#516368";
+      const label = isPause() ? Number(tick.toPrecision(3)) + " ms"
+        : tick >= 3 ? Math.pow(10,tick-3) + " ms" : Math.pow(10,tick) + " µs";
+      context.fillText(label,bounds.left-7,y(tick));
+    }
+    context.textAlign = "center";
+    context.fillStyle = "#162a31";
+    for (const [i,group] of groups.entries()) context.fillText(state.label(group),x(i),height-14);
+    positions = [];
+    for (const [i,point] of values.entries()) {
+      const xpos = x(groups.indexOf(point.group)) +(point.backend==="c"?-1:1)*Math.min(step*.20,25)+point.offset;
+      const ypos = y(isPause()?point.value:Math.log10(point.value));
+      positions.push({x:xpos,y:ypos});
+      const r = i===active ? 6 : 4;
+      context.beginPath();
+      if(point.backend==="c") context.arc(xpos,ypos,r,0,2*Math.PI);
+      else {context.moveTo(xpos,ypos-r-1);context.lineTo(xpos+r+1,ypos);context.lineTo(xpos,ypos+r+1);context.lineTo(xpos-r-1,ypos);context.closePath();}
+      context.fillStyle=point.warnings.length?"#fafbf9":colors[point.backend];
+      context.strokeStyle=colors[point.backend];context.lineWidth=i===active?2:1;
+      context.fill();context.stroke();
+    }
+  }
+
+  function inspect(index) {
+    if(index===active)return;
+    active=index;
+    if(index<0)note.textContent=hint;
+    else {
+      const p=values[index], r=p.row;
+      const detail=p.warnings.length ? " · " + p.warnings.join(" / ") : "";
+      note.textContent=names[p.backend]+" · "+state.label(p.group)+" · seed "+r.seed+", block "+r.block+" · "+pretty(p.value)+detail;
+    }
+    draw();
+  }
+
+  function update() {
+    const metric = section.querySelector('select[name="metric"]');
+    const percentile = section.querySelector('select[name="quantile"]');
+    if(section.id==="locality") {
+      const first = section.querySelector('select[name="run"]').value==="first";
+      metric.querySelector('[value="mixed"]').disabled=first;
+      if(first && metric.value==="mixed")metric.value="response";
+      percentile.disabled=metric.value==="gc"||metric.value==="mixed";
+    }
+    state=config(section);
+    groups=[...new Set(state.rows.map(row=>row[state.group]))].sort((a,b)=>a-b);
+    values=[];
+    const fragments = document.createDocumentFragment();
+    for(const group of groups) {
+      const rows = state.rows.filter(row=>row[state.group]===group).sort((a,b)=>a.seed-b.seed||a.block-b.block);
+      rows.forEach((row,index)=>{
+        const notes=warnings(row);
+        const offset=(index-(rows.length-1)/2)*Math.min(6,18/Math.max(1,rows.length-1));
+        for(const backend of ["c","h"])values.push({row,group,backend,offset,value:valueFor(row,backend),warnings:notes});
+        const tr=document.createElement("tr");
+        for(const entry of [state.label(group),row.seed+" / "+row.block,pretty(valueFor(row,"c")),pretty(valueFor(row,"h")),notes.join(" / ")||"None"]) {
+          const td=document.createElement("td");td.textContent=entry;tr.append(td);
+        }
+        fragments.append(tr);
+      });
+    }
+    table.replaceChildren(fragments);
+    const chartLabel=metricNames[state.metric]+(isPause()?"":" "+quantiles[state.q]);
+    section.querySelector(".scale").textContent=isPause()?"Pause time · linear scale":"Latency · log scale";
+    canvas.setAttribute("aria-label",chartLabel+" by "+state.group+", with paired observations in the data table");
+    section.querySelector(".takeaway").textContent=state.takeaway;
+    active=-1;
+    note.textContent=hint;
+    draw();
+  }
+  section.querySelector(".controls").addEventListener("change",update);
+  canvas.addEventListener("pointermove",event=>{
+    const rect=canvas.getBoundingClientRect();
+    let best=-1,distance=10;
+    positions.forEach((p,index)=>{
+      const next=Math.hypot(p.x-(event.clientX-rect.left),p.y-(event.clientY-rect.top));
+      if(next<distance){best=index;distance=next;}
+    });
+    inspect(best);
+  });
+  canvas.addEventListener("pointerleave",()=>inspect(-1));
+  canvas.addEventListener("keydown",event=>{
+    if(event.key==="Escape")inspect(-1);
+    if(event.key==="ArrowRight"||event.key==="ArrowLeft") {
+      event.preventDefault();
+      const next=(active+(event.key==="ArrowRight"?1:-1)+values.length)%values.length;
+      inspect(next);
+    }
+  });
+  update();
+  new ResizeObserver(draw).observe(canvas);
+}
+document.querySelectorAll("main section").forEach(mount);
+</script>
+</body>
+</html>

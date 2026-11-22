@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TailCache | Interactive preprint</title>
+<style>
+:root{color-scheme:light;--ink:#162a31;--muted:#516368;--paper:#f5f6f2;--line:#dce1d9;--caffeine:#a84b24;--chronicle:#087368;--dark:#142c30}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,sans-serif}
+a{color:var(--chronicle);text-underline-offset:.2em}
+a:focus-visible,select:focus-visible,summary:focus-visible,canvas:focus-visible{outline:3px solid #11796d;outline-offset:4px}
+.wrap{width:min(1060px,calc(100% - 52px));margin-inline:auto}
+header{background:var(--dark);color:#f9fbf7;padding:20px 0 41px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #536867;padding-bottom:15px}
+.brand{font-weight:730;letter-spacing:.01em}
+.top a{color:#f3fcf6;font-size:14px}
+h1,h2{font-family:Georgia,serif;font-weight:500;letter-spacing:-.025em;line-height:1.12;margin:0}
+h1{font-size:clamp(2.1rem,5.5vw,4rem);max-width:780px;margin:29px 0 14px}
+header p{max-width:720px;color:#e0ebe5;margin:0}
+nav ul{display:flex;flex-wrap:wrap;gap:6px 24px;padding:14px 0;margin:0;list-style:none;border-bottom:1px solid var(--line)}
+nav a{color:var(--ink);font-weight:650;font-size:.9rem}
+main{padding:27px 0 45px}
+section{margin:0 0 32px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:clamp(15px,3vw,30px);scroll-margin-top:14px}
+h2{font-size:clamp(1.55rem,3.5vw,2.3rem)}
+.intro{color:var(--muted);max-width:760px;margin:8px 0 19px}
+.controls{display:flex;flex-wrap:wrap;gap:12px 16px;margin-bottom:15px}
+.controls label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;font-weight:680;flex:0 1 auto}
+select{min-height:40px;padding:6px 28px 6px 9px;background:#f8faf7;color:var(--ink);border:1px solid #bac7bd;border-radius:7px;font:inherit}
+.plot{position:relative;border:1px solid var(--line);border-radius:10px;padding:12px 12px 0;background:#fafbf9}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:5px 16px;font-size:.78rem;color:var(--muted)}
+.dot{display:inline-block;width:9px;height:9px;vertical-align:baseline;margin-right:5px;background:var(--caffeine);border-radius:50%}
+.dot.h{background:var(--chronicle);border-radius:1px;transform:rotate(45deg)}
+.dot.warning{background:transparent;border:1px solid var(--muted)}
+canvas{display:block;width:100%;height:245px;touch-action:pan-y}
+.inspection{min-height:27px;line-height:1.35;font-size:.8rem;color:var(--muted);margin:0 0 10px}
+.takeaway{margin:14px 0;border-left:3px solid var(--chronicle);background:#edf6f2;padding:9px 12px;font-size:.9rem}
+details{font-size:.85rem}
+summary{cursor:pointer;font-weight:700;padding:5px 0}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;text-align:left;line-height:1.4}
+th,td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:680;color:var(--muted)}
+.source{font-size:.82rem;color:var(--muted);margin:10px 0 0}
+footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;color:var(--muted)}
+@media(max-width:600px){.wrap{width:calc(100% - 24px)}header{padding-bottom:28px}.controls label{flex:1 1 auto;min-width:min(100%,115px)}select{padding-right:6px}canvas{height:220px}.plot{padding-inline:6px}th,td{padding:6px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top"><span class="brand">TailCache</span><a href="https://github.com/Enixes/TailCache/pull/10">Review manuscript</a></div>
+    <h1>When the faster cache call gives the slower response</h1>
+    <p>At 4 KiB and the same 5% write rate, Caffeine led when writes targeted a small set of keys. Chronicle led when updates reached across the cache. Compare what happened to the calls, the requests waiting for them, and the garbage collector.</p>
+  </div>
+</header>
+<nav class="wrap" aria-label="Charts">
+  <ul><li><a href="#locality">Where writes land</a></li><li><a href="#payload">Value size</a></li><li><a href="#pressure">Added heap pressure</a></li></ul>
+</nav>
+<main class="wrap">
+<noscript><p>Enable JavaScript to filter the charts, or read the measured results in the <a href="https://github.com/Enixes/TailCache/pull/10">manuscript</a>.</p></noscript>
+<section id="locality">
+  <h2>Where writes land</h2>
+  <p class="intro">The cache always held 32,768 entries. Reads could access any key. Only the eligible write set changed between the two groups.</p>
+  <div class="controls">
+    <label>Run<select name="run"><option value="second">Second host · 30 s</option><option value="long">Second host · 90 s</option><option value="first">First host · 30 s</option></select></label>
+    <label>Measurement<select name="metric"><option value="response">Scheduled response</option><option value="service">Cache-call latency</option><option value="gc">Total GC pause time</option><option value="mixed">G1 mixed pause time</option></select></label>
+    <label>Percentile<select name="quantile"><option value="2">p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/locality/CROSS_HOST_REVIEW.md">Evidence and replication</a></p>
+</section>
+<section id="payload">
+  <h2>Value size changes the call-time winner</h2>
+  <p class="intro">A hit on Caffeine returns the stored array. Ordinary Chronicle reads allocate a Java array and copy in the value. The relative cost changes with value size and with which part of the latency distribution you examine.</p>
+  <div class="controls">
+    <label>Added heap data<select name="heap"><option value="0">0 MiB</option><option value="288">288 MiB</option></select></label>
+    <label>Writes<select name="writes"><option value="1">1%</option><option value="5" selected>5%</option><option value="10">10%</option></select></label>
+    <label>Operations<select name="metric"><option value="service">All calls</option><option value="read-service">Reads only</option></select></label>
+    <label>Percentile<select name="quantile"><option value="0">p50</option><option value="1">p99</option><option value="2" selected>p99.9</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">Saturated worker on the second host. Each call starts when the previous one ends. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md">Full matrix and warning review</a></p>
+</section>
+<section id="pressure">
+  <h2>Why the old pressure bracket changed</h2>
+  <p class="intro">Added heap data is extra application memory kept alive alongside the cache. Switch the workload to see how the winner at zero added pressure changed.</p>
+  <div class="controls">
+    <label>Workload<select name="run"><option value="short">Earlier short replay</option><option value="full">Newer full-key updates</option></select></label>
+    <label>Response percentile<select name="quantile"><option value="2">p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">4 KiB values, about 5% writes, and 50,000 intended arrivals/s. Cohorts use different traces and collection hosts. <a href="https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/TAILCACHE_MIDPOINT_RESULTS.md">Earlier evidence</a> · <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/followups-01/INTERPRETATION.md">Newer evidence</a></p>
+</section>
+</main>
+<footer class="wrap">Working preprint for author review. <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/pdf/tailcache-preprint-review.pdf">PDF review copy</a> · <a href="https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive">Raw measurements and provenance</a></footer>
+<template id="chart">
+  <div class="plot">
+    <div class="legend"><span><i class="dot" aria-hidden="true"></i>Caffeine</span><span><i class="dot h" aria-hidden="true"></i>Chronicle</span><span><i class="dot warning" aria-hidden="true"></i>Pair with a warning</span><span class="scale"></span></div>
+    <canvas tabindex="0" role="img"></canvas>
+    <p class="inspection" aria-live="polite"></p>
+  </div>
+  <p class="takeaway" aria-live="polite"></p>
+  <details><summary>View paired measurements</summary><div class="table-wrap"><table>
+    <thead><tr><th scope="col">Setting</th><th scope="col">Seed / block</th><th scope="col">Caffeine</th><th scope="col">Chronicle</th><th scope="col">Recorded warnings</th></tr></thead>
+    <tbody></tbody>
+  </table></div></details>
+</template>
+<script type="application/json" id="evidence">/*__EVIDENCE__*/</script>
+<script>
+"use strict";
+const evidence = JSON.parse(document.getElementById("evidence").textContent);
+const colors = {c:"#a84b24", h:"#087368"};
+const names = {c:"Caffeine", h:"Chronicle"};
+const quantiles = ["p50", "p99", "p99.9", "p99.99", "p99.999"];
+const metricNames = {response:"Scheduled response",service:"Cache-call latency","read-service":"Read latency",gc:"Total GC pause time",mixed:"G1 mixed pause time"};
+const number = new Intl.NumberFormat("en-US");
+const latency = value => value >= 1000
+  ? (value / 1000).toFixed(value >= 10000 ? 1 : 2) + " ms"
+  : value.toFixed(value < 1 ? 3 : 2) + " µs";
+const warnings = row => ["c", "h"].flatMap(backend => row[backend].warnings.map(note => names[backend] + ": " + note));
+
+function config(section) {
+  const selected = name => section.querySelector('select[name="' + name + '"]')?.value;
+  const q = Number(selected("quantile"));
+  const run = selected("run");
+  const metric = selected("metric") || "response";
+  if (section.id === "locality") {
+    const message = {
+      response: q === 2
+        ? "At p99.9, Caffeine leads with 2,048 eligible keys. Chronicle leads with 32,768 on both hosts."
+        : "At deeper percentiles, a single pause can affect enough requests to change the winner. The 90-second runs include Chronicle losses at both extremes.",
+      service: "Service timing starts when the call starts. Compare it with response to see how waiting changes the result.",
+      gc: "Caffeine spends more time paused when writes reach all keys. A request scheduled during a pause starts accumulating wait time.",
+      mixed: "Mixed collections reclaim selected old regions as well as young regions. Caffeine spends more time in these pauses with distributed writes. The logs measure pause types and durations."
+    };
+    return {rows:evidence.locality[run], metric, q, group:"key", label:v=>number.format(v)+" keys", takeaway:message[metric]};
+  }
+  if (section.id === "payload") {
+    const heap = Number(selected("heap"));
+    const writes = Number(selected("writes"));
+    let takeaway = q === 0 ? "The median describes a typical call. The p99.9 control shows how the slow calls compare."
+      : metric === "read-service" ? "The read tail can favor Chronicle at 256 B. Larger copies and allocations help explain the 4 KiB difference."
+      : "For all calls at p99 and p99.9, Chronicle leads at 256 B and Caffeine leads at 4 KiB in the tested matrix.";
+    if (heap === 288 && writes >= 5) takeaway += " The 4 KiB Caffeine runs dropped some background allocation demand at this setting.";
+    return {rows:evidence.payload.filter(r=>r.heap===heap && r.writes===writes), metric, q, group:"payload",
+      label:v=>v===256?"256 B":"4 KiB", takeaway};
+  }
+  const takeaway = run === "short" ? (q === 2
+    ? "The short replay gives Caffeine the lead at 0 MiB and Chronicle the lead at 208 MiB. The 104 MiB pairs disagree."
+    : "In these earlier runs Chronicle's extreme-tail lead is already present at 0 MiB.")
+    : "With full-key updates, Chronicle already leads at 0 MiB. The earlier pressure bracket applies to the short replay.";
+  return {rows:evidence.pressure[run], metric, q, group:"heap", label:v=>v+" MiB", takeaway};
+}
+
+function mount(section) {
+  section.querySelector(".chart-slot").append(document.getElementById("chart").content.cloneNode(true));
+  const canvas = section.querySelector("canvas");
+  const context = canvas.getContext("2d");
+  const table = section.querySelector("tbody");
+  const note = section.querySelector(".inspection");
+  const hint = "Hover over a dot, use the arrow keys on the chart, or open the data table.";
+  let state, values, groups, positions, active = -1;
+  const valueFor = (row, backend) => state.metric === "gc" || state.metric === "mixed"
+    ? row[backend][state.metric]
+    : row[backend][state.metric][state.q] / 1000;
+  const isPause = () => state.metric === "gc" || state.metric === "mixed";
+  const pretty = value => isPause() ? value.toFixed(2) + " ms" : latency(value);
+
+  function draw() {
+    const {width, height} = canvas.getBoundingClientRect();
+    const ratio = window.devicePixelRatio || 1;
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    context.setTransform(ratio,0,0,ratio,0,0);
+    const bounds = {left:width<430?57:68,right:width-12,top:17,bottom:height-38};
+    const extents = values.map(p=>p.value);
+    const limits = isPause()
+      ? [0, Math.ceil(Math.max(...extents) / 10) * 10 || 10]
+      : [Math.floor(Math.log10(Math.min(...extents))),Math.ceil(Math.log10(Math.max(...extents)))];
+    if (limits[0]===limits[1]) limits[0]--;
+    const y = value => bounds.bottom - (value-limits[0]) / (limits[1]-limits[0]) * (bounds.bottom-bounds.top);
+    const step = (bounds.right - bounds.left) / groups.length;
+    const x = index => bounds.left + step * (index + 0.5);
+    const ticks = isPause() ? [0,1,2,3,4].map(i=>limits[1]*i/4)
+      : Array.from({length:limits[1]-limits[0]+1},(_,i)=>limits[0]+i);
+    context.font = (width<430?"10":"11") + "px system-ui, sans-serif";
+    context.textAlign = "right";
+    context.textBaseline = "middle";
+    for (const tick of ticks) {
+      context.beginPath();context.moveTo(bounds.left,y(tick));context.lineTo(bounds.right,y(tick));
+      context.strokeStyle = "#dce2da";context.stroke();
+      context.fillStyle = "#516368";
+      const label = isPause() ? Number(tick.toPrecision(3)) + " ms"
+        : tick >= 3 ? Math.pow(10,tick-3) + " ms" : Math.pow(10,tick) + " µs";
+      context.fillText(label,bounds.left-7,y(tick));
+    }
+    context.textAlign = "center";
+    context.fillStyle = "#162a31";
+    for (const [i,group] of groups.entries()) context.fillText(state.label(group),x(i),height-14);
+    positions = [];
+    for (const [i,point] of values.entries()) {
+      const xpos = x(groups.indexOf(point.group)) +(point.backend==="c"?-1:1)*Math.min(step*.20,25)+point.offset;
+      const ypos = y(isPause()?point.value:Math.log10(point.value));
+      positions.push({x:xpos,y:ypos});
+      const r = i===active ? 6 : 4;
+      context.beginPath();
+      if(point.backend==="c") context.arc(xpos,ypos,r,0,2*Math.PI);
+      else {context.moveTo(xpos,ypos-r-1);context.lineTo(xpos+r+1,ypos);context.lineTo(xpos,ypos+r+1);context.lineTo(xpos-r-1,ypos);context.closePath();}
+      context.fillStyle=point.warnings.length?"#fafbf9":colors[point.backend];
+      context.strokeStyle=colors[point.backend];context.lineWidth=i===active?2:1;
+      context.fill();context.stroke();
+    }
+  }
+
+  function inspect(index) {
+    if(index===active)return;
+    active=index;
+    if(index<0)note.textContent=hint;
+    else {
+      const p=values[index], r=p.row;
+      const detail=p.warnings.length ? " · " + p.warnings.join(" / ") : "";
+      note.textContent=names[p.backend]+" · "+state.label(p.group)+" · seed "+r.seed+", block "+r.block+" · "+pretty(p.value)+detail;
+    }
+    draw();
+  }
+
+  function update() {
+    const metric = section.querySelector('select[name="metric"]');
+    const percentile = section.querySelector('select[name="quantile"]');
+    if(section.id==="locality") {
+      const first = section.querySelector('select[name="run"]').value==="first";
+      metric.querySelector('[value="mixed"]').disabled=first;
+      if(first && metric.value==="mixed")metric.value="response";
+      percentile.disabled=metric.value==="gc"||metric.value==="mixed";
+    }
+    state=config(section);
+    groups=[...new Set(state.rows.map(row=>row[state.group]))].sort((a,b)=>a-b);
+    values=[];
+    const fragments = document.createDocumentFragment();
+    for(const group of groups) {
+      const rows = state.rows.filter(row=>row[state.group]===group).sort((a,b)=>a.seed-b.seed||a.block-b.block);
+      rows.forEach((row,index)=>{
+        const notes=warnings(row);
+        const offset=(index-(rows.length-1)/2)*Math.min(6,18/Math.max(1,rows.length-1));
+        for(const backend of ["c","h"])values.push({row,group,backend,offset,value:valueFor(row,backend),warnings:notes});
+        const tr=document.createElement("tr");
+        for(const entry of [state.label(group),row.seed+" / "+row.block,pretty(valueFor(row,"c")),pretty(valueFor(row,"h")),notes.join(" / ")||"None"]) {
+          const td=document.createElement("td");td.textContent=entry;tr.append(td);
+        }
+        fragments.append(tr);
+      });
+    }
+    table.replaceChildren(fragments);
+    const chartLabel=metricNames[state.metric]+(isPause()?"":" "+quantiles[state.q]);
+    section.querySelector(".scale").textContent=isPause()?"Pause time · linear scale":"Latency · log scale";
+    canvas.setAttribute("aria-label",chartLabel+" by "+state.group+", with paired observations in the data table");
+    section.querySelector(".takeaway").textContent=state.takeaway;
+    active=-1;
+    note.textContent=hint;
+    draw();
+  }
+  section.querySelector(".controls").addEventListener("change",update);
+  canvas.addEventListener("pointermove",event=>{
+    const rect=canvas.getBoundingClientRect();
+    let best=-1,distance=10;
+    positions.forEach((p,index)=>{
+      const next=Math.hypot(p.x-(event.clientX-rect.left),p.y-(event.clientY-rect.top));
+      if(next<distance){best=index;distance=next;}
+    });
+    inspect(best);
+  });
+  canvas.addEventListener("pointerleave",()=>inspect(-1));
+  canvas.addEventListener("keydown",event=>{
+    if(event.key==="Escape")inspect(-1);
+    if(event.key==="ArrowRight"||event.key==="ArrowLeft") {
+      event.preventDefault();
+      const next=(active+(event.key==="ArrowRight"?1:-1)+values.length)%values.length;
+      inspect(next);
+    }
+  });
+  update();
+  new ResizeObserver(draw).observe(canvas);
+}
+document.querySelectorAll("main section").forEach(mount);
+</script>
+</body>
+</html>

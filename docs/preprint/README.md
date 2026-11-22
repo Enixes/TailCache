@@ -7,15 +7,25 @@ package. The [18 November manuscript](https://github.com/Enixes/TailCache/blob/5
 preserves the expanded account of earlier experiments. The paper remains a
 working draft for author review.
 
-## Review PDF
+## Read the review draft
 
-[Download the review draft](../../output/pdf/tailcache-preprint-review.pdf).
-The PDF and first figure are rendered from the Markdown manuscript and
-`locality-pairs.csv` with Python 3.10+ and ReportLab 4.4.9.
+- [Review PDF](../../output/pdf/tailcache-preprint-review.pdf) with four figures.
+- [Interactive companion](../../output/html/tailcache-preprint-reader.html).
+  Download the HTML and open it in a browser. Change the workload, percentile,
+  or timing boundary and open the paired measurements under each graph. The
+  page works offline and requires no server or external chart library.
+
+Build both formats from the manuscript, exact [locality pairs](locality-pairs.csv),
+and [chart data](review-chart-data.json). PDF generation uses Python 3.10+ and
+ReportLab 4.4.9. HTML rendering uses the Python standard library.
 
 ```sh
 python3 scripts/render_tailcache_preprint.py --update-svg
+python3 scripts/render_tailcache_preprint_reader.py
 ```
+
+To regenerate the chart data directly from a portability checkout, pass
+`--evidence /path/to/checkout/docs/second-host-20261120` to the HTML renderer.
 
 Before deposit, obtain a systems review of the contribution and measurement
 boundaries, confirm author names, affiliations, contributions and disclosure,

@@ -1,12 +1,24 @@
 # Paper figures and captions
 
-## Figure 1 in the 22 November review draft
+## Figures in the 22 November review draft
 
-[The cross-host locality plot](figures/fig08_cross_host_locality.svg) shows all
-20 paired values of Chronicle/Caffeine scheduled-response p99.9. Filled dots
-show warning-free pairs and open dots show warning-bearing pairs. The source
-is [the exact per-pair table](locality-pairs.csv). The figures below retain
-their earlier numbering and scope.
+1. [Cross-host locality](figures/fig08_cross_host_locality.svg) shows all 20
+   paired ratios of Chronicle to Caffeine scheduled-response p99.9.
+   [Exact fork pairs](locality-pairs.csv)
+2. [Time in G1 mixed collections](figures/fig09_mixed_collection_time.svg)
+   compares the eligible write sets on the second host at 30 and 90 seconds.
+   Both panels use the same vertical scale.
+3. [Saturated service by payload](figures/fig10_saturated_payload.svg) shows
+   the 16 first-pass pairs at 5% writes, split by payload and added application
+   data. A ratio of 1 marks equal latency.
+4. [Scheduled response by added heap data](figures/fig11_response_pressure.svg)
+   compares the earlier short replay and newer full-key workload at the same
+   vertical scale. Each dot is one measured fork.
+
+Filled marks show warning-free pairs and open marks show warning-bearing
+pairs. The [interactive companion](../../output/html/tailcache-preprint-reader.html)
+lets readers explore the chart inputs. The figures below retain their earlier
+numbering and scope.
 
 Vector PDF and SVG plus 240 dpi PNG are supplied. Figures 1–6 are candidate main-text figures; Figure 7 is an appendix sensitivity. Final manuscript placement remains author review.
 
