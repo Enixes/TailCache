@@ -1,93 +1,79 @@
 # TailCache research handoff
 
-Checkpoint recorded on 19 November 2026. Use this file to continue the project
-from a new Codex chat on a second machine.
+Updated 22 November 2026 after the second-host experiments and raw evidence audit.
+This is the resume point for the Codex task **Start experiment on new host**.
 
 ## Start here
 
-- Work on `codex/tailcache-portability` for the runner and the next replication.
-  The reviewed runner is at `b8318490947f9d104edea089956616f4d67801bd`, with
-  later documentation commits on the branch. [Draft portability PR #11](https://github.com/Enixes/TailCache/pull/11)
-- The manuscript is on `codex/tailcache-preprint`. PR #11 uses the
-  pre-portability snapshot as its review base. The first two portability commits
-  also appear in the manuscript branch, so coordinate integration before merging.
-  [Draft manuscript PR #10](https://github.com/Enixes/TailCache/pull/10)
-- Read the [research state](TAILCACHE_CURRENT_STATE.md), the
-  [research and portability review](PORTABLE_EXPERIMENT_DEEP_REVIEW.md), and the
-  [run guide](PORTABLE_EXPERIMENT.md) before making changes.
+- `codex/tailcache-portability` holds the reproducible suites and second-host
+  evidence. Commit `d78ab90` adds the measured results and `4c3ab67` archives
+  the raw evidence. [Portability PR #11](https://github.com/Enixes/TailCache/pull/11)
+- `codex/tailcache-preprint` holds the manuscript. The manuscript predates the
+  second-host results. The two branches share some portability changes, so
+  inspect their history before integrating the new evidence.
+  [Manuscript PR #10](https://github.com/Enixes/TailCache/pull/10)
+- Relative links in this handoff point to tracked files. Start with the
+  [second-host conclusions](second-host-20261120/README.md),
+  [raw archive and audit](second-host-20261120/archive/README.md), and
+  [working manuscript](preprint/MANUSCRIPT.md).
 
-## Scientific position
+## What the study can claim
 
-The strongest result is a bounded scheduled-response p99.9 reversal. At 5%
-writes, 4 KiB values, 50,000 intended arrivals/s, and matched fresh-write
-allocation demand, Caffeine led with 2,048 update keys and Chronicle led with
-32,768. Both directions repeated across two seeds and reversed backend order on
-one host. Warning-free coverage was 0/4 concentrated pairs and 1/4 distributed
-pairs. Chronicle led at p99.99 and p99.999 in all four concentrated pairs.
-The extreme tail is sparse in 30-second paced windows.
+| Question | Current answer |
+|---|---|
+| Does extra heap pressure flip p99 or p99.9 for ordinary cache-call latency? | The study did not establish a robust pressure-induced reversal. On the second host, at 4 KiB Caffeine led every pair at 0 and 288 MiB of extra retained application data across 1%, 5%, and 10% writes. |
+| Does payload size affect service latency rankings? | Yes. In the same saturated-service matrix, Chronicle led all 24 pairs at 256 B and Caffeine led all 24 at 4 KiB. Some high-pressure 4 KiB runs dropped churn demand. A general payload threshold remains unresolved. |
+| What flips scheduled-response p99.9? | At 4 KiB, 5% writes, and 50,000 intended arrivals/s, Caffeine led when writes targeted 2,048 keys and Chronicle led when writes targeted all 32,768. The effect replicated on the second host at 30 and 90 seconds with matched fresh-write demand. |
+| Where is the write-rate crossover? | In the second-host 4 KiB sweep, Caffeine led 4/4 warning-free pairs at 1.25% writes and Chronicle led 4/4 at 1.5%. The 0.75% and 1% cells were mixed. The bracket applies to that setup, and earlier prospective boundary forecasts failed. |
 
-The original pressure-induced ordinary-service p99/p99.9 crossover was not
-established. Payload changed rankings without establishing a stable threshold.
-Measured GC pauses help explain response latency after a run. The prospective
-write-rate boundary forecasts failed. Treat lifetime, locality, and policy
-activity as bundled effects. The original unconditional Task 12 decision
-remains NO_GO. [Retained mechanism results](mechanism/RESULTS.md)
+A GC pause can delay many scheduled requests while overlapping few timed cache
+calls. The observed pause shapes and backlog help explain the two rankings.
+Update locality, value lifetime, and cache policy activity still vary together.
+The observed-GC models do not provide a reliable before-run selector.
+The p99.99 and p99.999 results include contrary runs with completion gaps
+unexplained by logged GC or safepoints. The original Task 12 unconditional
+pressure-crossover decision remains **NO_GO**.
+[Mechanism data and limits](mechanism/RESULTS.md)
 
-## Resume the experiment
+## Resume on another host
 
-As of this checkpoint, the portability branch passed the Gradle quick suite
-with four diagnostic workers and four timing controls. The eight-JVM
-independent-host locality replication and the full 84-JVM campaign are pending.
-The historical recovery timer on the collection host was inactive.
-
-Clone the review branch on the second machine and open that checkout in Codex.
+Clone the evidence branch, or update an existing clean checkout, before opening
+the project in Codex.
 
 ```sh
 git clone --branch codex/tailcache-portability git@github.com:Enixes/TailCache.git
 cd TailCache
+python3 scripts/tailcache_verify_archive.py
 ```
 
-Use Java 21 and Python 3.10+ on a quiet Linux host. Keep the frozen 512 MiB
-experimental heap, the JVM CPU budget, and zero priming. Prefer the same JDK
-build when comparing hosts. Confirm which machine is running the workload and
-inspect live processes and existing manifests before launching. The quick check
-uses a separate output directory.
+The verifier uses only the clone and Python 3.10+. It reconstructs the tracked
+percentiles and point conclusions from **252 research JVMs, two retry JVMs,
+36 diagnostic JVMs, and 60 timing controls**. Keep any private Codex session
+backup separate from the clone. If only the clone is available, use the resume
+prompt below.
 
-```sh
-./gradlew --no-daemon tailCacheReproduce -PtailcacheSuite=quick -PtailcacheOut=results/second-host-smoke
-```
+The next task is to integrate the second-host evidence into the manuscript
+abstract, results and figures, claims table, and reproducibility section on the
+preprint branch. Cite the frozen archive. Report host-specific outcomes and
+warning-free coverage, and retain the high-pressure churn and extreme-tail
+caveats. Then complete author review, artifact access and licensing, and approval
+for deposit. The manuscript is still a working draft.
 
-Once the host is ready and the quick report has been reviewed, the next research
-run is the locality suite. It takes about 21 minutes of workload time. Use the
-following command to let Gradle exit after the build and before timing.
-
-```sh
-python3 scripts/tailcache_portable.py reproduce --suite locality --out results/second-host-locality
-```
-
-Use a new result directory for each host. Repeat an identical command in the
-original directory on the original host to resume verified slots. Preserve
-failed, interrupted, and warning-bearing attempts. Keep the two hosts' paired
-distributions separate, record absolute latencies and ratios, and report
-warning-free coverage. The summary and point conclusions are under
-`suite-analysis-*/`. Stop and review after the locality suite before turning to
-the broader matrix.
-
-## Evidence to carry
-
-The tracked repository includes the derived datasets, audits, figures, and
-manuscript. The original host's git-ignored `evidence-archives/` and local
-`results/` are separate. A fresh independent run can start from the clone.
-For a raw-evidence audit, copy the relevant complete cohort directories with
-manifests, logs, and hashes over a private channel. Keep recoveries and rejected
-forks in their original cohorts. See the
-[retained mechanism evidence review](mechanism/REREVIEW_20261118.md).
+No repeat of the completed suites is needed for that revision. For a new
+replication, inspect active processes and retained manifests first, state the
+question and plan before collection, and use a fresh output directory on each
+host. The [portable run guide](PORTABLE_EXPERIMENT.md) has the Gradle commands and
+Java 21 requirements. When resuming an interrupted run, preserve the same host,
+original output directory and frozen settings. Keep original attempts and
+bounded retries separate, and report paired results separately by host and
+cohort.
 
 ## Prompt for a new Codex chat
 
-> Continue the TailCache research from this checkout. Read
-> docs/SESSION_HANDOFF.md, docs/PORTABLE_EXPERIMENT_DEEP_REVIEW.md, and
-> docs/PORTABLE_EXPERIMENT.md. Verify the branch, current host, live processes,
-> and retained manifests first. Plan before implementing or collecting. Focus
-> on an independent eight-JVM locality replication and preserve the historical
-> evidence. Review raw and paired results before making a research claim.
+> Continue TailCache from the 22 November handoff in
+> `docs/SESSION_HANDOFF.md`. Read the second-host conclusions, verified archive
+> index, and manuscript. Plan the manuscript integration before making changes.
+> Use the replicated update-locality reversal as the main result and preserve
+> the bounded negative answer for pressure-induced service crossover. Check PR
+> and branch history before moving evidence to the preprint branch. Verify the
+> archive offline in place of rerunning completed benchmarks.

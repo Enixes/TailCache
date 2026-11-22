@@ -15,7 +15,7 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 | [README.md](../README.md) | Current guidance / entry point |
 | [docs/PORTABLE_EXPERIMENT.md](PORTABLE_EXPERIMENT.md) | Standalone build, collection, resumption and statistics guide |
 | [docs/PORTABLE_EXPERIMENT_DEEP_REVIEW.md](PORTABLE_EXPERIMENT_DEEP_REVIEW.md) | Research claims audit and portability review |
-| [docs/SESSION_HANDOFF.md](SESSION_HANDOFF.md) | Cross-machine handoff for the research, branches, and next replication |
+| [docs/SESSION_HANDOFF.md](SESSION_HANDOFF.md) | Cross-machine handoff after second-host replication, with the verified archive and manuscript next steps |
 | [docs/PORTABLE_EXPERIMENT_PLAN.md](PORTABLE_EXPERIMENT_PLAN.md) | Portable collection implementation plan |
 | [docs/PORTABLE_EXPERIMENT_REVIEW.md](PORTABLE_EXPERIMENT_REVIEW.md) | Portable collection validation and limitations |
 | [docs/DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) | Current guidance / entry point |
