@@ -1,4 +1,4 @@
-# TailCache: Update Locality Reverses Tail-Latency Rankings in Java Caches
+# Same Write Rate, Different Winner: How Update Locality Reverses Tail-Latency Rankings in Java Caches
 
 22 November 2026
 

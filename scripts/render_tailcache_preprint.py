@@ -36,7 +36,9 @@ WHITE = colors.white
 FRAME = 487
 STYLES = {
     "title": ParagraphStyle("Title", fontName="Helvetica-Bold", fontSize=25, leading=30,
-                            textColor=INK, spaceAfter=13, keepWithNext=True),
+                            textColor=INK, spaceAfter=5, keepWithNext=True),
+    "subtitle": ParagraphStyle("Subtitle", fontName="Helvetica-Bold", fontSize=14, leading=18,
+                               textColor=INK, spaceAfter=13, keepWithNext=True),
     "section": ParagraphStyle("Section", fontName="Helvetica-Bold", fontSize=14, leading=17,
                               textColor=INK, spaceBefore=15, spaceAfter=6, keepWithNext=True),
     "subsection": ParagraphStyle("Subsection", fontName="Helvetica-Bold", fontSize=11.5,
@@ -258,8 +260,11 @@ def page_footer(canvas, doc):
 def render(output, charts):
     blocks = (PAPER / "MANUSCRIPT.md").read_text().strip().split("\n\n")
     title = blocks[0].removeprefix("# ")
-    story = []
-    remaining = iter(blocks)
+    headline, _, subtitle = title.partition(": ")
+    story = [Paragraph(inline(headline), STYLES["title"])]
+    if subtitle:
+        story.append(Paragraph(inline(subtitle), STYLES["subtitle"]))
+    remaining = iter(blocks[1:])
     for block in remaining:
         if block.startswith("| "):
             story.append(table(block))
