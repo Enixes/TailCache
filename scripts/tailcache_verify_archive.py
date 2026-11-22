@@ -2,12 +2,33 @@
 """Rebuild the second-host reports from archived evidence without collecting new data."""
 
 import collections
+import math
 import shutil
 import tarfile
 import tempfile
 from pathlib import Path, PurePosixPath
 
 from tailcache_portable import load, report, require, retained, sha, verify_derivatives
+
+LOG_DERIVED_FIELDS = {"geometricMeanRatio", "logRatioSampleSd", "exploratoryPairedBootstrap95"}
+
+
+def same_summary(actual, expected, log_derived=False):
+    """Allow libm rounding only in statistics derived from log ratios."""
+    if type(actual) is not type(expected):
+        return False
+    if isinstance(actual, dict):
+        return actual.keys() == expected.keys() and all(
+            same_summary(value, expected[key], key in LOG_DERIVED_FIELDS)
+            for key, value in actual.items()
+        )
+    if isinstance(actual, list):
+        return len(actual) == len(expected) and all(
+            same_summary(a, b, log_derived) for a, b in zip(actual, expected, strict=True)
+        )
+    if log_derived and isinstance(actual, float):
+        return math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-15)
+    return actual == expected
 
 
 def extract(archive, destination):
@@ -34,8 +55,8 @@ def verify_phase(archive_dir, phase, evidence, reference, phase_dir, generated):
     require((generated / "percentiles.csv").read_text()
             == (archive_dir / evidence["percentiles"]).read_text(),
             f"Percentiles differ for {phase_dir}")
-    require(load(generated / "point-conclusions.json")
-            == load(archive_dir / evidence["pointConclusions"]),
+    require(same_summary(load(generated / "point-conclusions.json"),
+                         load(archive_dir / evidence["pointConclusions"])),
             f"Point conclusions differ for {phase_dir}")
 
     retry = rebuilt["retryReview"]
@@ -48,8 +69,10 @@ def verify_phase(archive_dir, phase, evidence, reference, phase_dir, generated):
         verify_derivatives(slot, retained(slot), run["config"])
     if "compactResults" in reference:
         compact = load(archive_dir.parent / reference["compactResults"])
-        for key in ("pairs", "summaries", "timingControls", "retryReview"):
+        for key in ("pairs", "timingControls", "retryReview"):
             require(rebuilt[key] == compact.get(key), f"{key} differs for {phase_dir}")
+        require(same_summary(rebuilt["summaries"], compact["summaries"]),
+                f"Summaries differ for {phase_dir}")
         for current, original in zip(rebuilt["observations"], compact["observations"], strict=True):
             for name, digest in current["rawSha256"].items():
                 if name != "worker/configuration.txt":

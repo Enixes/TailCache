@@ -39,6 +39,9 @@ From the repository root, run the offline verifier with Python 3.10 or later.
 It checks the archive and slot digests, recomputes latency percentiles and GC
 summaries from raw data, and compares the regenerated results with the tracked
 percentile tables, point conclusions, and retry comparisons.
+The measured percentiles, pair directions, counts, warnings, and digests
+match exactly. Summary statistics that use logarithms allow floating-point
+rounding across platforms.
 
 ```sh
 python3 scripts/tailcache_verify_archive.py
