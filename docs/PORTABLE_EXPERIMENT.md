@@ -32,7 +32,7 @@ Use a quiet Linux host for research measurements.
 | `-PtailcacheSuite=locality` | 8 | 21 minutes | Quick checks and update-locality replication |
 | `-PtailcacheSuite=write-ratio` | 20 | 51 minutes | Response at 0%, 0.5%, 1%, 2%, and 5% writes |
 | `-PtailcacheSuite=locality-long` | 16 | 57 minutes | Update locality with four fresh seeds and 90-second measurement windows |
-| `-PtailcacheSuite=locality-arrival-rate` | 24 | 62 minutes | Locality under heavier reads and at 20% writes, with a shared baseline |
+| `-PtailcacheSuite=locality-arrival-rate` | 32 | 82 minutes | Locality under heavier reads and at 5%, 10%, and 20% writes |
 | `-PtailcacheSuite=rq-matrix` | 64 | 2 hours 44 minutes | Payload and ballast under saturated service and fixed arrivals |
 | `-PtailcacheSuite=saturated-write-pressure` | 96 | 4 hours 6 minutes | Saturated service at 256 B/4 KiB, 0/288 MiB, and 1%/5%/10% writes |
 | `-PtailcacheSuite=write-transition` | 48 | 2 hours 3 minutes | Fixed-arrival response from 0.5% to 2% writes with four fresh seeds |
@@ -136,6 +136,10 @@ read intervals outside the workload. A split p99 closer than four times the
 clock p99 is flagged, and split endpoints with inadequate resolution or tail
 support remain unresolved. Treat these comparisons as direct measurements of
 each stage. Percentiles cannot be subtracted to recover a stage's latency.
+Keep the 30-second windows and report the observed write count for each fork.
+The previous saturated 4 KiB runs at 5% writes and zero ballast recorded
+about 1.5–2.9 million writes per fork. The split run reports its own counts
+and uses them to check percentile support.
 
 Open the printed `suite-analysis-*/SUMMARY.md`. The pilot links to
 `write-timing-qualification.json` with the per-seed timing shifts and gate
@@ -171,9 +175,9 @@ pilot serves as qualification evidence.
 ## Optional follow-up under heavier reads and writes
 
 Test whether the 4 KiB scheduled-response p99.9 locality reversal persists
-when read demand or write demand increases. Use the same Pop!_OS host and runtime. Run the
-split-write experiment first and review its results before scheduling this
-independent follow-up.
+when read demand or write demand increases. Use the same Pop!_OS host and
+runtime. Run the split-write experiment first and review its results before
+scheduling this independent follow-up.
 
 ```sh
 ./gradlew -q tailCacheReproductionPlan -PtailcacheSuite=locality-arrival-rate
@@ -186,17 +190,19 @@ Use each setting below with 2,048 and 32,768 eligible write keys.
 |---|---:|---:|---:|
 | Shared baseline | 50,000 | 5% | 2,500 |
 | Heavier reads | 100,000 | 2.5% | 2,500 |
+| Intermediate write mix | 50,000 | 10% | 5,000 |
 | Heavier write mix | 50,000 | 20% | 10,000 |
 
 Compare heavier reads against the baseline to add about 50,000 reads/s
-at matched nominal write intensity. Compare 20% against 5% at the same
-arrival rate to increase write intensity fourfold. The 20% mix also reduces
-read traffic from about 47,500 to 40,000 reads/s. Check achieved writes per
-second from the measurement windows. Use 4 KiB values, zero ballast, and the
-same heap and churn settings as the second-host locality experiment.
+at matched nominal write intensity. Compare 5%, 10%, and 20% at the same
+arrival rate to step from 2,500 to 5,000 to 10,000 nominal writes/s.
+Read traffic decreases from about 47,500 to 45,000 to 40,000 reads/s across
+those three settings. Check achieved writes per second from the measurement
+windows. Use 4 KiB values, zero ballast, and the same heap and churn settings
+as the second-host locality experiment.
 
-Use two fresh paired seeds per cell, 24 research JVMs in total. Both
-comparisons use the same contemporaneous baseline. Allow 65–75 minutes
+Use two fresh paired seeds per cell, 32 research JVMs in total. Both
+comparisons use the same contemporaneous baseline. Allow 85–95 minutes
 with dependencies cached, plus about five minutes for at most one eligible
 external-noise retry pair. Use scheduled-response p99.9 as the primary
 endpoint. Compare which backend wins at both write-set sizes within each

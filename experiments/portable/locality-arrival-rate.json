@@ -19,6 +19,8 @@
     {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 500, "updateHotset": 32768, "qps": 50000},
     {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 250, "updateHotset": 2048, "qps": 100000},
     {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 250, "updateHotset": 32768, "qps": 100000},
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 1000, "updateHotset": 2048, "qps": 50000},
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 1000, "updateHotset": 32768, "qps": 50000},
     {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 2000, "updateHotset": 2048, "qps": 50000},
     {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 2000, "updateHotset": 32768, "qps": 50000}
   ],

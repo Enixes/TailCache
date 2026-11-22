@@ -81,11 +81,11 @@ class PortableTests(unittest.TestCase):
         configs=ROOT/'experiments/portable'
         design=p.suite_plan(configs,'locality-arrival-rate')
         research=design['phases']['research']['config']
-        self.assertEqual(design['researchJvms'],24)
+        self.assertEqual(design['researchJvms'],32)
         self.assertEqual({(c['qps'],c['writeBps'],c['updateHotset']) for c in research['cells']},
-                         {(rate,writes,hotset) for rate,writes in ((50000,500),(100000,250),(50000,2000))
+                         {(rate,writes,hotset) for rate,writes in ((50000,500),(100000,250),(50000,1000),(50000,2000))
                           for hotset in (2048,32768)})
-        ordinary=[c for c in research['cells'] if c['writeBps']!=2000]
+        ordinary=[c for c in research['cells'] if c['writeBps'] in (250,500)]
         self.assertTrue(all(c['qps']*c['writeBps']==2500*10000 for c in ordinary))
         locality=p.load(configs/'locality.json')
         self.assertTrue(set(locality['seeds']).isdisjoint(research['seeds']))
