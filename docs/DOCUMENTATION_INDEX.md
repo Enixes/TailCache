@@ -234,3 +234,4 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 - [Cross-host locality replication review](second-host-20261120/locality/CROSS_HOST_REVIEW.md).
 - [Follow-up campaign review (`write-ratio`, `locality-long`, `rq-matrix`)](second-host-20261120/followups-01/CAMPAIGN_REVIEW.md) and [interpretation](second-host-20261120/followups-01/INTERPRETATION.md).
 - [Tightened saturated pressure and write-transition campaign review](second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md).
+- [23 November Pop!_OS follow-up, split-timing qualification, and verified raw archive](nov23-popos-followup/README.md).

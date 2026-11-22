@@ -1,6 +1,6 @@
 # TailCache research handoff
 
-Updated 23 November 2026 before the split-write experiment on Pop!_OS.
+Updated 23 November 2026 after the Pop!_OS locality extension and split-timing pilots.
 
 ## Start here
 
@@ -13,10 +13,10 @@ Updated 23 November 2026 before the split-write experiment on Pop!_OS.
   It already includes the two-host results and the Agy review revisions.
   [Manuscript](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md)
   · [Claim map](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/CLAIMS.md)
-- The split-write experiment is implemented and planned. No Pop!_OS research
-  forks had been launched at this handoff. The Gradle plan, launcher tests,
-  Java functional checks, and four short Mac diagnostic forks passed. Two
-  existing Java tests depend on Linux `/proc` and must pass on the target.
+- The [23 November follow-up](nov23-popos-followup/README.md) is collected.
+  The locality suite completed all 32 research JVMs. Both the all-write and
+  sampled split-write pilots completed but failed their overhead gates.
+  No split-write research forks were released.
 
 ## Findings carried forward
 
@@ -34,42 +34,28 @@ Task 12 pressure-crossover decision remains **NO_GO**. The
 [archive verifier](second-host-20261120/archive/README.md) reproduced 350 JVM
 records offline. Reuse this evidence for the questions it answers.
 
-## Resume the Pop!_OS work
+## Resume the research
 
-Open the existing clean checkout on the Ryzen 7 5800X host. Fetch the two
-branches before editing or collecting. An existing independent working tree
-should be preserved before switching branches.
+Read the [23 November review](nov23-popos-followup/README.md) and verify the new
+evidence from the portability checkout.
 
 ```sh
-git fetch origin
-git switch codex/tailcache-portability
-git merge --ff-only origin/codex/tailcache-portability
-./gradlew -q tailCacheReproductionPlan -PtailcacheSuite=split-write-timing
+python3 scripts/tailcache_verify_archive.py --popos-followup
 ```
 
-Inspect active benchmark processes and `results/split-write-popos-01` before
-starting collection. Match native Linux, Temurin 21.0.13+9, G1, and the
-12-CPU JVM budget used for the original saturated matrix. Use the run plan's
-single Gradle command after confirming host readiness and run authorization.
-Allow 65–75 minutes with cached dependencies. The command runs an eight-JVM
-instrumentation pilot before 16 research JVMs. A failed pilot stops research.
-Use the original output directory and frozen bundle to reuse sealed slots.
-Keep any interrupted attempt, warnings, and the bounded external retry receipts.
+The locality reversal at scheduled-response p99.9 held at 100,000 intended
+arrivals/s at the same approximate writes/s as the 50,000-arrival baseline.
+With 32,768 write keys Chronicle led at all tested loads. With 2,048 write keys
+the rankings were mixed at 10% and 20% writes. Keep the paired warning and
+scope details from that cohort.
 
-After qualification and reconciliation, use the new research cohort as the
-primary source for the paper's write-cost comparison at 256 B and 4 KiB,
-5% writes, and zero ballast. Present array construction, adapter `put()`,
-read-only and whole-operation measurements from the same forks. Retain
-the earlier matrix for the broader pressure and write-rate comparisons and the
-two-host scheduled cohorts for the response reversal. Keep pilot evidence in its
-qualification role. Update the preprint and companion after the research outcome
-is known. Author review, artifact access and licensing, and deposit remain
-publication steps.
-
-The optional next experiment is the [read and write locality sensitivity suite](PORTABLE_EXPERIMENT.md#optional-follow-up-under-heavier-reads-and-writes).
-It adds a 100,000-arrival arm at approximately 2,500 writes/s and a 5%, 10%, and
-20% write sweep at 50,000 arrivals/s. Review the split-write results first and
-run the follow-up in its own result directory.
+The split-write gates rejected both instruments. The bounded sampled attempt
+is complete. The existing combined-operation results still cover the original
+service questions, and the decomposition into construction and adapter
+`put()` remains unresolved. No benchmark is queued. The next manuscript
+revision should add the locality sensitivity results and disclose the split
+qualification outcome, then proceed through author review, artifact licensing
+and access, and deposit approval.
 
 ## Resume the conversation
 
@@ -80,9 +66,6 @@ and recovery instructions. If the session backup is unavailable, open Codex
 from the checkout with the prompt below.
 
 > Continue TailCache from the 23 November handoff in `docs/SESSION_HANDOFF.md`.
-> Read the split-write run plan and inspect live workers and the retained
-> result directory first. The implementation and Agy manuscript revisions are
-> ready. Use the native Pop!_OS host and the frozen pilot and research design
-> when collection is authorized. Preserve original evidence and gates. If the
-> split results qualify, use them for the manuscript's write-cost comparison
-> and retain the prior cohorts for the other claims.
+> Read and verify the Pop!_OS follow-up archive. Add the bounded locality
+> extension and split-timing qualification outcome to the manuscript and claims
+> map. Preserve the completed saturated-service evidence and the failed gates.

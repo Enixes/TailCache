@@ -1,0 +1,720 @@
+{
+  "points": [
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0
+      },
+      "channel": "service",
+      "quantile": 50,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 130.0,
+        "CHRONICLE_IN_MEMORY": 711.5
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 5.473076923076923,
+        "geometricMeanRatio": 5.473075571652355,
+        "minimumRatio": 5.469230769230769,
+        "maximumRatio": 5.476923076923077,
+        "logRatioSampleSd": 0.0009938255763694915,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0
+      },
+      "channel": "service",
+      "quantile": 99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6209.0,
+        "CHRONICLE_IN_MEMORY": 7019.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.1305464795776554,
+        "geometricMeanRatio": 1.130480206537036,
+        "minimumRatio": 1.1183053557154277,
+        "maximumRatio": 1.1427876034398832,
+        "logRatioSampleSd": 0.015313160728184201,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0
+      },
+      "channel": "service",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6993.0,
+        "CHRONICLE_IN_MEMORY": 7725.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.1049511464087305,
+        "geometricMeanRatio": 1.1047444624480462,
+        "minimumRatio": 1.0835804037837076,
+        "maximumRatio": 1.1263218890337534,
+        "logRatioSampleSd": 0.02735556543331867,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0
+      },
+      "channel": "service",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 9835.0,
+        "CHRONICLE_IN_MEMORY": 11495.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.1690681577590185,
+        "geometricMeanRatio": 1.168898856826897,
+        "minimumRatio": 1.149172932330827,
+        "maximumRatio": 1.18896338318721,
+        "logRatioSampleSd": 0.024069438642771848,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0
+      },
+      "channel": "service",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 15127.0,
+        "CHRONICLE_IN_MEMORY": 595711.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 39.38952963840323,
+        "geometricMeanRatio": 39.37846799509746,
+        "minimumRatio": 38.45609324864122,
+        "maximumRatio": 40.322966028165254,
+        "logRatioSampleSd": 0.033519709556395674,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "service",
+      "quantile": 50,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 130.0,
+        "CHRONICLE_IN_MEMORY": 711.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 5.469230769230769,
+        "geometricMeanRatio": 5.469230769230769,
+        "minimumRatio": 5.469230769230769,
+        "maximumRatio": 5.469230769230769,
+        "logRatioSampleSd": 0.0,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "service",
+      "quantile": 99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 5607.0,
+        "CHRONICLE_IN_MEMORY": 6895.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.2299033398347272,
+        "geometricMeanRatio": 1.2290979933421449,
+        "minimumRatio": 1.1854022376132125,
+        "maximumRatio": 1.2744044420562421,
+        "logRatioSampleSd": 0.05119227330720575,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "service",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6423.0,
+        "CHRONICLE_IN_MEMORY": 7761.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.2087189481822513,
+        "geometricMeanRatio": 1.2079408557470324,
+        "minimumRatio": 1.1653555452722506,
+        "maximumRatio": 1.252082351092252,
+        "logRatioSampleSd": 0.050757409294871554,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "service",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 9687.0,
+        "CHRONICLE_IN_MEMORY": 11307.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.1684218538790134,
+        "geometricMeanRatio": 1.1668849809361486,
+        "minimumRatio": 1.1085130073894118,
+        "maximumRatio": 1.228330700368615,
+        "logRatioSampleSd": 0.0725750423727736,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "service",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 13243.0,
+        "CHRONICLE_IN_MEMORY": 594687.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 44.90313569771487,
+        "geometricMeanRatio": 44.9008044651387,
+        "minimumRatio": 44.445583656109974,
+        "maximumRatio": 45.36068773931977,
+        "logRatioSampleSd": 0.014410991340095238,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-value-construction",
+      "quantile": 50,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 5327.0,
+        "CHRONICLE_IN_MEMORY": 5687.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 1,
+        "ties": 1,
+        "medianRatio": 1.0676310351305656,
+        "geometricMeanRatio": 1.0654867762019062,
+        "minimumRatio": 1.0,
+        "maximumRatio": 1.135262070261131,
+        "logRatioSampleSd": 0.08970605753201807,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "Mixed, missing or failed pairs; no resolved direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-value-construction",
+      "quantile": 99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6379.0,
+        "CHRONICLE_IN_MEMORY": 6869.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.0785611843780716,
+        "geometricMeanRatio": 1.076701733344574,
+        "minimumRatio": 1.015255530129672,
+        "maximumRatio": 1.141866838626471,
+        "logRatioSampleSd": 0.08310213483731835,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-value-construction",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 9623.0,
+        "CHRONICLE_IN_MEMORY": 10543.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.09676336458528,
+        "geometricMeanRatio": 1.095778265662016,
+        "minimumRatio": 1.0502889587346649,
+        "maximumRatio": 1.1432377704358947,
+        "logRatioSampleSd": 0.05996199121508606,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-value-construction",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "CHRONICLE_IN_MEMORY",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 509951.0,
+        "CHRONICLE_IN_MEMORY": 14375.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.028202843534586238,
+        "geometricMeanRatio": 0.028195180813170975,
+        "minimumRatio": 0.027545452974152253,
+        "maximumRatio": 0.028860234095020223,
+        "logRatioSampleSd": 0.0329704015623554,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-value-construction",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6924287.0,
+        "CHRONICLE_IN_MEMORY": 613631.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.08859798669332805,
+        "geometricMeanRatio": 0.08848877288992085,
+        "minimumRatio": 0.0842002237907671,
+        "maximumRatio": 0.09299574959588901,
+        "logRatioSampleSd": 0.07025544966472892,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": true,
+      "conclusion": "Clock floor or rare-tail support limits direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-cache-put",
+      "quantile": 50,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 135.0,
+        "CHRONICLE_IN_MEMORY": 821.5
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 6.0989010989010985,
+        "geometricMeanRatio": 6.0876473739409835,
+        "minimumRatio": 5.728571428571429,
+        "maximumRatio": 6.469230769230769,
+        "logRatioSampleSd": 0.08597783778577393,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-cache-put",
+      "quantile": 99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 971.0,
+        "CHRONICLE_IN_MEMORY": 1478.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.523106486241579,
+        "geometricMeanRatio": 1.5223867001314078,
+        "minimumRatio": 1.4762865792129163,
+        "maximumRatio": 1.5699263932702419,
+        "logRatioSampleSd": 0.043486266812819065,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-cache-put",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 1112.0,
+        "CHRONICLE_IN_MEMORY": 3507.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 3.162191947774958,
+        "geometricMeanRatio": 3.156649045565792,
+        "minimumRatio": 2.9750430292598966,
+        "maximumRatio": 3.349340866290019,
+        "logRatioSampleSd": 0.08379573693095396,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-cache-put",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 4195.0,
+        "CHRONICLE_IN_MEMORY": 5887.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.4043013207515744,
+        "geometricMeanRatio": 1.4034758345929763,
+        "minimumRatio": 1.3561579808366442,
+        "maximumRatio": 1.4524446606665045,
+        "logRatioSampleSd": 0.04850216664604898,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 2,
+      "inputs": {
+        "payloadBytes": 4096,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 32768,
+        "qps": 0,
+        "splitWriteTiming": true
+      },
+      "channel": "write-cache-put",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 17755.0,
+        "CHRONICLE_IN_MEMORY": 12747.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.762843727111578,
+        "geometricMeanRatio": 0.7446939713700932,
+        "minimumRatio": 0.5974307862679956,
+        "maximumRatio": 0.9282566679551604,
+        "logRatioSampleSd": 0.31160063084069073,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 2,
+      "tailSupportWarning": true,
+      "conclusion": "Clock floor or rare-tail support limits direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    }
+  ],
+  "contrasts": []
+}

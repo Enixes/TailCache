@@ -37,6 +37,7 @@ Use a quiet Linux host for research measurements.
 | `-PtailcacheSuite=saturated-write-pressure` | 96 | 4 hours 6 minutes | Saturated service at 256 B/4 KiB, 0/288 MiB, and 1%/5%/10% writes |
 | `-PtailcacheSuite=write-transition` | 48 | 2 hours 3 minutes | Fixed-arrival response from 0.5% to 2% writes with four fresh seeds |
 | `-PtailcacheSuite=split-write-timing` | 16 | 62 minutes including pilot | Separate fresh-value construction from the cache write at 256 B and 4 KiB |
+| `-PtailcacheSuite=sampled-split-write-timing` | 16 | 62 minutes including pilot | Same split endpoints with one timestamp sample per eight writes |
 | `-PtailcacheSuite=all` (default) | 84 | 3 hours 36 minutes | Quick checks, locality, write ratio and pressure/payload comparisons |
 
 Times exclude dependency downloads, correctness tests, setup, timing controls and

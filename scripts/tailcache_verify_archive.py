@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Rebuild the second-host reports from archived evidence without collecting new data."""
 
+import argparse
 import collections
 import math
 import shutil
@@ -9,7 +10,7 @@ import tarfile
 import tempfile
 from pathlib import Path, PurePosixPath
 
-from tailcache_portable import load, report, require, retained, sha, verify_derivatives
+from tailcache_portable import load, qualify_write_timing, report, require, retained, sha, verify_derivatives
 
 LOG_DERIVED_FIELDS = {"geometricMeanRatio", "logRatioSampleSd", "exploratoryPairedBootstrap95"}
 
@@ -59,6 +60,9 @@ def verify_phase(archive_dir, phase, evidence, reference, phase_dir, generated):
     require(same_summary(load(generated / "point-conclusions.json"),
                          load(archive_dir / evidence["pointConclusions"])),
             f"Point conclusions differ for {phase_dir}")
+    if phase == "write-timing-pilot":
+        audit = (archive_dir / evidence["pointConclusions"]).with_name("write-timing-qualification.json")
+        require(qualify_write_timing(rebuilt) == load(audit), f"Pilot qualification differs for {phase_dir}")
 
     retry = rebuilt["retryReview"]
     retry_count = 0 if retry is None else sum(len(attempt["statuses"]) for attempt in retry["attempts"])
@@ -85,10 +89,14 @@ def verify_phase(archive_dir, phase, evidence, reference, phase_dir, generated):
 
 
 def main():
-    archive_dir = Path(__file__).resolve().parents[1] / "docs/second-host-20261120/archive"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--popos-followup", action="store_true", help="Verify the 23 November locality and timing work")
+    dataset = "nov23-popos-followup" if parser.parse_args().popos_followup else "second-host-20261120"
+    archive_dir = Path(__file__).resolve().parents[1] / "docs" / dataset / "archive"
     published = load(archive_dir.parent / "MANIFEST.json")["campaigns"]
     counts = collections.Counter()
-    for bundle in load(archive_dir / "MANIFEST.json")["collections"]:
+    archive_manifest = load(archive_dir / "MANIFEST.json")
+    for bundle in archive_manifest["collections"]:
         archive = archive_dir / bundle["file"]
         require(sha(archive) == bundle["sha256"], f"Archive checksum differs: {archive.name}")
         campaign = published[bundle["campaign"]]
@@ -108,7 +116,8 @@ def main():
             for phase, evidence in bundle["phases"].items():
                 counts.update(verify_phase(archive_dir, phase, evidence, phases[phase],
                                            collected / phase, work / f"rebuilt-{phase}"))
-    require(counts == {"research": 252, "retry": 2, "smoke": 32, "pilot": 4, "control": 60},
+    expected = archive_manifest.get("coverage", {"research": 252, "retry": 2, "smoke": 32, "pilot": 4, "control": 60})
+    require(counts == expected,
             f"Dataset coverage differs: {dict(counts)}")
     print(f"Verified {sum(counts.values())} JVM records across the archive.")
 
