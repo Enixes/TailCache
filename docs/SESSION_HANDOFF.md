@@ -14,7 +14,7 @@ Updated 23 November 2026 before the split-write experiment on Pop!_OS.
   [Manuscript](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md)
   · [Claim map](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/CLAIMS.md)
 - The split-write experiment is implemented and planned. No Pop!_OS research
-  forks had been launched at this handoff. The Gradle plan, 57 launcher tests,
+  forks had been launched at this handoff. The Gradle plan, launcher tests,
   Java functional checks, and four short Mac diagnostic forks passed. Two
   existing Java tests depend on Linux `/proc` and must pass on the target.
 
@@ -65,6 +65,10 @@ two-host scheduled cohorts for the response reversal. Keep pilot evidence in its
 qualification role. Update the preprint and companion after the research outcome
 is known. Author review, artifact access and licensing, and deposit remain
 publication steps.
+
+The optional next experiment is the [higher-arrival-rate locality suite](PORTABLE_EXPERIMENT.md#optional-follow-up-at-a-higher-arrival-rate).
+It varies read demand at approximately 2,500 writes/s. Review the split-write
+results first and run the load follow-up in its own result directory.
 
 ## Resume the conversation
 

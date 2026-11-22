@@ -52,6 +52,7 @@ SUITES = {
     'locality': ('locality',),
     'write-ratio': ('write-ratio',),
     'locality-long': ('locality-long',),
+    'locality-arrival-rate': ('locality-arrival-rate',),
     'rq-matrix': ('rq-matrix',),
     'saturated-write-pressure': ('saturated-write-pressure',),
     'write-transition': ('write-transition',),

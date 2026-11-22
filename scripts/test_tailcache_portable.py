@@ -77,6 +77,17 @@ class PortableTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'qualify instrumentation'):
             p.run(research['config'],self.root/'unqualified')
 
+    def test_locality_arrival_rate_suite_keeps_nominal_writes_fixed(self):
+        configs=ROOT/'experiments/portable'
+        design=p.suite_plan(configs,'locality-arrival-rate')
+        research=design['phases']['research']['config']
+        self.assertEqual(design['researchJvms'],16)
+        self.assertEqual({(c['qps'],c['updateHotset']) for c in research['cells']},
+                         {(rate,hotset) for rate in (50000,100000) for hotset in (2048,32768)})
+        self.assertTrue(all(c['qps']*c['writeBps']==2500*10000 for c in research['cells']))
+        locality=p.load(configs/'locality.json')
+        self.assertTrue(set(locality['seeds']).isdisjoint(research['seeds']))
+
     def test_split_write_timing_flag_and_histogram_counts(self):
         original = p.schedule(self.config)[0]
         split = dict(original,splitWriteTiming=True)
