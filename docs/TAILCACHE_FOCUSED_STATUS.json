@@ -1,0 +1,86 @@
+{
+  "scope": "First RQ-focused exploratory follow-up; historical Task12 acceptance remains unchanged",
+  "taskComplete": true,
+  "collectionComplete": true,
+  "benchmarksStopped": true,
+  "completedUtc": "2026-11-08T08:50:43.039904+00:00",
+  "workloadForks": 132,
+  "controlForks": 36,
+  "batches": 12,
+  "replacementForks": 0,
+  "ooms": 0,
+  "censoredRequests": 0,
+  "collectionSeconds": 3841.172042,
+  "review": "docs/TAILCACHE_FOCUSED_RESULTS.md",
+  "dataset": "evidence-archives/focused-rq-results-20261108-001/study.json",
+  "audit": "evidence-archives/focused-rq-results-20261108-001/audit.json",
+  "deliveryArchive": "evidence-archives/focused-rq-delivery-20261108-001.tar.gz",
+  "deliveryManifest": "evidence-archives/focused-rq-delivery-20261108-001.json",
+  "researchStatus": "COMPLETE_EXPLORATORY_RQ_ANSWER",
+  "moreCollectionPlanned": false,
+  "deferredResearch": {
+    "recordedLocalDate": "2026-11-09",
+    "status": "BOUNDED_FOLLOW_UP_COMPLETE_BROADER_RESEARCH_DEFERRED",
+    "plan": "docs/TAILCACHE_12_DEFERRED_RESEARCH.md",
+    "preprintPlan": "docs/TAILCACHE_PREPRINT_PLAN.md",
+    "executionPlan": "docs/TAILCACHE_MIDPOINT_EXECUTION_PLAN.md",
+    "implementationReview": "docs/TAILCACHE_MIDPOINT_IMPLEMENTATION_REVIEW.md",
+    "applicationDeadlineLocalDate": "2026-12-01",
+    "originalUnconditionalProtocolQualified": false,
+    "confirmationBatchLaunched": true,
+    "newCollectionScheduled": false,
+    "results": "docs/TAILCACHE_MIDPOINT_RESULTS.md"
+  },
+  "p9999Extension": {
+    "complete": true,
+    "postHoc": true,
+    "newBenchmarkRuns": 0,
+    "dataset": "evidence-archives/focused-rq-p9999-20261108-001/study.json",
+    "audit": "evidence-archives/focused-rq-p9999-20261108-001/audit.json",
+    "review": "docs/TAILCACHE_FOCUSED_RESULTS.md#requested-p9999-extension",
+    "deliveryArchive": "evidence-archives/focused-rq-p9999-delivery-20261108-001.tar.gz"
+  },
+  "p99999Extension": {
+    "complete": true,
+    "postHoc": true,
+    "newBenchmarkRuns": 0,
+    "dataset": "evidence-archives/focused-rq-p99999-20261108-001/study.json",
+    "audit": "evidence-archives/focused-rq-p99999-20261108-001/audit.json",
+    "review": "docs/TAILCACHE_FOCUSED_RESULTS.md#requested-p99999-extension",
+    "explorer": "docs/TAILCACHE_RESULTS_EXPLORER.html",
+    "deliveryArchive": "evidence-archives/focused-rq-p99999-delivery-20261108-001.tar.gz"
+  },
+  "fullTailExtension": {
+    "complete": true,
+    "newBenchmarkRuns": 0,
+    "dataset": "evidence-archives/focused-rq-tails-20261108-001/tails.json",
+    "audit": "evidence-archives/focused-rq-tails-20261108-001/audit.json",
+    "frozenClaims": "docs/TAILCACHE_FROZEN_CLAIMS.md",
+    "deliveryArchive": "evidence-archives/focused-rq-tails-delivery-20261108-001.tar.gz",
+    "confirmationBatchLaunched": false
+  },
+  "midpointFollowUp": {
+    "collectionComplete": true,
+    "analysisComplete": true,
+    "workloadForks": 30,
+    "controlForks": 9,
+    "primarySeed": 24301,
+    "additionalSeeds": [
+      24302,
+      24303
+    ],
+    "ballastMiB": [
+      0,
+      104,
+      208
+    ],
+    "adaptivePointCollected": false,
+    "replacementForks": 0,
+    "warningForks": 5,
+    "conclusion": "0-to-208MiB response p99.9 bracket repeats;104MiB mixed; RSS higher for Chronicle despite lower post-GC heap",
+    "review": "docs/TAILCACHE_MIDPOINT_RESULTS.md",
+    "dataset": "evidence-archives/midpoint-results-20261110-001/study.json",
+    "audit": "evidence-archives/midpoint-results-20261110-001/audit.json",
+    "explorer": "docs/TAILCACHE_MIDPOINT_EXPLORER.html"
+  }
+}

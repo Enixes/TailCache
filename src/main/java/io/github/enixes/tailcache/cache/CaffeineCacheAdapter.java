@@ -28,6 +28,28 @@ public final class CaffeineCacheAdapter implements CacheAdapter {
         return "maximumSize=" + maximumEntries + ",executor=ForkJoinPool.commonPool(default)";
     }
 
+    /** Pinned-version inspection used only by Task 12 setup/retention diagnostics. */
+    public int frequencySketchSlotsForDiagnostic() {
+        cache.cleanUp();
+        Object bounded = cache.asMap();
+        try {
+            java.lang.reflect.Method method = null;
+            for (Class<?> type = bounded.getClass(); type != null; type = type.getSuperclass()) {
+                try { method = type.getDeclaredMethod("frequencySketch"); break; }
+                catch (NoSuchMethodException ignored) { }
+            }
+            if (method == null) throw new IllegalStateException("Caffeine frequency sketch method unavailable");
+            method.setAccessible(true);
+            Object sketch = method.invoke(bounded);
+            java.lang.reflect.Field table = sketch.getClass().getDeclaredField("table");
+            table.setAccessible(true);
+            long[] slots = (long[]) table.get(sketch);
+            return slots == null ? 0 : slots.length;
+        } catch (ReflectiveOperationException failure) {
+            throw new IllegalStateException("Caffeine 3.2.4 policy inspection failed", failure);
+        }
+    }
+
     @Override
     public byte[] get(Long key) {
         return cache.getIfPresent(key);

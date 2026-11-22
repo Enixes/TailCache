@@ -22,12 +22,12 @@ Chronicle's `maxBloatFactor(1.0)` and `allowSegmentTiering(true)` are both froze
 - Java version is pinned to 21 for the study.
 - Dependency versions are pinned in `build.gradle.kts`.
 - Workloads are generated from explicit fixed seeds.
-- Synthetic keys and payload bytes are generated during benchmark setup, not inside measured operations.
+- Synthetic keys and operation traces are generated during setup. The legacy smoke/pilot workloads also pre-generate payloads; Task 12 creates fresh immutable payloads inside measured writes, as specified below.
 - Benchmark setup generates the trace before measurement; random-number generation is not part of measured cache-operation latency.
 - Keys are pre-boxed during setup so measured operations do not include synthetic `Long` boxing allocation.
 - Mixed-workload key selection and read/write selection use separate deterministic random streams so changing the read/write ratio does not silently change the logical key sequence.
 - The 95/5 and 70/30 mixes contain exact aggregate operation counts over a complete generated trace; the operation flags are deterministically shuffled.
-- Mixed writes use one preallocated replacement payload per logical key, avoiding both measured allocation and the artifact of making many Caffeine entries point at one shared replacement object.
+- Legacy Task 05–09 mixed writes use one preallocated replacement payload per logical key. Their payload bank makes those workloads unsuitable for the Task 12 live-heap crossover claim.
 - Operation-level `CacheSmokeBenchmark` cursors reset at each JMH iteration.
 - Mixed-workload `WorkloadCursorState` is per-thread and resets at each iteration; workers use deterministic staggered offsets over the shared immutable trace.
 - Warmup, measurement and fork counts must be recorded with raw JMH output.
@@ -110,6 +110,22 @@ Keep and report:
 - a sizing assumption that materially changes the result.
 
 Invalid measurements should be excluded from conclusions but documented with the reason for exclusion.
+
+## Task 12 crossover boundary and validation
+
+`CrossoverWorkload` is the common one-worker implementation for JMH SampleTime and the every-operation runner. It incrementally populates Caffeine/Chronicle in-memory and discards setup value references. It retains only boxed keys, an operation trace, and primitive version metadata alongside the cache; there is no replacement payload bank. Each 95/5 existing-key write constructs a fresh array from the key and update ordinal, inserts it, and never mutates it. Generation, allocation, the cache operation and consuming its result are included in the workload-operation boundary. Both backends receive the same logical sequence for a given operation prefix, although elapsed-time runs naturally complete different numbers of operations.
+
+Candidate capacity controls are Caffeine `ceil(1.25 * residents)` and Chronicle `2 * residents`. Setup verifies every value, resident count and Caffeine's initialized frequency sketch using an explicitly pinned-version diagnostic. Retained application data consist of touched arrays no larger than 32 KiB. An independent wall-clock churn worker allocates into a bounded ring, records achieved/dropped demand and missed ticks, and caps recovery bursts after stalls. Both backends receive the same offered application data and churn inputs; resulting total heap occupancy is measured as an outcome rather than forced equal.
+
+The common trace contains 40,000 operations (exactly 38,000 reads and 2,000 writes); its largest array is approximately 320 KiB. Resident metadata is bounded to at most 32,768 keys, and retained application data use linked groups of 128 arrays. This avoids creating a large flat reference container or the former approximately 800-KiB trace array as a G1 humongous object. Churn reports nominal array payload demand separately from its worker's measured JVM allocation bytes, which also include headers and worker overhead.
+
+The default exploratory 512-MiB fixed G1 heap, 8,192 residents, zero ballast and 16-MiB/s churn are **not calibrated campaign settings**. Defaults use 12 warmups, eight measurements and three JMH forks. The allocating integrity check after the main warmup is followed by two settling warmups; trial teardown checks every logical value again. Shorter smoke settings are explicitly diagnostic. Full-GC/class-histogram retention inspection occurs in separate JVMs outside latency measurement.
+
+The every-operation channel uses preallocated HdrHistogram storage, exports every service interval and inter-completion gap count, and retains long-stall intervals after the window. Service time and completion gaps are separate endpoints; gaps include recorder/loop overhead. It applies no coordinated-omission correction or invented arrival schedule. Histogram or event overflow rejects the evidence instead of clamping a stall. Validation-only long-operation and `System.gc()` injections are separate attempts; an induced GC must be corroborated in raw GC/safepoint logs and overlapping worker gap evidence. Timer/recorder floors are descriptive and are never subtracted from percentiles.
+
+All measurement recorders are allocated before warmup; histogram serialization runs after the final measurement window, avoiding export allocation between measured iterations. Their retained memory is common within this channel but differs from JMH SampleTime and must be included in calibration/observer-effect assessment. Worker-to-GC clock alignment is bracketed and its uncertainty retained. Compiler diagnostics retain both JMH's wider profiler envelope and a narrower iteration-worker envelope; neither proves every unprofiled fork was compilation-free.
+
+Task 12 campaign readiness still requires pressure calibration, post-GC occupancy/exposure parsing, observer-effect/JIT qualification, and the eight-cell pilot described in `docs/TAILCACHE_12_PLAN.md`.
 
 ## 8. Data restrictions
 

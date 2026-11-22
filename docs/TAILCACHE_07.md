@@ -2,13 +2,15 @@
 
 **Status: diagnostic pilot completed; latency results rejected for research use.**
 
+The post-implementation researcher audit and subsequent corrections are in [TailCache 07 review](TAILCACHE_07_REVIEW.md).
+
 ## What changed
 
 - `traceAndBranchFloor` measures deterministic trace lookup, branch selection, and Blackhole cost without a cache operation. It is a diagnostic lower bound, never a value to subtract from cache latency.
 - Mixed read results go to JMH `Blackhole`. Trial teardown checks how many resident entries hold the replacement value, so the write branch has an observable effect. The floor benchmark should leave zero entries updated.
 - Persisted trials can use `-Dtailcache.persistedRoot=...` instead of the platform temporary directory. Trial setup loads the file into the page cache and sweeps all resident keys through Chronicle's own mapping. Before each timed iteration the final harness touches the mapped file pages without materializing a fresh payload per entry. Map files are still closed and deleted at trial teardown.
 - Linux pilot OS counters record minor/major process faults and process read/write bytes around each JMH iteration. These profiler envelopes include iteration setup and JVM activity; they are conservative disturbance indicators, **not** map-specific or exact timed-operation attribution.
-- The pilot task now pins G1 and a 512 MiB heap (`-Xms512m -Xmx512m`), retains raw JMH histograms, and runs JMH's compiler profiler. The first two exploratory matrices below predate the heap/JIT-profiler addition and are identified separately.
+- The current unprofiled pilot task pins G1 and a 512 MiB heap (`-Xms512m -Xmx512m`) and retains raw JMH histograms. `tailCache07PilotDiagnostics` runs the same conditions in separate forks with the OS-counter and JMH compiler profilers. Run ids cannot overwrite a nonempty result directory. The exploratory runs below predate this split; `jit-pinned-1t` and `postfix-validation` had profilers on their sampled-latency forks and remain diagnostic only.
 - The normal TailCache 05/06 tasks select `mixedWorkload` explicitly, so adding a floor benchmark does not silently expand their matrix.
 - `tailCache07OpenDiagnostic` separately measures map reopen and first/second full-key sweeps. It does not evict the OS page cache and therefore must not be called a true cold-cache measurement.
 
@@ -29,7 +31,7 @@ The raw JSON, JMH text, per-fork OS CSVs, environment snapshots, and analysis ta
 
 The exploratory matrices and fixed-heap JIT diagnostic used an earlier iteration setup that swept resident keys via ordinary Chronicle `get()`. That prefaulted Chronicle's own mapping but also materialized payload arrays before every timed iteration, adding avoidable garbage. The final harness replaces that repeated sweep with allocation-free mapped-page touches; the earlier data remain useful as bias diagnostics only. A short post-fix validation is retained separately and is not folded into the pilot comparison.
 
-The post-fix validation completed and deleted its map file. It recorded zero major faults and zero process reads in five measurement envelopes, but one envelope still recorded 26,390,528 process write bytes. This is process-wide I/O rather than proof of a particular Chronicle writeback event. It is enough to keep the warm persisted acceptance gate open.
+The post-fix validation completed and deleted its map file. It recorded zero major faults and zero process reads in five measurement envelopes, but one envelope still recorded 26,390,528 process write bytes. This is process-wide I/O rather than proof of a particular Chronicle writeback event. Existing-key puts dirty mapped pages during warm steady-state operation, so write bytes alone are not a cold-state failure. This run cannot establish whether setup writeback had fully drained; the warm persisted acceptance gate remains open.
 
 ## Bias checks and observed failures
 
@@ -55,7 +57,7 @@ The separate reopen test includes constructor/open time, then two full-key sweep
 1. Use a quiet host with memory headroom, little or no swap activity, and recorded CPU frequency/thermal state. Keep persisted storage on a specified filesystem and retain mount/device metadata.
 2. Keep the 512 MiB fixed heap, G1, analytics-disabled flag, and explicit tiering/checksum summaries. Reevaluate the heap size if the future pressure workload needs a different setting; pin it per campaign.
 3. Pilot warmup again with compiler profiling. Accept a setting only after late warmup and measured-iteration distributions are stable and measurement-period compiler activity is negligible. A benchmark-specific compilation log can resolve any ambiguity left by whole-JVM compiler time.
-4. For persisted-warm cases, inspect per-iteration faults and process I/O after prefaulting. Any major fault or material read/write disturbance triggers investigation; use map-specific tracing if attribution is needed. Never mix reopen/first-touch time into the warm distribution.
+4. For persisted-warm cases, inspect per-iteration faults and process I/O after prefaulting. Major faults, material reads, or unexplained write bursts trigger investigation; expected ongoing writeback from mixed puts should be recorded and interpreted separately from setup writeback. Use map-specific tracing if attribution is needed. Never mix reopen/first-touch time into the warm distribution.
 5. Compare replicated runs and raw histograms. Pre-register a stability threshold based on the effect size the study aims to resolve; do not hide failed conditions or pool across materially different run states.
 6. Only then pilot shared-worker contention and the separate GC-pressure crossover workload. The present replacement-value bank remains an on-heap shadow set, and the current 2,048/4,096 occupancy setting is not a frozen crossover protocol.
 
@@ -63,6 +65,7 @@ The separate reopen test includes constructor/open time, then two full-key sweep
 
 ```bash
 ./gradlew --offline tailCache07Pilot -Ptailcache07RunId=pilot-a
+./gradlew --offline tailCache07PilotDiagnostics -Ptailcache07RunId=pilot-a-diagnostics
 ./gradlew --offline tailCache07Pilot -Ptailcache07RunId=pilot-b -Ptailcache07Modes=CHRONICLE_PERSISTED,CHRONICLE_IN_MEMORY,CAFFEINE -Ptailcache07Payloads=BYTES_256
 ./gradlew --offline tailCache07Pilot -Ptailcache07RunId=floor -Ptailcache07Benchmark=traceAndBranchFloor -Ptailcache07Modes=CAFFEINE -Ptailcache07Payloads=BYTES_256
 ./gradlew --offline tailCache07OpenDiagnostic

@@ -1,0 +1,24 @@
+# Source-matched transport qualification review — 5 November 2026
+
+Sequence native-final-transport-20261105-001 completed and raw replay passed for all stages. Current source is dbc90b8b7776fab6a0ec19316723208d8f48008c7d3facc06825d37dbf966bde; all six functional/pause/JMH/recorder/pressure/floor archives match it and normalized native environment declarations agree. Ordinary warmup120,conditioning8,analysis8 and explicit transport preparation apply to timing qualification. No old rejected fork is pooled.
+
+- Controlled CPU probe distinguished inside-scope work (4.15% outside-CPU upper bound) from sibling work (28.87%, correctly rejected).
+- Functional14/14 host/mechanical blocks and both separate two-window pause checks passed. Differential retained byte-array slopes were4112.07 B/entry for Caffeine and1.95 B/entry for Chronicle, within the diagnostic's declared limits; this is not a full dominator census.
+- All eight JMH compiler forks passed. Analysis-window compiler totals were8/9/2/4/3/5/13/8 ms; maximum individual interval7 ms. All eight actual unprofiled recorder forks passed with zero reported analysis compiler milliseconds. Both pressure96 XML probes passed, totals1/0 ms, maximum interval1 ms. This supports stability at these tested controls; every larger-pressure fork still needs its own gates.
+- All ten independent floor slots passed across ten candidates with zero replacements. Timer medians14/14 ns; supply medians22/21 ns (Caffeine256),27/27 ns (Caffeine4096),22/22 ns (Chronicle256),27/27 ns (Chronicle4096). Median-ratio and channel coherence gates remain pending the pilot; no floor is subtracted.
+
+Additional raw contract replay validated all sixteen physical JMH histograms and the fixed eight analysis histograms in every compiler fork. Analysis sample counts ranged186959–284926. Each setup reported256 private transport frames with18.66–18.68 MB delivered; the physical result count remained16, confirming that scratch frames did not enter the real result stream. Exact VM identity is retained. Materialization proof and conditioning/analysis churn/phase checks passed. These diagnostic forks cannot supply primary endpoints.
+
+The sequence finished while the session was usage-limited; the later recovery inspected live processes, found no active benchmark and replayed retained manifests rather than duplicating collection. Preparation for the next grid must be collected anew and chained into launch; the previous quiet interval is not reused.
+
+## Prospective pressure calibration order
+
+Declare native-final-calibration-20261105-004 with native-final-calibrationquiet-20261105-004. Keep all numerical workload/timing/quality controls:512-MiB G1,32768 residents,32MiB/s churn,live0/96/208/288 MiB,payload256/4096,seed24301,120 warmups/8 conditioning/8 analysis,two replicas,both channels,64 logical slots and at most72 candidates under the frozen two/eight CPU/power-only policy. Preserve fresh initial quiet hashes/source/environment and the360-second first-block deadline.
+
+Start the first order at the highest candidate pressure and4096-byte payload; reverse pressure/payload/channel/backend traversal in the second order. This checks the largest unqualified retained footprint first while retaining counterbalancing and all64 slots. This order is declared before new collection and chosen for feasibility, not from latency rankings. The canonical manifest must record high-first explicitly; legacy grids retain their original order. No pressure value, compiler threshold, rejection rule, sample or replica requirement changes. If high pressure is unsustainable or outside the prescribed bands, reject and review the entire candidate grid rather than pooling partial replicas. Observer coherence, pilot and confirmatory campaign remain uncollected.
+
+## Launch binding and implementation review
+
+The chained controller checks all six reviewed acceptance reports, source archive hashes and current measurement identity, complete eight-fork compiler screens, the actual unprofiled recorder,120/8/8 preparation controls and normalized current native environment before quiet preparation. It freezes the qualification manifest/archive references alongside the raw initial quiet reference in the new native retry declaration. Changed bindings fail replay; legacy declarations without these fields retain their old semantics. The initial quiet interval is collected after development/archiving and launches calibration directly, so a model usage gap cannot silently reuse stale preparation.
+
+Python71 tests passed, including a64-slot reversal test checking high-first pressure/payload controls and exact reversal of both replicas. Existing functional/provenance/conditioning/host/retry regressions remain passed; Java38 tests passed for the unchanged measurement source. This is approval to collect calibration, not acceptance of an uncollected grid or qualification of the primary campaign.

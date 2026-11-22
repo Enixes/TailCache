@@ -1,0 +1,190 @@
+package io.github.enixes.tailcache.benchmark;
+
+import io.github.enixes.tailcache.workload.*;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.BenchmarkParams;
+import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.infra.IterationParams;
+import org.openjdk.jmh.runner.IterationType;
+
+import java.util.concurrent.TimeUnit;
+
+@BenchmarkMode(Mode.SampleTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Warmup(iterations = 12, time = 1)
+@Measurement(iterations = 8, time = 1)
+@Fork(3)
+public class CrossoverBenchmark {
+    @State(Scope.Benchmark)
+    public static class PressureState {
+        @Param({"CAFFEINE", "CHRONICLE_IN_MEMORY"}) public CrossoverBackend backend;
+        @Param({"256", "4096"}) public int payloadBytes;
+        @Param({"8192"}) public int residentEntries;
+        @Param({"0"}) public long applicationLiveBytes;
+        @Param({"16777216"}) public long churnBytesPerSecond;
+        @Param({"24301"}) public long seed;
+        private CrossoverWorkload workload;
+        private ApplicationChurn churn;
+        private int warmups;
+        private long operationsBefore;
+        private long writesBefore;
+        private final boolean compilerWindow = Boolean.getBoolean("tailcache12.compilerWindow");
+        private java.lang.management.CompilationMXBean compiler;
+        private long compilerStartMs;
+        private long workerAllocationStart;
+        private java.nio.file.Path observationDirectory;
+        private int conditioningIterations;
+        private DenseObserverCapture denseCapture;
+        private final java.util.ArrayList<IterationObservation> observations = new java.util.ArrayList<>();
+
+        private record IterationObservation(IterationType phase, long operations, long writes,
+                                            ApplicationChurn.Snapshot churn, long compilerMs, long workerAllocatedBytes) { }
+
+        @Setup(Level.Trial)
+        public void setup(BenchmarkParams params) {
+            if (params.getThreads() != 1) throw new IllegalArgumentException("Crossover requires one cache worker");
+            conditioningIterations = Integer.getInteger("tailcache12.conditioningIterations", 0);
+            if (conditioningIterations < 0 || conditioningIterations > 64
+                    || conditioningIterations >= params.getMeasurement().getCount()) {
+                throw new IllegalArgumentException("Invalid measurement-mode conditioning count");
+            }
+            observations.ensureCapacity(params.getWarmup().getCount() + params.getMeasurement().getCount());
+            observationDirectory = java.nio.file.Path.of(System.getProperty("tailcache12.observationDir",
+                    "build/reports/tailcache12/unmanaged-observations"));
+            try { java.nio.file.Files.createDirectories(observationDirectory); }
+            catch (java.io.IOException failure) { throw new java.io.UncheckedIOException(failure); }
+            String harness = "io.github.enixes.tailcache.benchmark.jmh_generated.CrossoverBenchmark_"
+                    + (params.getBenchmark().endsWith("freshSupplyFloor") ? "freshSupplyFloor" : "mixedWorkload")
+                    + "_jmhTest";
+            try { JmhSampleSelectionEvidence.write(observationDirectory, Class.forName(harness)); }
+            catch (ClassNotFoundException failure) { throw new IllegalStateException("Missing generated sample harness", failure); }
+            WorkerProcessEvidence.write(observationDirectory, backend, payloadBytes,
+                    params.getBenchmark().endsWith("freshSupplyFloor") ? "supply-floor" : "workload");
+            CrossoverConfig config = new CrossoverConfig(residentEntries, payloadBytes, seed,
+                    applicationLiveBytes, 4096, churnBytesPerSecond, 128);
+            String transportVersion = System.getProperty("tailcache12.transportWarmupVersion", "none");
+            long transportBytes = 0;
+            int transportFrames = 0;
+            if (!transportVersion.equals("none")) {
+                if (!transportVersion.equals(JmhResultTransportWarmup.VERSION)) {
+                    throw new IllegalArgumentException("Unknown result transport preparation protocol");
+                }
+                var preparation = JmhResultTransportWarmup.prepare(params);
+                transportBytes = preparation.receivedBytes();
+                transportFrames = preparation.frames();
+            }
+            var lifecycle = CrossoverLifecycleWarmup.prepare(backend, config);
+            if (Boolean.getBoolean("tailcache12.denseObserver")) {
+                if (!Boolean.getBoolean("tailcache12.observerDiagnosticOnly")
+                        || params.getMode() != Mode.SampleTime || params.getOpsPerInvocation() != 1
+                        || params.getMeasurement().getBatchSize() != 1 || params.getWarmup().getBatchSize() != 1
+                        || !params.getBenchmark().endsWith("mixedWorkload")
+                        || java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
+                            .anyMatch(a -> a.startsWith("-XX:StartFlightRecording="))) {
+                    throw new IllegalArgumentException("Dense observer requires its unprofiled single-operation diagnostic");
+                }
+                EveryOperationRecorder.warmupBranches();
+                denseCapture = new DenseObserverCapture(params.getWarmup().getCount(),
+                        params.getMeasurement().getCount(), conditioningIterations);
+                System.out.println("[TailCache12][observer] denseObserverVersion=" + DenseObserverCapture.VERSION);
+            }
+            workload = new CrossoverWorkload(backend, config);
+            churn = new ApplicationChurn(churnBytesPerSecond, 4096, 128);
+            if (compilerWindow) compiler = java.lang.management.ManagementFactory.getCompilationMXBean();
+            // JMH may include trial teardown in its final compiler-profiler envelope. Emit the
+            // buffered observations only after the fork has returned its benchmark results.
+            Runtime.getRuntime().addShutdownHook(new Thread(this::exportObservations, "tailcache-observation-export"));
+            System.out.printf("[TailCache12] backend=%s config={%s} residents=%d payload=%d "
+                            + "applicationLiveBytes=%d churnBytesPerSecond=%d seed=%d traceSize=%d traceReadCount=%d traceWriteCount=%d tracePeriodVersion=%s traceSha256=%s valueGenerator=%s lifecycleWarmupTrials=%d conditioningIterations=%d transportWarmupVersion=%s transportWarmupFrames=%d transportWarmupBytes=%d%n",
+                    backend, workload.backendConfiguration(), residentEntries, payloadBytes,
+                    applicationLiveBytes, churnBytesPerSecond, seed, CrossoverWorkload.TRACE_SIZE,
+                    CrossoverWorkload.TRACE_READ_COUNT, CrossoverWorkload.TRACE_WRITE_COUNT,
+                    CrossoverWorkload.TRACE_PERIOD_VERSION, workload.traceFingerprint(), FreshValueGenerator.VERSION,
+                    CrossoverLifecycleWarmup.TRIALS, conditioningIterations, transportVersion, transportFrames, transportBytes);
+            System.out.printf("[TailCache12][lifecycle] lifecycleWarmupVersion=%s lifecycleMaintenanceBatches=%d lifecycleMaintenanceBatchOperations=%d lifecycleWarmupOperations=%d lifecycleWarmupWrites=%d%n",
+                    CrossoverLifecycleWarmup.version(), lifecycle.maintenanceBatches(), lifecycle.batchOperations(),
+                    lifecycle.operations(), lifecycle.writes());
+        }
+
+        @Setup(Level.Iteration)
+        public void startIteration() {
+            if (denseCapture != null) denseCapture.resetIteration();
+            workload.resetTraceCursor();
+            operationsBefore = workload.operations();
+            writesBefore = workload.writes();
+            churn.start();
+            if (compilerWindow) compilerStartMs = compiler.getTotalCompilationTime();
+            workerAllocationStart = WorkerAllocationCounter.currentBytes();
+        }
+
+        @TearDown(Level.Iteration)
+        public void endIteration(IterationParams iteration, BenchmarkParams benchmark) {
+            long workerAllocatedBytes = WorkerAllocationCounter.currentBytes() - workerAllocationStart;
+            long workerCompilerMs = compilerWindow ? compiler.getTotalCompilationTime() - compilerStartMs : -1;
+            ApplicationChurn.Snapshot snapshot = churn.stop();
+            observations.add(new IterationObservation(iteration.getType(), workload.operations() - operationsBefore,
+                    workload.writes() - writesBefore, snapshot, workerCompilerMs, workerAllocatedBytes));
+            if (iteration.getType() == IterationType.WARMUP) {
+                warmups++;
+                // Allocating full-value integrity check, followed by two settling warmups.
+                if (warmups == Math.max(1, benchmark.getWarmup().getCount() - 2)) workload.verifyContents();
+            }
+        }
+
+        private void exportObservations() {
+            java.nio.file.Path output = observationDirectory.resolve("iterations-" + ProcessHandle.current().pid() + ".csv");
+            try (java.io.BufferedWriter writer = java.nio.file.Files.newBufferedWriter(output,
+                    java.nio.file.StandardOpenOption.CREATE_NEW)) {
+                writer.write("phase,operations,writes,churnPayloadBytes,churnPayloadBytesPerSecond,churnJvmAllocatedBytes,"
+                        + "churnDroppedBytes,lateTicks,retainedRingBytes,envelopeStartNs,envelopeEndNs,workerEnvelopeCompilerMs,workerJvmAllocatedBytes\n");
+                int measuredOrdinal = 0;
+                for (IterationObservation observation : observations) {
+                    ApplicationChurn.Snapshot snapshot = observation.churn();
+                    // Classify only during shutdown export. No new phase switch is
+                    // introduced into timed operations or iteration teardown.
+                    String phase = observation.phase().name();
+                    if (observation.phase() == IterationType.MEASUREMENT
+                            && measuredOrdinal++ < conditioningIterations) phase = "CONDITIONING";
+                    writer.write(phase + "," + observation.operations() + "," + observation.writes()
+                            + "," + snapshot.allocatedBytes() + "," + snapshot.realizedBytesPerSecond()
+                            + "," + snapshot.jvmAllocatedBytes() + "," + snapshot.droppedBytes() + "," + snapshot.lateTicks()
+                            + "," + snapshot.retainedPayloadBytes() + "," + snapshot.startNs() + "," + snapshot.endNs()
+                            + "," + observation.compilerMs() + "," + observation.workerAllocatedBytes() + "\n");
+                }
+                if (denseCapture != null) denseCapture.export(observationDirectory.resolve("dense-observer"));
+            } catch (java.io.IOException failure) {
+                throw new java.io.UncheckedIOException("Unable to export iteration evidence", failure);
+            }
+        }
+
+        // Generated diagnostic stub calls only outside the cache-service timestamp pair.
+        public void beginDenseWindow(long start) { denseCapture.beginWindow(start); }
+        public void recordDense(long start, long end, long previousEnd) { denseCapture.record(start,end,previousEnd); }
+        public void finishDenseWindow(long operations, long end) { denseCapture.finishWindow(operations,end); }
+
+        @TearDown(Level.Trial)
+        public void close() {
+            try {
+                if (churn != null) churn.close();
+                if (workload != null) {
+                    System.out.printf("[TailCache12][integrity] checksum=%d applicationChecksum=%d operations=%d writes=%d%n",
+                            workload.verifyContents(), workload.applicationChecksum(), workload.operations(), workload.writes());
+                }
+            } finally {
+                if (workload != null) workload.close();
+            }
+        }
+    }
+
+    @Benchmark
+    public void mixedWorkload(PressureState state, Blackhole blackhole) {
+        byte[] value = state.workload.executeNext();
+        blackhole.consume(value[0]);
+        blackhole.consume(value);
+    }
+
+    @Benchmark
+    public void freshSupplyFloor(PressureState state, Blackhole blackhole) {
+        blackhole.consume(state.workload.executeSupplyFloorNext());
+    }
+}

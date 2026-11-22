@@ -1,0 +1,94 @@
+import json
+import pathlib
+import tempfile
+import unittest
+from unittest.mock import patch
+import tailcache12_build_explorer as explorer
+from tailcache12_build_explorer import SOURCE,OUTPUT,build_data,classify,PERCENTILES,load_study
+
+
+class ExplorerEvidenceTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.raw=json.loads(load_study());cls.data=build_data(SOURCE)
+
+    def test_every_retained_fork_and_nonempty_channel_is_represented(self):
+        data=self.data
+        self.assertEqual(len(data['forks']),132)
+        self.assertEqual(len(data['groups']),56)
+        self.assertEqual(sum(g['primary'] for g in data['groups']),22)
+        represented={p[k] for g in data['groups'] for p in g['pairs'] for k in ('c','h')}
+        self.assertEqual(represented,set(range(132)))
+
+    def test_all_primary_pair_ratios_match_independent_retained_analysis(self):
+        for expected in self.raw['comparisons']:
+            group=next(g for g in self.data['groups'] if (g['batch'],g['ballast'],g['regime'],g['channel'])==(expected['batch'],expected['ballastMiB'],expected['regime'],expected['channel']))
+            for p in PERCENTILES:
+                self.assertEqual(group['conclusions'][p]['ratios'],[pair['ratios'][p] for pair in expected['pairs']])
+
+    def test_percentile_reversal_at_baseline_is_preserved(self):
+        g=next(g for g in self.data['groups'] if g['batch']=='focused-rq1-response-long-20261108-001' and g['ballast']==0 and g['channel']=='response')
+        self.assertEqual(g['conclusions']['99.9']['winner'],'caffeine')
+        self.assertEqual(g['conclusions']['99.99']['winner'],'chronicle')
+        self.assertEqual(g['conclusions']['99.999']['winner'],'chronicle')
+
+    def test_extreme_service_reversal_and_finite_support_are_preserved(self):
+        groups=[g for g in self.data['groups'] if g['payload']==4096 and g['regime']=='closed' and g['channel']=='service' and g['contract']=='ordinary']
+        self.assertEqual(len(groups),5)
+        for g in groups:
+            self.assertEqual(g['conclusions']['99.99']['winner'],'caffeine')
+            self.assertEqual(g['conclusions']['99.999']['winner'],'chronicle')
+        for fork in self.data['forks']:
+            for channel in fork['latency'].values():
+                if channel['count']:
+                    self.assertAlmostEqual(channel['tailSupport']['perPercentile']['99.999']['nominalUpperTailObservations'],channel['count']/100000)
+
+    def test_reuse_never_borrows_caffeine_from_the_ordinary_comparison(self):
+        for g in self.data['groups']:
+            if g['contract']=='reuse':
+                for p in g['pairs']:
+                    c,h=self.data['forks'][p['c']],self.data['forks'][p['h']]
+                    self.assertEqual(c['batch'],h['batch'])
+                    self.assertTrue(c['batch'].startswith('focused-reuse'))
+        g=next(g for g in self.data['groups'] if g['payload']==256 and g['contract']=='reuse' and g['channel']=='service' and g['regime']=='closed')
+        self.assertEqual(g['conclusions']['99.9']['winner'],'chronicle')
+        self.assertEqual(g['conclusions']['99.99']['winner'],'caffeine')
+
+    def test_median_advantage_does_not_reclassify_mixed_pairs(self):
+        self.assertEqual(classify([100,100,100],[50,60,150])['winner'],'mixed')
+        self.assertEqual(classify([100,100,100],[100,100,100])['winner'],'tie')
+        self.assertEqual(classify([100,100,100],[50,50,100])['winner'],'mixed')
+
+    def test_grouping_does_not_mutate_retained_records(self):
+        path=SOURCE if SOURCE.exists() else OUTPUT
+        before=path.read_bytes();build_data(SOURCE);self.assertEqual(path.read_bytes(),before)
+
+    def test_fresh_checkout_can_recover_identical_input_from_committed_html(self):
+        with tempfile.TemporaryDirectory() as directory:
+            recovered=load_study(pathlib.Path(directory)/'missing-study.json')
+        self.assertEqual(json.loads(recovered),self.raw)
+
+    def test_every_fork_has_three_count_normalized_stall_thresholds(self):
+        for fork in self.data['forks']:
+            for channel,distribution in fork['stallRates'].items():
+                self.assertEqual(distribution['count'],fork['latency'][channel]['count'])
+                for rate in distribution['rates'].values():
+                    self.assertLessEqual(rate['lowerCount'],rate['upperCount'])
+                    self.assertLessEqual(rate['upperCount'],distribution['count'])
+                    if distribution['count']:
+                        self.assertEqual(rate['lowerProbability'],rate['lowerCount']/distribution['count'])
+                        self.assertEqual(rate['upperProbability'],rate['upperCount']/distribution['count'])
+
+    def test_no_observed_ten_millisecond_response_stalls_is_not_a_backend_win(self):
+        g=next(g for g in self.data['groups'] if g['payload']==4096 and g['ballast']==0 and g['duration']==30 and g['channel']=='response')
+        self.assertEqual(g['stalls']['10000000']['winner'],'tie')
+        self.assertEqual(g['stalls']['100000']['winner'],'caffeine')
+        self.assertEqual(g['stalls']['1000000']['winner'],'chronicle')
+
+    def test_fresh_checkout_recovers_full_compressed_curves(self):
+        actual=explorer.load_tails()
+        with tempfile.TemporaryDirectory() as directory,patch.object(explorer,'TAIL_SOURCE',pathlib.Path(directory)/'missing.json'):
+            self.assertEqual(explorer.load_tails(),actual)
+
+
+if __name__=='__main__':unittest.main()

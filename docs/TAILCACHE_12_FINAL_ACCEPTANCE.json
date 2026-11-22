@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "tailcache12-repository-acceptance-v1",
+  "taskComplete": true,
+  "outcome": "COMPLETE_CONDITIONAL_STUDY_ORIGINAL_PROTOCOL_NO_GO",
+  "reportableScope": "Observer-conditional research deliverable with explicit original-protocol and per-condition rejections",
+  "originalPrimaryProtocolQualified": false,
+  "datasetDirectory": "evidence-archives/native-final-conditional-completion-dataset-20261108-001",
+  "acceptance": {
+    "path": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/acceptance.json",
+    "sha256": "3377ef7dec295bfd3f31814b93629d93a72578856dfe9d923643bac9b1681d33"
+  },
+  "deliveryManifest": {
+    "path": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/delivery-manifest.json",
+    "sha256": "eadaac78f85baa36842a4236b304e73d04fc301fd961d35a9b6704d452a22d5a"
+  },
+  "researcherReview": {
+    "path": "docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md",
+    "sha256": "72fc5e39d23392592b5d91272c455d4c92c17e455effc7b7db185dbc6f01f661"
+  },
+  "independentAudit": {
+    "path": "independent-review-002/audit.json",
+    "sha256": "cad3215c6593109106034152610b48329a0ea1025d9723b4f47208d5d779846d"
+  },
+  "pythonTestsPassed": 207,
+  "campaignConditionallyUsable": 191,
+  "campaignHardRejected": 1,
+  "replacements": 0,
+  "recoveryTimerInactive": true,
+  "tickTickCompleted": true,
+  "detailedResultsRemainLocal": true
+}
