@@ -1,10 +1,10 @@
-# Same Write Rate, Different Winner: How Update Locality Reverses Tail-Latency Rankings in Java Caches
+# TailCache: A Study of Tail Latency in On-Heap and Off-Heap Java Caches
 
 22 November 2026
 
 ## Abstract
 
-Java applications use caches to avoid repeated work. Storing cached values outside the Java heap reduces how much cached data stays live on the Java heap, while a read can require a fresh copy of the value. We compare Caffeine and in-memory Chronicle Map to determine how this trade-off affects cache-call latency and response time under scheduled arrivals.
+**Same write rate, different winner.** We compare Caffeine, an on-heap Java cache, with in-memory Chronicle Map, an off-heap key-value store. Storing cached values off-heap reduces how much cached data stays live on the Java heap, while an ordinary read can require a fresh copy. We measure how this trade-off affects cache-call latency and response time under scheduled arrivals.
 
 We ran both caches with 32,768 entries, 4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. With 2,048 eligible write keys, Caffeine had the lower response p99.9. When all keys were eligible, Chronicle had the lower response p99.9. This reversal repeated on two machines. On the second machine, the 30-second full-key runs gave response p99.9 of 3.09-3.65 ms for Caffeine and 7.48-7.90 µs for Chronicle. Most of Caffeine's additional pause time in the full-key runs came from G1 mixed collections.
 
