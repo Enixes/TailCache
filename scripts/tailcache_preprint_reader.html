@@ -57,7 +57,7 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   </div>
 </header>
 <nav class="wrap" aria-label="Charts">
-  <ul><li><a href="#locality">Where writes land</a></li><li><a href="#payload">Value size</a></li><li><a href="#pressure">Added heap pressure</a></li></ul>
+  <ul><li><a href="#locality">Where writes land</a></li><li><a href="#load">Heavier loads</a></li><li><a href="#payload">Value size</a></li><li><a href="#pressure">Added heap pressure</a></li></ul>
 </nav>
 <main class="wrap">
 <noscript><p>Enable JavaScript to filter the charts, or read the measured results in the <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md">manuscript</a>.</p></noscript>
@@ -72,6 +72,17 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   <div class="chart-slot"></div>
   <p class="source">4 KiB values, 5% writes, 50,000 intended arrivals/s, and zero added application data. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/locality/CROSS_HOST_REVIEW.md">Evidence and replication</a></p>
 </section>
+<section id="load">
+  <h2>What changes at heavier loads?</h2>
+  <p class="intro">The 50,000-arrival baseline and the 100,000-arrival arm both delivered about 2,500 writes/s. The 10% and 20% arms increased writes while keeping arrivals at 50,000/s.</p>
+  <div class="controls">
+    <label>Workload<select name="run"><option value="50000/500">50,000 arrivals/s · 5% writes</option><option value="100000/250">100,000 arrivals/s · 2.5% writes</option><option value="50000/1000">50,000 arrivals/s · 10% writes</option><option value="50000/2000">50,000 arrivals/s · 20% writes</option></select></label>
+    <label>Measurement<select name="metric"><option value="response">Scheduled response</option><option value="service">Operation latency</option><option value="gc">Total GC pause time</option><option value="mixed">G1 mixed pause time</option></select></label>
+    <label>Percentile<select name="quantile"><option value="1">p99</option><option value="2" selected>p99.9</option><option value="3">p99.99</option><option value="4">p99.999</option></select></label>
+  </div>
+  <div class="chart-slot"></div>
+  <p class="source">4 KiB values, zero added application data, two paired seeds per setting, and 30-second windows on Pop!_OS. <a href="https://github.com/Enixes/TailCache/tree/2f8bb0edbf769eaa4dde331f9debf3319ce5fe56/docs/nov23-popos-followup/archive">Archived follow-up evidence</a></p>
+</section>
 <section id="payload">
   <h2>Value size changes the operation-time winner</h2>
   <p class="intro">A hit on Caffeine returns the stored array. Ordinary Chronicle reads allocate a Java array and copy in the value. Update timing includes allocating and filling a fresh array on both backends.</p>
@@ -83,6 +94,7 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   </div>
   <div class="chart-slot"></div>
   <p class="source">One saturated worker on the second host. At 4 KiB, updates account for 90.2–99.6% of observations in histogram bins strictly above the combined p99.9. <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md">Full matrix and warning review</a></p>
+  <p class="source">Both attempts to time value construction and the cache write separately exceeded the predeclared 5% change allowed in the combined p99.9 ratio. <a href="https://github.com/Enixes/TailCache/blob/43d7af9aa6e204b3455f3a2a07572ec50c43b58b/docs/nov23-popos-followup/README.md#split-write-timing-qualification">Split-write qualification</a></p>
 </section>
 <section id="pressure">
   <h2>Why the old pressure bracket changed</h2>
@@ -117,9 +129,10 @@ const names = {c:"Caffeine", h:"Chronicle"};
 const quantiles = ["p50", "p99", "p99.9", "p99.99", "p99.999"];
 const metricNames = {response:"Scheduled response",service:"Operation latency","read-service":"Read latency","update-service":"Update latency",gc:"Total GC pause time",mixed:"G1 mixed pause time"};
 const number = new Intl.NumberFormat("en-US");
+const microseconds = new Intl.NumberFormat("en-US", {minimumFractionDigits:2, maximumFractionDigits:2});
 const latency = value => value >= 1000
   ? (value / 1000).toFixed(value >= 10000 ? 1 : 2) + " ms"
-  : value.toFixed(value < 1 ? 3 : 2) + " µs";
+  : (value < 1 ? value.toFixed(3) : microseconds.format(value)) + " µs";
 const warnings = row => ["c", "h"].flatMap(backend => row[backend].warnings.map(note => names[backend] + ": " + note));
 
 function config(section) {
@@ -137,6 +150,21 @@ function config(section) {
       mixed: "Mixed collections reclaim selected old regions as well as young regions. Caffeine spends more time in these pauses with distributed writes. The logs measure pause types and durations."
     };
     return {rows:evidence.locality[run], metric, q, group:"key", label:v=>number.format(v)+" keys", takeaway:message[metric]};
+  }
+  if (section.id === "load") {
+    const response = {
+      "50000/500": "Caffeine leads with 2,048 eligible keys. Chronicle leads with all 32,768.",
+      "100000/250": "Doubling arrivals at about 2,500 writes/s preserves the reversal in both seeds.",
+      "50000/1000": "Both full-key pairs favor Chronicle. The two concentrated pairs disagree, and one Caffeine fork has a 22 ms GC pause.",
+      "50000/2000": "Both full-key pairs favor Chronicle. The concentrated pairs are close and disagree on the winner."
+    };
+    const message = {
+      response: q === 2 ? response[run] : "Each dot is one fork. Sparse extremes can be affected by a single stall.",
+      service: "Operation latency starts when the worker dispatches the operation. Scheduled response includes time spent waiting.",
+      gc: "GC pause time shows how much of the measurement window overlaps logged collection pauses.",
+      mixed: "Mixed collections account for much of the extra pause time in the full-key Caffeine runs."
+    };
+    return {rows:evidence.load[run], metric, q, group:"key", label:v=>number.format(v)+" keys", takeaway:message[metric]};
   }
   if (section.id === "payload") {
     const heap = Number(selected("heap"));
@@ -237,9 +265,9 @@ function mount(section) {
       const first = section.querySelector('select[name="run"]').value==="first";
       metric.querySelector('[value="mixed"]').disabled=first;
       if(first && metric.value==="mixed")metric.value="response";
-      percentile.disabled=metric.value==="gc"||metric.value==="mixed";
     }
     state=config(section);
+    percentile.disabled=isPause();
     groups=[...new Set(state.rows.map(row=>row[state.group]))].sort((a,b)=>a-b);
     values=[];
     const fragments = document.createDocumentFragment();

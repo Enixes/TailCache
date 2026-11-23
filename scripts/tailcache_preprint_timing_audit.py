@@ -18,7 +18,7 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def archived_slots(directory, bundle, count, inputs):
+def archived_slots(directory, bundle, count, inputs, phase="research"):
     archive_path = directory / bundle["file"]
     if digest(archive_path.read_bytes()) != bundle["sha256"]:
         raise ValueError(f"Archive checksum differs: {archive_path}")
@@ -26,7 +26,7 @@ def archived_slots(directory, bundle, count, inputs):
     with tarfile.open(archive_path, "r|xz") as archive:
         for member in archive:
             parts = member.name.split("/", 3)
-            if not member.isfile() or len(parts) != 4 or parts[:2] != ["research", "slots"]:
+            if not member.isfile() or len(parts) != 4 or parts[:2] != [phase, "slots"]:
                 continue
             _, _, label, name = parts
             if name in inputs or name == "result.json":
@@ -182,11 +182,62 @@ def collect(directory):
     }
 
 
+def collect_popos(directory):
+    manifest = json.loads((directory / "MANIFEST.json").read_bytes())
+    bundles = {bundle["file"]: bundle for bundle in manifest["collections"]}
+    locality = []
+    channels = ("service", "response")
+    quantiles = ("50", "99", "99.9", "99.99", "99.999")
+    load_archive = bundles["locality-load.tar.xz"]
+    for result, files in archived_slots(directory, load_archive, 32, {"age.log"}):
+        window = measurement(result)
+        operations, writes = int(window["operations"]), int(window["writes"])
+        scheduled = int(window["scheduled"])
+        elapsed = int(window["endNs"]) - int(window["startNs"])
+        if operations != scheduled or elapsed <= 0:
+            raise ValueError(f"Incomplete or invalid paced measurement: {result['spec']['label']}")
+        longest = max(result["gc"]["pauses"], key=lambda pause: pause["overlapNs"])
+        locality.append(ages(result, files["age.log"]) | {
+            "qps": result["spec"]["qps"],
+            "completed": operations,
+            "scheduled": scheduled,
+            "writes": writes,
+            "measurementNs": elapsed,
+            "workerAllocatedBytes": int(window["workerAllocatedBytes"]),
+            "maxBacklog": int(window["maxBacklog"]),
+            "longestPauseKind": longest["kind"],
+            "longestPauseOverlapNs": longest["overlapNs"],
+            "percentilesNs": {channel: {q: latency(result, channel, q) for q in quantiles}
+                              for channel in channels},
+        })
+    pilots = {}
+    for name in ("all-write-pilot", "sampled-write-pilot"):
+        rows = archived_slots(directory, bundles[name + ".tar.xz"], 8, set(), "write-timing-pilot")
+        pilots[name] = [
+            slot_info(result) | {
+                "splitWriteTiming": result["spec"].get("splitWriteTiming", False),
+                "serviceP999Ns": latency(result, "service", "99.9"),
+                "updateServiceP999Ns": latency(result, "update-service", "99.9"),
+                "operationsPerSecond": result["operationsPerSecond"],
+            }
+            for result, _ in rows
+        ]
+    return {
+        "archives": {name: bundle["sha256"] for name, bundle in bundles.items()},
+        "localityLoad": locality,
+        "splitPilots": pilots,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("archive", type=Path, help="Path to the second-host archive directory")
+    parser.add_argument("--followup-archive", type=Path, help="Path to the 23 November Pop!_OS archive")
     args = parser.parse_args()
-    print(json.dumps(collect(args.archive), ensure_ascii=False, sort_keys=True, separators=(",", ":")))
+    data = collect(args.archive)
+    if args.followup_archive:
+        data["poposFollowup"] = collect_popos(args.followup_archive)
+    print(json.dumps(data, ensure_ascii=False, sort_keys=True, separators=(",", ":")))
 
 
 if __name__ == "__main__":

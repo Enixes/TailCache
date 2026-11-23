@@ -126,6 +126,32 @@ def collect(root):
     return data
 
 
+def followup_pairs():
+    audit = load(ROOT / "docs/preprint/timing-audit.json")
+    groups = collections.defaultdict(dict)
+    for row in audit["poposFollowup"]["localityLoad"]:
+        setting = row["qps"], row["writeBps"], row["updateHotset"], row["seed"], row["block"]
+        arms = groups[setting]
+        if row["backend"] in arms:
+            raise ValueError(f"Duplicate backend for follow-up pair: {setting}")
+        arms[row["backend"]] = {
+            channel: [values[q] for q in QUANTILES]
+            for channel, values in row["percentilesNs"].items()
+        } | {"gc": row["totalPauseOverlapMs"], "mixed": row["mixedPauseOverlapNs"] / 1_000_000,
+             "warnings": row["warnings"]}
+    pairs = collections.defaultdict(list)
+    for (qps, writes, keys, seed, block), arms in sorted(groups.items()):
+        pairs[f"{qps}/{writes}"].append({
+            "key": keys, "seed": seed, "block": block,
+            "c": arms["CAFFEINE"], "h": arms["CHRONICLE_IN_MEMORY"],
+        })
+    if set(pairs) != {"50000/500", "100000/250", "50000/1000", "50000/2000"} or any(
+        len(rows) != 4 for rows in pairs.values()
+    ):
+        raise ValueError("Unexpected Pop!_OS follow-up chart coverage")
+    return dict(pairs)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--evidence", type=Path,
@@ -138,6 +164,7 @@ def main():
         SNAPSHOT.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")) + "\n")
     else:
         data = load(SNAPSHOT)
+    data["load"] = followup_pairs()
     page = (ROOT / "scripts/tailcache_preprint_reader.html").read_text()
     snapshot = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("<", "\\u003c")
     args.output.parent.mkdir(parents=True, exist_ok=True)
