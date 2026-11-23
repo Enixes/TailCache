@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "collectionDate": "2026-11-23",
+  "campaigns": {
+    "all-write-pilot": {
+      "sourceCommit": "78ea36d64dc5e43172cbbb756c497327b6522e63",
+      "manifestSha256": "ca9fbd1a2f9e140881b787c7347cf4855f3b12846a5474deaa7e8fdc8cab9067",
+      "sourceRelativeDir": "results/split-write-popos-01",
+      "phases": {
+        "smoke": {
+          "sourceResultsSha256": "f911931066c12c8eaaf13aca506584e5e20604675d555d81ee2847b377e2089b",
+          "runSha256": "572c046c5b38793e72cbdd1097ad6cbcb529955f77f57c85bb1e29566775bd63",
+          "completed": 4
+        },
+        "write-timing-pilot": {
+          "sourceResultsSha256": "ddc6cd659865a0df2e78817fded24cb39b47a92ac7581b655e847c21bff04049",
+          "runSha256": "ef3942cc8bc91bd76a230ec7190d99a45088f66c7293ad117e15351392ff0364",
+          "completed": 8
+        }
+      }
+    },
+    "locality-load": {
+      "sourceCommit": "78ea36d64dc5e43172cbbb756c497327b6522e63",
+      "manifestSha256": "980729a1cb516b0dc0dd25e8e2f5c9038b91abfdba9b83c3cbc00b52cc579d91",
+      "sourceRelativeDir": "results/locality-arrival-popos-01",
+      "phases": {
+        "smoke": {
+          "sourceResultsSha256": "75476a8d7ce7e9ebaf06cee76b2343120780a5bab1af371a44880aafa11c1ae3",
+          "runSha256": "12a4db1ed520b6f3434079ae36d97001a399d1e2a648e4fb81b1617865ad450f",
+          "completed": 4
+        },
+        "research": {
+          "sourceResultsSha256": "55905de4041825f523522208be6e87dbd8549dfbf6cff25c0eae1a35e7d521ed",
+          "runSha256": "0424e757d4347d98665b858b58e752edc549b2d9c817a511f01ab952547b8c92",
+          "completed": 32
+        }
+      }
+    },
+    "sampled-write-pilot": {
+      "sourceCommit": "b11505f5fe40a0bb803897796fa33fcb971e7ac2",
+      "manifestSha256": "a7de4b2342f5475fe3e6e4e2530435c84ca314ea5332d6b15024146656e3013c",
+      "sourceRelativeDir": "results/sampled-split-write-popos-02",
+      "phases": {
+        "smoke": {
+          "sourceResultsSha256": "307ed825316e84994d834837aa163f9e60a03eba90221caeffb3edb61ce7ed0d",
+          "runSha256": "f83115b157353cc41e0865f56ef9addef7987dfdad16045f799957cabaa07ce4",
+          "completed": 4
+        },
+        "write-timing-pilot": {
+          "sourceResultsSha256": "0dd9008109d71d1ed099f1eca30fce3d804c46bfe38e3df742df4bf13131743d",
+          "runSha256": "38a6bed12e5661aefed96c9abb8c9c5b486088100126229dd70d5d1358993deb",
+          "completed": 8
+        }
+      }
+    }
+  }
+}

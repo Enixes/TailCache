@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "name": "locality-long-confirmation",
+  "purpose": "research",
+  "heapMiB": 512,
+  "residents": 32768,
+  "churnMiBPerSecond": 32,
+  "warmupMs": 120000,
+  "conditioningMs": 4000,
+  "measureMs": 90000,
+  "primeCalls": 0,
+  "seeds": [61811, 61812, 61813, 61814],
+  "orderSeed": 61810,
+  "logging": "async",
+  "cells": [
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 500, "updateHotset": 2048, "qps": 50000},
+    {"payloadBytes": 4096, "liveMiB": 0, "writeBps": 500, "updateHotset": 32768, "qps": 50000}
+  ],
+  "quality": {
+    "minAvailableMiB": 1024,
+    "minDiskMiB": 512,
+    "compilerWarningMs": 80,
+    "maxOutsideCpuFraction": 0.1,
+    "maxChurnRelativeError": 0.1,
+    "minExpectedTailEvents": 20
+  },
+  "activeProcessorCount": 12
+}

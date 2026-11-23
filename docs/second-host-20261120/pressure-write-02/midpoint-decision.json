@@ -1,0 +1,6 @@
+{
+  "sourceResultsSha256": "cb00f195ea80377a4d6847a019aaf0e638c45e7ed282f137e8636370cb7e6927",
+  "rule": "First-pass unanimous endpoint reversal, p99.9 before p99, then 4 KiB before 256 B, then lowest write fraction. At most one setting.",
+  "candidates": [],
+  "selected": null
+}
