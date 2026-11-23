@@ -1,6 +1,6 @@
 # Portable experiment implementation plan
 
-18 November 2026. This is a new collection tool, separate from the completed dated cohorts.
+Implementation plan recorded 18 November 2026. The runner and profiles are available in the default checkout. See the [collection guide](PORTABLE_EXPERIMENT.md) for the current commands and [experiment status](TAILCACHE_CURRENT_STATE.md) for the completed cohorts.
 
 1. Package the unchanged continuous-stream mechanism workload, functional checks,
    independent HDR verifier and pinned runtime dependencies. Build once with the

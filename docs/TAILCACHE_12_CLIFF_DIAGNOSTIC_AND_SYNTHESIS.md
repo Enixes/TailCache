@@ -43,7 +43,7 @@ The primary 402-invocation campaign did not establish an unconditional latency c
 
 ### 2.2 Process & Operational Lessons: How to Run Future Studies Faster and Cleaner
 
-During the Codex campaign, `Final001` through `Final004` discarded **233 JVM invocations (~4.3 hours)** because any single-fork gate violation terminated the entire 402-invocation study, and `Final005` stopped at fork 143/192 due to a transient 35.1% outside-CPU spike, requiring a post-interruption completion supplement.
+During the original campaign, `Final001` through `Final004` discarded **233 JVM invocations (~4.3 hours)** because any single-fork gate violation terminated the entire 402-invocation study, and `Final005` stopped at fork 143/192 due to a transient 35.1% outside-CPU spike, requiring a post-interruption completion supplement.
 
 1. **Stage-gated screening (Trigger only the crossover region first):**
    - Do not launch a 400-JVM full-factorial grid before verifying that the chosen pressure range and latency metric actually capture a crossover.

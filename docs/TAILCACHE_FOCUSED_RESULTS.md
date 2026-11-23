@@ -6,7 +6,7 @@
 
 **Requested p99.99 extension:** percentile choice changes those statements. At p99.99, Chronicle already has lower scheduled response at the zero-ballast 4 KiB baseline, while Caffeine has lower saturated service at every tested ordinary-get point for both payloads. The 256 B buffer-reuse service advantage at p99.9 also does not extend to p99.99. The [comparison below](#requested-p9999-extension) uses the same retained distributions; no new benchmark was run and the original endpoints remain reported.
 
-These are exploratory results answering where a useful effect exists and which endpoint sees it. They do not establish a universal occupancy threshold. All 132 workload JVMs completed, verified resident values and remain in the dataset, including warning-bearing forks. There were zero replacement forks, OOMs or censored arrivals. Historical Task 12 and AGY evidence retain their original classifications.
+These are exploratory results answering where a useful effect exists and which endpoint sees it. They do not establish a universal occupancy threshold. All 132 workload JVMs completed, verified resident values and remain in the dataset, including warning-bearing forks. There were zero replacement forks, OOMs or censored arrivals. Historical Task 12 and earlier diagnostic evidence retain their original classifications.
 
 **Requested p99.999 extension:** the rarer service tail changes ordering: Chronicle is lower at all five saturated 4 KiB points. At 256 B, saturated service changes from Caffeine lower at 448 MiB to Chronicle lower at 480 MiB within the earlier runtime. Scheduled 4 KiB response remains lower for Chronicle even at baseline. [Read the p99.999 review and finite-support limits](#requested-p99999-extension).
 
@@ -15,7 +15,7 @@ These are exploratory results answering where a useful effect exists and which e
 
 ## RQ1 at p99/p99.9: response crossover exists; ordinary service crossover did not reproduce
 
-The scheduled experiment offers 50,000 requests/s to a single worker. Response is completion minus **intended arrival**, including backlog after a pause. Intended times never move after a stall, no overdue arrivals are skipped, and every offered request is accounted for. This differs from AGY's synthetic expected-interval histogram correction. Service is completion minus actual operation start; the saturated service experiment uses separate JVMs.
+The scheduled experiment offers 50,000 requests/s to a single worker. Response is completion minus **intended arrival**, including backlog after a pause. Intended times never move after a stall, no overdue arrivals are skipped, and every offered request is accounted for. This differs from the earlier diagnostic's synthetic expected-interval histogram correction. Service is completion minus actual operation start; the saturated service experiment uses separate JVMs.
 
 For matched 30-second offered windows, ordinary `get`, 4 KiB values and a fixed 512 MiB G1 heap:
 
@@ -38,7 +38,7 @@ This is not evidence that GC has little cost. At that point Caffeine has 313–3
 
 ## RQ2: smaller values move the pressure region and can reverse the service ordering
 
-Both payloads use the **same 512 MiB heap**, resident count, trace and offered background allocation. AGY's 256 B/256 MiB and 4 KiB/512 MiB discovery configurations are useful for choosing regions, but are not a controlled payload-only comparison.
+Both payloads use the **same 512 MiB heap**, resident count, trace and offered background allocation. the earlier diagnostic's 256 B/256 MiB and 4 KiB/512 MiB discovery configurations are useful for choosing regions, but are not a controlled payload-only comparison.
 
 | 256 B ordinary saturated service | Paired Chronicle/Caffeine p99.9 ratios | Observation |
 | --- | --- | --- |
@@ -197,4 +197,4 @@ Review findings and limits:
 
 The [dataset](../evidence-archives/focused-rq-results-20261108-001/study.json), [132-row table](../evidence-archives/focused-rq-results-20261108-001/forks.csv) and [audit](../evidence-archives/focused-rq-results-20261108-001/audit.json) sit outside `build`. The audit verifies 3,960 retained inventory files, independently reconciles 132 measured GC windows and 1,008 percentile endpoints, and records 504 decoded HDR distributions across workload and controls. Fifty Java tests and 211 Python tests passed during implementation. Final reporting adds no benchmark-source change.
 
-Both exact compiled runtimes, all 27 dependency jars and one resource file, original source archives, executed analysis source, warning sensitivity, and standalone SVG/PNG figures are retained. The sibling `focused-rq-delivery-20261108-001.tar.gz` bundles the twelve batch directories and synthesis with a read-back-verified file manifest. This is a local preservation bundle, not an independent off-host backup. Historical acceptance records and AGY changes remain untouched. The recovery timer remains stopped.
+Both exact compiled runtimes, all 27 dependency jars and one resource file, original source archives, executed analysis source, warning sensitivity, and standalone SVG/PNG figures are retained. The sibling `focused-rq-delivery-20261108-001.tar.gz` bundles the twelve batch directories and synthesis with a read-back-verified file manifest. This is a local preservation bundle, not an independent off-host backup. Historical acceptance records and earlier diagnostic changes remain untouched. The recovery timer remains stopped.

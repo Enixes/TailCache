@@ -1,6 +1,6 @@
 # TailCache 07 review and 08–10 execution plan
 
-**Prepared before implementation.** Source tasks: TickTick TailCache 07, 08, 09, and 10. The 07 pilot is diagnostic and failed its warm-state, JIT, and run-stability gates; its numbers cannot be promoted to baseline evidence.
+**Prepared before implementation.** The 07 pilot is diagnostic and failed its warm-state, JIT, and run-stability gates; its numbers cannot be promoted to baseline evidence.
 
 ## Sequence and acceptance gates
 

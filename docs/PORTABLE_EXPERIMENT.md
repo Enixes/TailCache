@@ -152,14 +152,14 @@ If the clean directions vary or the timer floor dominates, report the affected
 endpoint as inconclusive. The 288 MiB pressure condition and the first-host
 i7 are follow-up confirmation if a new claim requires them.
 
-If the pilot fails, the command stops before research and retains all diagnostic
+If the pilot fails, the command stops before workload collection and retains all diagnostic
 forks. Keep the failure evidence and investigate the recorded timing shift or
 warning before planning a fresh attempt. Repeating the identical command reuses
 verified sealed slots. An unsealed interrupted slot stops the resume, as in the
 other portable suites. Preserve that attempt and its completed slots before
 planning any recollection.
 
-### Use in the preprint
+### Interpret qualified split timing
 
 After the pilot passes and the research forks are reconciled, use the split
 research cohort as the primary evidence for the 256 B and 4 KiB write-cost
@@ -323,7 +323,7 @@ scheduled slots can complete, and failures appear in the final report. No hidden
 replacement or pooling occurs. Disk/RAM/power preflight failures stop before a new
 slot and preserve finished work.
 
-## Results and research interpretation
+## Results and interpretation
 
 Each versioned `analysis-*` directory contains `RESULTS.md`, `percentiles.csv` and
 `results.json`, plus `point-conclusions.json`. Re-analyze offline, without Java or the original host:

@@ -276,8 +276,6 @@ def run(args):
         for name in ('TAILCACHE_MIDPOINT_EXECUTION_PLAN.md','TAILCACHE_MIDPOINT_IMPLEMENTATION_REVIEW.md'):
             plan=evidence.ROOT/'docs'/name
             if plan.exists():shutil.copyfile(plan,setup/name)
-        note=pathlib.Path('/home/y/.gemini/antigravity-cli/brain/813eaaaa-7714-484f-8709-5826310287c3/tailcache12_review.md')
-        if note.exists():shutil.copyfile(note,out/'agy-discovery-review.md')
     for file,wanted in protocol['runtimeSha256'].items():
         if sha(pathlib.Path(file))!=wanted:raise ValueError('Changed compiled runtime')
     controls=out/'controls';controls.mkdir(exist_ok=True)
@@ -321,7 +319,7 @@ def run(args):
     report=dict(version=VERSION,completeCollection=len(results)==len(expected),collected=len(results),planned=len(expected),
         sourceUnchanged=evidence.source_hash()==source,results=results,comparisons=summaries(results),pauseReasons=pause_reasons,
         limits=['Exploratory focused batches; no artificial CI from a few pairs.','Warnings and pressure failures are retained, never grounds for discarding the whole batch.',
-            'Service and scheduled-response outcomes are different estimands; no pooling with AGY or historical Task12 forks.'])
+            'Service and scheduled-response outcomes are different estimands; no pooling with earlier diagnostic or historical Task12 forks.'])
     if not report['sourceUnchanged']:raise ValueError('Source changed during collection')
     save(out/'summary.json',report)
     helper=out/'setup'

@@ -1,6 +1,6 @@
 # Bounded midpoint follow-up — implementation and execution declaration
 
-Declared before collection. Planning date: 10 November 2026 (Asia/Kolkata). This implements the [preprint plan](TAILCACHE_PREPRINT_PLAN.md); it is a fresh cohort, separate from all historical evidence.
+Declared before collection on 10 November 2026 as a fresh cohort. See the [paired midpoint results](TAILCACHE_MIDPOINT_RESULTS.md) for the completed comparison.
 
 ## Implementation unit
 

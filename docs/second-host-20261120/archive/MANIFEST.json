@@ -7,8 +7,8 @@
       "suite": "smoke",
       "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
       "sourceSuiteSha256": "0892f82aa638882c43da2c646c95ae03e5a9f6db97d21a008b8976e703a83ac3",
-      "sha256": "fa15fb6c12c43426f386897cc3b3250645352276b6cd9029ab2fa4bdc9d5a22b",
-      "bytes": 293848,
+      "sha256": "8e790dd866fb6cd1885f7b365ae110a68a7dbcdc5d4c62e0951fdf8d9bf05253",
+      "bytes": 293832,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -18,7 +18,8 @@
           "percentiles": "../smoke/smoke/percentiles.csv",
           "pointConclusions": "../smoke/smoke/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "fa15fb6c12c43426f386897cc3b3250645352276b6cd9029ab2fa4bdc9d5a22b"
     },
     {
       "file": "locality.tar.xz",
@@ -26,8 +27,8 @@
       "suite": "locality",
       "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
       "sourceSuiteSha256": "99b817217d8966fc94a91a0940b781f55e95b426e4934338a024c86d63c0899c",
-      "sha256": "2d4ac1b7cd60f4672232d146c7e0601205a58526ad16893ce380132756fea38a",
-      "bytes": 976380,
+      "sha256": "3fa7859b149acf1ab9d3c915fe89a79a7b9c3b060d675cbe8f0d61eac15c61d1",
+      "bytes": 976404,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -45,7 +46,8 @@
           "percentiles": "../locality/research/percentiles.csv",
           "pointConclusions": "../locality/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "2d4ac1b7cd60f4672232d146c7e0601205a58526ad16893ce380132756fea38a"
     },
     {
       "file": "followups-01-write-ratio.tar.xz",
@@ -53,8 +55,8 @@
       "suite": "write-ratio",
       "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
       "sourceSuiteSha256": "448457ca401f721314390ea04345335c96b278a569758816aeced742728c0385",
-      "sha256": "1567ccc684835e7df2894517ca603245e296a2e4e0059e4eecd444749ccaa794",
-      "bytes": 1543732,
+      "sha256": "4340dcaa41e22e159bdc14798c3eb26b4d020ff32a763b8b155e2e857895dfed",
+      "bytes": 1543716,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -72,7 +74,8 @@
           "percentiles": "../followups-01/write-ratio/research/percentiles.csv",
           "pointConclusions": "../followups-01/write-ratio/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "1567ccc684835e7df2894517ca603245e296a2e4e0059e4eecd444749ccaa794"
     },
     {
       "file": "followups-01-locality-long.tar.xz",
@@ -80,8 +83,8 @@
       "suite": "locality-long",
       "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
       "sourceSuiteSha256": "a1bccac5f72308f3ff34ccb5cec97b81656f03ea1c987e479244ad5f732abebb",
-      "sha256": "0d136ed2277df28501aea4d2fa69d9cf63fb30298d22eb3a53511f5128ab5f55",
-      "bytes": 1753160,
+      "sha256": "97e097748a768da1afca70bbfa698838727cba4f77be6315f84d5140d8fa6a07",
+      "bytes": 1753108,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -99,7 +102,8 @@
           "percentiles": "../followups-01/locality-long/research/percentiles.csv",
           "pointConclusions": "../followups-01/locality-long/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "0d136ed2277df28501aea4d2fa69d9cf63fb30298d22eb3a53511f5128ab5f55"
     },
     {
       "file": "followups-01-rq-matrix.tar.xz",
@@ -107,8 +111,8 @@
       "suite": "rq-matrix",
       "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
       "sourceSuiteSha256": "3f610cc70d8dddfc4291de91ffa53eb5a6b291098cfc10dd9fe377106fa7cac7",
-      "sha256": "4a859ac06a6545d07a35840565b62c2fbf589cffdae1e6570c946484a5474b7f",
-      "bytes": 15535148,
+      "sha256": "8396a12fb1489916ea6b8d6d4ffa0acc3a47c897cf53c5e909f4bb99d65ac0b1",
+      "bytes": 15550916,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -126,7 +130,8 @@
           "percentiles": "../followups-01/rq-matrix/research/percentiles.csv",
           "pointConclusions": "../followups-01/rq-matrix/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "4a859ac06a6545d07a35840565b62c2fbf589cffdae1e6570c946484a5474b7f"
     },
     {
       "file": "pressure-write-02-preflight.tar.xz",
@@ -134,8 +139,8 @@
       "suite": "preflight",
       "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
       "sourceSuiteSha256": "8f74dda0225f6f84981f34940af6908ec66c43078fe463a283ab529f80fa7ea3",
-      "sha256": "44c2b042010ffd9ce28e1d0f749859a843d76f6b4fe7468263a5d08acce03c6f",
-      "bytes": 294316,
+      "sha256": "23045e05bc989f027a59e74af44a5166eb127f4fc58a8ef65f607390e05b804e",
+      "bytes": 294280,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -145,7 +150,8 @@
           "percentiles": "../pressure-write-02/preflight/smoke/percentiles.csv",
           "pointConclusions": "../pressure-write-02/preflight/smoke/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "44c2b042010ffd9ce28e1d0f749859a843d76f6b4fe7468263a5d08acce03c6f"
     },
     {
       "file": "pressure-write-02-saturated-write-pressure.tar.xz",
@@ -153,8 +159,8 @@
       "suite": "saturated-write-pressure",
       "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
       "sourceSuiteSha256": "f5624b2022db66a94ab0df3706d565d6b3d3059568734a73768e1d0a265bf559",
-      "sha256": "e1c71014b7ad7a81056902b47836350f3d0d6aab66263e1b03baf6ceb7083241",
-      "bytes": 46649516,
+      "sha256": "67d7e1f414fc1313ec402eb5215760afd281f7dbfa5d8f265f985037e5a31c6c",
+      "bytes": 46608244,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -172,7 +178,8 @@
           "percentiles": "../pressure-write-02/saturated-write-pressure/research/percentiles.csv",
           "pointConclusions": "../pressure-write-02/saturated-write-pressure/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "e1c71014b7ad7a81056902b47836350f3d0d6aab66263e1b03baf6ceb7083241"
     },
     {
       "file": "pressure-write-02-write-transition.tar.xz",
@@ -180,8 +187,8 @@
       "suite": "write-transition",
       "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
       "sourceSuiteSha256": "9a8219aaf510f4d9e988cab92becd0d83226a7a8c679a5f6808a6bff539aff5f",
-      "sha256": "c07a55734e775d996bcd3aaf3c33ca6603c1c40660089f83a4c35ef632eee4e8",
-      "bytes": 3067888,
+      "sha256": "36197d3e04e4b2308b912325f874335a066af693cfb2b3dbaa387feeea430835",
+      "bytes": 3055464,
       "phases": {
         "smoke": {
           "workloadJvms": 4,
@@ -199,7 +206,8 @@
           "percentiles": "../pressure-write-02/write-transition/research/percentiles.csv",
           "pointConclusions": "../pressure-write-02/write-transition/research/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "c07a55734e775d996bcd3aaf3c33ca6603c1c40660089f83a4c35ef632eee4e8"
     },
     {
       "file": "pressure-write-02-saturated-pilot.tar.xz",
@@ -207,8 +215,8 @@
       "suite": "saturated-pilot",
       "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
       "sourceSuiteSha256": null,
-      "sha256": "aaeeb3a143c0b8b49ab41c73688f9158fa85830cf942208fda8a44023a3e58e5",
-      "bytes": 381468,
+      "sha256": "30e7e6025176f782939ca5cd3deadedefc7baceffc1d5ce0509a7c41dd5bac83",
+      "bytes": 381476,
       "phases": {
         "pilot": {
           "workloadJvms": 4,
@@ -218,7 +226,8 @@
           "percentiles": "../pressure-write-02/saturated-pilot/percentiles.csv",
           "pointConclusions": "../pressure-write-02/saturated-pilot/point-conclusions.json"
         }
-      }
+      },
+      "originalArchiveSha256": "aaeeb3a143c0b8b49ab41c73688f9158fa85830cf942208fda8a44023a3e58e5"
     }
   ]
 }

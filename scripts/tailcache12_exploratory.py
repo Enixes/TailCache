@@ -69,7 +69,8 @@ def classify(reasons,cpu_upper=0):
 
 def compile_verifier(setup):
     setup.mkdir(parents=True,exist_ok=False)
-    jars=list(pathlib.Path('/home/y/.gradle/caches/modules-2/files-2.1/org.hdrhistogram/HdrHistogram/2.2.2').glob('*/*.jar'))
+    gradle_home=pathlib.Path(os.environ.get('GRADLE_USER_HOME',pathlib.Path.home()/'.gradle'))
+    jars=list((gradle_home/'caches/modules-2/files-2.1/org.hdrhistogram/HdrHistogram/2.2.2').glob('*/*.jar'))
     if len(jars)!=1:raise ValueError('Require exact installed HdrHistogram2.2.2 jar')
     origin=jars[0];jar=setup/origin.name;shutil.copyfile(origin,jar)
     source=evidence.ROOT/'scripts/java/TailCache12HdrVerify.java'

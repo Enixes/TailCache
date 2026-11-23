@@ -1,6 +1,6 @@
 # Task 12 completion execution plan — 5 November 2026
 
-This plan precedes the remaining implementation. Continue local `tailcache-12-crossover`, preserve all historical WSL/native attempts and the user's `command.txt`, and finish the research gates in order. Previous 96-warmup compiler qualification remains scoped to its archived sources and native host-v2 screen; a changed observer needs fresh matching qualification.
+This plan precedes the remaining implementation. The work continued from the retained WSL and native attempts, applying the experiment gates in order. Previous 96-warmup compiler qualification remains scoped to its archived sources and native host-v2 screen; a changed observer needs fresh matching qualification.
 
 ## 1. Native observation and review
 

@@ -11,7 +11,7 @@
         "curveSha256": "a23e0a5f32ad8e23b5ed38d68a1b52b9be13e9eee98dea37c956b749db99aed3",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3641343,
         "minimumBinLowerNs": 63,
         "rates": {
@@ -47,7 +47,7 @@
         "curveSha256": "f0557b06bd0d9b477de25d572d899718b1cf3f7091cbfd9e4a0b764cf9fea6a2",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2058239,
         "minimumBinLowerNs": 375,
         "rates": {
@@ -83,7 +83,7 @@
         "curveSha256": "36c904cb40c688fc95cce93f3e969336ab43e4cb1e8cc269de17439deb0a05c9",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 1579007,
         "minimumBinLowerNs": 378,
         "rates": {
@@ -119,7 +119,7 @@
         "curveSha256": "80aceaddc593f93fc4a007b994f05881464dbb829be056b67c231a9b508097e0",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3803135,
         "minimumBinLowerNs": 67,
         "rates": {
@@ -155,7 +155,7 @@
         "curveSha256": "485c129cfca0f4f577a572b1a3fe46693a53ae002a56ac1f4a2650f10e21a152",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 4063231,
         "minimumBinLowerNs": 62,
         "rates": {
@@ -191,7 +191,7 @@
         "curveSha256": "6f31b97cfee81f3b44807a369c2353bf73af167e75397bc6e4814af73f069819",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2113535,
         "minimumBinLowerNs": 381,
         "rates": {
@@ -227,7 +227,7 @@
         "curveSha256": "d9e2cb367b1127e76fe865ba8a866342e8909b70b2e9e53bf8dfd48d8a6e76be",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 1642495,
         "minimumBinLowerNs": 386,
         "rates": {
@@ -263,7 +263,7 @@
         "curveSha256": "ab04bb581cb8d8690e8b4657cf1c15a820f4c32ba89794270b2fa41d7422fde0",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 4012031,
         "minimumBinLowerNs": 64,
         "rates": {
@@ -299,7 +299,7 @@
         "curveSha256": "37682402dec51a35e374e2c4832cc124aafabf4db87e2330fa019107acdd2ad9",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 4403199,
         "minimumBinLowerNs": 68,
         "rates": {
@@ -335,7 +335,7 @@
         "curveSha256": "9e065eb5227e482e416044703e81eb81f21abfe86dd688115bc55db64d9f925b",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2068479,
         "minimumBinLowerNs": 383,
         "rates": {
@@ -371,7 +371,7 @@
         "curveSha256": "e9ff0b9f309f888304af4e2e63c06df60e08213ab56c98dbc31b475ca7055723",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2162687,
         "minimumBinLowerNs": 378,
         "rates": {
@@ -407,7 +407,7 @@
         "curveSha256": "aeb14acf0f881a34d927cc06455bcabafe30baef50450abc248cd3ba5a388c40",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b2-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3819519,
         "minimumBinLowerNs": 61,
         "rates": {
@@ -443,7 +443,7 @@
         "curveSha256": "60a75f5593916ac6f0edf8612c9e47e7d8362fbbcb0179d068e62cac93c7a1b7",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live208-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3940351,
         "minimumBinLowerNs": 63,
         "rates": {
@@ -479,7 +479,7 @@
         "curveSha256": "4a0effa098595f0ce424e020986cf8323b7463baf064503baa5b0d7e6fcf2e33",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2168831,
         "minimumBinLowerNs": 398,
         "rates": {
@@ -515,7 +515,7 @@
         "curveSha256": "925b39db39cdd55f7af18f0b4a68eb2d6abafd1ddba433400035333be2e291a0",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 2115583,
         "minimumBinLowerNs": 380,
         "rates": {
@@ -551,7 +551,7 @@
         "curveSha256": "c6e6f60d7005cc8a0367ca871d025263d6c6bbdda37d3025e425adf4ccb7250a",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live0-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3819519,
         "minimumBinLowerNs": 67,
         "rates": {
@@ -587,7 +587,7 @@
         "curveSha256": "b4bbc7ad7e69fe942258eba858b8d640bd4c609742edde3d50f60b410adfeb06",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live104-CAFFEINE/worker/response.hdr",
         "maximumBinUpperNs": 3737599,
         "minimumBinLowerNs": 62,
         "rates": {
@@ -623,7 +623,7 @@
         "curveSha256": "1b90e95f99ab8a59f7874d1db129dc1ad009a6bcda4c75bb0091b54f1f79243b",
         "empiricalResolution": 6.666666666666667e-07,
         "encoding": "gzip-base64-flat-upper-ns-count",
-        "hdrPath": "/home/y/TailCache/evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
+        "hdrPath": "evidence-archives/midpoint-study-20261110-001-primary/b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY/worker/response.hdr",
         "maximumBinUpperNs": 1960959,
         "minimumBinLowerNs": 394,
         "rates": {

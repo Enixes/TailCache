@@ -1,53 +1,28 @@
-# Scope guard
+# Experiment scope
 
-Target completion: **20 October 2026**
-Total engineering/research budget: **35-40 hours**
+TailCache compares ordinary Caffeine access with ordinary in-memory Chronicle
+Map access under controlled Java 21 workloads. The [README](../README.md)
+states the three experiment questions and the results under the tested settings.
 
-## Must ship
+## Primary comparisons
 
-- Java 21 + Gradle repository.
-- Common cache interface.
-- Caffeine adapter.
-- Chronicle Map adapter.
-- Deterministic synthetic workload generator with fixed seeds.
-- JMH latency harness capable of reporting percentiles.
-- A frozen primary Caffeine vs Chronicle Map protocol with explicit backend-specific occupancy semantics.
-- Chronicle Map sizing/robustness sensitivity kept separate from the primary latency campaign.
-- Raw result retention plus enough environment metadata to reproduce runs.
-- Written analysis that includes null, negative, failed and inconvenient results.
+- Saturated operation p99 and p99.9 under matched levels of added application
+  data, payload size, and offered background churn.
+- Fixed-arrival response p99.9 under matched write demand with 2,048 and 32,768
+  eligible write keys. Reads span the resident set in this comparison.
+- Descriptive allocation, G1, occupancy, and observed process memory alongside
+  latency. Keep operation timing, queue delay, and total response separate.
 
-## Secondary / cut first
+The portable profiles use one cache worker, synthetic byte-array values, and
+fresh immutable overwrites. Report results within the corresponding workload,
+measurement channel, host, and protocol. Keep warned and rejected forks visible.
 
-- Eviction-policy simulation.
+## Separate comparisons
 
-It is allowed only after the primary comparison and essential sizing/robustness checks are complete and only if at least ~5 hours remain in the budget. It must not delay the October 20 target.
+File-backed and cold/open access, caller-owned `getUsing()` buffers, skewed reads,
+shared-cache contention, alternate collectors, and equal-total-memory budgets
+change the workload or API contract. Keep those comparisons separate from the
+ordinary-access results. The JMH smoke and profiling tasks validate the harness.
 
-## Explicitly out of scope
-
-- UI.
-- Spring Boot or another application framework.
-- Cloud deployment.
-- Distributed cache cluster.
-- Custom ML eviction policy.
-- Production service integration.
-- Proprietary XTP source code, schemas, traces, datasets, logs, configuration or derived confidential data.
-- Tuning dozens of cache libraries. Caffeine and Chronicle Map are the study.
-
-## Scope-creep rule
-
-Any task expected to consume more than **2 hours** that is not directly required for the primary comparison, reproducibility, or a clearly defined sizing/robustness question must be explicitly justified before implementation. Default answer: cut it.
-
-## Suggested 38-hour allocation
-
-| Workstream | Budget |
-|---|---:|
-| Scaffold, adapters, tests, smoke JMH | 5 h |
-| Workload design + correctness checks | 5 h |
-| Benchmark protocol + environment capture | 4 h |
-| Main Caffeine vs Chronicle runs | 8 h |
-| Chronicle sizing/robustness sensitivity | 7 h |
-| Analysis, plots/tables, robustness reruns | 5 h |
-| Write-up + cleanup | 4 h |
-| **Total** | **38 h** |
-
-The budget is a constraint, not a target to exhaust.
+Use synthetic workloads or publicly documented inputs. Confidential source,
+traces, settings, and customer data are outside the dataset.
