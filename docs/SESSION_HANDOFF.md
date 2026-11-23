@@ -52,7 +52,9 @@ scope details from that cohort.
 The split-write gates rejected both instruments. The bounded sampled attempt
 is complete. The existing combined-operation results still cover the original
 service questions, and the decomposition into construction and adapter
-`put()` remains unresolved. No benchmark is queued. The next manuscript
+`put()` remains unresolved. The [5% gate review](nov23-popos-followup/README.md#what-the-5-limit-means)
+records the cutoff's interpretation and the A/A control for any future
+split-timing study. No benchmark is queued. The next manuscript
 revision should add the locality sensitivity results and disclose the split
 qualification outcome, then proceed through author review, artifact licensing
 and access, and deposit approval.

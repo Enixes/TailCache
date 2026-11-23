@@ -61,6 +61,25 @@ benchmark forks. The corrected setup used a fresh directory and completed
 the pilot at source `b11505f`. The earlier setup log stays on the host.
 The predeclared bounded sampled attempt is exhausted.
 
+### What the 5% limit means
+
+For each seed, the gate divided the Chronicle/Caffeine service p99.9 ratio
+with split timing by the ratio with the original timer. The result had to
+stay within 5% of one. An original ratio of 1.10 therefore allows a split-timing
+ratio of 1.045 to 1.155. The protocol declared this engineering tolerance
+before collection to preserve modest differences between the caches. The
+protocol records no baseline repeatability calibration for exactly 5%.
+Both pilots would also have exceeded a 10% ratio tolerance in at least one
+seed. [Frozen pilot protocol](../PORTABLE_EXPERIMENT.md#split-write-timing-on-the-pop_os-host)
+
+For a future split-write study, repeat the original timer twice per backend
+using fresh paired seeds and counterbalanced order. This A/A control estimates
+how far the ratio moves across identical JVM runs. If its variability exceeds
+the smallest latency difference the study aims to explain, improve
+repeatability before testing another timer. Use the intended effect size and
+measured variability to set the design and declare its limits before new
+collection. Both recorded pilot verdicts stand.
+
 ## Evidence and verification
 
 The [collection manifest](MANIFEST.json) binds source commits, suite manifests,
