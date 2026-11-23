@@ -26,7 +26,8 @@ concentrated pairs were mixed.
 
 ## Run the benchmarks
 
-From the default checkout, use Java 21 and Python 3.10+ to run the full experiment.
+From the default checkout, use Java 21 and Python 3.10+ to run the default suite.
+Use a quiet native Linux host for comparisons intended to meet the host gates.
 
 ```sh
 ./gradlew --no-daemon tailCacheReproduce
@@ -35,83 +36,31 @@ From the default checkout, use Java 21 and Python 3.10+ to run the full experime
 Add `-PtailcacheSuite=locality` to run only the eight-JVM locality comparison,
 or `-PtailcacheSuite=quick` for a diagnostic. Use
 `-PtailcacheOut=results/my-replication` to select an output directory. Repeat
-the same command to reuse verified completed forks.
+the same command to reuse verified completed forks when the bundle, configuration,
+JDK, and host still match.
 [Portable collection guide](docs/PORTABLE_EXPERIMENT.md) ·
 [Evidence and offline verification](docs/EXPERIMENT_EVIDENCE.md)
 
-## Original Task 12 heap-pressure campaign
+## Methods and experiment records
 
-**Status (8 November 2026):** complete as an **observer-conditional study**. The original unconditional protocol is **NO_GO**. The study does not show a crossover, and it does not rule one out either. Authoritative sources: [final experiment review](docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md), [acceptance manifest](docs/TAILCACHE_12_FINAL_ACCEPTANCE.json), [status](docs/TAILCACHE_12_STATUS.json).
-
-**Design:** Caffeine and Chronicle Map in-memory, 256 B and 4 KiB values, one worker, uniform keys, 95/5 reads/existing-key puts, 32,768 resident entries, Java 21, G1 with a fixed 512 MiB heap, 32 MiB/s common background allocation, and 0/96/208/288 MiB of retained application data. The two backends were timed with two separate methods: sparse JMH `SampleTime` and every-operation HdrHistogram service time. The study measured closed-loop service latency, not fixed-arrival-rate response latency.
-
-**Execution:** 402/402 scheduled invocations were attempted. Of the 192 campaign forks, 182 passed strict screens, 9 more were kept with warnings, and 1 was hard-rejected (outside CPU 35.1% against a 25% ceiling) and not replaced. 64 robustness forks were analysed separately. Five earlier final attempts stopped on single-fork gates and stay archived as rejected cohorts.
-
-Chronicle/Caffeine latency ratios (a value above 1 means Caffeine is faster). `*` = the comparison has quality limitations, so no claim is resolved:
-
-| Timing | Payload | 0 MiB | 96 MiB | 208 MiB | 288 MiB |
-|---|---|---|---|---|---|
-| every-op p99 | 4 KiB | 1.11 | 1.11 | 1.12 | 1.11* |
-| every-op p99.9 | 4 KiB | 1.30 | 1.32 | 1.35 | 1.33* |
-| every-op p99 | 256 B | 1.09 | 1.18 | 1.16 | 0.91* |
-| every-op p99.9 | 256 B | **0.48** | **0.50** | **0.54** | 0.52* |
-| sparse p99 | 4 KiB | 1.13 | missing* | 1.13* | 1.12* |
-| sparse p99.9 | 4 KiB | 1.35 | missing* | 1.34* | 1.37* |
-| sparse p99 | 256 B | 1.28* | 1.24 | 1.23* | 1.23* |
-| sparse p99.9 | 256 B | 1.16* | 1.08 | 0.93* | 0.71* |
-
-What the evidence supports:
-
-- **4 KiB:** Caffeine has lower p99 and p99.9 at every qualified point. The ratio barely changes as pressure rises.
-- **256 B:** the two timing methods disagree. Every-operation timing shows Chronicle p99.9 at about half of Caffeine's, but this already holds at 0 MiB, so pressure is not what causes it.
-- **Heap vs allocation:** at 288 MiB with 4 KiB values, post-GC heap occupancy is about 90% for Caffeine and 62–64% for Chronicle. In exchange, Chronicle allocates about 20× more per operation (281.6 vs 13.6 B/op at 256 B; 4,121.6 vs 205.6 B/op at 4 KiB).
-- **Highest pressure (288 MiB):** every comparison there carries a quality limitation. The point where a crossover would be most likely is therefore unresolved.
-
-Not covered: concurrency, skewed or other read/write mixes, other collectors or heap sizes, persisted/cold/two-JVM behaviour, `getUsing`, and eviction. Retained evidence lives under `evidence-archives/native-final-conditional-completion-dataset-20261108-001/`. That directory is git-ignored and exists only on the collection host.
-
-### Follow-up diagnostic: 90–99% heap cliff, open-loop response latency, and `getUsing()`
-
-**Historical discovery diagnostic.** The response values below use a synthetic correction. Use the scheduled-arrival results above for the measured response comparison.
-
-Because Task 12 stopped at 288 MiB ballast (~90% Caffeine occupancy at 4 KiB, ~62% at 256 B) and rejected any G1 evacuation failure, a separate 30-JVM cliff diagnostic pushed common application retention up to G1's To-Space Exhaustion / Full GC / OOM boundary while recording both **closed-loop service latency** and **coordinated-omission-corrected (open-loop) response latency** alongside `ChronicleMap.getUsing(key, reusableBuffer)`:
-
-| Payload & Heap | Ballast | Backend | Steady Post-GC Heap | GC Pauses / Full GCs | Total GC Time (8s) | Alloc (B/op) | Closed-Loop p99.9 (µs) | Open-Loop Response p99.9 (µs) |
-|---|---:|---|---:|---:|---:|---:|---:|---:|
-| **4 KiB** (512 MiB) | 288 MiB | `CAFFEINE` | 88.7% | 156 / 1 | 342 ms | 205.6 | **10.20** | 1,179.65 |
-| | 288 MiB | `CHRONICLE_GET` | 59.2% | 229 / 0 | 209 ms | 4,121.6 | 14.21 | 733.70 |
-| | 288 MiB | `CHRONICLE_GET_USING` | 59.4% | 19 / 0 | **22 ms** | 215.2 | 10.70 | **12.14** |
-| **4 KiB** (512 MiB) | 340 MiB | `CAFFEINE` | 97.3% | 277 / **58** | 808 ms | 205.6 | **8.41** | 10,420.22 |
-| | 340 MiB | `CHRONICLE_GET` | 69.3% | 331 / 0 | 283 ms | 4,121.6 | 11.18 | 830.98 |
-| | 340 MiB | `CHRONICLE_GET_USING` | 69.5% | 26 / 0 | **24 ms** | 215.2 | 10.62 | **12.09** |
-| **4 KiB** (512 MiB) | 352 MiB | `CAFFEINE` | **98.2%** | 252 / **191** | **2,260 ms** | 205.6 | 12.68 | **28,295.17** |
-| | 352 MiB | `CHRONICLE_GET` | 71.9% | 360 / 0 | 296 ms | 4,121.6 | 11.23 | 825.34 |
-| | 352 MiB | `CHRONICLE_GET_USING` | 71.9% | 29 / 0 | **28 ms** | 215.2 | **10.59** | **11.70** |
-| **256 B** (256 MiB) | 220 MiB | `CAFFEINE` | 93.0% | 88 / 1 | 83 ms | 13.6 | 2.47 | 3.15 |
-| | 220 MiB | `CHRONICLE_GET` | 91.0% | 792 / 1 | 586 ms | 281.6 | 3.18 | 839.68 |
-| | 220 MiB | `CHRONICLE_GET_USING` | 91.0% | 120 / 1 | 101 ms | 23.2 | **1.18** | **2.97** |
-| **256 B** (256 MiB) | 232 MiB | `CAFFEINE` | **98.4%** | 600 / **529** | **3,847 ms** | 13.6 | 2.54 | 13,369.34 |
-| | 232 MiB | `CHRONICLE_GET` | 97.3% | 1,590 / 88 | 1,532 ms | 281.6 | 3.77 | 10,321.92 |
-| | 232 MiB | `CHRONICLE_GET_USING` | 98.0% | 288 / 40 | **402 ms** | 23.2 | **1.37** | **1,201.15** |
-| **256 B** (256 MiB) | 238 MiB | `CAFFEINE` | 99.2% | — / 7 | **OOM** | — | **OOM** | **OOM** |
-| | 238 MiB | `CHRONICLE_GET` | 98.8% | 1,371 / 316 | 2,847 ms | 281.6 | 5.78 | 18,366.46 |
-| | 238 MiB | `CHRONICLE_GET_USING` | 99.2% | 365 / 235 | **1,551 ms** | 23.2 | **1.62** | **11,468.80** |
-
-The diagnostic recorded three effects.
-1. **Why closed-loop percentiles missed the cliff:** at 340 MiB (97.3% Caffeine heap), Caffeine suffers 58 Full GCs and 808 ms of STW pauses (max pause 22.8 ms), yet its closed-loop `p99.9` is **8.41 µs** (still beating Chronicle's 11.18 µs!), while its open-loop response `p99.9` explodes to **10,420 µs (10.4 ms)**. Even at 352 MiB (98.2% heap, 191 Full GCs, 2.26 s of pauses out of 8 s, max pause 76.5 ms), closed-loop `p99.9` barely ticks up to **12.68 µs**—a tiny 1.13× crossover over `CHRONICLE_GET` (11.23 µs)—whereas open-loop `p99.9` reaches **28.3 ms** (34× worse than `CHRONICLE_GET` and **2,418× worse** than `CHRONICLE_GET_USING`).
-2. **Buffer reuse reduced allocation in this diagnostic.** replacing `map.get(key)` with `map.getUsing(key, reusableBuffer)` cuts 4 KiB worker allocation by **19×** (`4,121.6` $\to$ `215.2 B/op`, with the remaining 215 B/op coming strictly from the 5% write path), cuts GC time by **10×** (`296 ms` $\to$ `28 ms`), and keeps open-loop `p99.9` flat at **~11.7–13.1 µs** all the way through the 352 MiB cliff where Caffeine is stalling for 28.3 ms.
-3. **At 256 B, Caffeine OOMs first (`238 MiB` ballast) while Chronicle survives**, because Caffeine's per-entry node/key/value overhead pushes it over 99.2% heap earlier than Chronicle.
-
-Full methodological synthesis, review of gaps, and diagnostic details: [`docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md`](docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md) · Structured JSON evidence: [`docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json`](docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json) · Probe, runner & plotter: [`scripts/TailCache12CliffCrossoverProbe.java`](scripts/TailCache12CliffCrossoverProbe.java), [`scripts/tailcache12_cliff_diagnostic.py`](scripts/tailcache12_cliff_diagnostic.py), [`scripts/tailcache12_plot_cliff_diagnostic.py`](scripts/tailcache12_plot_cliff_diagnostic.py).
-
-![4 KiB Closed-Loop vs Open-Loop Response p99.9 Latency Across the 89%–98% Heap Cliff](docs/figures/cliff_4kib_latency_crossover.svg)
-
-![4 KiB Total STW GC Pause Time, Full GC Count, and Per-Operation Allocation](docs/figures/cliff_4kib_gc_and_allocation.svg)
-
-![256 B Open-Loop Response p99.9 Latency and OOM Boundary on a 256 MiB G1 Heap](docs/figures/cliff_256b_crossover_and_oom.svg)
+- [Scope](docs/SCOPE.md), [methodology](docs/METHODOLOGY.md), and [experiment plan](docs/PLAN.md)
+- [Original heap-pressure campaign](docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md)
+  and [acceptance record](docs/TAILCACHE_12_FINAL_ACCEPTANCE.json). The completed
+  dataset supports an observer-conditional analysis. The unconditional protocol
+  remains `NO_GO`.
+- [Historical cliff diagnostic](docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md)
+  uses synthetic arrival correction and includes a separate `getUsing()` arm.
 
 ## Benchmark modes
 
-TailCache keeps two layers of benchmarks:
+TailCache provides the portable experiment and two JMH validation harnesses.
+
+### Portable experiment
+
+The main comparisons use one cache worker, ordinary `get`, and fresh immutable
+values on writes. Positive arrival rates measure responses against independently
+scheduled arrivals. A zero arrival rate selects saturated, back-to-back service
+measurement. See the [suite table](docs/PORTABLE_EXPERIMENT.md#run-from-a-fresh-checkout).
 
 ### Operation-level validation
 
@@ -152,7 +101,9 @@ That means `-t 16` in `CacheWorkloadBenchmark` is intentionally a **same-JVM sha
 
 ## Reproducibility controls
 
-Keys, values, replacement payloads and access traces are generated before measurement. Benchmark methods therefore avoid random-number generation and payload construction in the measured path.
+The JMH validation harness prepares its keys, trace, and replacement values
+before measurement. The portable experiment generates fresh values inside its
+measured writes and keeps the offered application churn separate.
 
 Chronicle Map is configured with fixed-size value layout through `constantValueSizeBySample(...)`, explicit `entries`, `maxBloatFactor(1.0)`, explicit `allowSegmentTiering(true)`, and `putReturnsNull(true)`. `maxBloatFactor(1.0)` does not mean segment tiering is impossible; tiering remains enabled for normal per-segment variance.
 
@@ -247,7 +198,7 @@ Chronicle Map's primary adapter uses ordinary `get`. Ordinary Chronicle `get` ma
 
 ## Run JMH directly
 
-For the dedicated heap-pressure workload, pause validation, and calibration on another machine, follow the [Task 12 runbook](docs/TAILCACHE_12_RUNBOOK.md). Task 12 has completed as an observer-conditional study (see [Task 12 results](#task-12-results-heap-pressure-crossover-study)); any new campaign is a new protocol and must not be pooled with the retained dataset.
+The [Task 12 runbook](docs/TAILCACHE_12_RUNBOOK.md) records the original JMH and every-operation protocols. Use the [portable collection guide](docs/PORTABLE_EXPERIMENT.md) for new runs.
 
 Run the benchmark suite:
 

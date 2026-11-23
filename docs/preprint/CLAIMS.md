@@ -1,10 +1,10 @@
 # Claim-to-evidence map
 
-## Current manuscript claims
+## Current experiment claims
 
 | Claim | Evidence | Boundary |
 | --- | --- | --- |
-| Scheduled-response p99.9 reverses when writes target 2,048 versus 32,768 keys. | [20 paired observations behind Figure 1](locality-pairs.csv). First host has 8 pairs, second host has 4 at 30 s and 8 at 90 s. [Second-host review](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) | 4 KiB, 5% writes, zero ballast, 50,000 intended arrivals/s. First-host repeat seeds are not independent new seeds. Update locality, survival, and policy activity vary together. |
+| Scheduled-response p99.9 reverses when writes target 2,048 versus 32,768 keys. | [20 paired locality observations](locality-pairs.csv). First host has 8 pairs, second host has 4 at 30 s and 8 at 90 s. [Second-host review](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) | 4 KiB, 5% writes, zero ballast, 50,000 intended arrivals/s. First-host repeat seeds are not independent new seeds. Update locality, survival, and policy activity vary together. |
 | Most of the extra Caffeine pause time under broad writes on the second host comes from G1 mixed collections. Its logged tenuring threshold also changes from 15 to 1 between the two arms, while Chronicle stays at 15. | [Per-fork timing and G1 audit](timing-audit.json) and [raw locality archives](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive). For each research slot, sum `gc.pauses[].overlapNs` for pause kinds beginning with `Pause Young (Mixed)` and read the reported threshold from in-window age-log entries. | Descriptive breakdown of the existing 30 s and 90 s cohorts. A mixed pause collects young and selected old regions. Age tables describe the aggregate heap, and individual values and promotion volumes remain unresolved. |
 | The locality reversal persists at 100,000 arrivals/s and about 2,500 writes/s. At 10% and 20% writes and 50,000 arrivals/s, Chronicle leads the full-key pairs and the concentrated pairs are mixed. | [Pop!_OS raw archive](https://github.com/Enixes/TailCache/tree/2f8bb0edbf769eaa4dde331f9debf3319ce5fe56/docs/nov23-popos-followup/archive) and [per-fork follow-up audit](timing-audit.json). | Two paired seeds per setting on one host, 4 KiB values, zero ballast. The higher-arrival comparison changes both pacing and read fraction. A warning-free 10% concentrated Caffeine fork has a 22.01 ms GC pause of unresolved cause. |
 | Payload changes the ranking at saturated combined p99 and p99.9 and at read-only p99.9. | [48 first-pass pairs and retry sensitivity](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md) and [per-fork operation audit](timing-audit.json). | 256 B Chronicle 24/24, 4 KiB Caffeine 24/24. Some high-pressure 4 KiB cells have churn drops. Timed updates include fresh-array generation. At 4 KiB, updates account for 90.2-99.6% of observations in bins strictly above the combined p99.9. Component costs remain unresolved. Earlier JMH results have their own measurement scope. |
@@ -13,16 +13,16 @@
 | The original response pressure bracket is specific to the earlier short trace. | Earlier midpoint claims C01-C03 below and [full-key second-host matrix](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/followups-01/INTERPRETATION.md) | Chronicle leads response p99.9 at every 4 KiB ballast point in the later full-key matrix. At p99.99/p99.999 the later 90-second locality experiment has contrary warning-free pairs. |
 | The memory and API boundaries still apply. | Claims C08-C12 below and [original acceptance](../TAILCACHE_12_FINAL_ACCEPTANCE.json) | Worker allocation and sampled RSS are separate from retained heap. Reuse changes the ownership contract. The original unconditional status remains NO_GO. |
 
-### Figure 1 evidence identities
+### Locality comparison evidence identities
 
-- First host: [mechanism-data-20261118.json](../mechanism/mechanism-data-20261118.json), SHA-256 `1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d`.
+- First host: [mechanism-data-20261118.json](../mechanism/mechanism-data-20261118.json), path-normalized copy SHA-256 `a1c4cf74a3a26c61ae43c56e25a69bbac6be87a4a3946cc1f26028f4a899d6dd`. Original snapshot SHA-256 `1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d`.
 - Second host, 30 s: `locality/research/results-compact.json`, SHA-256 `e036c316e6c08e88b0dd66bcb68fab9fff53daea0496d42906da698dfbd02d2c`.
 - Second host, 90 s: `followups-01/locality-long/research/results-compact.json`, SHA-256 `49b1eae2726ce6cfac36c6b09b39ae1926ea610cb2ea48e2f2d397f53fa95dad`.
 
 The [second-host manifest](https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/MANIFEST.json)
 records the corresponding full-report hashes.
 
-## Historical claims for the original paper package
+## Historical experiment claims
 
 The frozen [claims.json](claims.json) stores the original evidence identities,
 warning counts, and source groups for C01-C14. These claims retain their
@@ -48,7 +48,7 @@ original scope.
 ## Historical-note reconciliation
 
 - The cliff diagnostic remains discovery evidence. Its synthetic expected-interval correction is distinct from directly measured intended-arrival response.
-- A single diagnostic service win does not override the later repeated ordinary-service findings. “Exact ~97% cliff” and “reuse is mandatory” are not paper claims.
+- A single diagnostic service win does not override the later repeated ordinary-service findings. “Exact ~97% cliff” and “reuse is mandatory” do not follow from the experiments.
 - Lower GC-managed heap and lower RSS are distinct. The fresh RSS observation must appear wherever a memory-saving claim is made.
 - Original RQ1 concerns ordinary operation p99/p99.9. Scheduled response and post hoc extreme percentiles are explicitly identified follow-ups.
 - RQ2 receives a limited payload-dependent service comparison, not a precise estimate of how the scheduled-response crossover moves with payload.

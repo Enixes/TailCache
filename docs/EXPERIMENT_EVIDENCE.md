@@ -10,6 +10,11 @@ its underlying measurements.
   the HTML and open it in a browser to filter paired measurements by workload,
   percentile, or timing boundary.
 
+The archives in this checkout use repository-relative paths in their HDR
+verification tables. The manifests retain the original archive SHA-256 values
+alongside the current checksums. Histogram bins, percentile values, fork
+outcomes, and acceptance rules are unchanged.
+
 From the repository root, use Python 3.10+ to verify both archives without
 launching a JVM or running new benchmarks.
 
@@ -29,3 +34,14 @@ python3 scripts/render_tailcache_preprint_reader.py
 ```
 
 Use the [portable collection guide](PORTABLE_EXPERIMENT.md) to run a fresh workload.
+
+## Historical records
+
+- Original campaign [protocol](TAILCACHE_12_PLAN.md), [runbook](TAILCACHE_12_RUNBOOK.md),
+  and [final acceptance](TAILCACHE_12_FINAL_ACCEPTANCE.json).
+- [Focused crossover results](TAILCACHE_FOCUSED_RESULTS.md),
+  [short-trace midpoint results](TAILCACHE_MIDPOINT_RESULTS.md), and
+  [remaining separate comparisons](TAILCACHE_12_DEFERRED_RESEARCH.md).
+- [File-backed qualification](TAILCACHE_08_FINAL_REVIEW.md),
+  [capacity diagnostics](TAILCACHE_09_REVIEW.md), and
+  [cliff diagnostic](TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md).

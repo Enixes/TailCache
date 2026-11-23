@@ -134,7 +134,6 @@ def replay(attempt,review_id):
 def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('stage',choices=('run','audit'))
     parser.add_argument('attempt_id');parser.add_argument('--quiet-id');parser.add_argument('--review-id',default='common-review-001')
-    parser.add_argument('--task-tool-cache',action='store_true')
     parser.add_argument('--inactive-dependency-cache',action='store_true')
     parser.add_argument('--available-memory-gate',action='store_true')
     args=parser.parse_args()
@@ -143,15 +142,14 @@ def main():
     if args.stage=='audit':return 0 if replay(attempt,args.review_id)['diagnosticCriteriaPass'] else 1
     if not args.quiet_id or not re.fullmatch(r'[A-Za-z0-9._-]+',args.quiet_id):parser.error('Require fresh quiet ID')
     quiet=evidence.REPORTS/args.quiet_id;cache_path=evidence.REPORTS/(args.quiet_id+'-cache-preparation.json')
-    tool_path=evidence.REPORTS/(args.quiet_id+'-tool-cache-preparation.json')
     dependency_path=evidence.REPORTS/(args.quiet_id+'-dependency-cache-preparation.json')
     setup=evidence.REPORTS/(args.attempt_id+'-setup')
-    if any(p.exists() for p in (attempt,quiet,cache_path,cache_path.with_suffix('.inventory.jsonl'),tool_path,dependency_path,setup)):
+    if any(p.exists() for p in (attempt,quiet,cache_path,cache_path.with_suffix('.inventory.jsonl'),dependency_path,setup)):
         raise ValueError('Retained diagnostic exists; no duplicate')
     if any(os.environ.get(k) for k in ('JAVA_TOOL_OPTIONS','JDK_JAVA_OPTIONS','_JAVA_OPTIONS')):
         raise ValueError('Diagnostic requires clean unprofiled VM options')
     if shutil.disk_usage(evidence.ROOT).free<4*1024**3:raise ValueError('Require4GiB disk before diagnostic')
-    source=evidence.source_hash();tool=None;dependency=None;helper=None
+    source=evidence.source_hash();dependency=None;helper=None
     if args.inactive_dependency_cache or args.available_memory_gate:
         current=evidence.host_snapshot()
         if os.environ.get('TAILCACHE_REQUIRE_NATIVE_HOST')!='1' or current.get('nativeScopeQualified')!=1:
@@ -159,9 +157,6 @@ def main():
     if args.available_memory_gate:
         from tailcache12_exploratory import compile_verifier
         helper=compile_verifier(setup)
-    if args.task_tool_cache:
-        from tailcache12_tool_cache import prepare as prepare_tool_cache
-        tool=prepare_tool_cache(tool_path)
     if args.inactive_dependency_cache:
         from tailcache12_dependency_cache import prepare as prepare_dependency_cache
         dependency=prepare_dependency_cache(dependency_path)
@@ -171,9 +166,6 @@ def main():
     if cache.get('version')!=expected_preparation:raise ValueError('Wrong diagnostic preparation version')
     if not run_preflight(quiet,120,300)['quietPass'] or source!=evidence.source_hash():
         raise ValueError('Diagnostic preparation failed/source changed')
-    if tool:
-        evidence.save(quiet/'tool-cache-preparation.json',tool)
-        cache['toolCachePreparationSha256']=calibration.sha(quiet/'tool-cache-preparation.json')
     if dependency:
         evidence.save(quiet/'dependency-cache-preparation.json',dependency)
         cache['dependencyCachePreparationSha256']=calibration.sha(quiet/'dependency-cache-preparation.json')

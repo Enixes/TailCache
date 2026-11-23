@@ -72,6 +72,9 @@ Ordinary read materialisation remains visible: approximately 4,121.6 worker B/op
 
 **Acceptance:** accept this complete **exploratory replication dataset**, with explicit JIT limitations and an unresolved104 MiB transition. The clean primary endpoint pairs strengthen the tested 0–208 MiB response bracket. Single-pair seed checks are descriptive robustness. The original unconditional Task12 protocol remains unqualified; no new result changes its historical acceptance or stopping-policy amendment. This review is an agent research-method review, not independent human peer review.
 
-## Decision for the preprint
+## Interpretation
 
-The bounded follow-up is finished. It strengthens the existence of the workload-specific response direction change, shows why a sharp threshold would overstate the data, and adds a material process-memory tradeoff. Further blind bisection is not justified by this result. Proceed to manuscript/figure and claim review. An equal-total-memory or different-load study is a separately declared future experiment, not required to finish this unit.
+The completed follow-up reproduces the short-trace p99.9 response bracket and
+leaves 104 MiB unresolved. It also records lower retained Java-heap occupancy
+alongside higher sampled RSS for Chronicle in this cohort. A matched total-memory
+budget or a different offered load would require a separately declared experiment.

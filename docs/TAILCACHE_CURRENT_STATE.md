@@ -42,4 +42,4 @@ qualification diagnostics.
   between 0 and 208 MiB for its short-trace workload. Earlier reuse diagnostics
   report a distinct caller-owned buffer API.
 
-[Documentation index](https://github.com/Enixes/TailCache/blob/d0841fe3af5df8a251ff740a52d0e813cad1dce5/docs/DOCUMENTATION_INDEX.md)
+[Experiment plan](PLAN.md) · [Evidence index](EXPERIMENT_EVIDENCE.md)

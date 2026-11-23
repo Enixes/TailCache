@@ -1,6 +1,6 @@
 # Task 12 implementation and researcher review — 2026-10-13
 
-Implemented locally on `nacht` in `/home/y/TailCache`, branch `tailcache-12-crossover`, starting from `c008dad`. The seven-stage plan was saved before implementation. This delivery completes the dedicated 12A workload and the functional pause-capture portion of 12B. **Task 12 remains open; no pilot or crossover campaign was launched.**
+Implemented on the native test host starting from `c008dad`. The seven-stage plan was saved before implementation. This delivery completes the dedicated 12A workload and the functional pause-capture portion of 12B. **Task 12 remains open; no pilot or crossover campaign was launched.**
 
 ## Workload contract and 12A evidence
 

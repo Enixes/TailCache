@@ -1,10 +1,10 @@
-# TailCache 12 — current-state review and execution plan
+# Original TailCache 12 protocol
 
-Prepared before implementation on 2026-10-13 against clean commit `c008dad`. The state review below is the planning snapshot. Implementation and evidence updates are recorded in `docs/TAILCACHE_12_IMPLEMENTATION_REVIEW.md` and `docs/TAILCACHE_12_STATUS.json`; the campaign has not been run.
+Prepared before implementation on 2026-10-13 against clean commit `c008dad`. The state review below is the planning snapshot. The planned settings below record the starting point. The [experiment status](TAILCACHE_CURRENT_STATE.md) summarizes results from the subsequent cohorts.
 
-> **Update 8 November 2026:** the campaign has since been executed and accepted as an observer-conditional study (original protocol NO_GO). See `TAILCACHE_12_FINAL_OUTCOME_REVIEW.md` and `TAILCACHE_12_FINAL_ACCEPTANCE.json`. The planning snapshot above is preserved unchanged.
+> **Update 8 November 2026:** the campaign has since been executed and accepted as an observer-conditional study (original protocol NO_GO). See `TAILCACHE_12_FINAL_OUTCOME_REVIEW.md` and `TAILCACHE_12_FINAL_ACCEPTANCE.json`.
 
-Source: [TickTick Task 12](https://ticktick.com/webapp/#p/60d767527eba1347b9b9006e/tasks/6a99b1248f0842fe140aa129), “Run RQ1/RQ2 crossover campaign, repeats and statistical summaries.” The task explicitly includes 12A–12G: repair, measurement validation, calibration, quality controls, pilot, campaign and statistics. The user chose **this machine during a quiet session** for the reportable campaign.
+The original plan covers workload repair, measurement validation, calibration, operating conditions, pilot, campaign, and analysis.
 
 ## Current-state review
 
@@ -147,6 +147,5 @@ Final gate: every primary condition has workload integrity, achieved calibrated 
 
 Expected new homes: crossover classes in `src/jmh/java/.../benchmark`, reusable workload controls in `src/main/java/.../workload`, analysis extensions in `src/results/java/.../results`, `scripts/tailcache12.py`, and protocol/review artifacts in `docs/` with raw runs under `build/reports/tailcache12/`. Exact class names can follow implementation needs.
 
-At the minimum 12+8 one-second schedule, 16 conditions × 2 passes × 3 forks consumes 1,920 timed seconds (**32 minutes per primary channel**) before JVM/setup/Gradle overhead. Both primary latency channels require at least 64 timed minutes; throughput, diagnostics, pilot, calibration, robustness and retries add materially. Budget measured wall time after the pilot rather than promising a completion date from this arithmetic. The TickTick due date is 2026-10-17; research gates remain the completion criterion.
 
 **Immediate next work: implement and review 12A, followed by the pause/JIT validation slice of 12B.** The campaign begins only after 12C–12E produce a passing frozen protocol.

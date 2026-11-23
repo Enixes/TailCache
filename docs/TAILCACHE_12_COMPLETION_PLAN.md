@@ -58,7 +58,6 @@ Calibration `...-003` passed its fresh preflight and reached 13/64. All 13 host 
 
 The matching `wsl-pressure96-jit-diagnostic-20261028-001` passed with compiler counters 1/1/1/0/0/0/0/0 ms and no worker deoptimization. It did not reproduce or uniquely explain the prior 15-ms event. Its XML nevertheless showed avoidable management-provider/stream compilation inside measurement envelopes: `DefaultPlatformMBeanProvider`, `ReferencePipeline`, `AbstractPipeline` and related methods. The runner repeatedly resolved `ManagementFactory.getRuntimeMXBean()` for uptime metadata. Cache that JVM bean once during setup and keep reading its live uptime at the same boundaries; this is an independently observed instrumentation cleanup, not a proven attribution of the original failure. Revalidate correctness/pause capture, run two independent matching 96-MiB XML probes at 60 warmups, and require fresh complete compiler screens before any new calibration grid. If compiler instability remains, follow the already declared longer-warmup investigation rather than relaxing limits or selecting a favorable fork.
 
-Source: [TickTick Task 12](https://ticktick.com/webapp/#p/60d767527eba1347b9b9006e/tasks/6a99b1248f0842fe140aa129), retrieved 27 October 2026. The task is open, with a current due date of 7 November 2026 at 15:00 IST. The old October date in the original planning snapshot is superseded. Completion requires trustworthy RQ1/RQ2 evidence through stages 12A–12G.
 
 ## Starting evidence
 

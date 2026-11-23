@@ -1,8 +1,6 @@
-# Task 12: deferred research follow-up
+# Separate experiment follow-ups
 
-Recorded 9 November 2026, Asia/Kolkata. The user asked to note these items for later. **Deferred; no new collection is scheduled or launched by this note.**
-
-Subsequent planning: the user requested midpoint planning and a preprint before the 1 December application deadline. See [the bounded experiment and preprint plan](TAILCACHE_PREPRINT_PLAN.md); the 18-JVM batch is now proposed next work, still unlaunched. The broader follow-ups below remain available without requiring a full rerun.
+The [current experiment plan](PLAN.md) summarizes the completed midpoint and later comparisons.
 
 ## Completion and scope
 
@@ -24,19 +22,11 @@ The [focused claims](TAILCACHE_FROZEN_CLAIMS.md) describe a separate exploratory
 
 These are stronger research follow-ups, not a commitment to rerun the entire matrix. A new protocol cannot retroactively make the original unconditional protocol pass.
 
-## Separate optional small confirmation batch
+## Completed midpoint comparison
 
-**Not launched:** 4 KiB ordinary scheduled response at **0, 104 and 208 MiB** application ballast, three paired forks per point: **18 JVMs**.
-
-Purpose: test whether the observed p99.9 direction change between 0 and 208 MiB repeats, and add the missing midpoint. At p99.99/p99.999 Chronicle already wins at baseline in the retained 30-second response data; those are baseline advantages, not newly observed forward crossovers.
-
-Before launch, freeze one source/runtime and common workload settings, counterbalanced order, new evidence directory, warning/rejection rules and resumable slot handling. Preserve completed slots on interruption. Analyse this batch separately from the exploratory dataset; do not pool rejected forks or replace them silently.
-
-This small batch would not by itself resolve recorder interference, establish a universal crossover, provide independent extreme-tail pause episodes, or satisfy the original unconditional protocol. Its value should be assessed after reviewing the completed full-tail explanation.
+The [midpoint results](TAILCACHE_MIDPOINT_RESULTS.md) report the completed 0, 104, and 208 MiB comparisons. Response p99.9 at 104 MiB was mixed. Keep the short-trace workload and paired uncertainty attached to this bracket.
 
 ## Evidence and presentation already complete
 
 - Focused percentile conclusions through p99.999, per-fork tail curves and exceedance probabilities at 100 microseconds, 1 millisecond and 10 milliseconds.
 - Frozen exploratory claims, definitions, uncertainty and retained warning/exclusion information.
-- Interactive results explorer deployed with authentication protection.
-- No benchmark was started to create this deferred-work note. Existing completion flags and immutable evidence remain unchanged.

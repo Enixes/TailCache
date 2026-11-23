@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 """
-Generates publication-grade SVG and PNG figures for the TailCache 90-99% Heap Cliff Diagnostic.
+Generates SVG and PNG figures for the TailCache 90-99% Heap Cliff Diagnostic.
 Reads docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json and writes SVG + PNG files to docs/figures/
-and copies PNGs into the artifact directory.
+for local inspection.
 """
 import json
 import math
 import pathlib
 import subprocess
 
-ROOT = pathlib.Path("/home/y/TailCache")
+ROOT = pathlib.Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / "docs" / "TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json"
 FIG_DIR = ROOT / "docs" / "figures"
-ARTIFACT_DIR = pathlib.Path("/home/y/.gemini/antigravity-cli/brain/813eaaaa-7714-484f-8709-5826310287c3")
 
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 data = json.loads(EVIDENCE.read_text())
@@ -404,11 +403,9 @@ def build_fig3_256b_cliff():
 def save_svg_and_png(name: str, svg_text: str):
     svg_path = FIG_DIR / f"{name}.svg"
     png_path = FIG_DIR / f"{name}.png"
-    art_png = ARTIFACT_DIR / f"{name}.png"
     svg_path.write_text(svg_text)
     subprocess.run(["rsvg-convert", "-w", "2280", str(svg_path), "-o", str(png_path)], check=True)
-    subprocess.run(["cp", str(png_path), str(art_png)], check=True)
-    print(f"Generated {svg_path}, {png_path}, and {art_png}")
+    print(f"Generated {svg_path} and {png_path}")
 
 
 def main():

@@ -3,8 +3,6 @@
   "taskComplete": true,
   "campaignReady": false,
   "reportable": true,
-  "tickTickTaskId": "6a99b1248f0842fe140aa129",
-  "dueDateLocal": "2026-11-07T15:00:00+05:30",
   "branch": "tailcache-12-crossover",
   "startingCommit": "ed9a9358b42eb3de04ad3c2de1a127a9e54ed90a",
   "sourceChangesCommitted": true,
@@ -103,7 +101,7 @@
   },
   "retainedCheckpointArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-checkpoint-20261028T124127Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-checkpoint-20261028T124127Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-checkpoint-20261028T124127Z.tar.gz",
     "bytes": 214058050,
     "sha256": "5b879abdb3dcb13848b9708a70813687bb180f7c9eea552c9ece2c790d258c6e",
     "includes": "All retained evidence through runtime-bean rejection, native history snapshot and guarded-source checkpoint; new qualification not yet run"
@@ -156,7 +154,7 @@
   },
   "guardedQualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-guarded-qualification-20261028T133041Z.tar.gz",
     "bytes": 55581704,
     "sha256": "fb8faff7054efa9f0ea59f3b53ff1520bc62cd1dcf07eb3844c67d85383a85f5"
   },
@@ -182,7 +180,7 @@
   },
   "calibrationRejectionArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-calibration004-rejection-20261028T135752Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-calibration004-rejection-20261028T135752Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-calibration004-rejection-20261028T135752Z.tar.gz",
     "bytes": 4154513,
     "sha256": "977d3543eb50c77420c7d2f9b0c626c2e1489c6fc5053a43f2531b0091d75698"
   },
@@ -190,8 +188,8 @@
   "nativeHostObserver": {
     "monitorVersion": 5,
     "processId": 9032,
-    "windowsFolder": "C:/Users/deity/AppData/Local/Temp/TailCacheHost-20261028-003",
-    "wslHistory": "/mnt/c/Users/deity/AppData/Local/Temp/TailCacheHost-20261028-003/history.jsonl",
+    "windowsFolder": "<windows-temp>/TailCacheHost-20261028-003",
+    "wslHistory": "<windows-temp>/TailCacheHost-20261028-003/history.jsonl",
     "previousPid": 21828,
     "previousSessionRetained": true,
     "repair": "Append authoritative history first; tolerate only optional-snapshot sharing/lock failures; reader permits delete sharing",
@@ -212,7 +210,7 @@
   },
   "observerRepairArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-observer5-repair-20261028T142240Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-observer5-repair-20261028T142240Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-observer5-repair-20261028T142240Z.tar.gz",
     "bytes": 1600597,
     "sha256": "f3fcf4dba4411a0556e98bc22af6ead528672c462e7d217e1b2088a92d29b706"
   },
@@ -255,7 +253,7 @@
   },
   "retryEngineeringArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-calibration-retry-engineering-20261028T145305Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-calibration-retry-engineering-20261028T145305Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-calibration-retry-engineering-20261028T145305Z.tar.gz",
     "bytes": 3161345,
     "sha256": "91785ee6c6c3ce72bd8fa85a847604f45fa0880e0b0515c780cc693cdb2b89dd"
   },
@@ -366,7 +364,7 @@
   },
   "v5QualificationArchive": {
     "linuxPath": "/opt/tailcache/evidence-archives/tailcache-observer5-qualification-20261028T154506Z.tar.gz",
-    "windowsPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/evidence-archives/tailcache-observer5-qualification-20261028T154506Z.tar.gz",
+    "windowsPath": "build/evidence-archives/tailcache-observer5-qualification-20261028T154506Z.tar.gz",
     "bytes": 54492787,
     "sha256": "e92a818777185f829660faf78efb887b73b2f1a843394b7391bc53eb48540f86"
   },
@@ -380,7 +378,7 @@
     "portableArchive": "TailCache-work-20261028.tar.gz",
     "fullWslExport": "Ubuntu-WSL-20261028.tar",
     "secondaryBackupPath": "G:/TailCache-backup-20261028-001",
-    "primaryBackupPath": "C:/Users/deity/Documents/ChatGPT/TailCache/build/native-migration/20261028-001",
+    "primaryBackupPath": "build/native-migration/20261028-001",
     "workArchiveSha256": "07cdbd5b4607a8164ad945fb73f00f3fdbf8807e821981d7955ad2f2b1781c41",
     "fullWslExportSha256": "1d3823d7d1a72cf2a165bb208bdc09f12f6f8077f4f324741bfed104af946246",
     "backupChecksumsVerified": true
@@ -1065,7 +1063,7 @@
     "pagingReason": "zswpin21to108,zswpout5199unchanged"
   },
   "conditioning16QualificationArchive": {
-    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-qualification-20261106-010.tar.gz",
+    "path": "evidence-archives/native-final-conditioning16-qualification-20261106-010.tar.gz",
     "bytes": 590378881,
     "sha256": "726dbbafd86580c3b332614469fe6fece54dde74521875722c1a41f7dcb40b95",
     "verifiedMembers": 18222,
@@ -1091,7 +1089,7 @@
     "original26msFailureAttributed": false
   },
   "conditioning16CalibrationArchive": {
-    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-calibration-checkpoint-20261106-011.tar.gz",
+    "path": "evidence-archives/native-final-conditioning16-calibration-checkpoint-20261106-011.tar.gz",
     "bytes": 625211063,
     "sha256": "ed2e3728a07d1b2901902f6135b27cd138080a8f5dd622d0183b3547736a130d",
     "verifiedMembers": 20915,
@@ -1180,7 +1178,7 @@
     ]
   },
   "compilerDiagnosticsArchive": {
-    "path": "/home/y/TailCache/evidence-archives/native-final-compiler-diagnostics-checkpoint-20261106-012.tar.gz",
+    "path": "evidence-archives/native-final-compiler-diagnostics-checkpoint-20261106-012.tar.gz",
     "bytes": 666007015,
     "sha256": "4091e552b73ff9c84c22fdc184cab05d9d2c4c91f5c015010b38ea0d486be613",
     "verifiedMembers": 25004,
@@ -1189,7 +1187,7 @@
   "calibrationResearcherReview": "build/reports/tailcache12/native-final-conditioning16-calibration-20261106-002/researcher-review.json",
   "datasetArchiveReview": "docs/TAILCACHE_12_DATASET_ARCHIVE_REVIEW.md",
   "acceptedCalibrationArchive": {
-    "path": "/home/y/TailCache/evidence-archives/native-final-conditioning16-calibration-accepted-20261106-013.tar.gz",
+    "path": "evidence-archives/native-final-conditioning16-calibration-accepted-20261106-013.tar.gz",
     "bytes": 726936823,
     "sha256": "484b1aa5222e46eed52c611669edb0f05f9efd14928ad28f1eec6322ff1aebb7",
     "verifiedMembers": 29439,
@@ -1701,20 +1699,5 @@
     "originalUnconditionalAcceptedConditions": 0
   },
   "historicalQualifiedMeasurementSourceSha256BeforeFinal": "8bd1b3faa4221bed820290d6a6944a812baaaec45a08e0f5279c0a421096b65d",
-  "recoveryTimer": {
-    "stopRequired": false,
-    "reason": "taskComplete=true after full execution/export/independent review",
-    "operationalReceipt": "evidence-archives/native-final-conditional-completion-dataset-20261108-001/operational-completion.json",
-    "activeState": "inactive",
-    "subState": "dead",
-    "verifiedStopped": true
-  },
-  "tickTickCompletion": {
-    "taskId": "6a99b1248f0842fe140aa129",
-    "status": 2,
-    "completedTime": "2026-11-08T08:57:03+0530",
-    "originalContentUnchanged": true,
-    "detailedResultsKeptLocal": true
-  },
   "completionSupplementStatus": "full402_execution_export_independent_reconciliation_and_final_review_complete"
 }

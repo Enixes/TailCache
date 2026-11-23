@@ -12,18 +12,19 @@ import sys
 import time
 
 SCRATCH = pathlib.Path(__file__).resolve().parent
-OUT_DIR = pathlib.Path("/home/y/TailCache/evidence-archives/native-final-cliff-crossover-diagnostic-20261108-001")
+OUT_DIR = SCRATCH.parent / "evidence-archives/native-final-cliff-crossover-diagnostic-20261108-001"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 JAVA = "/usr/lib/jvm/java-21-openjdk/bin/java"
-MODULES_DIR = pathlib.Path("/home/y/.gradle/caches/modules-2/files-2.1")
+GRADLE_CACHE = pathlib.Path(os.environ.get("GRADLE_USER_HOME", pathlib.Path.home() / ".gradle"))
+MODULES_DIR = GRADLE_CACHE / "caches/modules-2/files-2.1"
 ALL_JARS = [
     str(p) for p in sorted(MODULES_DIR.rglob("*.jar"))
     if not p.name.endswith("-sources.jar") and not p.name.endswith("-javadoc.jar")
 ]
 CP = ":".join([
     str(SCRATCH),
-    "/home/y/TailCache/build/classes/java/main",
+    str(SCRATCH.parent / "build/classes/java/main"),
     *ALL_JARS,
 ])
 

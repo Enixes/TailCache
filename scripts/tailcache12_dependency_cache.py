@@ -11,8 +11,9 @@ from tailcache12_calibration_start import memory_snapshot
 
 JDK=pathlib.Path('/usr/lib/jvm/java-21-openjdk')
 EXACT=(JDK/'lib/modules',JDK/'lib/server/libjvm.so')
-GRADLE=pathlib.Path('/home/y/.gradle/wrapper/dists/gradle-9.7.1-bin/1w1c7tv4s851m17nbqdsro2tv/gradle-9.7.1/lib')
-MODULES=pathlib.Path('/home/y/.gradle/caches/modules-2/files-2.1')
+GRADLE_HOME=pathlib.Path(os.environ.get('GRADLE_USER_HOME',pathlib.Path.home()/'.gradle'))
+GRADLE=GRADLE_HOME/'wrapper/dists/gradle-9.7.1-bin/1w1c7tv4s851m17nbqdsro2tv/gradle-9.7.1/lib'
+MODULES=GRADLE_HOME/'caches/modules-2/files-2.1'
 METHOD='readonly-fsync-fadvise-inactive-pinned-dependency-code-v1'
 URL='distributionUrl=https\\://services.gradle.org/distributions/gradle-9.7.1-bin.zip'
 

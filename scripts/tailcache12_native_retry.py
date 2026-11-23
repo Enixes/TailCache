@@ -81,11 +81,7 @@ def verify_initial_quiet(attempt, manifest, rows=(), before_launch=False):
             verify_cache_inventory(attempt.parent,cache)
         requires_empty_swap=cache['version'] in (2,3,4,5)
         if cache.get('toolCachePreparationSha256'):
-            from tailcache12_tool_cache import verify as verify_tool_cache
-            tool=path/'tool-cache-preparation.json'
-            if sha(tool)!=cache['toolCachePreparationSha256']:
-                raise ValueError('Changed task-tooling cache preparation evidence')
-            verify_tool_cache(json.loads(tool.read_text()),manifest['sourceSha256'])
+            raise ValueError('Legacy tooling-cache proof requires replay with its archived source')
         if cache.get('dependencyCachePreparationSha256'):
             from tailcache12_dependency_cache import verify as verify_dependency_cache
             dependency=path/'dependency-cache-preparation.json'

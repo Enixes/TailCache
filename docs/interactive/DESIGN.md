@@ -2,7 +2,6 @@
 
 ## Skill application
 
-Read the local Anthropic frontend-design skill at `/home/y/.claude/plugins/marketplaces/claude-plugins-official/plugins/frontend-design/skills/frontend-design/SKILL.md`. Impeccable is not installed locally; read the official [skill](https://github.com/pbakaus/impeccable/blob/main/plugin/skills/impeccable/SKILL.md), new-work, init, Operate and craft-floor guidance. Its context launcher is unavailable; project context comes directly from the explicit user brief and retained research records. Apply its Operate-mode precision, accessibility and rendered review to this requested document; no plugin was installed or persistent workflow approval inferred.
 
 ## Direction before implementation
 
@@ -44,7 +43,7 @@ The browser CSV download was checked against four filtered 30 s response points,
 
 Desktop and 390/320 px rendering were reviewed. Fixed-size SVG text was replaced by container-sized viewBoxes, small ratios retain nonzero precision, phone filters collapse, and the main table scrolls horizontally. Expanded evidence stays anchored within that table's visible viewport; its own metric table can scroll separately. Actual mobile scrolling moved the main table from692 to289 px. At320 px, page scroll width equalled client width; chart viewBoxes matched their251 px containers. Viewport overrides were reset after QA. The final tab remains open as the deliverable.
 
-All checks use retained data only. Historical archives, original acceptance records and AGY work are unchanged. This is a viewing and interpretation layer, not new experimental evidence or a qualification campaign.
+All checks use retained data only. Historical archives, original acceptance records and earlier diagnostic work are unchanged. This is a viewing and interpretation layer, not new experimental evidence or a qualification campaign.
 
 ## p99.999 / definitions extension: plan and QA scope
 
@@ -54,7 +53,6 @@ Validate the added endpoint against independently decoded raw HDRs, then verify 
 
 Extension verification passed: 226 Python tests; 504 directly decoded HDR histograms; 1,680 percentile checks; all 132 old records unchanged except appended endpoint/support; all 66 primary collector ratios agree. Browser checks confirmed both new service findings, unchanged p99.9 response bracket, 56/224 all-channel coverage, per-fork support, exact four-row/24-column CSV and exact source download hash. Desktop glossary/graphs and 320 px controls were visually reviewed without horizontal page overflow; no console errors or warnings were observed. A transient preview server interruption was recovered before checking the final downloads. Viewport override was reset. Vercel project creation remains pending explicit team confirmation because automatic approval review rejected the inferred target.
 
-Deployment completed after the user confirmed the team and requested authentication. The new project was created with Vercel Authentication scope `all` before uploading or deploying content. Production is READY; the source-file UID matches the exact tested HTML SHA-1. Both production aliases and the unique deployment URL return a signed-out SSO redirect, and the browser shows Vercel login. No public share link, bypass secret, paid add-on or access-group expansion was created. Authenticated hosted interactions were not exercised because the browser has no Vercel session; local page interactions and exports were already verified.
 
 ## Offline full-tail extension: plan before implementation
 
@@ -67,5 +65,3 @@ Freeze claims in a separate review with payload/regime/percentile/contract bound
 QA: independent HDR-versus-Python threshold bounds; all 132 forks / 396 channels; conservation and monotone survival curves; strict-boundary and straddling-bin fixtures; zero-event and unequal-count comparisons; exact CSV/export fields; same runtime/window/contract selection; all-pairs and single-pair curves; empty filters and reset; desktop and phone render; authentication unchanged before/after publishing; source hashes and retained old evidence unchanged.
 
 Full-tail extension validation: 236 Python tests pass; every bin-bound digest agrees between pinned HDR and Python; 1,188 threshold checks and 792 raw input hashes pass. Manual browser checks covered all/single-pair curves, pressure/build selection, per-fork rate tables, the 56-comparison/168-threshold matrix, expanded rows, exact five-row/53-column CSV, and full-tail source download SHA. Desktop and 320 px plots were reviewed; phone guide labels were staggered to prevent overlap and scrolling hides stale tooltips. No console errors/warnings or horizontal page overflow were found. Temporary viewport overrides were reset.
-
-The full-tail production deployment is READY from source 9cb1b02. The remote index UID matches the exact tested HTML SHA-1. Authenticated hosted curves, pair selection, 56/168 stall matrix and frozen-claims download passed; no console errors/warnings were observed. Clean signed-out checks on both aliases and the generated deployment URL all return SSO redirects. Protection scope remains all; no bypass/share link was created. Previous deployment metadata is preserved in the receipt history.

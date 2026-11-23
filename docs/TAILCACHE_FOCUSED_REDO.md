@@ -1,12 +1,12 @@
 # Focused crossover follow-up — plan before implementation, 8 November 2026
 
-The user wants bounded batches that answer RQ1/RQ2 quickly, building on AGY's exploratory evidence rather than repeating a broad qualification campaign. Historical Task12 acceptance, source, raw evidence and AGY's uncommitted work remain unchanged. Disk cleanup reclaimed3.44GiB from npm/pip/Firefox caches; no research evidence or offline Java dependency was removed.
+The bounded batches test RQ1/RQ2 using the exploratory cliff observations as context. Historical Task12 acceptance, source, raw evidence and the earlier diagnostic's uncommitted work remain unchanged. Disk cleanup reclaimed3.44GiB from npm/pip/Firefox caches; no research evidence or offline Java dependency was removed.
 
 ## Notes reviewed and methodological decisions
 
-Latest AGY session: `813eaaaa-7714-484f-8709-5826310287c3`, “Codex Session Review and Documentation”, updated8 November2026. Read its `tailcache12_review.md`, repository `TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md`, probe/runner, and retained30-JVM evidence. Treat the existing cliff runs as discovery evidence selecting a region of interest, not as a confirmatory research campaign.
+The [cliff diagnostic](TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md) motivated a bounded follow-up using direct scheduled-arrival measurements.
 
-| AGY point | Action in this follow-up |
+| Diagnostic observation | Action in this follow-up |
 | --- | --- |
 | Earlier pressure missed the cliff, especially256B | Start near the observed4KiB transition,328/352MiB common application ballast; refine only if it changes the answer. Later calibrate256B on the SAME512MiB heap, so payload and heap size are not confounded. |
 | Closed-loop service percentiles underrepresent rare stalls | Preserve service latency as the original RQ1 endpoint; add a genuinely scheduled-arrival channel measuring completion minus intended arrival, with a fixed request count and no skipped overdue arrivals. Keep the two estimands separate. |
@@ -47,7 +47,7 @@ Review: the shared logical workload retains no Chronicle payload bank; final con
 
 ## First batch results and next small batches
 
-`focused-rq1-4k-20261108-001` completed24/24 JVMs in about10minutes, with exact source preservation and81 compressed histograms decoded against bins. All forks completed and verified values; one arrival/328MiB Caffeine fork has a compiler warning, retained. At352MiB, scheduled response p99.9 is19.79–20.40ms(Caffeine) versus1.075–1.222ms(ordinary Chronicle), three consistent pairs. Caffeine has30–34 measured Full GCs in the scheduled run, Chronicle zero. In the saturated run Caffeine has105–129 measured Full GCs and2.09–2.49s pause exposure, but service p99.9 remains8.47–8.53µs versus10.93–14.03µs Chronicle. Thus the repeated real-response advantage is clear; AGY's single-fork service crossover at352MiB did not reproduce in this short three-pair batch. Do not manufacture a crossover by mixing response and service.
+`focused-rq1-4k-20261108-001` completed24/24 JVMs in about10minutes, with exact source preservation and81 compressed histograms decoded against bins. All forks completed and verified values; one arrival/328MiB Caffeine fork has a compiler warning, retained. At352MiB, scheduled response p99.9 is19.79–20.40ms(Caffeine) versus1.075–1.222ms(ordinary Chronicle), three consistent pairs. Caffeine has30–34 measured Full GCs in the scheduled run, Chronicle zero. In the saturated run Caffeine has105–129 measured Full GCs and2.09–2.49s pause exposure, but service p99.9 remains8.47–8.53µs versus10.93–14.03µs Chronicle. Thus the repeated real-response advantage is clear; the earlier diagnostic's single-fork service crossover at352MiB did not reproduce in this short three-pair batch. Do not manufacture a crossover by mixing response and service.
 
 Next declared batches, selected using this discovery and bounded independently:
 
@@ -90,7 +90,7 @@ The30s4KiB response comparison brackets a repeatable forward crossover between0 
 
 The original same-runtime256B448/480MiB pair set establishes a reverse service crossover; later464/472MiB refinements put the transition near the upper end but use the later getUsing-capable runtime. The472MiB point is mixed and warning-sensitive, so no precise threshold is claimed. getUsing restores Chronicle's service advantage at256B/480MiB in all three pairs, under its separate borrowed-read contract. Ten workload forks carry11 external/compiler warnings; all remain in the dataset. Main endpoint directions persist in warning-free sensitivity. The initial mixed8s response baseline also remains; it is not pooled with the stronger30s baseline.
 
-Independent final auditing reconciled3960 inventory files,132 measured GC windows,1008 percentile endpoints and504 decoded HDR distributions. Both exact runtime class sets and pinned dependencies are retained outside build. Historical Task12 acceptance and AGY discovery files were not overwritten. This completes the user's requested initial RQ-focused redo, with exploratory limits explicit; it does not retroactively qualify the original historical campaign.
+Independent final auditing reconciled3960 inventory files,132 measured GC windows,1008 percentile endpoints and504 decoded HDR distributions. Both exact runtime class sets and pinned dependencies are retained outside build. Historical Task12 acceptance and earlier diagnostic discovery files were not overwritten. This completes the user's requested initial RQ-focused redo, with exploratory limits explicit; it does not retroactively qualify the original historical campaign.
 
 ## Requested p99.99 extension — plan before implementation
 
