@@ -1,14 +1,13 @@
 # Documentation index
 
-**Updated 18 November 2026.** Start with [current state](TAILCACHE_CURRENT_STATE.md). Every Markdown document is listed below. Dated plans/reviews are historical context and do not override the current reviewed claims. Hash-bound acceptance/research records are preserved byte-for-byte.
+**Updated 23 November 2026.** Start with the [experiment status](TAILCACHE_CURRENT_STATE.md)
+for the answers, workload details, and limits. The [evidence index](preprint/README.md)
+links the second-host data, Pop!_OS follow-up, claim map, and interactive results.
 
-The newest [64-fork mechanism study](mechanism/README.md), [results](mechanism/RESULTS.md), [final review](mechanism/REVIEW.md) and [figures](mechanism/FIGURES.md) extend the paper with constrained-order update-set reversals, window/headroom sensitivity and frozen-model transport. Historical packages remain unchanged.
-
-For new host replications, use the [portable collection guide](PORTABLE_EXPERIMENT.md),
-[implementation plan](PORTABLE_EXPERIMENT_PLAN.md) and [validation/review](PORTABLE_EXPERIMENT_REVIEW.md).
-This runner is independent of dated build directories and does not modify the old evidence.
-
-The completed [18 November predictor study](predictor/RESULTS.md), [review](predictor/REVIEW.md) and [reproduction guide](predictor/README.md) describe the preceding evidence. The completed [17 November extension](service-followup/RESULTS_20261117.md), [supplementary claims](service-followup/CLAIMS_20261117.md) and [final technical review](service-followup/FINAL_REVIEW_20261117.md) guide the current interpretation. Historical data and dated reviews remain scoped to their original experiments.
+For a fresh run, use the [portable collection guide](PORTABLE_EXPERIMENT.md). For recent
+results, use the [20 November data](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) and
+[23 November Pop!_OS follow-up](https://github.com/Enixes/TailCache/tree/codex/tailcache-portability/docs/nov23-popos-followup). The dated records below document individual
+protocols and their results.
 
 | Document | Role |
 | --- | --- |
@@ -142,29 +141,25 @@ The completed [18 November predictor study](predictor/RESULTS.md), [review](pred
 | [docs/TAILCACHE_FOCUSED_REDO.md](TAILCACHE_FOCUSED_REDO.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/TAILCACHE_FOCUSED_RESULTS.md](TAILCACHE_FOCUSED_RESULTS.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/TAILCACHE_FROZEN_CLAIMS.md](TAILCACHE_FROZEN_CLAIMS.md) | Dated plan, experiment record or historical review; read with current-state summary |
-| [docs/TAILCACHE_LITERATURE_AND_PUBLICATION_STRATEGY.md](TAILCACHE_LITERATURE_AND_PUBLICATION_STRATEGY.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/TAILCACHE_MIDPOINT_EXECUTION_PLAN.md](TAILCACHE_MIDPOINT_EXECUTION_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/TAILCACHE_MIDPOINT_IMPLEMENTATION_REVIEW.md](TAILCACHE_MIDPOINT_IMPLEMENTATION_REVIEW.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/TAILCACHE_MIDPOINT_RESULTS.md](TAILCACHE_MIDPOINT_RESULTS.md) | Dated plan, experiment record or historical review; read with current-state summary |
-| [docs/TAILCACHE_PREPRINT_PLAN.md](TAILCACHE_PREPRINT_PLAN.md) | Current guidance / entry point |
-| [docs/TAILCACHE_PREPRINT_PREPARATION_PLAN.md](TAILCACHE_PREPRINT_PREPARATION_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/DESIGN.md](interactive/DESIGN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/MIDPOINT_QA_PLAN.md](interactive/MIDPOINT_QA_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/PRODUCT.md](interactive/PRODUCT.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/README.md](interactive/README.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/REREVIEW_QA_PLAN_20261116.md](interactive/REREVIEW_QA_PLAN_20261116.md) | Dated plan, experiment record or historical review; read with current-state summary |
 | [docs/interactive/REVIEW_SYNC_QA_PLAN.md](interactive/REVIEW_SYNC_QA_PLAN.md) | Dated plan, experiment record or historical review; read with current-state summary |
-| [docs/preprint/CLAIMS.md](preprint/CLAIMS.md) | Current manuscript/reproduction package |
-| [docs/preprint/DEEP_REVIEW_20261115.md](preprint/DEEP_REVIEW_20261115.md) | Current manuscript/reproduction package |
-| [docs/preprint/FIGURES.md](preprint/FIGURES.md) | Current manuscript/reproduction package |
-| [docs/preprint/LITERATURE.md](preprint/LITERATURE.md) | Current manuscript/reproduction package |
-| [docs/preprint/MANUSCRIPT.md](preprint/MANUSCRIPT.md) | Current manuscript/reproduction package |
-| [docs/preprint/ORIGINAL_CAMPAIGN.md](preprint/ORIGINAL_CAMPAIGN.md) | Current manuscript/reproduction package |
-| [docs/preprint/README.md](preprint/README.md) | Current manuscript/reproduction package |
-| [docs/preprint/RESULT_TABLES.md](preprint/RESULT_TABLES.md) | Current manuscript/reproduction package |
-| [docs/preprint/REVIEW.md](preprint/REVIEW.md) | Current manuscript/reproduction package |
-| [docs/preprint/RE_REVIEW_20261116.md](preprint/RE_REVIEW_20261116.md) | Current manuscript/reproduction package |
-| [docs/preprint/RE_REVIEW_PLAN_20261116.md](preprint/RE_REVIEW_PLAN_20261116.md) | Current manuscript/reproduction package |
+| [docs/preprint/CLAIMS.md](preprint/CLAIMS.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/DEEP_REVIEW_20261115.md](preprint/DEEP_REVIEW_20261115.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/FIGURES.md](preprint/FIGURES.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/LITERATURE.md](preprint/LITERATURE.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/ORIGINAL_CAMPAIGN.md](preprint/ORIGINAL_CAMPAIGN.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/README.md](preprint/README.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/RESULT_TABLES.md](preprint/RESULT_TABLES.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/REVIEW.md](preprint/REVIEW.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/RE_REVIEW_20261116.md](preprint/RE_REVIEW_20261116.md) | Experiment data, methods, or reproducibility notes |
+| [docs/preprint/RE_REVIEW_PLAN_20261116.md](preprint/RE_REVIEW_PLAN_20261116.md) | Experiment data, methods, or reproducibility notes |
 
 ## Added follow-up and operational records
 

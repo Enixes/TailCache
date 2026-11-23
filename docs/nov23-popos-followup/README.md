@@ -32,6 +32,21 @@ led at all four tested loads. At 10% and 20% writes the concentrated write set
 gave mixed rankings. Both concentrated pairs at 10% were warning-free. At
 20% only the Caffeine-winning concentrated pair was warning-free.
 
+At matched writes/s, Chronicle's worker allocation rose from about 196.5 to
+392.6 MiB/s, and its pause overlap increased from 14–15 to 25–26 ms per
+window. Caffeine's worker allocation remained near 10 MiB/s. Across all four
+workloads, its reported G1 tenuring threshold was 15 with 2,048 write keys and
+1 with 32,768. Chronicle stayed at 15. Full-key Caffeine mixed-collection pause
+overlap increased from 34–46 ms at 5% writes to 143–146 ms at 20% writes.
+These logs describe aggregate collector behaviour and do not identify
+individual promoted values.
+
+In the warning-free Caffeine fork at 10% with 2,048 write keys and seed 62202,
+the longest recorded pause was a 22.01 ms G1 Prepare Mixed pause. The maximum
+backlog was 1,105 requests. Service p99.9 was 7.02 µs and response p99.9 was
+415 µs. The pause log and host observer leave the cause of the long pause
+unresolved, including whether host scheduling contributed.
+
 Chronicle led the observed p99.99 and p99.999 in every pair in this suite.
 At 50,000 arrivals/s the p99.999 estimates have only about 15 expected
 observations beyond the percentile per fork. Keep the prior contrary 90-second

@@ -1429,6 +1429,8 @@ def main():
 
 
 if __name__=='__main__':
+    if sys.version_info < (3, 10):
+        raise SystemExit('Python 3.10 or later is required for the TailCache portable launcher.')
     try:sys.exit(main())
     except KeyboardInterrupt:
         print('Interrupted. Retained evidence is in the output directory.',file=sys.stderr);sys.exit(130)

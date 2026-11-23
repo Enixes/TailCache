@@ -1,49 +1,45 @@
-# TailCache current research and manuscript state
+# TailCache experiment status
 
-**Updated 18 November 2026.** The new [mechanism study](mechanism/README.md) is collected and audited: **64 research JVMs /32 paired comparisons**, plus three functional JVMs and six separate controls. The protocol, source-matched qualification, per-cohort reviews, portable/model checks and all-point table are retained. Operational delivery is recorded separately in [mechanism status](TAILCACHE_MECHANISM_STATUS.json).
+**Updated 23 November 2026.** The experiment compares Caffeine and ordinary
+in-memory Chronicle Map under controlled Java 21 workloads. Start with the
+[experiment questions](../README.md#experiment-questions-and-results), then use
+[the evidence index](preprint/README.md) or [interactive results](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/html/tailcache-preprint-reader.html).
 
-New [portable collection tooling](PORTABLE_EXPERIMENT.md) supports fresh host
-replications without the old build folders or systemd. Its diagnostic validation is
-separate from research observations; no new research campaign is implied by building
-the bundle. The explicit processor-budget and host-monitoring protocol is versioned
-separately from historical acceptance rules.
-
-The strongest finding is a **response ranking reversal from update locality at matched fresh-write allocation demand**. At5% writes and 4 KiB values, concentrating updates on 2048 keys favors Caffeine in 4/4 pairs; distributing them over 32768 keys favors Chronicle in 4/4. Both seeds repeat with reversed backend order, and Caffeine GC exposure falls 82–85%. This bundles survival, locality and policy traffic; it does not prove an isolated promotion mechanism. Larger heap lowers Caffeine total GC exposure but worsens its response p99.9 at 5% writes in both seeds. The 90-second transition cohorts favor Chronicle, while a new warning-free 30-second pair favors Caffeine at 0.5%; different seeds/time prevent isolating a duration effect. No universal boundary follows.
-
-Forty-two forks have warnings; collector failures and contrary results remain. Frozen models improve descriptive numerical error but call21/22 calibrated transport pair directions, compared with 22/22 for lower-total-GC. [Results/tables](mechanism/RESULTS.md), [figures](mechanism/FIGURES.md), [sequential reviews](mechanism/COHORT_REVIEWS.md), [final review](mechanism/REVIEW.md) and [portable reproduction](mechanism/README.md) are the current entry points. The [deep re-review](mechanism/REREVIEW_20261118.md) adds fail-closed artifact validation and clarifies warning coverage and duration confounding. No further same-host matrix is queued for this completed bounded scope.
-
-The earlier [continuous-stream predictor study](predictor/RESULTS.md) remains separate:18 qualification,30 primary and 12 fresh research forks. It established0%/5% response endpoint directions but fresh0.5% disagreement. Both boundary forecasts failed; all original outcomes and conservative qualification remain. Historical occupancy halves sampled different G1-cycle phases, so failed qualification is not proof every fork was still warming. The actual order imbalance and measured evacuation failures are now disclosed in the manuscript.
-
-[All documentation](DOCUMENTATION_INDEX.md) preserves earlier dated scopes. The 17 November results below remain unchanged. No additional benchmark is planned for the completed bounded predictor scope.
-
-| Question / metric | Current conclusion | Limit |
+| Question | Current result | Scope |
 | --- | --- | --- |
-| RQ1: ordinary-service p99/p99.9 | No robust forward pressure crossover established. Small-value baseline wins depend on policy/harness; 4/8 KiB do not improve toward Chronicle in the tested cells. | Tested configurations only; original unconditional Task 12 stays NO_GO. |
-| RQ2: payload effect | Same-pressure service cells change ordering with payload. New single-seed256 B response screen favors Chronicle already at 0%/5%;4 KiB reverses with writes. Earlier long-trace comparisons remain separate. | No shared stable crossover threshold or measured movement of one. |
-| Update-locality response test | Winner reverses between2048/32768 eligible update keys at fixed 5% writes; both seeds/reversed-order repeats agree. | Two seeds, one host; locality/survival/policy bundled. |
-| Earlier scheduled-response p99.9 | Short-trace 4 KiB reversal at 0 versus 208 MiB repeats; 104 MiB mixed. | Equal-array logical-pattern control reverses baseline ordering. The bracket is scope-specific. |
-| Extreme tails / GC | Tail curves and stall rates expose effects a single percentile misses. GC wall-time fraction can greatly exceed affected-operation fraction. | Rare-event support and one-pair discovery cells limit threshold inference. |
-| Memory / reuse | Earlier Chronicle heap relief coexists with higher sampled RSS. getUsing remains a separate contract. | Neither total-memory savings nor a matched three-arm reuse comparison established. |
+| RQ1. Does added application data cause a service p99 or p99.9 crossover? | No robust pressure-induced crossover was observed. | Ordinary access under the tested saturated workloads. The original unconditional Task 12 outcome remains NO_GO. |
+| RQ2. Does payload size change the saturated-service ranking? | Chronicle led at 256 B and Caffeine led at 4 KiB in the 48-pair matrix. | One cache worker and the tested cache settings. |
+| RQ3. Can the write-key set reverse response p99.9 at the same write rate? | At 4 KiB and 5% writes, Caffeine led with 2,048 eligible write keys and Chronicle led with 32,768 on both hosts. | 50,000 intended arrivals/s, uniform reads, and zero added application data. Write locality and overwrite intervals vary together. |
 
-## Preserved17 November extension and artifact
+## Latest follow-up
 
-- [17 November results](service-followup/RESULTS_20261117.md), [all 58 point groups](service-followup/followup-data-20261117.md), [all channel/percentile conclusions](service-followup/point-conclusions-20261117.csv), [new claim map](service-followup/CLAIMS_20261117.md).
-- 184 research JVMs across eight cohorts, plus 30 controls. All raw-integrity checks pass; 138 research forks have no recorded warning, 46 remain warning-bearing. No pooling across observers, seeds, policies or stages.
-- [Portable verification](service-followup/portable-verification-20261117.json): 704 distributions, 3,520 quantiles, count/union/threshold/ratio checks. [Seven new figures](service-followup/FIGURES_20261117.md); clean-directory reproduction matches 14 outputs. [Fresh JAR-only source compile/API check](service-followup/clean-source-check-20261117.json) passes.
-- [Final technical review](service-followup/FINAL_REVIEW_20261117.md), agent-assisted, not independent human peer review. The original frozen preprint dataset and historical evidence remain unchanged.
+The [23 November Pop!_OS results](https://github.com/Enixes/TailCache/tree/codex/tailcache-portability/docs/nov23-popos-followup) repeated the RQ3 direction at
+100,000 arrivals/s and 2.5% writes, keeping write demand near 2,500/s. At 50,000
+arrivals/s with 10% and 20% writes, Chronicle led both full-key pairs. The
+concentrated-write pairs split at both write fractions. Both split-write timing
+pilots failed the 5% ratio-shift gate, so their component measurements remain
+qualification diagnostics.
 
-## Manuscript and explorer
+[20 November results and archive](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) ·
+[23 November archive](https://github.com/Enixes/TailCache/tree/2f8bb0edbf769eaa4dde331f9debf3319ce5fe56/docs/nov23-popos-followup/archive) ·
+[Fork-level timing and G1 audit](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/timing-audit.json) ·
+[Portable collection](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/docs/PORTABLE_EXPERIMENT.md)
 
-- [Revised working manuscript](preprint/MANUSCRIPT.md), [original 14 claims](preprint/CLAIMS.md), [original seven figures](preprint/FIGURES.md), [new supplementary figures](service-followup/FIGURES_20261117.md).
-- [Offline explorer](TAILCACHE_RESULTS_EXPLORER.html#mechanism-followup), [protected hosted explorer](https://tailcache-results.vercel.app/#mechanism-followup), [deployment receipt](interactive/deployment.json).
-- Branch `codex/tailcache-preprint`, [draft PR #10](https://github.com/Enixes/TailCache/pull/10), stacked on [research PR #9](https://github.com/Enixes/TailCache/pull/9).
+## Earlier experiment records
 
-## Remaining before publication
+- [18 November mechanism runs](mechanism/RESULTS.md) preserve constrained-order
+  repeats, longer windows, heap headroom, warnings, and contrary results.
+  The [predictor runs](predictor/RESULTS.md) retain the failed boundary forecasts
+  and mixed fresh 0.5% pairs.
+- [17 November results](service-followup/RESULTS_20261117.md) cover 184 workload
+  JVMs across eight cohorts, with 30 separate controls. The
+  [offline verifier](service-followup/portable-verification-20261117.json)
+  checks the exported distributions, quantiles, counts, and ratios.
+- The [original acceptance record](TAILCACHE_12_FINAL_ACCEPTANCE.json),
+  [focused exploration](TAILCACHE_FOCUSED_RESULTS.md), and
+  [10 November midpoint](TAILCACHE_MIDPOINT_RESULTS.md) retain their protocol
+  and timing assumptions. The midpoint's scheduled-response result was bracketed
+  between 0 and 208 MiB for its short-trace workload. Earlier reuse diagnostics
+  report a distinct caller-owned buffer API.
 
-Independent domain/contribution feedback, author revision, final figure selection/typesetting/citation audit, selected raw-evidence off-host backup/public release and licensing, author names/affiliations/contributions/disclosure, and an author-approved deposit. No formal submission or deposit has occurred. A successful build/data audit is not independent performance replication. Browser/deployment checks and operational completion are recorded in the dated final review and status, not inferred from a launched command.
-
-Application deadline supplied: **1 December**; earlier planned citable-release target **26 November**, subject to author approval and repository processing. These are planning dates, not acceptance claims.
-
-## Preserved earlier evidence
-
-[Original acceptance](TAILCACHE_12_FINAL_ACCEPTANCE.json): 402 attempted invocations, 191 conditionally usable campaign forks and one hard rejection; unconditional NO_GO remains. [Focused exploration](TAILCACHE_FOCUSED_RESULTS.md): 132 workload JVMs; [10 November midpoint](TAILCACHE_MIDPOINT_RESULTS.md): 30 additional workload JVMs. [15 November review](preprint/DEEP_REVIEW_20261115.md) and [16 November re-review](preprint/RE_REVIEW_20261116.md) apply to those earlier scopes. Raw archives remain git-ignored on the collection host. Dated plans and collection states retain their original wording; they do not override this current entry point.
+[Documentation index](DOCUMENTATION_INDEX.md)
