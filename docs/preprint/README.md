@@ -1,69 +1,46 @@
-# TailCache preprint
+# TailCache experiment evidence
 
-The preprint combines the two-host update-locality replication and
-the second-host pressure and write-rate studies. The [claim map](CLAIMS.md)
-links the results to their underlying measurements. The [18 November manuscript](https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/preprint/MANUSCRIPT.md)
-preserves the expanded account of earlier experiments.
+The evidence links the two-host update-locality comparison, the pressure and
+write-rate runs, and the 23 November Pop!_OS follow-up. See the
+[experiment status](../TAILCACHE_CURRENT_STATE.md) for the latest answers and
+[claim map](CLAIMS.md) for the measurements supporting each comparison.
 
-## Read the preprint
+## Interactive results and retained inputs
 
-- [Preprint PDF](../../output/pdf/tailcache-preprint.pdf) with four figures.
-- [Interactive companion](../../output/html/tailcache-preprint-reader.html).
-  Download the HTML and open it in a browser. Change the workload, percentile,
-  or timing boundary and open the paired measurements under each graph. The
-  page works offline and requires no server or external chart library.
+- [Interactive results](../../output/html/tailcache-preprint-reader.html). Download
+  the HTML and open it in a browser to filter paired measurements by workload,
+  percentile, or timing boundary.
+- [20 November archive](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive).
+- [23 November archive](https://github.com/Enixes/TailCache/tree/2f8bb0edbf769eaa4dde331f9debf3319ce5fe56/docs/nov23-popos-followup/archive) and [follow-up results](https://github.com/Enixes/TailCache/tree/codex/tailcache-portability/docs/nov23-popos-followup).
+- [Portable collection and archive verification](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/docs/PORTABLE_EXPERIMENT.md).
 
-Build both formats from the manuscript, exact [locality pairs](locality-pairs.csv),
-and [chart data](review-chart-data.json). PDF generation uses Python 3.10+ and
-ReportLab 4.4.9. HTML rendering uses the Python standard library.
+Regenerate the interactive results from [chart data](review-chart-data.json)
+and the [fork-level timing and G1 audit](timing-audit.json) with Python 3.10+.
 
 ```sh
-python3 scripts/render_tailcache_preprint.py --update-svg
 python3 scripts/render_tailcache_preprint_reader.py
 ```
 
-To regenerate the chart data directly from a portability checkout, pass
-`--evidence /path/to/checkout/docs/second-host-20261120` to the HTML renderer.
-
-Reproduce the [timing and G1 audit](timing-audit.json) with Python 3.10 or later:
+To reproduce the timing audit, use the archive directories from a checkout
+of `codex/tailcache-portability`:
 
 ```sh
-python3 scripts/tailcache_preprint_timing_audit.py /path/to/checkout/docs/second-host-20261120/archive > /tmp/tailcache-timing-audit.json
+python3 scripts/tailcache_preprint_timing_audit.py /path/to/checkout/docs/second-host-20261120/archive \
+  --followup-archive /path/to/checkout/docs/nov23-popos-followup/archive > /tmp/tailcache-timing-audit.json
 cmp docs/preprint/timing-audit.json /tmp/tailcache-timing-audit.json
 ```
 
-The [versioned archive](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive)
-contains all four inputs. The audit checks archive and raw-file digests and
-exports first-pass per-fork latency splits, upper-tail bin counts, G1 age
-summaries, pause exposure, and the unresolved write-sweep stall.
-
-## Follow-up: paced response at 10% writes
-
-Test whether the scheduled-response p99.9 locality reversal survives at a
-higher write fraction. Cross 5% and 10% nominal writes with 2,048 and 32,768
-eligible update keys. Keep 4 KiB values, 32,768 residents, uniform reads,
-50,000 intended arrivals/s, zero ballast, G1, a 512 MiB heap, and the same
-offered churn. A matched design with three fresh seed pairs per cell would
-use 24 research JVMs. Freeze the protocol, qualifications and retry cap before
-any collection. Pair both backends within each seed and balance backend order.
-
-At 10%, the offered workload doubles to about 5,000 fresh writes/s. The mean
-per-key replacement interval falls from about 13.1 to 6.6 seconds in the
-full-key arm. Report p99.9 response as the primary outcome alongside GC pause
-time and length, operation allocation, achieved churn and tail exceptions.
-Higher fresh allocation and shorter value lifetimes can pull in different
-directions, so the response direction is an empirical question. The manuscript also describes the proposed cache-selection model,
-caller-buffer reuse comparison, and persisted-map experiments.
+The audit checks the archive digests and exports latency splits, upper-tail
+counts, G1 age and pause summaries, and the follow-up workload endpoints.
 
 ## Earlier experiments and audits
 
-Extended 17 November with [184 new research forks across eight cohorts](../service-followup/RESULTS_20261117.md), [58 point groups](../service-followup/followup-data-20261117.md), [seven supplementary figures](../service-followup/FIGURES_20261117.md), [new claims](../service-followup/CLAIMS_20261117.md) and a [final technical review](../service-followup/FINAL_REVIEW_20261117.md). The earlier package was revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
+Extended 17 November with [184 workload forks across eight cohorts](../service-followup/RESULTS_20261117.md), [58 point groups](../service-followup/followup-data-20261117.md), [seven supplementary figures](../service-followup/FIGURES_20261117.md), [new claims](../service-followup/CLAIMS_20261117.md) and a [final technical review](../service-followup/FINAL_REVIEW_20261117.md). The earlier package was revised 16 November after a [methods re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
 
-The new [64-fork mechanism study](../mechanism/README.md), [all-point/model tables](../mechanism/RESULTS.md), [three figures](../mechanism/FIGURES.md) and [final review](../mechanism/REVIEW.md) add constrained-order update-set repeats, longer-window transition tests, heap headroom and matched payloads. The manuscript now discloses historical order imbalance, evacuation failures and the limited occupancy diagnostic. Original data packages remain unchanged.
+The new [64-fork mechanism study](../mechanism/README.md), [all-point/model tables](../mechanism/RESULTS.md), [three figures](../mechanism/FIGURES.md) and [final review](../mechanism/REVIEW.md) add constrained-order update-set repeats, longer-window transition tests, heap headroom and matched payloads. The experiment records retain historical order imbalance, evacuation failures, and the scope of the occupancy diagnostic. Original data packages remain unchanged.
 
-The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#mechanism-followup) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
+The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#mechanism-followup) shows the earlier mechanism results.
 
-- [Manuscript draft](MANUSCRIPT.md) with methods, main results, limitations, and references.
 - [Claim-to-evidence map](CLAIMS.md) and [machine-readable identities](claims.json).
 - [Figures and full captions](FIGURES.md), vector PDF/SVG plus PNG in `figures/`.
 - [Literature verification and novelty comparison](LITERATURE.md); [BibTeX](references.bib).
@@ -100,9 +77,9 @@ On the evidence host, reconcile all exported observations/distributions and rege
 rtk proxy python3 scripts/tailcache12_preprint_source_audit.py
 ```
 
-This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. The later second-host replication has a separate versioned raw archive. Public artifact selection and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup. No raw-evidence deposit or formal preprint publication is performed by these commands.
+This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The original host-only archives remain Git-ignored. The 20 and 23 November archives above are available separately.
 
-## Paper boundary
+## Timing and workload scope
 
 In the earlier short-trace cohort, the ordinary 4 KiB scheduled-response p99.9 direction change repeats between 0 and 208 MiB; 104 MiB is mixed. Extreme-response advantages already exist at baseline. Historical saturated service and API-reuse sensitivities remain separate. The original unconditional protocol stays unqualified. Three matching paired directions are descriptive replication, not a significance test. None of this establishes a universal threshold, causal GC attribution or a production SLA.
 
@@ -120,10 +97,10 @@ Use an isolated Matplotlib environment with [the pinned render requirements](../
 
 ## Reproduce the 18 November predictor extension
 
-The [current predictor report](../predictor/RESULTS.md), [research review](../predictor/REVIEW.md) and [portable commands](../predictor/README.md) add60 separately identified research forks. The draft now includes failed boundary forecasts, fresh 0.5% disagreement, GC-conditioned model errors and naive comparisons. Earlier data packages and claim maps keep their dated scope. The new working manuscript has not been author-approved or deposited.
+The [current predictor report](../predictor/RESULTS.md), [research review](../predictor/REVIEW.md) and [portable commands](../predictor/README.md) cover 60 separately identified forks, including failed boundary forecasts, fresh 0.5% disagreement, GC-conditioned model errors, and baseline comparisons.
 
 ## Reproduce the 18 November mechanism extension
 
-Use the separate [portable commands](../mechanism/README.md). They verify all 64 forks/32 pairs, full tails, strict stall-rate bounds and frozen conditional models. New claims and their limits are audited in [the mechanism review](../mechanism/REVIEW.md); the older claim maps retain their dated scope. No new paper submission or author approval is implied.
+Use the separate [portable commands](../mechanism/README.md). They verify all 64 forks/32 pairs, full tails, strict stall-rate bounds and frozen conditional models. New claims and their limits are audited in [the mechanism review](../mechanism/REVIEW.md); the older claim maps retain their dated scope.
 
 The subsequent [deep mechanism re-review](../mechanism/REREVIEW_20261118.md) hardens incomplete-export checks, pins replay source identity, and distinguishes warning-inclusive replication from clean-host confirmation. Measurement data remain unchanged.

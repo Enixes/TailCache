@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TailCache | Interactive preprint</title>
+<title>TailCache | Experiment results</title>
 <style>
 :root{color-scheme:light;--ink:#162a31;--muted:#516368;--paper:#f5f6f2;--line:#dce1d9;--caffeine:#a84b24;--chronicle:#087368;--dark:#142c30}
 *{box-sizing:border-box}
@@ -51,7 +51,7 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
 <body>
 <header>
   <div class="wrap">
-    <div class="top"><span class="brand">TailCache</span><a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md">Read manuscript</a></div>
+    <div class="top"><span class="brand">TailCache</span><a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/README.md">Experiment evidence</a></div>
     <h1>Same write rate, different winner</h1>
     <p>At 4 KiB and the same 5% write rate, Caffeine led when writes targeted a small set of keys. Chronicle led when updates reached across the cache. Compare operation time, scheduled response, and garbage collection.</p>
   </div>
@@ -60,7 +60,7 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   <ul><li><a href="#locality">Where writes land</a></li><li><a href="#load">Heavier loads</a></li><li><a href="#payload">Value size</a></li><li><a href="#pressure">Added heap pressure</a></li></ul>
 </nav>
 <main class="wrap">
-<noscript><p>Enable JavaScript to filter the charts, or read the measured results in the <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/MANUSCRIPT.md">manuscript</a>.</p></noscript>
+<noscript><p>Enable JavaScript to filter the charts, or read the measured results in the <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/README.md">experiment notes</a>.</p></noscript>
 <section id="locality">
   <h2>Where writes land</h2>
   <p class="intro">The cache always held 32,768 entries. Reads could access any key. Only the eligible write set changed between the two groups.</p>
@@ -107,7 +107,7 @@ footer{border-top:1px solid var(--line);padding:17px 0 32px;font-size:.85rem;col
   <p class="source">4 KiB values, about 5% writes, and 50,000 intended arrivals/s. Cohorts use different traces and collection hosts. <a href="https://github.com/Enixes/TailCache/blob/5772fb212692244a29b6ab61d416340db600f0c8/docs/TAILCACHE_MIDPOINT_RESULTS.md">Earlier evidence</a> · <a href="https://github.com/Enixes/TailCache/blob/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/followups-01/INTERPRETATION.md">Newer evidence</a></p>
 </section>
 </main>
-<footer class="wrap">TailCache preprint. <a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/pdf/tailcache-preprint.pdf">Preprint PDF</a> · <a href="https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive">Raw measurements and provenance</a></footer>
+<footer class="wrap"><a href="https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/README.md">Experiment notes</a> · <a href="https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120/archive">Raw measurements and provenance</a></footer>
 <template id="chart">
   <div class="plot">
     <div class="legend"><span><i class="dot" aria-hidden="true"></i>Caffeine</span><span><i class="dot h" aria-hidden="true"></i>Chronicle</span><span><i class="dot warning" aria-hidden="true"></i>Pair with a warning</span><span class="scale"></span></div>

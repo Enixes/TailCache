@@ -1,67 +1,43 @@
 # TailCache
 
-**Tail-Latency Trade-offs in On-Heap and Off-Heap Java Caching**
+TailCache is a Java 21 benchmark experiment comparing tail latency in Caffeine
+(on heap) and in-memory Chronicle Map (off heap). The harness runs controlled
+workloads and records per-fork latency distributions, allocation, and garbage
+collection. It also supports separate diagnostics for file-backed Chronicle Map.
 
-TailCache is a reproducible Java 21 benchmarking project for studying the latency characteristics of **on-heap and off-heap caching** under controlled workloads.
+## Experiment questions and results
 
-The primary comparison uses:
+| Question | Result under the tested settings |
+| --- | --- |
+| **RQ1.** Does added application data cause a crossover in ordinary service p99 or p99.9? | No robust pressure-induced crossover was observed. Caffeine led at 4 KiB throughout the tested saturated-service matrix. |
+| **RQ2.** Does the value size change the service-latency ranking? | At p99 and p99.9, Chronicle led at 256 B and Caffeine led at 4 KiB. This comparison covers one cache worker and the tested cache settings. |
+| **RQ3.** Can the set of keys eligible for writes reverse scheduled-response p99.9 at the same write rate? | At 4 KiB, 5% writes, and 50,000 intended arrivals/s, Caffeine led with 2,048 eligible write keys and Chronicle led with all 32,768. The reversal repeated on two hosts and held at 100,000 arrivals/s on the second host with roughly 2,500 writes/s. |
 
-- **Caffeine** for on-heap caching
-- **Chronicle Map in-memory** for off-heap storage
-- **Chronicle Map persisted** for file-backed/memory-mapped off-heap storage
-- **JMH** for measurement
-- deterministic synthetic workloads so all modes see controlled inputs
+Service latency measures the time to perform a benchmark operation, including
+fresh value construction on writes. Scheduled response measures from the intended
+arrival through completion, including time spent waiting for the worker. At 10% and 20% writes in the follow-up, Chronicle
+led with the full write set and the concentrated pairs were mixed.
 
-The project focuses on **latency distributions**, especially tail latency, rather than headline throughput alone.
+[Second-host results](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) · [Pop!_OS follow-up](https://github.com/Enixes/TailCache/tree/codex/tailcache-portability/docs/nov23-popos-followup) · [Interactive results](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/html/tailcache-preprint-reader.html) · [Experiment status](docs/TAILCACHE_CURRENT_STATE.md)
 
-## Reproduce the experiment from a clone
+## Reproduce the experiment
 
-With Java 21 and Python 3.10+ available, run this from the repository root.
+On `codex/tailcache-portability`, use Java 21 and Python 3.10+ and run from
+the repository root.
 
 ```sh
 ./gradlew --no-daemon tailCacheReproduce
 ```
 
-Gradle runs the Java tests and stages the experiment. The Python runner verifies
-the run and produces reports through p99.999. The full schedule takes about
-3 hours 36 minutes of workload time. Add `-PtailcacheSuite=quick` for a diagnostic
-run or `-PtailcacheSuite=locality` for the eight-JVM locality test. Add
-`-PtailcacheOut=results/my-replication` to choose a result directory.
-Repeat the same command to reuse verified completed forks.
-[Portable collection guide](docs/PORTABLE_EXPERIMENT.md)
+Use `-PtailcacheSuite=locality` for the eight-JVM locality comparison or
+`-PtailcacheSuite=quick` for a diagnostic. Use
+`-PtailcacheOut=results/my-replication` to set the output directory. Run the
+same command again to reuse verified completed forks. The
+[portable collection guide](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/docs/PORTABLE_EXPERIMENT.md) lists the full schedule and verification commands.
 
-## Research scope and current results
+## Original Task 12 heap-pressure campaign
 
-The [working preprint](docs/preprint/MANUSCRIPT.md) compares Caffeine with
-ordinary in-memory Chronicle Map. It asks how payload and application heap
-pressure affect service latency and whether the update working set can reverse
-scheduled-response latency at matched write demand.
-
-At 4 KiB, 5% writes, and 50,000 intended arrivals/s, Caffeine leads response
-p99.9 when 2,048 keys are eligible for updates. Chronicle leads when all 32,768
-keys are eligible. This direction repeated on two machines. A separate
-saturated-service matrix shows Chronicle leading at 256 B and Caffeine at
-4 KiB across the tested pressure endpoints and write fractions. A robust
-pressure-induced service p99/p99.9 crossover remains unestablished.
-[Second-host results](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) · [Draft PR #10](https://github.com/Enixes/TailCache/pull/10)
-
-The benchmark suite also supports the following questions.
-
-| Benchmark question | Evidence today and relevance to the preprint |
-| --- | --- |
-| How do hits, misses and updates differ? | The paper compares hits and existing-key overwrites, and retains read/update channels. Misses have operation-level validation. A general three-operation latency ranking is outside the paper. [Task 05](docs/TAILCACHE_05.md) |
-| How much of ordinary Chronicle get cost comes from materialization? | Allocation profiling attributes payload-sized hit allocation to materialization. The fraction of latency attributable to materialization remains open. Earlier reuse runs use a different ownership contract. [Claim map](docs/preprint/CLAIMS.md) |
-| Does warm file-backed Chronicle differ from in-memory mode? | Prefault diagnostics improved, with zero major faults and process-read bytes in the cleaner diagnostic forks. The JIT stability gate remained open. A persisted-versus-in-memory latency ranking is outside the paper. [Task 08 review](docs/TAILCACHE_08_FINAL_REVIEW.md) |
-| How does Zipfian access affect tails? | The harness supports uniform and Zipfian traces. The paper changes write eligibility while keeping reads uniform, so its result covers update locality under those read semantics. [Task 05](docs/TAILCACHE_05.md) |
-| How do 95/5 and 70/30 behave with shared-cache contention? | Both mixes and shared-cache mode are implemented and smoke-tested. The paper uses one cache worker and separate write-rate treatments. The mixed contention question remains open. [Task 05](docs/TAILCACHE_05.md) |
-
-The [paper package](docs/preprint/README.md) links the figures, evidence and
-follow-up plan. The [interactive explorer](docs/TAILCACHE_RESULTS_EXPLORER.html#mechanism-followup)
-and the historical results below retain their dated scopes.
-
-## Task 12 results: heap-pressure crossover study
-
-**Status (8 November 2026):** complete as an **observer-conditional study**. The original unconditional protocol is **NO_GO**. The study does not show a crossover, and it does not rule one out either. Authoritative sources: [final researcher review](docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md), [acceptance manifest](docs/TAILCACHE_12_FINAL_ACCEPTANCE.json), [status](docs/TAILCACHE_12_STATUS.json).
+**Status (8 November 2026):** complete as an **observer-conditional study**. The original unconditional protocol is **NO_GO**. The study does not show a crossover, and it does not rule one out either. Authoritative sources: [final experiment review](docs/TAILCACHE_12_FINAL_OUTCOME_REVIEW.md), [acceptance manifest](docs/TAILCACHE_12_FINAL_ACCEPTANCE.json), [status](docs/TAILCACHE_12_STATUS.json).
 
 **Design:** Caffeine and Chronicle Map in-memory, 256 B and 4 KiB values, one worker, uniform keys, 95/5 reads/existing-key puts, 32,768 resident entries, Java 21, G1 with a fixed 512 MiB heap, 32 MiB/s common background allocation, and 0/96/208/288 MiB of retained application data. The two backends were timed with two separate methods: sparse JMH `SampleTime` and every-operation HdrHistogram service time. The study measured closed-loop service latency, not fixed-arrival-rate response latency.
 
@@ -91,7 +67,7 @@ Not covered: concurrency, skewed or other read/write mixes, other collectors or 
 
 ### Follow-up diagnostic: 90–99% heap cliff, open-loop response latency, and `getUsing()`
 
-**Historical discovery diagnostic:** the single-fork observations and synthetic correction below selected regions for later experiments. They do not establish an exact universal GC threshold, a replicated ordinary-service crossover or mandatory buffer reuse. Use the current reviewed claims and source-matched results above for the manuscript.
+**Historical discovery diagnostic:** the single-fork observations and synthetic correction below selected regions for later experiments. They do not establish an exact universal GC threshold, a replicated ordinary-service crossover or mandatory buffer reuse. The current experiment results above use independent scheduled arrivals for the response comparison.
 
 Because Task 12 stopped at 288 MiB ballast (~90% Caffeine occupancy at 4 KiB, ~62% at 256 B) and rejected any G1 evacuation failure, a separate 30-JVM cliff diagnostic pushed common application retention up to G1's To-Space Exhaustion / Full GC / OOM boundary while recording both **closed-loop service latency** and **coordinated-omission-corrected (open-loop) response latency** alongside `ChronicleMap.getUsing(key, reusableBuffer)`:
 
@@ -116,9 +92,9 @@ Because Task 12 stopped at 288 MiB ballast (~90% Caffeine occupancy at 4 KiB, ~6
 | | 238 MiB | `CHRONICLE_GET` | 98.8% | 1,371 / 316 | 2,847 ms | 281.6 | 5.78 | 18,366.46 |
 | | 238 MiB | `CHRONICLE_GET_USING` | 99.2% | 365 / 235 | **1,551 ms** | 23.2 | **1.62** | **11,468.80** |
 
-This diagnostic demonstrates three effects that the primary campaign could not see:
+The diagnostic recorded three effects.
 1. **Why closed-loop percentiles missed the cliff:** at 340 MiB (97.3% Caffeine heap), Caffeine suffers 58 Full GCs and 808 ms of STW pauses (max pause 22.8 ms), yet its closed-loop `p99.9` is **8.41 µs** (still beating Chronicle's 11.18 µs!), while its open-loop response `p99.9` explodes to **10,420 µs (10.4 ms)**. Even at 352 MiB (98.2% heap, 191 Full GCs, 2.26 s of pauses out of 8 s, max pause 76.5 ms), closed-loop `p99.9` barely ticks up to **12.68 µs**—a tiny 1.13× crossover over `CHRONICLE_GET` (11.23 µs)—whereas open-loop `p99.9` reaches **28.3 ms** (34× worse than `CHRONICLE_GET` and **2,418× worse** than `CHRONICLE_GET_USING`).
-2. **Object reuse (`getUsing`) is the real differentiator off-heap:** replacing `map.get(key)` with `map.getUsing(key, reusableBuffer)` cuts 4 KiB worker allocation by **19×** (`4,121.6` $\to$ `215.2 B/op`, with the remaining 215 B/op coming strictly from the 5% write path), cuts GC time by **10×** (`296 ms` $\to$ `28 ms`), and keeps open-loop `p99.9` flat at **~11.7–13.1 µs** all the way through the 352 MiB cliff where Caffeine is stalling for 28.3 ms.
+2. **Buffer reuse reduced allocation in this diagnostic.** replacing `map.get(key)` with `map.getUsing(key, reusableBuffer)` cuts 4 KiB worker allocation by **19×** (`4,121.6` $\to$ `215.2 B/op`, with the remaining 215 B/op coming strictly from the 5% write path), cuts GC time by **10×** (`296 ms` $\to$ `28 ms`), and keeps open-loop `p99.9` flat at **~11.7–13.1 µs** all the way through the 352 MiB cliff where Caffeine is stalling for 28.3 ms.
 3. **At 256 B, Caffeine OOMs first (`238 MiB` ballast) while Chronicle survives**, because Caffeine's per-entry node/key/value overhead pushes it over 99.2% heap earlier than Chronicle.
 
 Full methodological synthesis, review of gaps, and diagnostic details: [`docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md`](docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_AND_SYNTHESIS.md) · Structured JSON evidence: [`docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json`](docs/TAILCACHE_12_CLIFF_DIAGNOSTIC_EVIDENCE.json) · Probe, runner & plotter: [`scripts/TailCache12CliffCrossoverProbe.java`](scripts/TailCache12CliffCrossoverProbe.java), [`scripts/tailcache12_cliff_diagnostic.py`](scripts/tailcache12_cliff_diagnostic.py), [`scripts/tailcache12_plot_cliff_diagnostic.py`](scripts/tailcache12_plot_cliff_diagnostic.py).
