@@ -9,14 +9,25 @@ public final class CaffeineCacheAdapter implements CacheAdapter {
 
     private final Cache<Long, byte[]> cache;
     private final long maximumEntries;
+    public enum Policy { BOUNDED_DEFAULT, BOUNDED_DIRECT, UNBOUNDED }
+    private final Policy policy;
 
     public CaffeineCacheAdapter(CacheConfig config) {
-        Objects.requireNonNull(config, "config");
-        this.maximumEntries = config.maximumEntries();
-        this.cache = Caffeine.newBuilder()
-                .maximumSize(maximumEntries)
-                .build();
+        this(config, Policy.BOUNDED_DEFAULT);
     }
+
+    /** Explicit experimental policy; the existing constructor keeps its size bound/executor. */
+    public CaffeineCacheAdapter(CacheConfig config, Policy policy) {
+        Objects.requireNonNull(config, "config");
+        this.policy = Objects.requireNonNull(policy, "policy");
+        this.maximumEntries = config.maximumEntries();
+        var builder = Caffeine.newBuilder();
+        if (isBoundedForDiagnostic()) builder.maximumSize(maximumEntries);
+        if (policy == Policy.BOUNDED_DIRECT) builder.executor(Runnable::run);
+        this.cache = builder.build();
+    }
+
+    public boolean isBoundedForDiagnostic() { return policy != Policy.UNBOUNDED; }
 
     @Override
     public String name() {
@@ -25,11 +36,14 @@ public final class CaffeineCacheAdapter implements CacheAdapter {
 
     @Override
     public String configurationSummary() {
-        return "maximumSize=" + maximumEntries + ",executor=ForkJoinPool.commonPool(default)";
+        return "maximumSize=" + (isBoundedForDiagnostic() ? Long.toString(maximumEntries) : "none(unbounded)")
+                + ",executor=" + (policy == Policy.BOUNDED_DIRECT ? "direct(Runnable.run)" : "ForkJoinPool.commonPool(default)")
+                + ",policy=" + policy + ",implementation=" + cache.asMap().getClass().getName();
     }
 
     /** Pinned-version inspection used only by Task 12 setup/retention diagnostics. */
     public int frequencySketchSlotsForDiagnostic() {
+        if (!isBoundedForDiagnostic()) return 0;
         cache.cleanUp();
         Object bounded = cache.asMap();
         try {

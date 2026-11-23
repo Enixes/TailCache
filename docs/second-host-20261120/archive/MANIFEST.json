@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "collections": [
+    {
+      "file": "smoke.tar.xz",
+      "campaign": "smoke",
+      "suite": "smoke",
+      "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
+      "sourceSuiteSha256": "0892f82aa638882c43da2c646c95ae03e5a9f6db97d21a008b8976e703a83ac3",
+      "sha256": "fa15fb6c12c43426f386897cc3b3250645352276b6cd9029ab2fa4bdc9d5a22b",
+      "bytes": 293848,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "8e6818f36e4c2ef30df3d405bea8aed5f0700b0c378266d538cbde65667fa209",
+          "percentiles": "../smoke/smoke/percentiles.csv",
+          "pointConclusions": "../smoke/smoke/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "locality.tar.xz",
+      "campaign": "locality",
+      "suite": "locality",
+      "sourceCommit": "8637d5535b321f430a8fc7975301cb97906b8ab9",
+      "sourceSuiteSha256": "99b817217d8966fc94a91a0940b781f55e95b426e4934338a024c86d63c0899c",
+      "sha256": "2d4ac1b7cd60f4672232d146c7e0601205a58526ad16893ce380132756fea38a",
+      "bytes": 976380,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "bc1beaf31a88c4ee83a39e074038c1a3b4928ae3b953f77bbe3e3a315e7b7bd7",
+          "percentiles": "../locality/smoke/percentiles.csv",
+          "pointConclusions": "../locality/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 8,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "ca0fc26550a8f1d77b8bc4bab17c0edf770a53377b302100b9cf8b0fd8ca4b64",
+          "percentiles": "../locality/research/percentiles.csv",
+          "pointConclusions": "../locality/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "followups-01-write-ratio.tar.xz",
+      "campaign": "followups-01",
+      "suite": "write-ratio",
+      "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+      "sourceSuiteSha256": "448457ca401f721314390ea04345335c96b278a569758816aeced742728c0385",
+      "sha256": "1567ccc684835e7df2894517ca603245e296a2e4e0059e4eecd444749ccaa794",
+      "bytes": 1543732,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "8ccabe9aae027ee03e5a12175e8ff6d62149fcbfe74569e0fac3ce0753aab933",
+          "percentiles": "../followups-01/write-ratio/smoke/percentiles.csv",
+          "pointConclusions": "../followups-01/write-ratio/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 20,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "f7b67f5454ce12704cfdf87a8e5877e72a80bc5d9ede84578182ea5e7529bd5b",
+          "percentiles": "../followups-01/write-ratio/research/percentiles.csv",
+          "pointConclusions": "../followups-01/write-ratio/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "followups-01-locality-long.tar.xz",
+      "campaign": "followups-01",
+      "suite": "locality-long",
+      "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+      "sourceSuiteSha256": "a1bccac5f72308f3ff34ccb5cec97b81656f03ea1c987e479244ad5f732abebb",
+      "sha256": "0d136ed2277df28501aea4d2fa69d9cf63fb30298d22eb3a53511f5128ab5f55",
+      "bytes": 1753160,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "c6d4036b79a679fbe3c7c8015249dc28a0e381e40b354133cd7f8b8d0ce80d63",
+          "percentiles": "../followups-01/locality-long/smoke/percentiles.csv",
+          "pointConclusions": "../followups-01/locality-long/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 16,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "4a3b61b2eb62cea3fa04080c1a0bda1de6c0666606b693b5a34cfc06d94dda34",
+          "percentiles": "../followups-01/locality-long/research/percentiles.csv",
+          "pointConclusions": "../followups-01/locality-long/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "followups-01-rq-matrix.tar.xz",
+      "campaign": "followups-01",
+      "suite": "rq-matrix",
+      "sourceCommit": "ae686f26823c7f7278a46e53c74090002ad5690c",
+      "sourceSuiteSha256": "3f610cc70d8dddfc4291de91ffa53eb5a6b291098cfc10dd9fe377106fa7cac7",
+      "sha256": "4a859ac06a6545d07a35840565b62c2fbf589cffdae1e6570c946484a5474b7f",
+      "bytes": 15535148,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "8af95e8339fed1f370445ef4241649ef3607deaba1e5fca435263dada2b23753",
+          "percentiles": "../followups-01/rq-matrix/smoke/percentiles.csv",
+          "pointConclusions": "../followups-01/rq-matrix/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 64,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "d0f2906c5ca2209807e93e4b27d28a8a5bd2f5ca85dc90cf832972252c525f0a",
+          "percentiles": "../followups-01/rq-matrix/research/percentiles.csv",
+          "pointConclusions": "../followups-01/rq-matrix/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "pressure-write-02-preflight.tar.xz",
+      "campaign": "pressure-write-02",
+      "suite": "preflight",
+      "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+      "sourceSuiteSha256": "8f74dda0225f6f84981f34940af6908ec66c43078fe463a283ab529f80fa7ea3",
+      "sha256": "44c2b042010ffd9ce28e1d0f749859a843d76f6b4fe7468263a5d08acce03c6f",
+      "bytes": 294316,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "c0ff7d1d00808d71c97ed1bbbd7fb6f082ea360d67081a76431517a1d470027d",
+          "percentiles": "../pressure-write-02/preflight/smoke/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/preflight/smoke/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "pressure-write-02-saturated-write-pressure.tar.xz",
+      "campaign": "pressure-write-02",
+      "suite": "saturated-write-pressure",
+      "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+      "sourceSuiteSha256": "f5624b2022db66a94ab0df3706d565d6b3d3059568734a73768e1d0a265bf559",
+      "sha256": "e1c71014b7ad7a81056902b47836350f3d0d6aab66263e1b03baf6ceb7083241",
+      "bytes": 46649516,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "c4605991bf6d76d1a83a809c61fa521480fd2a1c96799a40d4977bf6a9eb9f5d",
+          "percentiles": "../pressure-write-02/saturated-write-pressure/smoke/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/saturated-write-pressure/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 96,
+          "retryJvms": 2,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "efb5b4a27bb873371691419b5c8754eb402ad5ad67d50f0ea029e8643e66a151",
+          "percentiles": "../pressure-write-02/saturated-write-pressure/research/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/saturated-write-pressure/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "pressure-write-02-write-transition.tar.xz",
+      "campaign": "pressure-write-02",
+      "suite": "write-transition",
+      "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+      "sourceSuiteSha256": "9a8219aaf510f4d9e988cab92becd0d83226a7a8c679a5f6808a6bff539aff5f",
+      "sha256": "c07a55734e775d996bcd3aaf3c33ca6603c1c40660089f83a4c35ef632eee4e8",
+      "bytes": 3067888,
+      "phases": {
+        "smoke": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "5a63f402677bfe50e5c8b7a54fe990b0a1eefb1bb9dae7d03133c3e13931a9d2",
+          "percentiles": "../pressure-write-02/write-transition/smoke/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/write-transition/smoke/point-conclusions.json"
+        },
+        "research": {
+          "workloadJvms": 48,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "3f3a718d2284a32135c7a6542cb43c10db51d210af0b32ebfb62fb366441b8d0",
+          "percentiles": "../pressure-write-02/write-transition/research/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/write-transition/research/point-conclusions.json"
+        }
+      }
+    },
+    {
+      "file": "pressure-write-02-saturated-pilot.tar.xz",
+      "campaign": "pressure-write-02",
+      "suite": "saturated-pilot",
+      "sourceCommit": "021cfa2b31d6d18ba283a8228ed889ec8fbe5e97",
+      "sourceSuiteSha256": null,
+      "sha256": "aaeeb3a143c0b8b49ab41c73688f9158fa85830cf942208fda8a44023a3e58e5",
+      "bytes": 381468,
+      "phases": {
+        "pilot": {
+          "workloadJvms": 4,
+          "retryJvms": 0,
+          "timingControlJvms": 4,
+          "sourceRunSha256": "3ec21716575d6fce1c21ea09541f18bfbe0881775de5b92dba7b6cbfcab61cf6",
+          "percentiles": "../pressure-write-02/saturated-pilot/percentiles.csv",
+          "pointConclusions": "../pressure-write-02/saturated-pilot/point-conclusions.json"
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 package io.github.enixes.tailcache.workload;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,6 +13,7 @@ class CrossoverConditioningTest {
     @TempDir Path temporary;
 
     @Test
+    @EnabledOnOs(value = OS.LINUX, disabledReason = "The legacy runner records Linux /proc worker evidence")
     void conditioningAndAnalysisRetainSeparateCompleteHistograms() throws Exception {
         Path output = temporary.resolve("worker");
         CrossoverLatencyRunner.main(new String[]{"--out", output.toString(), "--backend", "CAFFEINE",

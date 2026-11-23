@@ -13,8 +13,10 @@ class CaffeineCacheAdapterTest {
     void hitMissOverwriteAndClearContract() {
         try (CacheAdapter cache = new CaffeineCacheAdapter(new CacheConfig(100, 32))) {
             assertEquals("caffeine", cache.name());
-            assertEquals(
-                    "maximumSize=100,executor=ForkJoinPool.commonPool(default)",
+            assertTrue(
+                    cache.configurationSummary().startsWith(
+                            "maximumSize=100,executor=ForkJoinPool.commonPool(default),policy=BOUNDED_DEFAULT,"
+                    ),
                     cache.configurationSummary()
             );
             assertNull(cache.get(1L));

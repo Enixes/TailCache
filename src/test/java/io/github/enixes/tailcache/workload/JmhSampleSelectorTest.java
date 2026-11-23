@@ -1,6 +1,8 @@
 package io.github.enixes.tailcache.workload;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Files;
@@ -68,6 +70,7 @@ class JmhSampleSelectorTest {
     }
 
     @Test
+    @EnabledOnOs(value = OS.LINUX, disabledReason = "The worker marker reads Linux /proc thread identity")
     void actualWorkerMarkerContainsJavaAndOsThreadIdentity(@TempDir Path directory) throws Exception {
         WorkerProcessEvidence.write(directory, CrossoverBackend.CAFFEINE, 256, "test");
         String marker = Files.readString(directory.resolve("worker-process-" + ProcessHandle.current().pid() + ".properties"));

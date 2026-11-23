@@ -15,16 +15,29 @@ collection. It also supports separate diagnostics for file-backed Chronicle Map.
 
 Service latency measures the time to perform a benchmark operation, including
 fresh value construction on writes. Scheduled response measures from the intended
-arrival through completion, including time spent waiting for the worker. At 10% and 20% writes in the follow-up, Chronicle
-led with the full write set and the concentrated pairs were mixed.
+arrival through completion, including time spent waiting for the worker. At 10%
+and 20% writes in the follow-up, Chronicle led with the full write set and the
+concentrated pairs were mixed.
 
-[Second-host results](https://github.com/Enixes/TailCache/tree/4c3ab6794643febf676d91446f80b9724517ff74/docs/second-host-20261120) · [Pop!_OS follow-up](https://github.com/Enixes/TailCache/tree/codex/tailcache-portability/docs/nov23-popos-followup) · [Interactive results](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/output/html/tailcache-preprint-reader.html) · [Experiment status](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/TAILCACHE_CURRENT_STATE.md)
+[Second-host results](docs/second-host-20261120/) ·
+[Pop!_OS follow-up](docs/nov23-popos-followup/) ·
+[Interactive results](output/html/tailcache-preprint-reader.html) ·
+[Experiment status](docs/TAILCACHE_CURRENT_STATE.md)
 
-## Reproduce the experiment
+## Run the benchmarks
 
-Check out `codex/tailcache-portability` and use Java 21 and Python 3.10+.
-The [portable collection guide](https://github.com/Enixes/TailCache/blob/codex/tailcache-portability/docs/PORTABLE_EXPERIMENT.md) lists the Gradle commands, suite options,
-and steps to verify retained results.
+From the default checkout, use Java 21 and Python 3.10+ to run the full experiment.
+
+```sh
+./gradlew --no-daemon tailCacheReproduce
+```
+
+Add `-PtailcacheSuite=locality` to run only the eight-JVM locality comparison,
+or `-PtailcacheSuite=quick` for a diagnostic. Use
+`-PtailcacheOut=results/my-replication` to select an output directory. Repeat
+the same command to reuse verified completed forks.
+[Portable collection guide](docs/PORTABLE_EXPERIMENT.md) ·
+[Evidence and offline verification](docs/EXPERIMENT_EVIDENCE.md)
 
 ## Original Task 12 heap-pressure campaign
 

@@ -1,0 +1,101 @@
+label,cell,seed,backend,channel,quantile,ns,count,expectedBeyond,tailSupportWarning,warnings
+b01-c001-CAFFEINE,1,61901,CAFFEINE,service,50,130,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,service,99,1633,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,service,99.9,4539,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,service,99.99,11191,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,service,99.999,11191,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,response,50,189,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,response,99,1740,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,response,99.9,4587,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,response,99.99,11271,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,response,99.999,11271,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,gap,50,100031,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,gap,99,101503,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,gap,99.9,104319,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,gap,99.99,110975,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,gap,99.999,110975,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,read-service,50,120,2855,1427.5,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,read-service,99,1513,2855,28.550000000000026,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,read-service,99.9,4539,2855,2.8549999999996856,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,read-service,99.99,11191,2855,0.2855000000002855,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,read-service,99.999,11191,2855,0.028550000000187037,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,update-service,50,751,145,72.5,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,update-service,99,3899,145,1.4500000000000013,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,update-service,99.9,5331,145,0.14499999999998403,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,update-service,99.99,5331,145,0.014500000000014501,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CAFFEINE,1,61901,CAFFEINE,update-service,99.999,5331,145,0.0014500000000094992,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,service,50,70,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,service,99,2105,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,service,99.9,6543,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,service,99.99,20143,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,service,99.999,20143,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,response,50,109,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,response,99,2153,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,response,99.9,7219,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,response,99.99,20175,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,response,99.999,20175,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,gap,50,100031,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,gap,99,102015,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,gap,99.9,106495,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,gap,99.99,120127,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,gap,99.999,120127,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,read-service,50,70,2855,1427.5,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,read-service,99,200,2855,28.550000000000026,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,read-service,99.9,2455,2855,2.8549999999996856,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,read-service,99.99,2977,2855,0.2855000000002855,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,read-service,99.999,2977,2855,0.028550000000187037,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,update-service,50,1944,145,72.5,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,update-service,99,10847,145,1.4500000000000013,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,update-service,99.9,20143,145,0.14499999999998403,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,update-service,99.99,20143,145,0.014500000000014501,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b01-c001-CHRONICLE_IN_MEMORY,1,61901,CHRONICLE_IN_MEMORY,update-service,99.999,20143,145,0.0014500000000094992,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,service,50,80,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,service,99,2615,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,service,99.9,7567,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,service,99.99,16231,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,service,99.999,16231,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,response,50,118,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,response,99,2653,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,response,99.9,7619,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,response,99.99,16287,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,response,99.999,16287,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,gap,50,100031,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,gap,99,102463,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,gap,99.9,106559,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,gap,99.99,114239,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,gap,99.999,114239,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,read-service,50,71,2834,1417.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,read-service,99,351,2834,28.340000000000025,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,read-service,99.9,5163,2834,2.833999999999688,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,read-service,99.99,7567,2834,0.2834000000002834,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,read-service,99.999,7567,2834,0.02834000000018566,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,update-service,50,2165,166,83.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,update-service,99,12239,166,1.6600000000000015,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,update-service,99.9,16231,166,0.16599999999998172,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,update-service,99.99,16231,166,0.0166000000000166,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CHRONICLE_IN_MEMORY,1,61902,CHRONICLE_IN_MEMORY,update-service,99.999,16231,166,0.001660000000010875,True,Measured compiler activity exceeds frozen ceiling; not app pause time
+b02-c001-CAFFEINE,1,61902,CAFFEINE,service,50,91,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,service,99,1894,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,service,99.9,6583,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,service,99.99,11071,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,service,99.999,11071,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,response,50,132,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,response,99,1973,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,response,99.9,8067,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,response,99.99,13823,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,response,99.999,13823,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,gap,50,100031,3000,1500.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,gap,99,101823,3000,30.00000000000003,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,gap,99.9,106495,3000,2.9999999999996696,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,gap,99.99,113727,3000,0.3000000000003,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,gap,99.999,113727,3000,0.030000000000196536,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,read-service,50,90,2834,1417.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,read-service,99,1353,2834,28.340000000000025,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,read-service,99.9,4631,2834,2.833999999999688,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,read-service,99.99,11071,2834,0.2834000000002834,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,read-service,99.999,11071,2834,0.02834000000018566,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,update-service,50,682,166,83.0,False,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,update-service,99,6583,166,1.6600000000000015,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,update-service,99.9,6603,166,0.16599999999998172,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,update-service,99.99,6603,166,0.0166000000000166,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
+b02-c001-CAFFEINE,1,61902,CAFFEINE,update-service,99.999,6603,166,0.001660000000010875,True,Measured compiler activity exceeds frozen ceiling; not app pause time; Outside-process CPU upper bound exceeded frozen ceiling
