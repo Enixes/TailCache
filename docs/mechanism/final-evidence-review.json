@@ -1,0 +1,33 @@
+{
+  "sharedFunctionalSetup": {
+    "uniqueFunctionalReceipts": 1,
+    "uniqueSmokeReceipts": 1,
+    "actualFunctionalJvms": 3,
+    "metadataClarification": "Frozen qualification/logging functionalValidationJvms=3 describe the same shared setup; functionalReceiptReused=false is incorrect metadata. Functional commands ran once before qualification, not again in logging. All copied receipt identities and source branches are retained."
+  },
+  "passed": true,
+  "datasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "counts": {
+    "sourceFiles": 2493,
+    "runtimeFiles": 783,
+    "rawFiles": 2405,
+    "researchForks": 64,
+    "pairedOrders": 32
+  },
+  "warningBearingForks": 42,
+  "warnings": {
+    "zswpin counter changed": 31,
+    "Measured compiler activity exceeds80ms; retain as short-run evidence": 9,
+    "Native CPU outside benchmark scope exceeded 10% upper bound": 7,
+    "zswpout counter changed": 1,
+    "Native thermal-throttle counter increased": 1
+  },
+  "evacuationFailureForks": 14,
+  "fullGcForks": 0,
+  "historicalPackageSha256": {
+    "docs/predictor/predictor-data-20261118.json": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+    "docs/preprint/paper-data.json": "a733eee906a863be68e7fd09ef9e6d3b51cf148ae69f5401c4a0706912ea50b7",
+    "docs/service-followup/followup-data-20261117.json": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef"
+  },
+  "limits": "Fresh byte/archive/export/order reconciliation; uses already decoded source-bound raw HDR receipts. Agent-assisted review is not independent human peer review or host replication."
+}

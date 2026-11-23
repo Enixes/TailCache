@@ -1,0 +1,134 @@
+{
+  "updatedUtc": "2026-11-17T15:19:24.784159+00:00",
+  "phase": "COMPLETE",
+  "complete": true,
+  "branch": "codex/tailcache-preprint",
+  "implementationCommit": "d0962a7",
+  "initialScreen": {
+    "directory": "evidence-archives/service-followup-20261117-001",
+    "workloadJvms": 20,
+    "controls": 4,
+    "complete": true,
+    "rawAudits": [
+      "independent-audit-001/audit.json",
+      "independent-audit-002/audit.json"
+    ]
+  },
+  "running": null,
+  "pending": [],
+  "constraints": [
+    "No benchmark currently active. Freeze all mapped sources/runtime before each subsequent cohort; never edit them during its collection or audit.",
+    "JMH and paced prospective protocol docs are already saved outside the active source map.",
+    "Existing paper-data.json and prior raw evidence unchanged; do not pool observers, seeds or discovery/confirmation forks.",
+    "Free disk was improved by removing only rebuildable browser/Python caches; keep >=512MiB for new benchmark slots.",
+    "User authorizes autonomous overnight work, meaningful research tests and justified prospective extensions; no submission/deposit or human-review claim.",
+    "Provisional progress-data JSON files are rebuildable presentation outputs, not primary evidence. Final package must clarify unused JMH generic measureMs=30000: actual JMH is 14 warmup / eight measurement one-second iterations."
+  ],
+  "taskComplete": true,
+  "rqExtension": {
+    "directory": "evidence-archives/service-rq-extension-20261117-001",
+    "workloadJvms": 80,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAudit": "independent-audit-001/audit.json",
+    "rawAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "recovery": {
+    "verifiedUtc": "2026-11-17T15:19:24.784159+00:00",
+    "timer": "tailcache12-recovery.timer",
+    "active": false,
+    "intervalMinutes": 15,
+    "threadId": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "suppressesActiveThreadOrBenchmark": true,
+    "stopsWhenTaskComplete": true,
+    "enabled": false,
+    "stoppedAfterTaskComplete": true,
+    "timerLoadState": "not-found",
+    "timerActiveState": "inactive",
+    "serviceActiveState": "inactive"
+  },
+  "paced": {
+    "directory": "evidence-archives/service-paced-20261117-001",
+    "workloadJvms": 24,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAudit": "independent-audit-001/audit.json",
+    "rawAuditPassed": true,
+    "cohortContractAudit": "cohort-contract-audit.json",
+    "researchReviewComplete": true
+  },
+  "observer": {
+    "directory": "evidence-archives/service-observer-20261117-001",
+    "workloadJvms": 24,
+    "controls": 3,
+    "parentLauncherJvms": 27,
+    "collectionComplete": true,
+    "rawAudit": "independent-audit-001/audit.json",
+    "rawAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "userAuthorization": "17 November: autonomous until tonight, all RQ-relevant combinations through small feasibility/worth pilots before substantial expansion; automatic recovery after ordinary usage becomes available.",
+  "finalSequence": {
+    "directory": "evidence-archives/service-final-sequence-20261117-001",
+    "collectionAndAuditsComplete": true
+  },
+  "policy": {
+    "directory": "evidence-archives/service-policy-20261117-001",
+    "workloadJvms": 16,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "trace": {
+    "directory": "evidence-archives/service-trace-20261117-001",
+    "workloadJvms": 8,
+    "controls": 4,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "largePayload": {
+    "directory": "evidence-archives/service-large-payload-pilot-20261117-001",
+    "workloadJvms": 4,
+    "controls": 3,
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "worthDecision": "none",
+    "reason": "Service p99.9 Ch/C 1.1047 at baseline and 1.1711 at 208 MiB; no expansion under frozen rule.",
+    "confirmationWorkloadJvms": 0,
+    "researchReviewComplete": true
+  },
+  "geometry": {
+    "directory": "evidence-archives/service-geometry-20261117-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "researchReviewComplete": true
+  },
+  "scientificScopeComplete": true,
+  "portablePackage": "docs/service-followup/followup-data-20261117.json",
+  "finalReview": "docs/service-followup/FINAL_REVIEW_20261117.md",
+  "browserQa": {
+    "domIntegrationPassed": true,
+    "realBrowserVisualPerformed": false,
+    "reason": "CUA browser host unavailable"
+  },
+  "deliveryComplete": true,
+  "analysisCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "deployedCommit": "6ede3cf86a2bf081bf78827574a8b4368cb0e38a",
+  "deploymentId": "dpl_3ESoBdb9sfVeyXUFkECiBHZBjo6R",
+  "pr": "https://github.com/Enixes/TailCache/pull/10",
+  "result": "No robust ordinary-service forward crossover; conditional policy/harness/trace sensitivities retained.",
+  "remainingPublicationWork": [
+    "Independent human/domain contribution review and author revision",
+    "Final typesetting/citation/licensing/authorship/disclosure decisions",
+    "Selected raw-evidence off-host/public release and author-approved deposit"
+  ],
+  "originalUnconditionalStatus": "NO_GO; unchanged"
+}

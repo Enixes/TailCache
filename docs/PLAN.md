@@ -1,5 +1,7 @@
 # Delivery plan
 
+> **Current state — 15 November 2026.** The roadmap below retains earlier milestones and dated diagnostic interpretations. The bounded midpoint/seed follow-up and deep manuscript review are complete. Use [current research state](TAILCACHE_CURRENT_STATE.md), [14 reviewed claims](preprint/CLAIMS.md), [manuscript](preprint/MANUSCRIPT.md) and [all documentation](DOCUMENTATION_INDEX.md). Diagnostic references to an “exact” cliff/crossover or essential reuse below are historical hypotheses, not accepted manuscript claims. The response midpoint is mixed; the original unconditional protocol remains NO_GO. Remaining v1 work is author/domain review, final typesetting, clean harness reproduction and artifact/licensing/release work.
+
 ## North star - the research question
 
 TailCache is **not** primarily a leaderboard asking whether Caffeine or Chronicle Map is faster in isolation.

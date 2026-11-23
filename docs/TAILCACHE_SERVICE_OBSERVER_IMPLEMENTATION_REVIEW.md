@@ -1,0 +1,11 @@
+# Independent JMH implementation review — 17 November 2026
+
+Agent-assisted code/research review; not independent human peer review. The prospective fixed protocol predates JMH collection. The new benchmark belongs under src/jmh, with isolated generated classes and pinned JMH 1.37 dependencies. Existing service runtimes and their 72 files are preserved.
+
+The implementation keeps the shared cache operation and long trace, consumes the returned byte through JMH, validates full values/residents, logs the actual 512 MiB workload fork, and separately accounts for the 256 MiB launcher. It explicitly requires lightweight zero-maintenance lifecycle preparation. A source review caught the package-private explicit-preparation overload; the public version-checked zero-maintenance API preserves the intended contract instead.
+
+Churn remains continuous per trial. Raw per-iteration windows/counters and sparse sample histograms are conserved separately: sample count is never substituted for completed operation count. Three design/parser tests reject impossible sample counts, invalid bins and rank misuse. Native scope checks use the actual worker PID/cgroup; process-group cleanup prevents orphaned benchmark children on timeout. Source/runtime archives, raw file hashes and resumable immutable slots remain mandatory.
+
+The independent auditor uses raw JMH JSON, exported bin counts, per-iteration counters, archived source/runtime identity and the historical independent GC parser. It retains both native JMH percentile estimates and explicitly recomputed ranks without claiming equality between estimator definitions. Physical-allocation floors are necessary diagnostic checks, not formal proofs against optimization. Full integrity checks and actual operation totals remain separate from sampled latency support.
+
+The JMH measurement regime changes iteration boundaries, caller shape, sampling and value consumption; it does not isolate timer overhead and cannot qualify the old recorder retrospectively. Two pairs per cell are descriptive. Compiler, host and lost-demand warnings remain visible; no replacements or pooled observer/fork percentiles are permitted. Collection completion leaves research completion false until raw audit and comparative review finish.

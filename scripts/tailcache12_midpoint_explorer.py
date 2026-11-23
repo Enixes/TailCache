@@ -2,7 +2,7 @@
 """Build the fresh-cohort panel without changing historical explorer data."""
 import hashlib,json,pathlib,re,shutil
 
-ROOT=pathlib.Path.cwd()
+ROOT=pathlib.Path(__file__).resolve().parents[1]
 DATA=ROOT/'evidence-archives/midpoint-results-20261110-001'
 START='<!-- TAILCACHE_MIDPOINT_START -->'
 END='<!-- TAILCACHE_MIDPOINT_END -->'
@@ -130,9 +130,11 @@ def attach(page,component):
 def main():
     component=render_component()
     out=ROOT/'docs/TAILCACHE_MIDPOINT_EXPLORER.html'
-    out.write_text('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TailCache midpoint follow-up</title></head><body style="margin:auto;max-width:1450px;padding:15px;background:#f1f5f9">'+component+'</body></html>')
+    from tailcache12_review_explorer import render_component as review_component,attach as attach_review
+    reviewed=review_component()
+    out.write_text('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TailCache midpoint follow-up</title></head><body style="margin:auto;max-width:1450px;padding:15px;background:#f1f5f9">'+reviewed+component+'</body></html>')
     original=ROOT/'docs/TAILCACHE_RESULTS_EXPLORER.html';page=original.read_text()
-    original.write_text(attach(page,component))
+    original.write_text(attach_review(attach(page,component),reviewed))
     print(json.dumps(dict(standalone=str(out),integrated=str(original),bytes=original.stat().st_size,sha256=hashlib.sha256(original.read_bytes()).hexdigest()),indent=2))
 
 

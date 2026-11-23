@@ -1,0 +1,30 @@
+{
+  "version": "mechanism-frozen-interval-transport-v1",
+  "parameterFittingOnNewCohorts": false,
+  "primary": "response p99.9 numerical error and prespecified per-stage mechanism contrasts",
+  "quantiles": [
+    "99",
+    "99.9",
+    "99.99",
+    "99.999"
+  ],
+  "referenceInputs": {
+    "docs/predictor/model-v1.json": "8f68243bf48a01607a166a763813c2bc6ac11bec9a5616f3ea1cc0c021426a81",
+    "docs/predictor/drain-candidate-v1.json": "8d5ec2ff9e877866fca23388c3f5e792fba63d2e708fe58c123c881cd125c58a",
+    "docs/predictor/drain_candidate.py.txt": "d5a4ab606a39ed9d7f0612fbf0eb7d63d705ff1f69024237b155c8ea415d6520",
+    "docs/predictor/numeric-baseline-v1.json": "5d50526b77b562e376c7cecb39afd6b6a8db41030ab37760d2cdaafae0f77b46"
+  },
+  "variants": {
+    "M2": "Frozen GC-only FIFO simulator/costs",
+    "M3core": "Union GC with safepoint interval[end-(Total-Reaching),end]",
+    "M3total": "Union GC with safepoint interval[end-Total,end]"
+  },
+  "payloadCalibrationBytes": 4096,
+  "limits": [
+    "Conditional on observed new pause intervals; no before-run GC prediction",
+    "Logged safepoint intervals are worker-unavailability proxies, not exact thread stop times",
+    "Old constant service costs may not transport across hotset/heap/runner changes; score without refitting",
+    "256B payload outside old calibration; no claimed M2/M3 numerical transport there",
+    "Report both interval variants; do not pick the better fitting one after seeing results"
+  ]
+}

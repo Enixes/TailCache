@@ -4,5 +4,5 @@ Description=Resume TailCache chat after a usage-limit reset
 [Service]
 Type=oneshot
 WorkingDirectory=/home/y/TailCache
-ExecStart=/home/y/.local/bin/rtk proxy /usr/bin/python3 /home/y/TailCache/ops/tailcache12_recovery.py --thread 01a1032c-87df-72d1-93cb-cd6f076451a0 --socket /home/y/.codex/app-server-control/app-server-control.sock
+ExecStart=/home/y/.local/bin/rtk proxy /usr/bin/python3 /home/y/TailCache/ops/tailcache12_recovery.py --thread 01a1032c-87df-72d1-93cb-cd6f076451a0 --socket /home/y/.codex/app-server-control/app-server-control.sock --status-file docs/TAILCACHE_MECHANISM_STATUS.json
 TimeoutStartSec=60

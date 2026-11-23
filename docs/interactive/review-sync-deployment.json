@@ -1,0 +1,38 @@
+{
+  "id": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+  "url": "tailcache-results-my3vqi449-enixes-projects.vercel.app",
+  "readyState": "READY",
+  "alias": [
+    "tailcache-results.vercel.app",
+    "tailcache-results-enixes-projects.vercel.app"
+  ],
+  "createdAt": 1794767460002,
+  "buildingAt": 1794767463135,
+  "ready": 1794767468311,
+  "sourceCommit": "13d1f4d685f987907cf379fdfd2e24d166ef1cb1",
+  "protection": {
+    "enabled": true,
+    "deploymentType": "all"
+  },
+  "index": {
+    "bytes": 14795107,
+    "sha1": "84e6749922fac922bc90007bb75c3080bcda0bbc",
+    "sha256": "94ecbfcf42bb5a399e6626bb17ec7d328298274dda16944bf1261b57a8349479"
+  },
+  "config": {
+    "bytes": 338,
+    "sha1": "63d75456adc2c9fae82611b507c161890f4295f9"
+  },
+  "remoteFiles": [
+    {
+      "name": "index.html",
+      "uid": "84e6749922fac922bc90007bb75c3080bcda0bbc"
+    },
+    {
+      "name": "vercel.json",
+      "uid": "63d75456adc2c9fae82611b507c161890f4295f9"
+    }
+  ],
+  "remoteArtifactMatches": true,
+  "authenticatedBrowserObserved": true
+}

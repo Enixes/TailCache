@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "counts": {
+    "perBinUnions": 160,
+    "quantileEndpoints": 3520,
+    "distributions": 704,
+    "thresholdChecks": 480,
+    "mixtureChecks": 160,
+    "forks": 184,
+    "pairedRatios": 1840,
+    "pointConclusions": 1120
+  },
+  "cohorts": 8,
+  "pairContrasts": 96,
+  "pointGroups": 58,
+  "limits": "Independent portable arithmetic/representation reconciliation; raw audits remain separate, not human peer review or proof of design validity.",
+  "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef"
+}

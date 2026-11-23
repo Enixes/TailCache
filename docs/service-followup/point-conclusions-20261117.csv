@@ -1,0 +1,1121 @@
+cohort,stage,payloadBytes,ballastMiB,seed,caffeineReference,channel,percentile,direction,ratios,completePairs,warningFreePairs
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9849444464550686, 0.9889466603643239]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9671431956401548, 0.939084683922481]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,gap,99.99,Chronicle lower,"[0.9883868626383596, 0.9966974219249902]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[12.44454957147975, 17.468488267692265]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[4.309523809523809, 4.278301886792453]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,read-service,99,Mixed,"[1.273317112733171, 0.8799089356858281]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[3.359144893111639, 2.105847076461769]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.4983440208582905, 1.528649337771797]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[53.26910982569199, 45.43136797042226]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,response,50,Caffeine lower,"[3.6793893129770994, 3.637735849056604]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,response,99,Mixed,"[0.970915914155037, 1.011766147812232]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,response,99.9,Caffeine lower,"[8.785304113441931, 7.321747680731906]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.41681773456928883, 0.3851111956396987]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.45596226341245616, 0.3583483972142123]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[4.291079812206573, 4.26046511627907]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1136015592370876, 1.1073157239662563]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.1029394404438673, 1.1213804893685222]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,service,99.99,Mixed,"[1.0071050586537393, 0.9554778637936571]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[39.25606350139644, 34.847432333577174]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1240086517664023, 1.1178330219859176]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.0285992850178745, 1.0237752852075543]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.8480345598823493, 0.9474783646672635]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.0438368674905105, 1.0431997702139881]",2,1
+geometry,geometry-repeated-short,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.622510976096501, 0.3923419708065529]",2,1
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9849182467461842, 0.9843563280825638]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9387415160480322, 0.9462622340006822]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,gap,99.99,Chronicle lower,"[0.9639400342086729, 0.9863633596460967]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[14.533199329239174, 13.452709942512136]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.418250950570342, 3.636]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,read-service,99,Mixed,"[0.8987854251012146, 1.118705035971223]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.7969059896866324, 2.128944995491434]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.224927392943212, 1.211835704168976]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[48.774432215555635, 50.89977506545227]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,response,50,Caffeine lower,"[3.006289308176101, 3.174342105263158]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,response,99,Chronicle lower,"[0.7142109395446218, 0.7770008504204857]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.019913229212252245, 0.04678404422541705]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.11420060671441581, 0.1428939403804511]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.1610532134657095, 0.2695924205886637]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[3.362962962962963, 3.558139534883721]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.104342999861246, 1.1162823200559049]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,service,99.9,Mixed,"[1.049775319737297, 0.9768016324777146]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,service,99.99,Chronicle lower,"[0.9918543176032896, 0.9226492627507856]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[37.44343759983735, 38.986582500636906]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1142529065594948, 1.1305293691080494]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,update-service,99,Mixed,"[1.007888681932727, 0.9238095238095239]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.9313425486264992, 0.8250934132106352]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.9415622829805294, 0.922556885439958]",2,2
+geometry,geometry-uniform-long,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.10288928152883316, 0.002960224057186832]",2,2
+largePilot,large-pilot,8192,0,24301,CAFFEINE,gap,50,Caffeine lower,[6.8604651162790695],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,gap,99,Caffeine lower,[1.080542543522338],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.1041728321988753],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.1780470464591513],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,gap,99.999,Chronicle lower,[0.21250775535044183],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,read-service,50,Caffeine lower,[8.03755868544601],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,read-service,99,Caffeine lower,[1.885049365303244],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,[5.149523331660813],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,[2.0505112631659874],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[53.066536053167376],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,service,50,Caffeine lower,[7.912844036697248],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,service,99,Caffeine lower,[1.0802075299726566],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,service,99.9,Caffeine lower,[1.104668450787987],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,service,99.99,Caffeine lower,[1.1777612264531545],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,service,99.999,Chronicle lower,[0.21250775535044183],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.080715563506261],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,update-service,99,Caffeine lower,[1.0874015295267667],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.055277828670139],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.006658011193930417],1,0
+largePilot,large-pilot,8192,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.030188822178594327],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,gap,50,Caffeine lower,[6.156996587030717],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,gap,99,Caffeine lower,[1.096064413132505],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.1642611268796426],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.4840617922455464],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,gap,99.999,Chronicle lower,[0.03531707394133341],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,read-service,50,Caffeine lower,[7.052631578947368],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,read-service,99,Caffeine lower,[2.234931506849315],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,[5.063297600816743],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,[4.131837512831794],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[61.7955298343644],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,service,50,Caffeine lower,[6.917322834645669],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,service,99,Caffeine lower,[1.0952182083942368],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,service,99.9,Caffeine lower,[1.1710759455000916],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,service,99.99,Caffeine lower,[1.4909658175335139],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,service,99.999,Chronicle lower,[0.03534306148712768],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.0968178258702925],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1348701186994667],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.0971911945580963],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.03158600031996423],1,0
+largePilot,large-pilot,8192,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.03251491073304459],1,0
+observer,jmh-observer,512,0,24301,CAFFEINE,service,50,Caffeine lower,"[1.3837209302325582, 1.401197604790419]",2,2
+observer,jmh-observer,512,0,24301,CAFFEINE,service,99,Chronicle lower,"[0.6651376146788991, 0.8009852216748768]",2,2
+observer,jmh-observer,512,0,24301,CAFFEINE,service,99.9,Mixed,"[1.0342298288508558, 0.9830917874396136]",2,2
+observer,jmh-observer,512,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.0388958594730238, 1.1443994601889338]",2,2
+observer,jmh-observer,512,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[36.767416934619504, 1.2143634385201305]",2,2
+observer,jmh-observer,512,208,24301,CAFFEINE,service,50,Caffeine lower,"[1.578616352201258, 1.3898305084745763]",2,2
+observer,jmh-observer,512,208,24301,CAFFEINE,service,99,Chronicle lower,"[0.7885010266940452, 0.7092391304347826]",2,2
+observer,jmh-observer,512,208,24301,CAFFEINE,service,99.9,Mixed,"[1.8506787330316743, 0.9238754325259516]",2,2
+observer,jmh-observer,512,208,24301,CAFFEINE,service,99.99,Mixed,"[1.0643564356435644, 0.9635678391959799]",2,2
+observer,jmh-observer,512,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[55.05145413870246, 8.41409691629956]",2,2
+observer,jmh-observer,1024,0,24301,CAFFEINE,service,50,Caffeine lower,"[2.074712643678161, 1.9447513812154695]",2,2
+observer,jmh-observer,1024,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.175542406311637, 1.18503937007874]",2,2
+observer,jmh-observer,1024,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.7307110438729199, 2.409986859395532]",2,2
+observer,jmh-observer,1024,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.235640648011782, 1.1115485564304461]",2,2
+observer,jmh-observer,1024,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[47.55703211517165, 41.75024975024975]",2,2
+observer,jmh-observer,1024,208,24301,CAFFEINE,service,50,Caffeine lower,"[2.1695906432748537, 2.016304347826087]",2,1
+observer,jmh-observer,1024,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.1245353159851301, 1.1385767790262171]",2,1
+observer,jmh-observer,1024,208,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.6072931276297335, 2.303867403314917]",2,1
+observer,jmh-observer,1024,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.1181938911022575, 1.110967741935484]",2,1
+observer,jmh-observer,1024,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[53.19569892473118, 2.9367469879518073]",2,1
+observer,jmh-observer,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[4.389671361502347, 4.273148148148148]",2,2
+observer,jmh-observer,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1003271537622683, 1.0886486486486486]",2,2
+observer,jmh-observer,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.2373831775700934, 1.0998415213946118]",2,2
+observer,jmh-observer,4096,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.1821019771071801, 1.0237226277372262]",2,2
+observer,jmh-observer,4096,0,24301,CAFFEINE,service,99.999,Chronicle lower,"[0.1387323943661972, 0.1381172839506173]",2,2
+observer,jmh-observer,4096,208,24301,CAFFEINE,service,50,Caffeine lower,"[4.406542056074766, 4.765]",2,0
+observer,jmh-observer,4096,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.1226927252985885, 1.1120689655172413]",2,0
+observer,jmh-observer,4096,208,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.2343470483005368, 1.2661016949152541]",2,0
+observer,jmh-observer,4096,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[6.6231884057971016, 32.791519434628974]",2,0
+observer,jmh-observer,4096,208,24301,CAFFEINE,service,99.999,Chronicle lower,"[0.1459478021978022, 0.1847649918962723]",2,0
+paced,paced-load,256,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.8916109241191257, 0.8256406206814861]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9201974282374334, 0.8878931735675661]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,gap,99.99,Chronicle lower,"[0.9738106006762723, 0.9545757608344984]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,gap,99.999,Mixed,"[1.1395366945688146, 0.8506181773705292]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.239819004524887, 1.2679425837320575]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.35494505494505496, 0.4783269961977186]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.7100213219616205, 0.5970365016263101]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,read-service,99.99,Chronicle lower,"[0.819138479329286, 0.6737226642646249]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,read-service,99.999,Chronicle lower,"[0.966278547489894, 0.9952884013693084]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,response,50,Caffeine lower,"[1.1648745519713262, 1.1893939393939394]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,response,99,Chronicle lower,"[0.24295835493347157, 0.1694281798928616]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.7398420469570811, 0.7690329020616578]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.6228726398419949, 0.662181758199886]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.6621454485301964, 0.6582199731505628]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,service,50,Caffeine lower,"[1.224669603524229, 1.2582159624413145]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,service,99,Chronicle lower,"[0.5644104803493449, 0.7164591977869986]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,service,99.9,Mixed,"[0.8111605337646584, 1.0222897669706181]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,service,99.99,Chronicle lower,"[0.9053631348461583, 0.7711349374969119]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,service,99.999,Chronicle lower,"[0.9678837169060391, 0.9947763630427685]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.2564450474898237, 1.271370420624152]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,update-service,99,Mixed,"[0.7826649417852523, 1.629023746701847]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,update-service,99.9,Mixed,"[1.2332094884252645, 0.3386284587032134]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.0836727510433952, 1.0264715614544653]",2,1
+paced,paced-load,256,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[1.107472202193465, 1.8909629551949243]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,gap,99,Chronicle lower,"[0.8742422342071157, 0.899103427566385]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,gap,99.9,Mixed,"[0.9212576896787423, 1.0035461975342845]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,gap,99.99,Mixed,"[0.9971489029958793, 1.0111734281910831]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,gap,99.999,Chronicle lower,"[0.9115864826113803, 0.9696129973497699]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.1213389121338913, 1.1814345991561181]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.44742268041237115, 0.4199491740787802]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.6702613023641643, 0.7523928422804828]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,read-service,99.99,Mixed,"[1.0057442378114454, 0.9887413571559689]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,read-service,99.999,Mixed,"[0.9630311337380066, 1.0112430193424313]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,response,50,Caffeine lower,"[1.0853242320819112, 1.1258503401360545]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,response,99,Chronicle lower,"[0.20532319391634982, 0.23865324310942398]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.696869366883714, 0.8352279478749951]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.33257384630314546, 0.4528117212787481]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.3729356393652432, 0.4435094847481325]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,service,50,Caffeine lower,"[1.1056910569105691, 1.1551020408163266]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,service,99,Chronicle lower,"[0.6588235294117647, 0.6303317535545023]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.8157792460163233, 0.8322226577812623]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.11608975720252, 1.0351927659314475]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.0614059134521245, 1.0186161509653493]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.3177441540577717, 1.2870619946091644]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.8812745525971192, 0.8224589436307146]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.2135376756066412, 1.3046212742685261]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.38126540673788, 1.1876145108098204]",2,1
+paced,paced-load,256,208,24301,CAFFEINE,update-service,99.999,Mixed,"[1.9119752913098413, 0.920238039600567]",2,1
+paced,paced-load,256,336,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,gap,99,Chronicle lower,"[0.8737422237067346, 0.8673685083101919]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9615037593984962, 0.8738706457474853]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,gap,99.99,Mixed,"[1.0007143016585192, 0.9923396661661334]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.0251695046644507, 5.196808899185006]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.0700389105058365, 1.1510204081632653]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.4543596730245232, 0.37707736389684815]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.6764361078546307, 0.666008685353336]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,read-service,99.99,Chronicle lower,"[0.7548069366584587, 0.8188365989135079]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,read-service,99.999,Chronicle lower,"[0.930108114011139, 0.9827777977108823]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,response,50,Caffeine lower,"[1.0516129032258064, 1.1174496644295302]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,response,99,Chronicle lower,"[0.17119665477801008, 0.18561454353840073]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.027901332582391546, 0.028769888324980106]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.4088462112078237, 0.400905836621491]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.49208300445010117, 0.30493503624380786]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,service,50,Caffeine lower,"[1.0608365019011408, 1.130952380952381]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,service,99,Chronicle lower,"[0.6763975155279504, 0.6121177802944507]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.7590361445783133, 0.7840445269016698]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,service,99.99,Chronicle lower,"[0.8243153314563604, 0.8961689531507941]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.0022460080715916, 1.0841308234304343]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.2749003984063745, 1.340689655172414]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.8525554047942108, 0.8538891276321444]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.5241225744883894, 0.8269659580793816]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.0883103041376423, 1.283279120517149]",2,0
+paced,paced-load,256,336,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.012055648501546492, 0.5664472291475731]",2,0
+paced,paced-load,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9884120948759733, 0.9947366497313498]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,gap,99.9,Mixed,"[0.9751030887730491, 1.0304620991650122]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,gap,99.99,Chronicle lower,"[0.9808829285375852, 0.9696162817099098]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[13.562205329609043, 13.2296622044399]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.208480565371025, 3.547244094488189]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,read-service,99,Mixed,"[0.9175946547884187, 1.0542686962276637]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.609926599091227, 3.0573737373737373]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.0670715322190574, 1.2672934002413772]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[52.79244794556012, 55.62149961463648]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,response,50,Caffeine lower,"[2.838235294117647, 3.0903225806451613]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,response,99,Chronicle lower,"[0.736781912553884, 0.8249225542120515]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.05058275112767672, 0.044239357426849986]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.12880919506403285, 0.1134746111448883]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.20891467877621067, 0.13002868014750738]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[3.1730103806228374, 3.4865900383141764]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1085080147965474, 1.1118686517322944]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,service,99.9,Mixed,"[0.9717713479181369, 1.1233909312304302]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,service,99.99,Mixed,"[0.9445066657032407, 1.0024155501037932]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[39.333820285869784, 43.68427724873965]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1242307141834835, 1.1252344539027557]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,update-service,99,Mixed,"[0.8831156971966031, 1.0352151425112799]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.89950772364624, 0.825801048419616]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,update-service,99.99,Mixed,"[0.831880250911479, 1.0234089246525238]",2,1
+paced,paced-load,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.003043759327768685, 0.003588309862750611]",2,1
+paced,paced-load,4096,208,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,gap,99,Chronicle lower,"[0.988391917872819, 0.9906919245173254]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9642848083606017, 0.927300265051117]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,gap,99.99,Mixed,"[0.980719407121769, 1.0144644654927986]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,gap,99.999,Chronicle lower,"[0.26629668576505844, 0.253456101210208]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.2077464788732395, 3.6963562753036436]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,read-service,99,Mixed,"[1.0315594059405941, 0.9682539682539683]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.672055427251732, 3.08413967185528]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.0323668240053945, 1.141143564090151]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.1021763863911622, 56.04445508452727]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,response,50,Caffeine lower,"[2.838709677419355, 3.218543046357616]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,response,99,Chronicle lower,"[0.3263322272106188, 0.03707322655469434]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.022277477783789395, 0.02160312089670338]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.03573367432820802, 0.032464792542338285]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.04251476741814169, 0.036591180229015356]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,service,50,Caffeine lower,"[3.161512027491409, 3.6015625]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.0932375660658626, 1.1026485522162757]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.145390461504571, 1.0982665595224428]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.00605349778669, 1.0567353777812414]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.175489844848017, 40.6683057906758]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1098683279059889, 1.1170926745680423]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.0341624853208071, 1.062561956162573]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.9399979165943262, 0.9801804990267209]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.010198203785129577, 0.007715732904071893]",2,0
+paced,paced-load,4096,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.0015595032236940002, 0.16155026294185387]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,gap,50,Mixed,"[1.000800040002, 1.0]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9924283790178734, 0.9959182185939721]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9324087033973788, 0.988945284472908]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.0450404184498336, 1.1290548833947045]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,gap,99.999,Chronicle lower,"[0.05145080177600832, 0.05437292833705328]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.0794701986754967, 3.117056856187291]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,read-service,99,Caffeine lower,"[1.004697592483852, 1.947453954496208]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[1.9654142821597411, 2.0719651078265082]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.1150290996234167, 1.4324552605183973]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[54.3118145471885, 56.95791487326638]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,response,50,Caffeine lower,"[2.726519337016575, 2.7576601671309193]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,response,99,Chronicle lower,"[0.0003768839887612521, 0.00038212078377770117]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.03563711724619912, 0.036415957283196417]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.04362765220301226, 0.04883960802837763]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.051829243087216766, 0.06499759416364513]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,service,50,Caffeine lower,"[3.0096153846153846, 3.045307443365696]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,service,99,Caffeine lower,"[1.073141645687028, 1.0803488833091053]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,service,99.9,Mixed,"[0.8246855937947135, 1.0768133853027855]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.0389184615926956, 1.0759723859235562]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,service,99.999,Chronicle lower,"[0.05414219487942585, 0.06355073493185796]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.0811818307331216, 1.0906202514159413]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,update-service,99,Mixed,"[1.1056951256130518, 0.9349978840457046]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,update-service,99.9,Chronicle lower,"[0.8924442054315677, 0.9210502706420647]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.03754762595673691, 0.0026831796675728164]",2,0
+paced,paced-load,4096,336,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.043522898625117074, 0.06088569331433312]",2,0
+policy,policy,512,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.4627659574468086, 1.4301075268817205]",2,2
+policy,policy,512,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.023574144486692, 1.0075018754688672]",2,2
+policy,policy,512,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.7647058823529411, 0.7437362637362638]",2,2
+policy,policy,512,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[2.5765199161425576, 2.453752498637107]",2,2
+policy,policy,512,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.1968925678367492, 1.1790288037064558]",2,2
+policy,policy,512,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.598639455782313, 1.5874125874125875]",2,2
+policy,policy,512,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.48443735035913804, 0.4743892828999212]",2,2
+policy,policy,512,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.614127569847127, 0.5890339425587467]",2,2
+policy,policy,512,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.4503344067376764, 1.2710301912883153]",2,2
+policy,policy,512,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.217436098709709, 1.2376513980959976]",2,2
+policy,policy,512,0,24301,CAFFEINE,service,50,Caffeine lower,"[1.576158940397351, 1.5608108108108107]",2,2
+policy,policy,512,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.0258823529411765, 1.0100541376643464]",2,2
+policy,policy,512,0,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.7501148369315572, 0.7303370786516854]",2,2
+policy,policy,512,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[2.8610563225947843, 2.586028974002778]",2,2
+policy,policy,512,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.2361323155216284, 1.2343049845244145]",2,2
+policy,policy,512,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1998078770413065, 1.1900668576886342]",2,2
+policy,policy,512,0,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.7553923818265259, 0.7370786516853932]",2,2
+policy,policy,512,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.1165512299976117, 1.033191298497421]",2,2
+policy,policy,512,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.1040703287768687, 1.076302572167825]",2,2
+policy,policy,512,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[1.116558155903572, 1.0837607442255315]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,50,Caffeine lower,"[1.3414634146341464, 1.3854166666666667]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99,Chronicle lower,"[0.7557551937113981, 0.800834824090638]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.9,Chronicle lower,"[0.6217597663380796, 0.6435907189045265]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.99,Mixed,"[0.990040278286342, 1.0187099207846095]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.999,Chronicle lower,"[0.9848479329812421, 0.988276241069793]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,50,Caffeine lower,"[1.4242424242424243, 1.5133333333333334]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99,Chronicle lower,"[0.36217183770883055, 0.38392857142857145]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.9,Chronicle lower,"[0.46693386773547096, 0.4761502743773744]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.99,Chronicle lower,"[0.7951921771017249, 0.9267350025205848]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.999,Chronicle lower,"[0.9204718275900441, 0.9249078109285954]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,service,50,Caffeine lower,"[1.4166666666666667, 1.5098039215686274]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99,Chronicle lower,"[0.7512923607122344, 0.7987767584097859]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.9,Chronicle lower,"[0.6113815050542868, 0.6345177664974619]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.99,Caffeine lower,"[1.0105271305828625, 1.5649093310916296]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.999,Chronicle lower,"[0.9800462164838792, 0.9869971556277936]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,50,Caffeine lower,"[1.2415506958250497, 1.246]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99,Chronicle lower,"[0.6482867270578968, 0.6669377795851973]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.9,Caffeine lower,"[1.0695493022191718, 1.0736425075739922]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.99,Caffeine lower,"[1.0838030628024142, 1.0532194807129027]",2,2
+policy,policy,512,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.999,Caffeine lower,"[1.0333517897273883, 1.0052495160602382]",2,2
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,gap,50,Caffeine lower,"[2.0676691729323307, 2.0]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,gap,99,Caffeine lower,"[1.3261083743842363, 1.3349900596421471]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,gap,99.9,Caffeine lower,"[1.4899387576552932, 1.538181818181818]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,gap,99.99,Caffeine lower,"[3.0183076579593657, 3.20355871886121]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,gap,99.999,Caffeine lower,"[1.115516316679731, 1.2676817519620283]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,read-service,50,Caffeine lower,"[2.422680412371134, 2.3645833333333335]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,read-service,99,Caffeine lower,"[1.8909657320872275, 2.181159420289855]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,read-service,99.9,Caffeine lower,"[2.047451669595782, 2.1734104046242773]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,read-service,99.99,Caffeine lower,"[1.7493277561995817, 1.6788432267884323]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,read-service,99.999,Caffeine lower,"[1.1714582448189585, 1.3175041120602748]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,service,50,Caffeine lower,"[2.404040404040404, 2.357142857142857]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,service,99,Caffeine lower,"[1.3346938775510204, 1.3463917525773197]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,service,99.9,Caffeine lower,"[1.4954212454212454, 1.5432098765432098]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,service,99.99,Caffeine lower,"[3.0972716488730723, 3.2151492721440906]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,service,99.999,Caffeine lower,"[1.1629597388465724, 1.3306937596493849]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,update-service,50,Caffeine lower,"[1.3051201671891326, 1.3047120418848168]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,update-service,99,Caffeine lower,"[1.4425942156003506, 1.5115207373271888]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,update-service,99.9,Caffeine lower,"[1.122988229642085, 1.1206519095110679]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,update-service,99.99,Caffeine lower,"[1.1013838900998631, 1.0886745009493508]",2,1
+policy,policy,512,0,24301,CAFFEINE_UNBOUNDED,update-service,99.999,Caffeine lower,"[1.0672789046994315, 1.0930398487388961]",2,1
+policy,policy,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[3.8623481781376516, 4.133620689655173]",2,2
+policy,policy,4096,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1024071239738416, 1.1017373175816538]",2,2
+policy,policy,4096,0,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.1743947970613031, 1.2025316455696202]",2,2
+policy,policy,4096,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.2589612986147474, 1.3012666894899008]",2,2
+policy,policy,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[33.17057669214773, 33.23622002010627]",2,2
+policy,policy,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[4.487562189054726, 4.876344086021505]",2,2
+policy,policy,4096,0,24301,CAFFEINE,read-service,99,Caffeine lower,"[1.2282690854119425, 1.2237136465324385]",2,2
+policy,policy,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.4590984974958263, 2.386143931256713]",2,2
+policy,policy,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[2.468982630272953, 3.9314296449370656]",2,2
+policy,policy,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[46.41247568194048, 47.351832889617036]",2,2
+policy,policy,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[4.427184466019417, 4.826315789473684]",2,2
+policy,policy,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1024779504409912, 1.1023633058313522]",2,2
+policy,policy,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.1425973081120406, 1.1660395679087268]",2,2
+policy,policy,4096,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.2687388387470437, 1.303403437915579]",2,2
+policy,policy,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[33.2641055012189, 33.638158085990874]",2,2
+policy,policy,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.0951702521726743, 1.092215739291305]",2,2
+policy,policy,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.1580456718003187, 1.1811221699660943]",2,2
+policy,policy,4096,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.0468475502635175, 1.15358787826611]",2,2
+policy,policy,4096,0,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.9353502288826944, 0.9641934194751565]",2,2
+policy,policy,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.08825241887942013, 0.08385132514235936]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,50,Caffeine lower,"[4.025316455696203, 3.9465020576131686]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99,Caffeine lower,"[1.1198586572438163, 1.1178959244112254]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.9,Caffeine lower,"[1.0962338392355255, 1.1153975176115398]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.99,Caffeine lower,"[1.151120783460283, 1.161319890009166]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,gap,99.999,Caffeine lower,"[30.250353909025346, 30.56713776251486]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,50,Caffeine lower,"[4.697916666666667, 4.58080808080808]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99,Chronicle lower,"[0.8290816326530612, 0.8300455235204856]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.9,Caffeine lower,"[1.385700846660395, 1.3378500451671183]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.99,Caffeine lower,"[1.311923149368996, 1.3185684581941906]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,read-service,99.999,Caffeine lower,"[38.82679455659822, 39.8337525410881]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,service,50,Caffeine lower,"[4.653061224489796, 4.517241379310345]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99,Caffeine lower,"[1.120039823638174, 1.1186320420036895]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.9,Caffeine lower,"[1.0680040802448147, 1.0829669710291963]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.99,Caffeine lower,"[1.1513731330208927, 1.163157663399411]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,service,99.999,Caffeine lower,"[30.354131489373106, 30.670845813343227]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,50,Caffeine lower,"[1.125311081832821, 1.1228968544257498]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99,Caffeine lower,"[1.100090808192917, 1.0904776330404928]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.9,Caffeine lower,"[1.0429388199603282, 1.0423165182217728]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.99,Chronicle lower,"[0.816424473760575, 0.8130799128305363]",2,2
+policy,policy,4096,0,24301,CAFFEINE_BOUNDED_DIRECT,update-service,99.999,Chronicle lower,"[0.08789283391082259, 0.08088228886522775]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,gap,50,Caffeine lower,"[5.3, 5.269230769230769]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,gap,99,Caffeine lower,"[1.1352629316520992, 1.1325903700528648]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,gap,99.9,Caffeine lower,"[1.2811719879122323, 1.306483300589391]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,gap,99.99,Caffeine lower,"[1.224454835872031, 1.1819554884278798]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,gap,99.999,Caffeine lower,"[32.23404013092358, 32.93351359043689]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,read-service,50,Caffeine lower,"[6.536231884057971, 6.525179856115108]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,read-service,99,Caffeine lower,"[3.371369294605809, 3.3696098562628336]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,read-service,99.9,Caffeine lower,"[6.020435967302452, 5.987870619946092]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,read-service,99.99,Caffeine lower,"[5.2965779467680605, 5.051170649287956]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,read-service,99.999,Caffeine lower,"[47.003940473695245, 48.430941309538774]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,service,50,Caffeine lower,"[6.3776223776223775, 6.368055555555555]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,service,99,Caffeine lower,"[1.1348897535667963, 1.132777697945107]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,service,99.9,Caffeine lower,"[1.2485755929508413, 1.2695916479450244]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,service,99.99,Caffeine lower,"[1.2353494055171765, 1.1839738714151493]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,service,99.999,Caffeine lower,"[32.381501072194425, 33.35886643411076]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,update-service,50,Caffeine lower,"[1.1306074422709222, 1.1275157925664756]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,update-service,99,Caffeine lower,"[1.2504874412203235, 1.208617795187465]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,update-service,99.9,Caffeine lower,"[1.052104994703182, 1.0462229162600039]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,update-service,99.99,Chronicle lower,"[0.6897949946249741, 0.8747069486404834]",2,2
+policy,policy,4096,0,24301,CAFFEINE_UNBOUNDED,update-service,99.999,Chronicle lower,"[0.08768866935764853, 0.0783756986701901]",2,2
+replication,payload-confirmation,512,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.440217391304348, 1.4010695187165776, 1.3756345177664975]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.0142857142857142, 1.0165912518853695, 1.009009009009009]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.7560652845169828, 0.7455024133391839, 0.7384747953468332]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[2.9476158495634652, 2.795970307529162, 2.4337850045167118]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.2293145290535281, 1.1456239485830133, 1.1215189873417721]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.5804195804195804, 1.5555555555555556, 1.484076433121019]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.47128245476003144, 0.46677215189873417, 0.48145224940805054]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.5737704918032787, 0.5619918699186992, 0.5631399317406144]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.5618286973285596, 1.3822222222222222, 1.473551637279597]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.2275371687136394, 1.1902990553570554, 1.1611308726382408]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,service,50,Caffeine lower,"[1.5578231292517006, 1.523489932885906, 1.48125]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.0162538699690402, 1.0202334630350194, 1.0139426800929512]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.7401894451962111, 0.7332433648223122, 0.7279183311140701]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[2.6296296296296298, 2.271868675511581, 2.6423254878294107]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.2460612331279688, 1.164241069391852, 1.1409088965841563]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.2036503362151778, 1.2046109510086456, 1.1895238095238094]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.7530640036314117, 0.7526243724326791, 0.7542256738236638]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.0887001651332862, 1.0925619834710745, 1.0595920238368095]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.3230976344637477, 1.0406524721784645, 1.0672098790424616]",3,3
+replication,payload-confirmation,512,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[1.0438611520405716, 1.0406830910902656, 1.046344442505671]",3,3
+replication,payload-confirmation,512,208,24301,CAFFEINE,gap,50,Caffeine lower,"[1.4782608695652173, 1.4728260869565217, 1.3432835820895523]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,gap,99,Caffeine lower,"[1.0194610778443114, 1.0134831460674156, 1.0096510764662212]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.7990261177512173, 0.7961250550418318, 0.7115461446264483]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,gap,99.99,Caffeine lower,"[3.054836586970827, 1.0273078965334141, 2.705940398657983]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.2614402428679852, 1.2215330858265996, 1.1415341168653184]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[1.6111111111111112, 1.5890410958904109, 1.4294478527607362]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.48119122257053293, 0.4850863422291994, 0.48130841121495327]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.6215797625193599, 0.6416837782340863, 0.5555035128805621]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[2.594499865192774, 1.49929192797896, 2.968916724657852]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.3344064187014015, 1.3078871729916695, 1.2374370116961768]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,service,50,Caffeine lower,"[1.5945945945945945, 1.5838926174496644, 1.4216867469879517]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.0200308166409862, 1.0146491904394757, 1.0114591291061878]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.7663804789877994, 0.7631697433588474, 0.7110266159695817]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[3.03021420518602, 1.027399392854363, 2.841068022886205]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.2964476433712562, 1.2460198666485236, 1.1805057272530797]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.211946050096339, 1.2090997095837366, 1.198095238095238]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.7706919945725916, 0.7697874265038445, 0.7669241253975466]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.1373231268847135, 1.1322617680826637, 1.089764140141974]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.6327362090150683, 1.2246489859594383, 1.2104087331810105]",3,2
+replication,payload-confirmation,512,208,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[8.00461333424461, 2.316064655025117, 2.1810786381440193]",3,2
+replication,payload-confirmation,1024,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.9740932642487046, 1.8365384615384615, 1.9740932642487046]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1814495691839837, 1.1436248168050807, 1.187783947501262]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,gap,99.9,Mixed,"[0.9926544240400668, 0.9805004874878128, 1.0112994350282485]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[2.753157097154403, 2.2900180480355408, 1.2722923692259431]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.2201050967659248, 1.2248052113935368, 1.1530878515511742]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[2.1806451612903226, 2.0297619047619047, 2.1948051948051948]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.6092503987240829, 0.589272030651341, 0.6082474226804123]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.7435258964143426, 0.7684157416750756, 0.8035435122459614]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[3.37914925006147, 2.922703273495248, 3.1246836899010813]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.365326005495878, 1.3377699770854663, 1.3067018976699496]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,service,50,Caffeine lower,"[2.170886075949367, 2.011627906976744, 2.1847133757961785]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1833677685950412, 1.1469123505976095, 1.1910401647785789]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,service,99.9,Chronicle lower,"[0.9214890016920474, 0.9115803365225998, 0.9298955173576002]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[2.9743827733432338, 2.425003761095231, 2.3302121433796636]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.2442212377735866, 1.2401214487096075, 1.1693838661867457]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1823529411764706, 1.1567708333333333, 1.1888]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.9007710358699296, 0.8853046594982079, 0.9045712379045713]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.1881093481169949, 1.0843507214206438, 1.245343367826905]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.2000092941121798, 1.2071575108274448, 1.170810712167526]",3,1
+replication,payload-confirmation,1024,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[1.0722852406799492, 1.3598917338145164, 1.554092583693737]",3,1
+replication,payload-confirmation,1024,208,24301,CAFFEINE,gap,50,Caffeine lower,"[2.0051020408163267, 1.915, 1.9203980099502487]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1808246398410334, 1.165751372940589, 1.1597836774827925]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.127673576834485, 1.1120318196884322, 1.0698205546492658]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.4459973600434817, 1.1772006874164598, 2.353495158509086]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.6171567633340094, 1.4017035084161427, 1.5475798353082948]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[2.2151898734177213, 2.1049382716049383, 2.1296296296296298]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.6405750798722045, 0.6410670978172999, 0.6160990712074303]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,"[0.8508230452674898, 0.8753246753246753, 0.7856797290759555]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[3.3030577576443942, 1.0812870448772227, 3.0834262770466205]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.369225019853319, 1.3152637125968016, 1.3486128421732908]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,service,50,Caffeine lower,"[2.2111801242236027, 2.096969696969697, 2.121212121212121]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.1832911392405063, 1.1683621566632756, 1.1628256513026052]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,service,99.9,Mixed,"[1.020033388981636, 1.0181634712411705, 0.9735362222957327]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[2.3884117246080434, 1.1236037723229215, 2.5123236707487213]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.5633943013562275, 1.3252433164962425, 1.4364530002047922]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.182201158504476, 1.1666666666666667, 1.1650130548302873]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,update-service,99,Chronicle lower,"[0.9517674264948794, 0.9606797734088637, 0.9168031444480839]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,update-service,99.9,Mixed,"[1.5696684181917013, 0.6015261879986126, 1.4157885336667262]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.2561753499721735, 1.2147246958484887, 1.2495007435734014]",3,2
+replication,payload-confirmation,1024,208,24301,CAFFEINE,update-service,99.999,Caffeine lower,"[19.974699981449508, 34.26903472018361, 18.992345153988612]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,gap,50,Caffeine lower,"[2.780952380952381, 2.7198067632850242, 2.8365384615384617]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.122896072668982, 1.124026845637584, 1.1350844277673546]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.0134369095108124, 1.023814586434191, 1.0565043221589712]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.456909739928608, 1.4805399325084365, 1.4800596347372343]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[1.1458984024412133, 1.2090071420641675, 1.1809257171944878]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.1823529411764704, 3.1204819277108435, 3.244047619047619]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.8088347296268088, 0.8301435406698564, 0.8276923076923077]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[1.6829030686799804, 1.5681012658227849, 1.8342682304946456]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[4.086350974930362, 3.912914285714286, 4.152774707052841]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[1.2695103373231773, 1.3640585094032969, 1.261475935828877]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,service,50,Caffeine lower,"[3.1436781609195403, 3.0823529411764707, 3.203488372093023]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1236167341430499, 1.1242876526458616, 1.1359328459247224]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,service,99.9,Mixed,"[0.9847554520431929, 0.9991414466623739, 1.0153093769934085]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.4970145869548788, 1.5523583036068174, 1.5110957536665899]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[1.1470811769389453, 1.2164843838087722, 1.1777191246013416]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1199889411114183, 1.118789897307799, 1.1280133000831256]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.017216642754663, 1.048545720862105, 1.0547377151150736]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.6337149771944521, 1.816613286496539, 1.7562907268170427]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.071312579898421, 1.1123249400050146, 1.0989294421086104]",3,2
+replication,payload-confirmation,2048,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.28368867373914236, 0.08191002062423561, 0.08472479419107913]",3,2
+replication,payload-confirmation,2048,208,24301,CAFFEINE,gap,50,Caffeine lower,"[2.598173515981735, 2.609865470852018, 2.68075117370892]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1274223520042475, 1.1241050119331741, 1.1309810211173483]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.0962544465369324, 1.1002738571729513, 1.111134498000421]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.404149751917005, 1.5749100785436394, 1.6021505376344085]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,gap,99.999,Caffeine lower,"[39.92280952867805, 41.13406264153573, 41.08561369261338]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[2.921787709497207, 2.934065934065934, 3.0346820809248554]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.8702865761689291, 0.9047619047619048, 0.8926380368098159]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[1.831175298804781, 1.9247144340602285, 1.896604938271605]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[3.572017231691328, 4.0616133813254285, 3.967555280016532]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[44.228393790916954, 47.45539414744422, 44.980551053484604]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,service,50,Caffeine lower,"[2.912087912087912, 2.903225806451613, 3.022727272727273]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.1277166621947947, 1.1226895258505223, 1.13178503915744]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.072650475184794, 1.0714437593025727, 1.0858296154663267]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.4804523202096118, 1.5676101809445153, 1.6148785046728973]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[39.77654189193843, 41.164887432618116, 41.50512866015971]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1257931034482758, 1.1204951856946355, 1.1279423982276378]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.0638770972306448, 1.0824572253143683, 1.0945918157515937]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.1133789594815577, 1.8609973018886778, 1.8869349135047309]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.3559263121306917, 1.0761234398931143, 1.280592158776639]",3,3
+replication,payload-confirmation,2048,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.1518455507261085, 0.14579805382373437, 0.15802074768277463]",3,3
+replication,payload-confirmation,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[4.233480176211454, 3.8785425101214575, 3.9545454545454546]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1031757037858827, 1.1093381434716247, 1.1113727663111235]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.1996400719856029, 1.3064729194187583, 1.2245950809838033]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.2913894419892187, 1.3432536773689097, 1.2920358266763496]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[33.07757235900581, 32.3886122032911, 31.3654773656748]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[4.897849462365591, 4.467980295566503, 4.622448979591836]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,read-service,99,Caffeine lower,"[1.22655663915979, 1.3120243531202436, 1.2079646017699115]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.353407290015848, 2.6675962074735082, 2.5035383777898748]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[3.334122101277804, 2.883964336477581, 2.924223073648361]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[48.55073519955416, 46.352633560640925, 43.81050073696371]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[4.847368421052631, 4.408653846153846, 4.552238805970149]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1031934179333427, 1.1093902609180968, 1.1108789525003482]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.1670085676360564, 1.2710879825729153, 1.1922937552844546]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.2942240915537733, 1.3427841383715788, 1.2968894965574491]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[33.17057669214773, 32.47942404859955, 31.449139324504436]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.0954138861280704, 1.0960363688023866, 1.1004682843763303]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.1334584506307996, 1.1656930430164631, 1.1511009078576646]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.0513482838245078, 1.0711638250555968, 1.0580546993874604]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.8986407282703579, 0.9445788655986552, 0.8454644656497411]",3,1
+replication,payload-confirmation,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.08385690494681394, 0.08668519583756691, 0.09279405250416853]",3,1
+replication,payload-confirmation,4096,208,24301,CAFFEINE,gap,50,Caffeine lower,"[4.367713004484305, 4.349775784753363, 3.9591836734693877]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,gap,99,Caffeine lower,"[1.1135768435561681, 1.1075888568683958, 1.1105762618621922]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,gap,99.9,Caffeine lower,"[1.3136130034659974, 1.267583916498636, 1.3041353831486115]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,gap,99.99,Caffeine lower,"[1.3626040513881539, 1.3490515951542064, 1.3663467628002144]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,gap,99.999,Caffeine lower,"[3.856278750738217, 2.014165708776487, 1.7933217072819532]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,read-service,50,Caffeine lower,"[5.099447513812155, 5.066298342541437, 4.557213930348259]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,read-service,99,Caffeine lower,"[1.4404494382022472, 1.4254062038404727, 1.4099332839140104]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.584102564102564, 2.461344113188479, 2.6696856686201387]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[3.4839348256433684, 3.2407434296500655, 3.3191395314571976]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[56.48229162553796, 56.348256530555446, 54.67938227497983]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,service,50,Caffeine lower,"[5.043243243243243, 5.010810810810811, 4.495145631067961]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,service,99,Caffeine lower,"[1.1136521136521136, 1.1082424409774956, 1.1100815931406445]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.3022500300806161, 1.2273432835820897, 1.280263947210558]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.3675392161624012, 1.3517680821051608, 1.3667891256429097]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,service,99.999,Caffeine lower,"[4.413374773500551, 4.182765241471426, 3.566422321483204]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1129558677451399, 1.1111899021415401, 1.1098683279059889]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.1618183713898447, 1.1304481591631628, 1.179832467394762]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,"[1.1250818346362692, 1.0882750106099772, 1.213342222592608]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,update-service,99.99,Chronicle lower,"[0.01577253289860809, 0.012393080466765962, 0.03279518551038589]",3,0
+replication,payload-confirmation,4096,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.04232060159098129, 0.0447326058935582, 0.13884075770105342]",3,0
+replication,payload-holdout,512,0,24302,CAFFEINE,gap,50,Caffeine lower,[1.3743589743589744],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,gap,99,Caffeine lower,[1.0097744360902257],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,gap,99.9,Chronicle lower,[0.7437800087298123],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.856793810234831],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.1754094780519764],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,read-service,50,Caffeine lower,[1.4935064935064934],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,read-service,99,Chronicle lower,[0.4755520504731861],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,read-service,99.9,Chronicle lower,[0.5614213197969543],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,read-service,99.99,Caffeine lower,[1.7167840109016579],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,read-service,99.999,Caffeine lower,[1.1772811212652114],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,service,50,Caffeine lower,[1.4746835443037976],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,service,99,Caffeine lower,[1.0139643134212568],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,service,99.9,Chronicle lower,[0.7328552218735993],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,service,99.99,Caffeine lower,[2.4570319719090743],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,service,99.999,Caffeine lower,[1.196847918818194],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1895238095238094],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,update-service,99,Chronicle lower,[0.7501137915339099],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.0515297906602254],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.1125563034566526],1,0
+replication,payload-holdout,512,0,24302,CAFFEINE,update-service,99.999,Caffeine lower,[1.0638080112934534],1,0
+replication,payload-holdout,512,208,24302,CAFFEINE,gap,50,Caffeine lower,[1.5932203389830508],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,gap,99,Caffeine lower,[1.0326004548900682],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,gap,99.9,Chronicle lower,[0.8278651685393258],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,gap,99.99,Caffeine lower,[2.478997656390842],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.2293931649846235],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,read-service,50,Caffeine lower,[1.7681159420289856],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,read-service,99,Chronicle lower,[0.5027844073190135],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,read-service,99.9,Chronicle lower,[0.6675433982114677],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,read-service,99.99,Caffeine lower,[2.725826193390453],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,read-service,99.999,Caffeine lower,[1.3094837126497618],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,service,50,Caffeine lower,[1.7394366197183098],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,service,99,Caffeine lower,[1.0343481654957065],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,service,99.9,Chronicle lower,[0.7903448275862069],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,service,99.99,Caffeine lower,[2.8641107561235355],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,service,99.999,Caffeine lower,[1.2697157319112398],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,update-service,50,Caffeine lower,[1.2357563850687623],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,update-service,99,Chronicle lower,[0.7889655172413793],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.207668492498214],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.2358304209086766],1,1
+replication,payload-holdout,512,208,24302,CAFFEINE,update-service,99.999,Caffeine lower,[2.506311455887857],1,1
+replication,payload-holdout,1024,0,24302,CAFFEINE,gap,50,Caffeine lower,[1.914572864321608],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,gap,99,Caffeine lower,[1.1698396793587174],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,gap,99.9,Chronicle lower,[0.9803085001640959],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,gap,99.99,Caffeine lower,[2.611282503305421],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.1157742402315485],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,read-service,50,Caffeine lower,[2.11875],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,read-service,99,Chronicle lower,[0.5951825951825952],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,read-service,99.9,Chronicle lower,[0.75840233804189],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,read-service,99.99,Caffeine lower,[3.609863394304237],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,read-service,99.999,Caffeine lower,[1.253512044585694],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,service,50,Caffeine lower,[2.1104294478527605],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,service,99,Caffeine lower,[1.1721144024514811],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,service,99.9,Chronicle lower,[0.9094841930116473],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,service,99.99,Caffeine lower,[2.6792235565060043],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,service,99.999,Caffeine lower,[1.1551110565713585],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1715193223928004],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,update-service,99,Chronicle lower,[0.8859967051070841],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.206027397260274],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.1306485400367663],1,0
+replication,payload-holdout,1024,0,24302,CAFFEINE,update-service,99.999,Caffeine lower,[1.0891906200367476],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,gap,50,Caffeine lower,[1.8792270531400965],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,gap,99,Caffeine lower,[1.1660865241173546],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,gap,99.9,Caffeine lower,[1.1127694859038142],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.2233160272402401],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.470796033880615],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,read-service,50,Caffeine lower,[2.0778443113772456],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,read-service,99,Chronicle lower,[0.6348448687350835],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,read-service,99.9,Chronicle lower,[0.8524672708962739],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,read-service,99.99,Caffeine lower,[2.1639318643538052],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,read-service,99.999,Caffeine lower,[1.334341694978359],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,service,50,Caffeine lower,[2.0584795321637426],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,service,99,Caffeine lower,[1.168271667511404],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,service,99.9,Caffeine lower,[1.01346348030966],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,service,99.99,Caffeine lower,[1.1567956667379373],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,service,99.999,Caffeine lower,[1.406840831727023],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1702802749867796],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,update-service,99,Chronicle lower,[0.9413137712570857],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.2758620689655173],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.2244029819315168],1,0
+replication,payload-holdout,1024,208,24302,CAFFEINE,update-service,99.999,Caffeine lower,[18.61686797458633],1,0
+replication,payload-holdout,2048,0,24302,CAFFEINE,gap,50,Caffeine lower,[2.84390243902439],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,gap,99,Caffeine lower,[1.1285983319881625],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,gap,99.9,Caffeine lower,[1.0279957582184518],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.5146021391185618],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.2311523400372582],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,read-service,50,Caffeine lower,[3.2666666666666666],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,read-service,99,Chronicle lower,[0.8417721518987342],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,read-service,99.9,Caffeine lower,[1.734059097978227],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,read-service,99.99,Caffeine lower,[4.325279234100752],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,read-service,99.999,Caffeine lower,[1.3848072669082694],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,service,50,Caffeine lower,[3.224852071005917],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,service,99,Caffeine lower,[1.1299972803916236],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,service,99.9,Chronicle lower,[0.9982887700534759],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,service,99.99,Caffeine lower,[1.925381846483121],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,service,99.999,Caffeine lower,[1.251094664238385],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1228118921922756],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,update-service,99,Caffeine lower,[1.0484645916022561],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.979036329711338],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.168775104170577],1,1
+replication,payload-holdout,2048,0,24302,CAFFEINE,update-service,99.999,Caffeine lower,[3.1305171325259713],1,1
+replication,payload-holdout,2048,208,24302,CAFFEINE,gap,50,Caffeine lower,[2.68348623853211],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,gap,99,Caffeine lower,[1.1304232100079852],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,gap,99.9,Caffeine lower,[1.1294690078273746],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.473888472799074],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,gap,99.999,Caffeine lower,[40.87443883765443],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,read-service,50,Caffeine lower,[3.0280898876404496],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,read-service,99,Chronicle lower,[0.9067077872012336],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,read-service,99.9,Caffeine lower,[1.9112610275038922],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,read-service,99.99,Caffeine lower,[4.030966926479882],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,read-service,99.999,Caffeine lower,[47.37518793762619],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,service,50,Caffeine lower,[3.016574585635359],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,service,99,Caffeine lower,[1.1301425114278032],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,service,99.9,Caffeine lower,[1.1024109238318753],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,service,99.99,Caffeine lower,[1.5295180287593033],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,service,99.999,Caffeine lower,[40.96140709179901],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1282831075476916],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,update-service,99,Caffeine lower,[1.1248179737882256],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.3454383194892565],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,update-service,99.99,Caffeine lower,[1.1760473973762167],1,0
+replication,payload-holdout,2048,208,24302,CAFFEINE,update-service,99.999,Chronicle lower,[0.15841053732454577],1,0
+replication,payload-holdout,4096,0,24302,CAFFEINE,gap,50,Caffeine lower,[4.18141592920354],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,gap,99,Caffeine lower,[1.1037879839045373],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,gap,99.9,Caffeine lower,[1.1809649861629166],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.2842738975086878],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,gap,99.999,Caffeine lower,[33.22481998659009],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,read-service,50,Caffeine lower,[4.890710382513661],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,read-service,99,Caffeine lower,[1.2252456538170824],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,read-service,99.9,Caffeine lower,[2.382162162162162],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,read-service,99.99,Caffeine lower,[3.388542544229149],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,read-service,99.999,Caffeine lower,[49.72039401996251],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,service,50,Caffeine lower,[4.808510638297872],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,service,99,Caffeine lower,[1.1032510115808567],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,service,99.9,Caffeine lower,[1.143428225317989],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,service,99.99,Caffeine lower,[1.2819036369900094],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,service,99.999,Caffeine lower,[33.38051723632955],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,update-service,50,Caffeine lower,[1.097228144989339],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,update-service,99,Caffeine lower,[1.1601533383026301],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.04636773056589],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,update-service,99.99,Chronicle lower,[0.8943521762141183],1,1
+replication,payload-holdout,4096,0,24302,CAFFEINE,update-service,99.999,Chronicle lower,[0.07760134473986355],1,1
+replication,payload-holdout,4096,208,24302,CAFFEINE,gap,50,Caffeine lower,[4.184549356223176],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,gap,99,Caffeine lower,[1.111004258826762],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,gap,99.9,Caffeine lower,[1.2962257411596618],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,gap,99.99,Caffeine lower,[1.352042058121988],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,gap,99.999,Caffeine lower,[1.8325773044305955],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,read-service,50,Caffeine lower,[4.847368421052631],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,read-service,99,Caffeine lower,[1.4238805970149253],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,read-service,99.9,Caffeine lower,[2.526123301985371],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,read-service,99.99,Caffeine lower,[3.519385978794113],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,read-service,99.999,Caffeine lower,[57.12589506047979],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,service,50,Caffeine lower,[4.774358974358974],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,service,99,Caffeine lower,[1.1110650642353916],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,service,99.9,Caffeine lower,[1.2562687462507498],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,service,99.99,Caffeine lower,[1.3524056580686212],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,service,99.999,Caffeine lower,[1.9985839478095486],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,update-service,50,Caffeine lower,[1.1139617292700212],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,update-service,99,Caffeine lower,[1.1704628949301983],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,update-service,99.9,Caffeine lower,[1.0893889427740058],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,update-service,99.99,Chronicle lower,[0.012000984210423365],1,0
+replication,payload-holdout,4096,208,24302,CAFFEINE,update-service,99.999,Chronicle lower,[0.13331064735614645],1,0
+replication,pressure-discovery,2048,240,24301,CAFFEINE,gap,50,Caffeine lower,[2.6666666666666665],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,gap,99,Caffeine lower,[1.1340782122905029],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.0990972076422423],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.3543449740738427],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,gap,99.999,Caffeine lower,[40.94918210841589],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,read-service,50,Caffeine lower,[3.0056818181818183],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,read-service,99,Chronicle lower,[0.9118098159509203],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.8157114624505928],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.3497094558901215],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,read-service,99.999,Caffeine lower,[49.32655743090633],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,service,50,Caffeine lower,[2.994413407821229],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,service,99,Caffeine lower,[1.1349099704380543],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,service,99.9,Caffeine lower,[1.0728350624603007],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,service,99.99,Caffeine lower,[1.4456946826758148],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,service,99.999,Caffeine lower,[41.03924316748423],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1324868893182445],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,update-service,99,Caffeine lower,[1.0794593487610076],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.1127096889737926],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.2622870299309286],1,1
+replication,pressure-discovery,2048,240,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.1742822001955695],1,1
+replication,pressure-discovery,2048,272,24301,CAFFEINE,gap,50,Caffeine lower,[2.807511737089202],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,gap,99,Caffeine lower,[1.139411608799364],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.127420362273579],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.3244468300829009],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,gap,99.999,Caffeine lower,[40.459901696527666],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,read-service,50,Caffeine lower,[3.1907514450867054],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,read-service,99,Chronicle lower,[0.9410430839002267],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.8088589311506982],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,read-service,99.99,Caffeine lower,[2.7552477509638726],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,read-service,99.999,Caffeine lower,[46.93772851479814],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,service,50,Caffeine lower,[3.1761363636363638],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,service,99,Caffeine lower,[1.1409054379855343],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,service,99.9,Caffeine lower,[1.1068349106203996],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,service,99.99,Caffeine lower,[1.3860426825406877],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,service,99.999,Caffeine lower,[40.87913687683996],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1424234060171128],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,update-service,99,Caffeine lower,[1.0921658986175116],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.1141837644959858],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.3565406500431971],1,0
+replication,pressure-discovery,2048,272,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.20926955446661508],1,0
+replication,pressure-discovery,2048,304,24301,CAFFEINE,gap,50,Caffeine lower,[2.843601895734597],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,gap,99,Caffeine lower,[1.1545041432771985],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.1445581783998329],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.5627077257003323],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,gap,99.999,Caffeine lower,[41.35218894361673],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,read-service,50,Caffeine lower,[3.2280701754385963],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,read-service,99,Chronicle lower,[0.9811746987951807],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.9277047522750252],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.5684365239757487],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,read-service,99.999,Caffeine lower,[51.04244713579189],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,service,50,Caffeine lower,[3.1942857142857144],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,service,99,Caffeine lower,[1.1544693491763436],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,service,99.9,Caffeine lower,[1.1232327495252163],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,service,99.99,Caffeine lower,[1.6174055829228242],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,service,99.999,Caffeine lower,[42.51721091654835],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1501801052923248],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1347213717085118],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.5770994912851306],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.18041074039169194],1,1
+replication,pressure-discovery,2048,304,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.26546379427482586],1,1
+replication,pressure-discovery,2048,336,24301,CAFFEINE,gap,50,Caffeine lower,[2.8181818181818183],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,gap,99,Caffeine lower,[1.1297410410672246],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.1457422444305643],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.6237399711993417],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,gap,99.999,Caffeine lower,[42.830847037119504],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,read-service,50,Caffeine lower,[3.1882352941176473],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,read-service,99,Caffeine lower,[1.0663544106167058],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.9494897959183672],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.783485171544873],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,read-service,99.999,Caffeine lower,[53.34243723208818],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,service,50,Caffeine lower,[3.179190751445087],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,service,99,Caffeine lower,[1.1311128733809146],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,service,99.9,Caffeine lower,[1.1201933179239336],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,service,99.99,Caffeine lower,[1.6957531760435571],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,service,99.999,Caffeine lower,[43.42876061888304],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,update-service,50,Caffeine lower,[1.135853190906601],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1290846356809416],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.144399048722483],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,update-service,99.99,Caffeine lower,[2.8271316671870546],1,0
+replication,pressure-discovery,2048,336,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.05097762127165968],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,gap,50,Caffeine lower,[4.113924050632911],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,gap,99,Caffeine lower,[1.1103334705640182],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.3042186571598335],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.3797850089984922],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.6672431221699615],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,read-service,50,Caffeine lower,[4.757731958762887],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,read-service,99,Caffeine lower,[1.460352422907489],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,read-service,99.9,Caffeine lower,[2.66266944734098],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.458970792767733],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,read-service,99.999,Caffeine lower,[56.141799477847485],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,service,50,Caffeine lower,[4.717171717171717],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,service,99,Caffeine lower,[1.1110037277371254],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,service,99.9,Caffeine lower,[1.2890297882521833],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,service,99.99,Caffeine lower,[1.3771702450237198],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,service,99.999,Caffeine lower,[1.7334942572664893],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1114410974402489],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1825321023028759],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.144387334719661],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.03470428167071226],1,0
+replication,pressure-discovery,4096,240,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.047902933218330244],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,gap,50,Caffeine lower,[4.201716738197425],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,gap,99,Caffeine lower,[1.100502512562814],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.313836700933475],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.4361171629145486],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,gap,99.999,Chronicle lower,[0.5003587624081492],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,read-service,50,Caffeine lower,[4.8994708994708995],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,read-service,99,Caffeine lower,[1.516728624535316],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,read-service,99.9,Caffeine lower,[2.716271884654995],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.442105263157895],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,read-service,99.999,Caffeine lower,[55.512376928289555],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,service,50,Caffeine lower,[4.829896907216495],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,service,99,Caffeine lower,[1.0999590331831217],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,service,99.9,Caffeine lower,[1.3035565600095158],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,service,99.99,Caffeine lower,[1.4376188386719322],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,service,99.999,Chronicle lower,[0.5308687278445091],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1038305037182545],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1666840295864151],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.1878560080598288],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.046651170585426685],1,0
+replication,pressure-discovery,4096,272,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.0403732975792929],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,gap,50,Caffeine lower,[4.311965811965812],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,gap,99,Caffeine lower,[1.1090859997299851],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.32345765074939],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.4453099026359535],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.3269965012666547],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,read-service,50,Caffeine lower,[5.026315789473684],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,read-service,99,Caffeine lower,[1.5789855072463768],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,read-service,99.9,Caffeine lower,[3.017123287671233],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.210186976144423],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,read-service,99.999,Caffeine lower,[51.957041188834395],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,service,50,Caffeine lower,[4.984536082474227],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,service,99,Caffeine lower,[1.108651364932772],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,service,99.9,Caffeine lower,[1.3218013369297525],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,service,99.99,Caffeine lower,[1.453026436172774],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,service,99.999,Caffeine lower,[1.349467900558806],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1138690225774786],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,update-service,99,Caffeine lower,[1.148934040636573],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.1463322075063564],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.02501324174973067],1,0
+replication,pressure-discovery,4096,304,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.03726737105156293],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,gap,50,Caffeine lower,[4.301724137931035],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,gap,99,Caffeine lower,[1.115965700285831],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.3536541889483067],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.6152323452269015],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,gap,99.999,Chronicle lower,[0.04095120946167913],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,read-service,50,Caffeine lower,[5.026595744680851],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,read-service,99,Caffeine lower,[1.6019273535952558],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,read-service,99.9,Caffeine lower,[3.0291313559322033],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,read-service,99.99,Caffeine lower,[4.821935972722106],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,read-service,99.999,Caffeine lower,[59.65699806353261],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,service,50,Caffeine lower,[4.953367875647668],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,service,99,Caffeine lower,[1.115505679485425],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,service,99.9,Caffeine lower,[1.348033942870802],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,service,99.99,Caffeine lower,[1.6267410871423542],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,service,99.999,Chronicle lower,[0.04095120946167913],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1060415794614205],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,update-service,99,Caffeine lower,[1.2788941934051294],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.3959098756141826],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.0324549875517305],1,0
+replication,pressure-discovery,4096,336,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.03803253267128831],1,0
+screen,screen,256,0,24301,CAFFEINE,gap,50,Caffeine lower,[1.0913705583756346],1,0
+screen,screen,256,0,24301,CAFFEINE,gap,99,Chronicle lower,[0.6422287390029325],1,0
+screen,screen,256,0,24301,CAFFEINE,gap,99.9,Chronicle lower,[0.4821498626912515],1,0
+screen,screen,256,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[2.2582648767782008],1,0
+screen,screen,256,0,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.126001357773252],1,0
+screen,screen,256,0,24301,CAFFEINE,read-service,50,Caffeine lower,[1.1538461538461537],1,0
+screen,screen,256,0,24301,CAFFEINE,read-service,99,Chronicle lower,[0.388208269525268],1,0
+screen,screen,256,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.3163038649489116],1,0
+screen,screen,256,0,24301,CAFFEINE,read-service,99.99,Chronicle lower,[0.9374281113411548],1,0
+screen,screen,256,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.1447236180904523],1,0
+screen,screen,256,0,24301,CAFFEINE,service,50,Caffeine lower,[1.1375],1,0
+screen,screen,256,0,24301,CAFFEINE,service,99,Chronicle lower,[0.6334841628959276],1,0
+screen,screen,256,0,24301,CAFFEINE,service,99.9,Chronicle lower,[0.4815582262743473],1,0
+screen,screen,256,0,24301,CAFFEINE,service,99.99,Caffeine lower,[1.2033025948959897],1,0
+screen,screen,256,0,24301,CAFFEINE,service,99.999,Caffeine lower,[1.129086103769648],1,0
+screen,screen,256,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.2743506493506493],1,0
+screen,screen,256,0,24301,CAFFEINE,update-service,99,Chronicle lower,[0.6300164925783397],1,0
+screen,screen,256,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.049027444710898],1,0
+screen,screen,256,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.23009400485588],1,0
+screen,screen,256,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,[1.0380353289690232],1,0
+screen,screen,256,208,24301,CAFFEINE,gap,50,Caffeine lower,[1.0862944162436547],1,1
+screen,screen,256,208,24301,CAFFEINE,gap,99,Chronicle lower,[0.6401459854014598],1,1
+screen,screen,256,208,24301,CAFFEINE,gap,99.9,Chronicle lower,[0.5646845211075806],1,1
+screen,screen,256,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.2307543893497974],1,1
+screen,screen,256,208,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.0177522087528252],1,1
+screen,screen,256,208,24301,CAFFEINE,read-service,50,Caffeine lower,[1.127388535031847],1,1
+screen,screen,256,208,24301,CAFFEINE,read-service,99,Chronicle lower,[0.3826219512195122],1,1
+screen,screen,256,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.3609898107714702],1,1
+screen,screen,256,208,24301,CAFFEINE,read-service,99.99,Chronicle lower,[0.9346675868414999],1,1
+screen,screen,256,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.0310748179209888],1,1
+screen,screen,256,208,24301,CAFFEINE,service,50,Caffeine lower,[1.1125],1,1
+screen,screen,256,208,24301,CAFFEINE,service,99,Chronicle lower,[0.631578947368421],1,1
+screen,screen,256,208,24301,CAFFEINE,service,99.9,Chronicle lower,[0.5535630014157622],1,1
+screen,screen,256,208,24301,CAFFEINE,service,99.99,Caffeine lower,[1.1102799743534943],1,1
+screen,screen,256,208,24301,CAFFEINE,service,99.999,Caffeine lower,[1.0320832800034132],1,1
+screen,screen,256,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.2288401253918495],1,1
+screen,screen,256,208,24301,CAFFEINE,update-service,99,Chronicle lower,[0.6464088397790055],1,1
+screen,screen,256,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.068489514202283],1,1
+screen,screen,256,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.1928062808106628],1,1
+screen,screen,256,208,24301,CAFFEINE,update-service,99.999,Caffeine lower,[1.287956471696139],1,1
+screen,screen,512,0,24301,CAFFEINE,gap,50,Caffeine lower,[1.4105263157894736],1,1
+screen,screen,512,0,24301,CAFFEINE,gap,99,Caffeine lower,[1.0112443778110944],1,1
+screen,screen,512,0,24301,CAFFEINE,gap,99.9,Chronicle lower,[0.743355119825708],1,1
+screen,screen,512,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[2.3038481629810206],1,1
+screen,screen,512,0,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.2539326891658498],1,1
+screen,screen,512,0,24301,CAFFEINE,read-service,50,Caffeine lower,[1.5684931506849316],1,1
+screen,screen,512,0,24301,CAFFEINE,read-service,99,Chronicle lower,[0.4740566037735849],1,1
+screen,screen,512,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.5748622934401603],1,1
+screen,screen,512,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,[1.263705759888966],1,1
+screen,screen,512,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.2359668924003009],1,1
+screen,screen,512,0,24301,CAFFEINE,service,50,Caffeine lower,[1.5430463576158941],1,1
+screen,screen,512,0,24301,CAFFEINE,service,99,Caffeine lower,[1.0146945088940449],1,1
+screen,screen,512,0,24301,CAFFEINE,service,99.9,Chronicle lower,[0.7315436241610739],1,1
+screen,screen,512,0,24301,CAFFEINE,service,99.99,Caffeine lower,[2.501076110350225],1,1
+screen,screen,512,0,24301,CAFFEINE,service,99.999,Caffeine lower,[1.3007194948852234],1,1
+screen,screen,512,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.199424736337488],1,1
+screen,screen,512,0,24301,CAFFEINE,update-service,99,Chronicle lower,[0.7523939808481532],1,1
+screen,screen,512,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.0696130066407143],1,1
+screen,screen,512,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.1349662076325016],1,1
+screen,screen,512,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,[1.0858961140541117],1,1
+screen,screen,512,208,24301,CAFFEINE,gap,50,Caffeine lower,[1.3711340206185567],1,0
+screen,screen,512,208,24301,CAFFEINE,gap,99,Caffeine lower,[1.0202247191011236],1,0
+screen,screen,512,208,24301,CAFFEINE,gap,99.9,Chronicle lower,[0.7857459052678176],1,0
+screen,screen,512,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.1777932112162515],1,0
+screen,screen,512,208,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.1315669255367748],1,0
+screen,screen,512,208,24301,CAFFEINE,read-service,50,Caffeine lower,[1.4967320261437909],1,0
+screen,screen,512,208,24301,CAFFEINE,read-service,99,Chronicle lower,[0.4783634933123525],1,0
+screen,screen,512,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.625643666323378],1,0
+screen,screen,512,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,[1.3657697754400162],1,0
+screen,screen,512,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.214720222892965],1,0
+screen,screen,512,208,24301,CAFFEINE,service,50,Caffeine lower,[1.4777070063694266],1,0
+screen,screen,512,208,24301,CAFFEINE,service,99,Caffeine lower,[1.0247104247104246],1,0
+screen,screen,512,208,24301,CAFFEINE,service,99.9,Chronicle lower,[0.7625736293611237],1,0
+screen,screen,512,208,24301,CAFFEINE,service,99.99,Caffeine lower,[2.0173233174919516],1,0
+screen,screen,512,208,24301,CAFFEINE,service,99.999,Caffeine lower,[1.1589109122822039],1,0
+screen,screen,512,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.2099712368168745],1,0
+screen,screen,512,208,24301,CAFFEINE,update-service,99,Chronicle lower,[0.7710131758291685],1,0
+screen,screen,512,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.0753713145643982],1,0
+screen,screen,512,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.1485143520153358],1,0
+screen,screen,512,208,24301,CAFFEINE,update-service,99.999,Caffeine lower,[2.2947350600981884],1,0
+screen,screen,1024,0,24301,CAFFEINE,gap,50,Caffeine lower,[2.0710659898477157],1,1
+screen,screen,1024,0,24301,CAFFEINE,gap,99,Caffeine lower,[1.175386148480319],1,1
+screen,screen,1024,0,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.016463615409944],1,1
+screen,screen,1024,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[2.9676396997497916],1,1
+screen,screen,1024,0,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.1914116609998742],1,1
+screen,screen,1024,0,24301,CAFFEINE,read-service,50,Caffeine lower,[2.308176100628931],1,1
+screen,screen,1024,0,24301,CAFFEINE,read-service,99,Chronicle lower,[0.6206349206349207],1,1
+screen,screen,1024,0,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.7979899497487437],1,1
+screen,screen,1024,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.375911550223477],1,1
+screen,screen,1024,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.3535207763125157],1,1
+screen,screen,1024,0,24301,CAFFEINE,service,50,Caffeine lower,[2.2962962962962963],1,1
+screen,screen,1024,0,24301,CAFFEINE,service,99,Caffeine lower,[1.1781725888324872],1,1
+screen,screen,1024,0,24301,CAFFEINE,service,99.9,Chronicle lower,[0.9318864774624374],1,1
+screen,screen,1024,0,24301,CAFFEINE,service,99.99,Caffeine lower,[2.900196744768378],1,1
+screen,screen,1024,0,24301,CAFFEINE,service,99.999,Caffeine lower,[1.213305631303294],1,1
+screen,screen,1024,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.177801157285639],1,1
+screen,screen,1024,0,24301,CAFFEINE,update-service,99,Chronicle lower,[0.8982490915097456],1,1
+screen,screen,1024,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.2202563639646145],1,1
+screen,screen,1024,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.2513447898319607],1,1
+screen,screen,1024,0,24301,CAFFEINE,update-service,99.999,Caffeine lower,[1.057443128039427],1,1
+screen,screen,1024,208,24301,CAFFEINE,gap,50,Caffeine lower,[1.935323383084577],1,1
+screen,screen,1024,208,24301,CAFFEINE,gap,99,Caffeine lower,[1.1570862239841426],1,1
+screen,screen,1024,208,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.0869278893645045],1,1
+screen,screen,1024,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.4207226271651383],1,1
+screen,screen,1024,208,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.4648972261025743],1,1
+screen,screen,1024,208,24301,CAFFEINE,read-service,50,Caffeine lower,[2.1552795031055902],1,1
+screen,screen,1024,208,24301,CAFFEINE,read-service,99,Chronicle lower,[0.6359300476947536],1,1
+screen,screen,1024,208,24301,CAFFEINE,read-service,99.9,Chronicle lower,[0.8674698795180723],1,1
+screen,screen,1024,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.2293309303897275],1,1
+screen,screen,1024,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.3443623514294893],1,1
+screen,screen,1024,208,24301,CAFFEINE,service,50,Caffeine lower,[2.1463414634146343],1,1
+screen,screen,1024,208,24301,CAFFEINE,service,99,Caffeine lower,[1.1590909090909092],1,1
+screen,screen,1024,208,24301,CAFFEINE,service,99.9,Caffeine lower,[1.0013364517206815],1,1
+screen,screen,1024,208,24301,CAFFEINE,service,99.99,Caffeine lower,[2.297673770720156],1,1
+screen,screen,1024,208,24301,CAFFEINE,service,99.999,Caffeine lower,[1.4568249682987688],1,1
+screen,screen,1024,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1546121593291405],1,1
+screen,screen,1024,208,24301,CAFFEINE,update-service,99,Chronicle lower,[0.9516716319099636],1,1
+screen,screen,1024,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.585913452833605],1,1
+screen,screen,1024,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.2464366251116878],1,1
+screen,screen,1024,208,24301,CAFFEINE,update-service,99.999,Caffeine lower,[19.30460689264737],1,1
+screen,screen,2048,0,24301,CAFFEINE,gap,50,Caffeine lower,[2.6971153846153846],1,1
+screen,screen,2048,0,24301,CAFFEINE,gap,99,Caffeine lower,[1.119002948271241],1,1
+screen,screen,2048,0,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.0193970061142736],1,1
+screen,screen,2048,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.5740842851516346],1,1
+screen,screen,2048,0,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.1703294720508102],1,1
+screen,screen,2048,0,24301,CAFFEINE,read-service,50,Caffeine lower,[3.0714285714285716],1,1
+screen,screen,2048,0,24301,CAFFEINE,read-service,99,Chronicle lower,[0.8086754453911696],1,1
+screen,screen,2048,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.5951893551688843],1,1
+screen,screen,2048,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,[4.244235504813074],1,1
+screen,screen,2048,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[1.2934682208049264],1,1
+screen,screen,2048,0,24301,CAFFEINE,service,50,Caffeine lower,[3.0406976744186047],1,1
+screen,screen,2048,0,24301,CAFFEINE,service,99,Caffeine lower,[1.1202926036304524],1,1
+screen,screen,2048,0,24301,CAFFEINE,service,99.9,Chronicle lower,[0.9906442696151393],1,1
+screen,screen,2048,0,24301,CAFFEINE,service,99.99,Caffeine lower,[2.1254426440605214],1,1
+screen,screen,2048,0,24301,CAFFEINE,service,99.999,Caffeine lower,[1.1706666666666667],1,1
+screen,screen,2048,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1148404993065186],1,1
+screen,screen,2048,0,24301,CAFFEINE,update-service,99,Caffeine lower,[1.0340319568375183],1,1
+screen,screen,2048,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[2.0611207394569613],1,1
+screen,screen,2048,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.083057520119848],1,1
+screen,screen,2048,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.15271170847159918],1,1
+screen,screen,2048,208,24301,CAFFEINE,gap,50,Caffeine lower,[2.6291079812206575],1,1
+screen,screen,2048,208,24301,CAFFEINE,gap,99,Caffeine lower,[1.1261644929464998],1,1
+screen,screen,2048,208,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.0872666247115585],1,1
+screen,screen,2048,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.5589494304578104],1,1
+screen,screen,2048,208,24301,CAFFEINE,gap,99.999,Caffeine lower,[38.883388488963185],1,1
+screen,screen,2048,208,24301,CAFFEINE,read-service,50,Caffeine lower,[2.976878612716763],1,1
+screen,screen,2048,208,24301,CAFFEINE,read-service,99,Chronicle lower,[0.8877786318216756],1,1
+screen,screen,2048,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,[1.8308080808080809],1,1
+screen,screen,2048,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,[4.100064281122777],1,1
+screen,screen,2048,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[45.2402931609503],1,1
+screen,screen,2048,208,24301,CAFFEINE,service,50,Caffeine lower,[2.960227272727273],1,1
+screen,screen,2048,208,24301,CAFFEINE,service,99,Caffeine lower,[1.1269158375907502],1,1
+screen,screen,2048,208,24301,CAFFEINE,service,99.9,Caffeine lower,[1.0618251111581622],1,1
+screen,screen,2048,208,24301,CAFFEINE,service,99.99,Caffeine lower,[1.5399687104224093],1,1
+screen,screen,2048,208,24301,CAFFEINE,service,99.999,Caffeine lower,[39.26033903005512],1,1
+screen,screen,2048,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1236544300303615],1,1
+screen,screen,2048,208,24301,CAFFEINE,update-service,99,Caffeine lower,[1.0687538367096379],1,1
+screen,screen,2048,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.7747450218552696],1,1
+screen,screen,2048,208,24301,CAFFEINE,update-service,99.99,Caffeine lower,[1.0765304484607237],1,1
+screen,screen,2048,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.14848984568447093],1,1
+screen,screen,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,[4.072961373390558],1,1
+screen,screen,4096,0,24301,CAFFEINE,gap,99,Caffeine lower,[1.099626400996264],1,1
+screen,screen,4096,0,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.2387197689808687],1,1
+screen,screen,4096,0,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.3071077117942222],1,1
+screen,screen,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,[32.4172693212512],1,1
+screen,screen,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,[4.721052631578948],1,1
+screen,screen,4096,0,24301,CAFFEINE,read-service,99,Caffeine lower,[1.2171945701357465],1,1
+screen,screen,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,[2.4058981233243966],1,1
+screen,screen,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,[3.381454836131095],1,1
+screen,screen,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,[46.31151625898085],1,1
+screen,screen,4096,0,24301,CAFFEINE,service,50,Caffeine lower,[4.670103092783505],1,1
+screen,screen,4096,0,24301,CAFFEINE,service,99,Caffeine lower,[1.09967979952666],1,1
+screen,screen,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,[1.1947910357359177],1,1
+screen,screen,4096,0,24301,CAFFEINE,service,99.99,Caffeine lower,[1.3090347566057159],1,1
+screen,screen,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,[32.53823280762616],1,1
+screen,screen,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,[1.092983699503898],1,1
+screen,screen,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1729637161511293],1,1
+screen,screen,4096,0,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.067255941858181],1,1
+screen,screen,4096,0,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.9184147418906979],1,1
+screen,screen,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.0835089687491888],1,1
+screen,screen,4096,208,24301,CAFFEINE,gap,50,Caffeine lower,[3.887550200803213],1,0
+screen,screen,4096,208,24301,CAFFEINE,gap,99,Caffeine lower,[1.101161995898838],1,0
+screen,screen,4096,208,24301,CAFFEINE,gap,99.9,Caffeine lower,[1.260239819541731],1,0
+screen,screen,4096,208,24301,CAFFEINE,gap,99.99,Caffeine lower,[1.3501696373106513],1,0
+screen,screen,4096,208,24301,CAFFEINE,gap,99.999,Caffeine lower,[1.6869470417563148],1,0
+screen,screen,4096,208,24301,CAFFEINE,read-service,50,Caffeine lower,[4.480392156862745],1,0
+screen,screen,4096,208,24301,CAFFEINE,read-service,99,Caffeine lower,[1.3766519823788546],1,0
+screen,screen,4096,208,24301,CAFFEINE,read-service,99.9,Caffeine lower,[2.5822316234796405],1,0
+screen,screen,4096,208,24301,CAFFEINE,read-service,99.99,Caffeine lower,[2.833642318625633],1,0
+screen,screen,4096,208,24301,CAFFEINE,read-service,99.999,Caffeine lower,[54.01289371195221],1,0
+screen,screen,4096,208,24301,CAFFEINE,service,50,Caffeine lower,[4.425837320574162],1,0
+screen,screen,4096,208,24301,CAFFEINE,service,99,Caffeine lower,[1.1011683848797251],1,0
+screen,screen,4096,208,24301,CAFFEINE,service,99.9,Caffeine lower,[1.2170431456914068],1,0
+screen,screen,4096,208,24301,CAFFEINE,service,99.99,Caffeine lower,[1.3572703158910056],1,0
+screen,screen,4096,208,24301,CAFFEINE,service,99.999,Caffeine lower,[2.195838346662892],1,0
+screen,screen,4096,208,24301,CAFFEINE,update-service,50,Caffeine lower,[1.1043576364405585],1,0
+screen,screen,4096,208,24301,CAFFEINE,update-service,99,Caffeine lower,[1.1457970717722945],1,0
+screen,screen,4096,208,24301,CAFFEINE,update-service,99.9,Caffeine lower,[1.1136407263792376],1,0
+screen,screen,4096,208,24301,CAFFEINE,update-service,99.99,Chronicle lower,[0.014917746386802594],1,0
+screen,screen,4096,208,24301,CAFFEINE,update-service,99.999,Chronicle lower,[0.13445890689047263],1,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9878044354106928, 0.9901274000943704]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9119724418230032, 0.9090140628602167]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,gap,99.99,Mixed,"[0.9763308746481477, 1.0216806758273167]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[8.691165515265354, 14.76363428166932]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.4082397003745317, 3.428030303030303]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,read-service,99,Mixed,"[0.9641478212906784, 1.1750380517503805]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.850701023114816, 2.838519102008665]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.0789957455748727, 1.370133533947715]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[49.169299813916155, 53.08272930818565]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,response,50,Caffeine lower,"[3.012461059190031, 3.0251572327044025]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,response,99,Chronicle lower,"[0.7088791848617176, 0.7184022086101286]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,response,99.9,Chronicle lower,"[0.018202358016453896, 0.026026629519356543]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.11116726821856321, 0.11667231605213844]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.14279162819811006, 0.11681053733697815]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[3.375, 3.360294117647059]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.1209082044853043, 1.1198169463319927]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.2016653359187863, 1.2427650849443468]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,service,99.99,Caffeine lower,"[1.0623450230251505, 1.0340063761955367]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[39.580080476987696, 41.20005301758417]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1268194264303213, 1.130703900964445]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.1727062451811874, 1.1909625846563783]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,update-service,99.9,Mixed,"[0.9828761014590989, 1.0433751270755676]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,update-service,99.99,Mixed,"[0.973189599798922, 1.0148289744258117]",2,0
+trace,trace-1000003,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.10795447670942185, 0.13556570857412129]",2,0
+trace,trace-40001,4096,0,24301,CAFFEINE,gap,50,Caffeine lower,"[1.000800040002, 1.000800040002]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,gap,99,Chronicle lower,"[0.9878044354106928, 0.9889659177525316]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,gap,99.9,Chronicle lower,"[0.9458282950423217, 0.9137908915971776]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,gap,99.99,Mixed,"[0.9810329674821673, 1.0202981287662543]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,gap,99.999,Caffeine lower,"[14.150240346521578, 16.23529614364603]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,read-service,50,Caffeine lower,"[3.819327731092437, 4.104072398190045]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,read-service,99,Chronicle lower,"[0.8732004429678848, 0.9515039901780233]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,read-service,99.9,Caffeine lower,"[2.6499425507468404, 3.1058154787931787]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,read-service,99.99,Caffeine lower,"[1.0557013550425793, 1.273495452493066]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,read-service,99.999,Caffeine lower,"[48.24500164479696, 51.35987506889583]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,response,50,Caffeine lower,"[3.2059800664451825, 3.489130434782609]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,response,99,Mixed,"[0.9885263535317318, 1.0112373274703799]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,response,99.9,Caffeine lower,"[5.471658674535842, 9.641623726546827]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,response,99.99,Chronicle lower,"[0.38208666965289906, 0.42034829929492407]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,response,99.999,Chronicle lower,"[0.3743717057876555, 0.49683698171583157]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,service,50,Caffeine lower,"[3.638888888888889, 4.048672566371682]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,service,99,Caffeine lower,"[1.097881066302119, 1.120217058577988]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,service,99.9,Caffeine lower,"[1.1699653360169966, 1.0961294049682264]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,service,99.99,Mixed,"[1.0568976846662286, 0.9880798337450496]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,service,99.999,Caffeine lower,"[38.659022347186834, 41.482682890636596]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,update-service,50,Caffeine lower,"[1.1143020431490214, 1.1307792020740315]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,update-service,99,Caffeine lower,"[1.133685880486515, 1.0784227337812535]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,update-service,99.9,Mixed,"[1.0075408766269078, 0.9807685303223457]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,update-service,99.99,Caffeine lower,"[1.0387398293870886, 1.0477989631842544]",2,1
+trace,trace-40001,4096,0,24301,CAFFEINE,update-service,99.999,Chronicle lower,"[0.3421433941711708, 0.3616539791015574]",2,1

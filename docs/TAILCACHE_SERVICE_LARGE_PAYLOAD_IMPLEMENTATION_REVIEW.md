@@ -1,0 +1,9 @@
+# Larger-payload pilot implementation review — 17 November 2026
+
+The prospective fixed four-workload screen reuses the qualified policy/trace Java runtime byte-for-byte. It adds no Java code or functional-qualification JVM. Every 8 KiB research fork still performs full value/resident checks; the matched fresh-supply control explicitly exercises 8 KiB generation. Source/class/dependency/qualification bindings are checked before collection, and three controls precede the pilot.
+
+Five selection/budget tests pass, including exact threshold arithmetic, failure handling, baseline-versus-pressure question separation and no recursive expansion. Eligibility uses integer cross-products of the actual p99.9 bin values, avoiding floating-point boundary errors. There is no selection based on rarer percentiles. Both pilot pairs must complete before any confirmation is selected; a failed high-pressure arm cannot turn a surviving baseline into a chosen winner.
+
+The controller audits raw histograms/GC and event alignment before writing an immutable worth decision. Any selected eight-workload confirmation has fresh anchors and its own 60/4/30-second protocol/source-linked inputs. No Java recompile or source edit occurs while either cohort runs. Completed collections are verified on resume without rewriting their completion timestamp; postprocess receipts and all failures are retained. Collection/audit completion leaves research review pending.
+
+The scope is exploratory, not proof of significance or a universal crossover. An OOM is a feasibility result; unmeasurable larger payloads are not latency wins. Arithmetic rules out 16/32 KiB retained Caffeine payloads at this resident count and 512 MiB heap without spending benchmark JVMs. The controls and finite warmups do not establish observer neutrality or steady state.

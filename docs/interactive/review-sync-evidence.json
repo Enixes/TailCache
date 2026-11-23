@@ -1,0 +1,23 @@
+{
+  "verifiedLocalDate": "2026-11-15",
+  "documentationMarkdownCount": 145,
+  "newBenchmarkRuns": 0,
+  "historicalForkAndGroupDataUnchanged": true,
+  "measurementDownloadHashesUnchanged": true,
+  "midpointPacketUnchanged": true,
+  "previousHtmlSha256": "fb2dfa0804a8ab9f04bbfff24dad5886fc84882814d2a6937753b0a7a73a2e46",
+  "htmlSha256": "94ecbfcf42bb5a399e6626bb17ec7d328298274dda16944bf1261b57a8349479",
+  "htmlSha1": "84e6749922fac922bc90007bb75c3080bcda0bbc",
+  "bytes": 14795107,
+  "rebuildByteIdentical": true,
+  "paperGuardrailTests": 18,
+  "reviewExplorerTests": 3,
+  "browserQa": "docs/interactive/review-sync-qa.json",
+  "sourceAudit": "docs/preprint/source-audit-20261115.json",
+  "completedLocalDate": "2026-11-16",
+  "deploymentId": "dpl_Ev1B8tCTnqw2tbqHm4HxzsfwggLQ",
+  "productionReady": true,
+  "authProtectedAllDeployments": true,
+  "authenticatedLiveBrowserVerified": true,
+  "signedOutBlockingVerified": true
+}

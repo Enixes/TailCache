@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "packageSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+  "solverSha256": "d5a4ab606a39ed9d7f0612fbf0eb7d63d705ff1f69024237b155c8ea415d6520",
+  "forks": 42,
+  "quantiles": 168,
+  "elapsedSeconds": 65.15383005199874,
+  "rawArchivesRead": false,
+  "independentAlgorithm": false,
+  "meaning": "Exact replay of frozen M2 on portable GC/schedule inputs; independent verifier separately reconstructs M0/M1 and errors."
+}

@@ -1,0 +1,20 @@
+{
+  "startedUtc": "2026-11-17T07:12:03.003260+00:00",
+  "authorization": "User requested freeing space as needed",
+  "targets": [
+    {
+      "path": "/home/y/.npm/_cacache",
+      "regularFiles": 19,
+      "fileBytes": 45990277
+    },
+    {
+      "path": "/home/y/.cache/mozilla",
+      "regularFiles": 1242,
+      "fileBytes": 106482952
+    }
+  ],
+  "freeBytesBefore": 592297984,
+  "scope": "Inactive npm download cache and Firefox cache only; no profiles, installed packages/runtimes, source or benchmark evidence",
+  "completedUtc": "2026-11-17T07:12:03.020226+00:00",
+  "freeBytesAfter": 748060672
+}

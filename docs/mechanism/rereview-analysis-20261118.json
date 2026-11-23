@@ -1,0 +1,156 @@
+{
+  "passed": true,
+  "datasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "verification": {
+    "passed": true,
+    "counts": {
+      "thresholds": 960,
+      "quantiles": 1580,
+      "unions": 64,
+      "ratios": 790,
+      "modelSummaries": 3456,
+      "forks": 64,
+      "pairs": 32,
+      "controls": 6
+    },
+    "limits": "Independent portable arithmetic checks; raw decoder/source audits are separately retained. Not independent host replication."
+  },
+  "chronology": {
+    "checkedForks": 64,
+    "nonOverlapping": true
+  },
+  "crossTreatmentFairness": [
+    {
+      "cohort": "hotset-screen",
+      "seed": 54821,
+      "backend": "CAFFEINE",
+      "workerBytesPerOperation": [
+        206.41473066666666,
+        206.41473066666666
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-screen",
+      "seed": 54821,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "workerBytesPerOperation": [
+        4121.638570666667,
+        4121.638570666667
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-screen",
+      "seed": 54822,
+      "backend": "CAFFEINE",
+      "workerBytesPerOperation": [
+        205.093408,
+        205.09357333333332
+      ],
+      "absoluteBytesPerOperationDifference": 0.00016533333331381073
+    },
+    {
+      "cohort": "hotset-screen",
+      "seed": 54822,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "workerBytesPerOperation": [
+        4121.576874666666,
+        4121.576874666666
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-repeat",
+      "seed": 54821,
+      "backend": "CAFFEINE",
+      "workerBytesPerOperation": [
+        206.41473066666666,
+        206.41473066666666
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-repeat",
+      "seed": 54821,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "workerBytesPerOperation": [
+        4121.638570666667,
+        4121.638570666667
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-repeat",
+      "seed": 54822,
+      "backend": "CAFFEINE",
+      "workerBytesPerOperation": [
+        205.093408,
+        205.093408
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    },
+    {
+      "cohort": "hotset-repeat",
+      "seed": 54822,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "workerBytesPerOperation": [
+        4121.576874666666,
+        4121.576874666666
+      ],
+      "absoluteBytesPerOperationDifference": 0.0
+    }
+  ],
+  "realizedChurnDemandFractionRange": [
+    0.9997524486682458,
+    1.0003098726861737
+  ],
+  "hotsetWarningCoverageAndTails": {
+    "2048": {
+      "pairs": 4,
+      "entirelyWarningFree": 0,
+      "directions": {
+        "99.9": {
+          "caffeineLower": 4,
+          "chronicleLower": 0
+        },
+        "99.99": {
+          "caffeineLower": 0,
+          "chronicleLower": 4
+        },
+        "99.999": {
+          "caffeineLower": 0,
+          "chronicleLower": 4
+        }
+      }
+    },
+    "32768": {
+      "pairs": 4,
+      "entirelyWarningFree": 1,
+      "directions": {
+        "99.9": {
+          "caffeineLower": 0,
+          "chronicleLower": 4
+        },
+        "99.99": {
+          "caffeineLower": 0,
+          "chronicleLower": 4
+        },
+        "99.999": {
+          "caffeineLower": 0,
+          "chronicleLower": 4
+        }
+      }
+    }
+  },
+  "durationComparison": {
+    "longWindowSeeds": [
+      54831,
+      54832
+    ],
+    "contraryShortWindowSeed": 54842,
+    "durationEffectIsolated": false,
+    "reason": "Seeds, collection time and cohort differ; no matched30/90-second intervention"
+  },
+  "limits": "Descriptive re-analysis of frozen data, not new performance evidence or independent human review."
+}

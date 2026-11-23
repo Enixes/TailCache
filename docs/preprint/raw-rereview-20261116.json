@@ -1,0 +1,120 @@
+{
+  "passed": true,
+  "newBenchmarkRuns": 0,
+  "counts": {
+    "workloadForks": 162,
+    "controlForks": 45,
+    "rawFilesVerified": 4632,
+    "quantileEndpoints": 2538,
+    "thresholdBounds": 1863,
+    "gcSummaries": 207,
+    "measurementWindows": 207,
+    "histogramCounts": 621,
+    "freshScheduleChecks": 30,
+    "freshRssSummaries": 30,
+    "publishedFullCurves": 486,
+    "publishedThresholdBounds": 1458
+  },
+  "histogramsDecoded": 621,
+  "nonemptyHistograms": 546,
+  "batches": [
+    "focused-reuse-256-20261108-001",
+    "focused-reuse-4k-20261108-001",
+    "focused-rq1-4k-20261108-001",
+    "focused-rq1-capacity-20261108-001",
+    "focused-rq1-capacity-edge-20261108-001",
+    "focused-rq1-response-bracket-20261108-001",
+    "focused-rq1-response-long-20261108-001",
+    "focused-rq1-response-low-20261108-001",
+    "focused-rq1-service-edge-20261108-001",
+    "focused-rq2-256-20261108-001",
+    "focused-rq2-midpoint-20261108-001",
+    "focused-rq2-reverse-bracket-20261108-001",
+    "midpoint-study-20261110-001-primary",
+    "midpoint-study-20261110-001-seed24302",
+    "midpoint-study-20261110-001-seed24303"
+  ],
+  "runtimeFilesVerified": 68,
+  "freshControlWarnings": [
+    {
+      "batch": "midpoint-study-20261110-001-primary",
+      "control": "floor-arrival",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-primary",
+      "control": "floor-closed",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-primary",
+      "control": "scheduled-stall",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24302",
+      "control": "floor-arrival",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24302",
+      "control": "floor-closed",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24302",
+      "control": "scheduled-stall",
+      "warnings": [
+        "Measured compiler activity exceeds80ms; retain as short-run evidence",
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24303",
+      "control": "floor-arrival",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24303",
+      "control": "floor-closed",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    },
+    {
+      "batch": "midpoint-study-20261110-001-seed24303",
+      "control": "scheduled-stall",
+      "warnings": [
+        "Missing native CPU settling/measurement coverage"
+      ]
+    }
+  ],
+  "paperDataSha256": "a733eee906a863be68e7fd09ef9e6d3b51cf148ae69f5401c4a0706912ea50b7",
+  "inputs": {
+    "focused": "481354bda26bff146e3cff754c20fb1d4f20d09ed928a1f89eaa26469e9d9daf",
+    "midpoint": "6a737c6cca9c2f858a35b8b5e51a1e97e8536112b37bcb9640e8089b8b610892"
+  },
+  "fullTailInputHashes": {
+    "evidence-archives/focused-rq-tails-20261108-001/tails.json": "c06f13f53e6a107242919d047d34665d6569d6ad08b3bf9890e6075a229bc0d2",
+    "evidence-archives/midpoint-results-20261110-001/tails.json": "fcc2c143ed4b06871af45c7fb4a1d82ed7c3e5ba0956038e75a55d3b2879ff59"
+  },
+  "implementationSha256": {
+    "scripts/tailcache12_raw_rereview.py": "0bab8cf6de268d7cb1b806b11f371393b2847aa3f72bf2647ed28b05ccbca079",
+    "scripts/java/TailCacheFocusedHdrVerify.java": "7d522797d2c7bdd742f6e3d5c4d181057d71b1a9f799e43aac50afe86fe15ddc",
+    "scripts/java/TailCacheTailVerify.java": "333800ecdf0350e9b8446eba24a14d55d5beb7f75a5ec6f338c48c6eab248294",
+    "ops/tailcache12_final_raw_audit.py": "07b87a36d905d8927168790285e9ae978c8caa02d1b93c05542d3d263d64ea9d"
+  },
+  "limits": "Independent offline reconciliation reuses prior HDR decoders and independent GC parser. No event-level causal attribution, host-neutrality proof, new performance run or human peer review."
+}

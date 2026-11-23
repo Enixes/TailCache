@@ -1,0 +1,29 @@
+{
+  "purpose": "Lossless relocation of inactive compressed checkpoints; original paths retained as links",
+  "utc": "2026-11-18T06:03:45.696098+00:00",
+  "freeBefore": 612958208,
+  "files": [
+    {
+      "original": "evidence-archives/native-final-fixedbuffer-checkpoint-20261107-023.tar.gz",
+      "destination": "/mnt/immich/.tailcache-retained-archives-20261118/native-final-fixedbuffer-checkpoint-20261107-023.tar.gz",
+      "bytes": 939343525,
+      "sha256": "abc915a69303b3ac71bb6911001314c821a271fbe6ab75fcc543d4e402752c41",
+      "originalPathAccessible": true
+    },
+    {
+      "original": "evidence-archives/native-final-jfr-buffer-checkpoint-20261107-021.tar.gz",
+      "destination": "/mnt/immich/.tailcache-retained-archives-20261118/native-final-jfr-buffer-checkpoint-20261107-021.tar.gz",
+      "bytes": 932462621,
+      "sha256": "ac3180b334d594b23cf180f5b9c9bec13f2d5a9d922cef9680c94343efc1d344",
+      "originalPathAccessible": true
+    },
+    {
+      "original": "evidence-archives/native-final-tlabdebug-checkpoint-20261107-018.tar.gz",
+      "destination": "/mnt/immich/.tailcache-retained-archives-20261118/native-final-tlabdebug-checkpoint-20261107-018.tar.gz",
+      "bytes": 911332328,
+      "sha256": "f4ab8e908ee0f8a06516c43e474bc348ce00506e03b6c3af08b36a790dc1219a",
+      "originalPathAccessible": true
+    }
+  ],
+  "freeAfter": 3395956736
+}

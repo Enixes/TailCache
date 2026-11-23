@@ -1,0 +1,33 @@
+{
+  "version": "residual-pause-v1",
+  "timerBaselineNs": {
+    "99": 111,
+    "99.9": 15679,
+    "99.99": 23887,
+    "99.999": 58815
+  },
+  "serviceOffsetNs": {
+    "CAFFEINE": 275.0,
+    "CHRONICLE_IN_MEMORY": 913.5
+  },
+  "calibrationInputs": {
+    "evidence-archives/service-paced-20261117-001/controls/paced-control-timer-p256-live0-b0-s24301-CAFFEINE/result.json": "19a13662dd3268e4193c33205afda9d10cf09b2882f82d28c9551147085d79f5",
+    "evidence-archives/service-trace-20261117-001/controls/trace-control-timer-p256-live0-b0-s24301-CAFFEINE/result.json": "38e8c46b40acdeacc1b5032d835f717c236c017175a170c5e0ef3f7b2613af2f",
+    "evidence-archives/service-geometry-20261117-001/controls/geometry-control-timer-p4096-live0-b0-s24301-CAFFEINE/result.json": "166f83a3b319426d0c90569428422a7a2acc436eb4199da227c8a00987eab9e9",
+    "docs/service-followup/followup-data-20261117.json": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef"
+  },
+  "primary": "response p99.9",
+  "secondary": "response p99.99",
+  "forecast": {
+    "0": "Caffeine lower",
+    "50": "Caffeine lower",
+    "100": "Unassigned",
+    "200": "Chronicle lower",
+    "500": "Chronicle lower"
+  },
+  "distinctions": [
+    "Forecast is before-run, GC-conditioned quantiles are after-run explanatory validation.",
+    "Fixed additive timer/service baseline is a heuristic, not exact convolution or floor subtraction.",
+    "M0 residual-only gives zero below budget; score that numerical outcome rather than hide it."
+  ]
+}

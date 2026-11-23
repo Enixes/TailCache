@@ -1,0 +1,25 @@
+{
+  "removed": [
+    {
+      "path": "docs/service-followup/progress-data-20261117-002.json",
+      "bytes": 5588149,
+      "sha256": "d8bbd432312cf0368df1bb867e39e46d4f24aa6d2dd375828fccbdbf8d14988c"
+    },
+    {
+      "path": "docs/service-followup/progress-data-20261117-002.md",
+      "bytes": 5793,
+      "sha256": "005160814fa1885c54afe18a4ff496a1c970afe6f7bce74c0619a67007311b07"
+    },
+    {
+      "path": "docs/service-followup/progress-data-20261117-001.json",
+      "bytes": 13509445,
+      "sha256": "087e7b04bd95d6554bc09c946516063b1b0316ace9f6d1f53d1090f14f80fbdb"
+    },
+    {
+      "path": "docs/service-followup/progress-data-20261117-001.md",
+      "bytes": 5180,
+      "sha256": "8672c8edfd018108025d765553d1e7f1859362141a539662fe924678edf0c830"
+    }
+  ],
+  "reason": "Own uncommitted rebuildable provisional exports superseded by final verified package; all per-fork numerical evidence matches, raw archives unchanged"
+}

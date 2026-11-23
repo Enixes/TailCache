@@ -1,0 +1,470 @@
+{
+  "passed": true,
+  "checkedUtc": "2026-11-18T16:49:43.202245+00:00",
+  "requests": 66,
+  "method": "Cookie-free GET without redirect following; auth origin/path only, no bypass",
+  "checks": [
+    {
+      "url": "https://tailcache-results.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c1-mechanism-response.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c1-mechanism-response.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c2-mechanism-extreme.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c2-mechanism-extreme.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c3-conditional-transport.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/mechanism-figures/c3-conditional-transport.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b1-write-rate-reversal.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b1-write-rate-reversal.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b2-conditional-prediction.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b2-conditional-prediction.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b3-pause-budget.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b3-pause-budget.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b4-extreme-tails.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/predictor-figures/b4-extreme-tails.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a1-harness-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a2-cache-policy.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a2-cache-policy.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a3-trace-response.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a3-trace-response.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a4-gc-denominators.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a4-gc-denominators.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a5-paced-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a5-paced-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a6-larger-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a6-larger-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a7-full-service-tail.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/service-figures/a7-full-service-tail.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results.vercel.app/vercel.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c1-mechanism-response.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c1-mechanism-response.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c2-mechanism-extreme.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c2-mechanism-extreme.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c3-conditional-transport.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/mechanism-figures/c3-conditional-transport.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b1-write-rate-reversal.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b1-write-rate-reversal.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b2-conditional-prediction.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b2-conditional-prediction.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b3-pause-budget.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b3-pause-budget.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b4-extreme-tails.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/predictor-figures/b4-extreme-tails.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-data.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a1-harness-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a1-harness-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a2-cache-policy.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a2-cache-policy.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a3-trace-response.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a3-trace-response.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a4-gc-denominators.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a4-gc-denominators.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a5-paced-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a5-paced-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a6-larger-payload.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a6-larger-payload.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a7-full-service-tail.png",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/service-figures/a7-full-service-tail.svg",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    },
+    {
+      "url": "https://tailcache-results-92d51ylad-enixes-projects.vercel.app/vercel.json",
+      "status": 302,
+      "redirectOrigin": "https://vercel.com",
+      "redirectPath": "/sso-api",
+      "blocked": true
+    }
+  ]
+}

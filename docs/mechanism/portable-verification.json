@@ -1,0 +1,1 @@
+{"passed":true,"counts":{"thresholds":960,"quantiles":1580,"unions":64,"ratios":790,"modelSummaries":2880,"forks":64,"pairs":32,"controls":6},"limits":"Independent portable arithmetic checks; raw decoder/source audits are separately retained. Not independent host replication."}

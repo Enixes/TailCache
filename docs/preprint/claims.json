@@ -1,0 +1,1126 @@
+[
+  {
+    "claim": "The fresh scheduled-response p99.9 ranking changes from Caffeine at 0 MiB to Chronicle at 208 MiB.",
+    "endpoint": "4 KiB ordinary get; response p99.9; primary seed; 30 s",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig01_response_replication",
+    "id": "C01",
+    "limit": "Three paired forks per endpoint, all clean. Bracket means observed opposite endpoint directions, not a population-threshold confidence interval or an exact/universal threshold.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 0
+  },
+  {
+    "claim": "104 MiB remains unresolved; further bisection was skipped under the frozen adaptive rule.",
+    "endpoint": "Response p99.9; primary and additional seeds kept separate",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig01_response_replication",
+    "id": "C02",
+    "limit": "Primary ratios are mixed with only one clean pair; the two clean additional-seed pairs disagree. No favourable-pair selection.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 2
+  },
+  {
+    "claim": "At response p99.99 and p99.999 Chronicle is lower in every fresh pair, including baseline.",
+    "endpoint": "4 KiB ordinary get; response p99.99/p99.999; 30 s",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig06_percentile_sensitivity",
+    "id": "C03",
+    "limit": "Baseline advantage is not a pressure-emergent crossover. Approximately 15 nominal upper-tail responses per fork at p99.999; not independent stall episodes.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 5
+  },
+  {
+    "claim": "At all five historical 4 KiB saturated points, Caffeine is lower at service p99/p99.9/p99.99.",
+    "endpoint": "Ordinary get; saturated service; 328/352/360 MiB earlier runtime, 364/368 MiB later runtime; 8 s",
+    "evidence": [
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b1-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b1-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b2-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b2-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b3-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b3-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b1-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b1-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b2-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b2-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b3-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b3-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b1-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b1-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b2-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b2-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b3-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b3-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig02_estimands",
+    "id": "C04",
+    "limit": "No observed forward service crossover at these endpoints. Do not join runtime groups into one threshold estimate.",
+    "sourceGroups": [
+      "57346dc1b2a815d9b04e40bdbb5ded0d1b34ed0e76ffd3b463ec04d40805dfea",
+      "cd0ca17ea71af5ca35624ff9e5aec6a4903cbac3eb0ac471ff327e431c093115"
+    ],
+    "status": "descriptive result",
+    "warningForks": 0
+  },
+  {
+    "claim": "Historical 4 KiB saturated service p99.999 favors Chronicle at every tested point, including 328 MiB.",
+    "endpoint": "Ordinary get; saturated service p99.999; 8 s",
+    "evidence": [
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b1-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b2-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live328-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live328-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-4k-20261108-001",
+        "b3-closed-p4096-live352-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b1-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b1-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b2-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b2-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b3-closed-p4096-live364-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-20261108-001",
+        "b3-closed-p4096-live364-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b1-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b1-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b2-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b2-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b3-closed-p4096-live368-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-capacity-edge-20261108-001",
+        "b3-closed-p4096-live368-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b1-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b1-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b2-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b2-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b3-closed-p4096-live360-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq1-service-edge-20261108-001",
+        "b3-closed-p4096-live360-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig02_estimands",
+    "id": "C05",
+    "limit": "Post hoc extreme endpoint. No newly bracketed pressure crossover; short windows and correlated pauses limit generalisation.",
+    "sourceGroups": [
+      "57346dc1b2a815d9b04e40bdbb5ded0d1b34ed0e76ffd3b463ec04d40805dfea",
+      "cd0ca17ea71af5ca35624ff9e5aec6a4903cbac3eb0ac471ff327e431c093115"
+    ],
+    "status": "descriptive result",
+    "warningForks": 0
+  },
+  {
+    "claim": "The historical 256 B service ranking is percentile-dependent: p99.9 reverses toward Caffeine, p99.999 toward Chronicle from 448 to 480 MiB.",
+    "endpoint": "Earlier runtime only; 256 B; ordinary saturated service; 8 s",
+    "evidence": [
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b1-closed-p256-live448-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b1-closed-p256-live448-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b1-closed-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b1-closed-p256-live480-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b2-closed-p256-live448-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b2-closed-p256-live448-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b2-closed-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b2-closed-p256-live480-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b3-closed-p256-live448-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b3-closed-p256-live448-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b3-closed-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-rq2-256-20261108-001",
+        "b3-closed-p256-live480-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "table: historical payload sensitivity",
+    "id": "C06",
+    "limit": "p99.99 favors Caffeine at both points. Focused payloads use disjoint ballast ranges; this is a within-256 B observation and does not isolate a payload effect or scheduled-response threshold shift.",
+    "sourceGroups": [
+      "57346dc1b2a815d9b04e40bdbb5ded0d1b34ed0e76ffd3b463ec04d40805dfea"
+    ],
+    "status": "descriptive result",
+    "warningForks": 0
+  },
+  {
+    "claim": "At 104 MiB, Caffeine response >100 \u00b5s probabilities straddle the 0.1% p99.9 tail boundary.",
+    "endpoint": "Strict response exceedance probability at 100,000 ns",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CAFFEINE"
+      ]
+    ],
+    "figure": "fig05_stall_probabilities",
+    "id": "C07",
+    "limit": "Histogram-resolution bounds are not confidence intervals. Explains quantile sensitivity, not the unique cause of each stall.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 1
+  },
+  {
+    "claim": "Ordinary 4 KiB Chronicle access allocates about 4,121.6 worker B/op versus 205.6 for Caffeine.",
+    "endpoint": "Worker-thread allocation per completed operation, excluding common churn",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig04_resources",
+    "id": "C08",
+    "limit": "Observed API/workload cost, not universal library overhead; aggregate GC/allocation does not establish event-level causality.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 2
+  },
+  {
+    "claim": "Chronicle lowers retained Java heap occupancy but has higher sampled RSS in the fresh primary cohort.",
+    "endpoint": "Post-GC heap fraction and 1 Hz measured-window sampled maximum RSS",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b2-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-primary",
+        "b3-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig04_resources",
+    "id": "C09",
+    "limit": "RSS is not PSS or exact native allocation; heap sizes and common demand are equal, total process-memory budgets are not.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 2
+  },
+  {
+    "claim": "Additional seeds repeat the endpoint directions but disagree at 104 MiB.",
+    "endpoint": "Response p99.9; one pair per seed per point",
+    "evidence": [
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24302",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live0-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live0-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live104-CHRONICLE_IN_MEMORY"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live208-CAFFEINE"
+      ],
+      [
+        "midpoint",
+        "midpoint-study-20261110-001-seed24303",
+        "b1-arrival-p4096-live208-CHRONICLE_IN_MEMORY"
+      ]
+    ],
+    "figure": "fig01_response_replication",
+    "id": "C10",
+    "limit": "Limited descriptive robustness. Three of these forks have JIT warnings; no precise seed-level uncertainty.",
+    "sourceGroups": [
+      "80a18baffba514a732dccfe8e71a62a8abe8204cbccc1a6440e4e0b75c66be0e"
+    ],
+    "status": "descriptive result",
+    "warningForks": 3
+  },
+  {
+    "claim": "Reuse sensitivities compare Caffeine with a different Chronicle borrowed-buffer contract.",
+    "endpoint": "Scheduled response; 256 B at 480 MiB or 4 KiB at 352 MiB; later runtime; 8 s",
+    "evidence": [
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b1-arrival-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b1-arrival-p256-live480-CHRONICLE_IN_MEMORY-getUsing"
+      ],
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b2-arrival-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b2-arrival-p256-live480-CHRONICLE_IN_MEMORY-getUsing"
+      ],
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b3-arrival-p256-live480-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-256-20261108-001",
+        "b3-arrival-p256-live480-CHRONICLE_IN_MEMORY-getUsing"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b1-arrival-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b1-arrival-p4096-live352-CHRONICLE_IN_MEMORY-getUsing"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b2-arrival-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b2-arrival-p4096-live352-CHRONICLE_IN_MEMORY-getUsing"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b3-arrival-p4096-live352-CAFFEINE"
+      ],
+      [
+        "focused",
+        "focused-reuse-4k-20261108-001",
+        "b3-arrival-p4096-live352-CHRONICLE_IN_MEMORY-getUsing"
+      ]
+    ],
+    "figure": "fig07_ownership_sensitivity",
+    "id": "C11",
+    "limit": "No contemporaneous ordinary-Chronicle arm in these batches; do not claim a matched three-arm causal improvement or a payload-only effect.",
+    "sourceGroups": [
+      "cd0ca17ea71af5ca35624ff9e5aec6a4903cbac3eb0ac471ff327e431c093115"
+    ],
+    "status": "descriptive result",
+    "warningForks": 2
+  },
+  {
+    "claim": "The original unconditional protocol remains NO_GO; conditional completion is preserved.",
+    "endpoint": "Original campaign acceptance, separate from focused/midpoint datasets",
+    "evidence": [],
+    "figure": "docs/TAILCACHE_12_FINAL_ACCEPTANCE.json",
+    "id": "C12",
+    "limit": "402 planned invocations attempted; 191 conditionally usable campaign forks, one hard rejection, no replacement. Historical stopping-policy amendment stays explicit.",
+    "sourceGroups": [],
+    "status": "historical qualification limit",
+    "warningForks": 0
+  },
+  {
+    "claim": "No tested universal G1 occupancy threshold, production SLA, or payload-only response threshold shift is established.",
+    "endpoint": "Scope exclusion",
+    "evidence": [],
+    "figure": "methods and threats to validity",
+    "id": "C13",
+    "limit": "Single host/collector/heap/load; instrumented in-process scheduler; no independent externally arriving load, equal-total-memory intervention or matched 256 B response midpoint study.",
+    "sourceGroups": [],
+    "status": "unsupported claim boundary",
+    "warningForks": 0
+  },
+  {
+    "claim": "Original same-ballast conditional every-operation p99.9 favors Chronicle at 256 B and Caffeine at 4 KiB at 0/96/208 MiB.",
+    "endpoint": "Original observer-conditional campaign, separate from the 162 focused/follow-up forks",
+    "evidence": [],
+    "figure": "original-campaign-summary.json",
+    "id": "C14",
+    "limit": "Recorder-specific conditional result. No original unconditional qualification or common scheduled-response threshold estimate.",
+    "sourceGroups": [],
+    "status": "historical conditional observation",
+    "warningForks": 0
+  }
+]

@@ -1,0 +1,115 @@
+{
+  "taskComplete": true,
+  "phase": "COMPLETE_WITH_RETAINED_LIMITS",
+  "plan": "docs/TAILCACHE_PREDICTOR_PLAN.md",
+  "running": null,
+  "authorization": "Autonomous experiment-review-change cycles for eight hours; recover only when ordinary usage is explicitly available.",
+  "pending": [],
+  "historicalServiceScope": "Complete at8e5dded; unchanged",
+  "originalUnconditionalStatus": "NO_GO; unchanged",
+  "updatedUtc": "2026-11-17T21:53:39.495731+00:00",
+  "recovery": {
+    "active": false,
+    "timer": "tailcache12-recovery.timer",
+    "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "stopRequestedBecauseTaskComplete": true,
+    "stoppedVerified": true,
+    "verifiedUtc": "2026-11-17T21:54:24.687452+00:00",
+    "unitStates": "Id=tailcache12-recovery.timer\nActiveState=inactive\n\nId=tailcache12-recovery.service\nActiveState=inactive\n"
+  },
+  "executionBudgetSeconds": 28800,
+  "model": "docs/predictor/model-v1.json",
+  "developmentAudit": "docs/predictor/development-audit-v1.json",
+  "qualificationRuntime": "build/predictor-20261118",
+  "qualificationAttempt": "predictor-qualification-20261118-001",
+  "validationAttempt": "predictor-validation-20261118-001",
+  "sequenceAttempt": "predictor-sequence-20261118-001",
+  "measurementSourceCommit": "a330849",
+  "driver": {
+    "toolSessionId": 5528,
+    "attempt": "predictor-drain-confirm-20261118-001",
+    "exclusiveScope": "tailcache12-predictor-confirm-20261118-001.scope",
+    "sourceFrozenUntilSequenceFinishes": false,
+    "doNotEdit": "All src Java/scripts Python/scripts Java and confirmation mapped model/protocol inputs"
+  },
+  "qualification": {
+    "attempt": "predictor-qualification-20261118-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "score": "evidence-archives/predictor-qualification-20261118-001/score-v1.json"
+  },
+  "secondaryCandidate": {
+    "specification": "docs/predictor/DRAIN_CANDIDATE.md",
+    "parameters": "docs/predictor/drain-candidate-v1.json",
+    "code": "docs/predictor/drain_candidate.py.txt",
+    "freezeCommit": "afe73bd",
+    "primaryHoldoutTargetsReadBeforeFreeze": false,
+    "primaryModelUnchanged": true,
+    "toyChecksPassed": 4,
+    "next": "Evaluate only after primary30-fork collection/audits and originalM0/M1 scoring; fresh12 only if frozen worth rule passes"
+  },
+  "validation": {
+    "attempt": "predictor-validation-20261118-001",
+    "collectionComplete": true,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true,
+    "score": "evidence-archives/predictor-validation-20261118-001/score-v1.json"
+  },
+  "primaryValidationComplete": true,
+  "primaryForecastSupported": false,
+  "primaryResult": "Response p99.9 reversal at0 vs0.5% writes; all15 pair directions consistent, original0.5\u20132% bracket forecast failed",
+  "secondaryWorthPassed": true,
+  "nextExperiments": {
+    "confirmationAttempt": "predictor-drain-confirm-20261118-001",
+    "freshForks": 12,
+    "compilerDiagnosticAttempt": "predictor-compiler-diagnostic-20261118-001",
+    "diagnosticJvms": 1,
+    "protocol": "docs/TAILCACHE_PREDICTOR_CONFIRMATION_PROTOCOL.md"
+  },
+  "secondary": {
+    "attempt": "predictor-drain-confirm-20261118-001",
+    "researchForks": 12,
+    "rawAuditPassed": true,
+    "mechanismAuditPassed": true
+  },
+  "compilerDiagnostic": {
+    "attempt": "predictor-compiler-diagnostic-20261118-001",
+    "diagnosticJvms": 1
+  },
+  "secondaryExpansionConsumed": true,
+  "additionalFresh12Allowed": false,
+  "secondaryResult": "0/5% endpoints repeat;0.5% mixed, one contrary fresh pair retained. M1/M2/GCsum6of6 conditional winner calls; updated exante replication forecast5of6.",
+  "review": "docs/predictor/REVIEW.md",
+  "dataset": "docs/predictor/predictor-data-20261118.json",
+  "finalVerification": "docs/predictor/final-verification.json",
+  "delivery": {
+    "sourceCommit": "146af126d13bf839a6573c724c8f8e755c42a626",
+    "deploymentId": "dpl_72YwJPBb3jNA5sBzpyTmKvToEMCK",
+    "authentication": "Vercel SSO all;15 signed-out asset/alias checks",
+    "pullRequest": "https://github.com/Enixes/TailCache/pull/10",
+    "draft": true,
+    "portableResearchForks": 60,
+    "rawAuditsPassed": true,
+    "portableVerificationPassed": true,
+    "tests": 30,
+    "domQaPassed": true,
+    "browserVisualQaPerformed": false
+  },
+  "completionMeaning": "Declared predictor scope collected, audited, reviewed and delivered; original unconditional NO_GO and new transient qualification remain; no author-approved deposit",
+  "subsequentDeepReview": {
+    "date": "2026-11-18",
+    "report": "docs/predictor/DEEP_REVIEW_AND_NEXT_EXPERIMENTS.md",
+    "analysis": "docs/predictor/deep-review-analysis-20261118.json",
+    "analysisSha256": "dc3aac3422b34936038b5ffffdfceaf5ed0a1dca3c8ad0e8b0bb85456bf6ebda",
+    "newJvms": 0,
+    "developmentOnly": true,
+    "scheduleImbalanceFound": true,
+    "evacuationFailureDisclosureNeeded": true,
+    "occupancyCriterionIsNotStationarityProof": true,
+    "recommendedNext": "Constrained-order logging sensitivity, then controlled update-hotset screen; separate bounded scope",
+    "newExperimentsLaunched": false,
+    "recoveryReactivated": false
+  }
+}

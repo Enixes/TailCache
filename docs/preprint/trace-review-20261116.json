@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "newBenchmarkRuns": 0,
+  "frozenTraceClassesVerified": {
+    "/home/y/TailCache/build/classes/java/main/io/github/enixes/tailcache/workload/DeterministicWorkloadGenerator$1.class": "6a8595f5f8a81ceb4c8c37d9faff5eb28c61a520bc3a08a025f7d4748cb13717",
+    "/home/y/TailCache/build/classes/java/main/io/github/enixes/tailcache/workload/WorkloadSpec.class": "11ed209c9b3965884238723464f411540cde4a387e85c04638d17eb51bc30081",
+    "/home/y/TailCache/build/classes/java/main/io/github/enixes/tailcache/workload/DeterministicWorkloadGenerator.class": "3c9aec0031161afd0a32be3494469a5545956df4d78c65da01275748d81560d8",
+    "/home/y/TailCache/build/classes/java/main/io/github/enixes/tailcache/workload/AccessPattern.class": "098fbadcc0406e62c0faaadf847261695d1f15b146471cdc76620ae275e90355",
+    "/home/y/TailCache/build/classes/java/main/io/github/enixes/tailcache/workload/WorkloadTrace.class": "a607fc564dbe8635e7e98dbc9d82d214cf391f7876672f7dc8a2b4c26b705c35"
+  },
+  "freshConfigurationsMatched": {
+    "24301": 18,
+    "24302": 6,
+    "24303": 6
+  },
+  "rows": [
+    {
+      "seed": 24301,
+      "operations": 40001,
+      "reads": 38001,
+      "writes": 2000,
+      "distinctKeys": 23169,
+      "distinctReadKeys": 22570,
+      "distinctWriteKeys": 1939,
+      "residentKeysNotInTrace": 9599,
+      "residentKeysNeverUpdated": 30829,
+      "traceSha256": "66779e2b545401dab71a6cd87f175ac09bda70cd7ac11348b2cc9985dae550ff"
+    },
+    {
+      "seed": 24302,
+      "operations": 40001,
+      "reads": 38001,
+      "writes": 2000,
+      "distinctKeys": 23109,
+      "distinctReadKeys": 22476,
+      "distinctWriteKeys": 1945,
+      "residentKeysNotInTrace": 9659,
+      "residentKeysNeverUpdated": 30823,
+      "traceSha256": "4fad3047063c7a3de297a4769a0adc25aaa686a073e869a2bef4172cd440bee0"
+    },
+    {
+      "seed": 24303,
+      "operations": 40001,
+      "reads": 38001,
+      "writes": 2000,
+      "distinctKeys": 22991,
+      "distinctReadKeys": 22396,
+      "distinctWriteKeys": 1944,
+      "residentKeysNotInTrace": 9777,
+      "residentKeysNeverUpdated": 30824,
+      "traceSha256": "871dbe99c24a2a14ab85b3d2fec926b0ed38aec9cd96ea372f73037bada5ab89"
+    }
+  ],
+  "periodSecondsAt50000RequestsPerSecond": 0.80002,
+  "fullPeriodsPer30SecondOfferedWindow": 37,
+  "implementationSha256": {
+    "scripts/java/TailCacheTraceReview.java": "c90aff9111abdb5111cc12844a6f46de472b3e43a73687ee921ae1f25a56a476"
+  },
+  "limits": "Trace generation using verified retained classes only; no cache constructed. Key counts describe steady repeated trace access, excluding setup and final full-resident integrity scans."
+}

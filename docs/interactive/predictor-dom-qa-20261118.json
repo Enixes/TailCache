@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "method": "jsdom27.2.0 synthetic DOM integration",
+  "controlStates": 628,
+  "pointQuantiles": 240,
+  "fullTailPairs": 30,
+  "models": 9,
+  "offHappyPath": 2,
+  "completeStagedHtml": true,
+  "oldComponentInitializes": true,
+  "browserVisualQaPerformed": false,
+  "browserVisualQaReason": "CUA browser host unavailable",
+  "limits": "No browser layout, viewport, screenshot or authenticated browser signoff. Scientific PNGs inspected separately."
+}

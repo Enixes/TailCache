@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "historicalSectionsPreservedExceptCurrentDownloads": true,
+  "files": [
+    {
+      "path": "docs/TAILCACHE_RESULTS_EXPLORER.html",
+      "sha256": "d521464bc39c36685edc3014d63d2ae5397d81a37bccc6ad7ffb691a12e39250"
+    },
+    {
+      "path": "docs/TAILCACHE_MIDPOINT_EXPLORER.html",
+      "sha256": "dc82374c5ead41b36f8faa1fcaf620233a46ea8a15ef732f99b01787ef262ec1"
+    }
+  ],
+  "datasetUnchanged": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "browserAvailable": false,
+  "browserReason": "CUA recheck: browser access host unavailable",
+  "comparedBaselineCommit": "49524ad"
+}

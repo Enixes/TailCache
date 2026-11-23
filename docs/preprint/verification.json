@@ -1,0 +1,31 @@
+{
+  "kind": "tailcache-paper-preparation-verification-v1",
+  "passed": true,
+  "newBenchmarkRuns": 0,
+  "isolatedOfflineRegeneration": true,
+  "isolatedInputs": [
+    "scripts/tailcache12_preprint.py",
+    "docs/preprint/paper-data.json"
+  ],
+  "networkDuringRender": false,
+  "requiresRawArchivesForRender": false,
+  "comparedFiles": 28,
+  "exactMismatches": [],
+  "originalInputHashesUnchanged": {
+    "audit": true,
+    "environment": true,
+    "focused": true,
+    "midpoint": true,
+    "original": true,
+    "tails": true
+  },
+  "resolvedCitationKeys": 8,
+  "targetedTestsPassed": 6,
+  "figureFormats": [
+    "PDF",
+    "SVG",
+    "PNG"
+  ],
+  "figureCount": 7,
+  "limits": "Isolated figure reproduction, not a clean Java harness build or independent raw-data reaudit."
+}

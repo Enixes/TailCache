@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "rawArchivesRead": false,
+  "separateDirectory": "/tmp/tailcache-predictor-clean",
+  "matchedOutputs": 8,
+  "packageSha256": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+  "rendererSha256": "e6355c5cc2b3ff925f4cddbdb7aec018d072c9f53e4dd9611408a8bdbea67ba6",
+  "matplotlibVersion": "3.10.7",
+  "meaning": "Byte-identical portable scientific figure regeneration; not independent performance replication.",
+  "verifierSha256": "aab514686a0aec76d86df8e1eaa59b61643eb2919398310dc3c36bc49913f50b",
+  "packageRebuildByteIdentical": true
+}

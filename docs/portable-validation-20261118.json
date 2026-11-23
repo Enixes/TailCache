@@ -1,0 +1,75 @@
+{
+  "version": "portable-validation-v1",
+  "completedUtc": "2026-11-18T17:49:56.743434+00:00",
+  "researchObservations": 0,
+  "artifact": {
+    "path": "build/distributions/tailcache-experiment-v1.0.zip",
+    "sha256": "4e721abfedbb3b383f5cca7062cd1efc7e2f95431ac1743c6d62aff5a6ee1b37",
+    "bytes": 10152371,
+    "bundleContentId": "b10afa957004b2463340dcfc75758f445df9eddff2d25397d87bb98aa7f9752e",
+    "inventoryFiles": 95
+  },
+  "sourceOnlyRebuild": {
+    "passed": true,
+    "matchingBundleContentId": "b10afa957004b2463340dcfc75758f445df9eddff2d25397d87bb98aa7f9752e",
+    "allInventoriedFilesIdentical": true,
+    "matchingRuntimeFiles": 30
+  },
+  "tests": {
+    "portableBehavioralPassed": 43,
+    "existingMechanismPassed": 31
+  },
+  "integration": {
+    "priming-closed-zero-write": {
+      "purpose": "diagnostic",
+      "workloadWorkers": 8,
+      "completed": 8,
+      "controls": 4,
+      "verifiedHistograms": 60,
+      "independentStreamReplays": 8,
+      "warningWorkers": 3,
+      "warnings": [
+        "Conditioning/measurement host paging counter changed: zswpin",
+        "Conditioning/measurement host paging counter changed: zswpout"
+      ],
+      "runSha256": "8553fc1315c57edd2f87249d09ec52f8883f02a2456d6f3e2eaa5d6f397eb863"
+    },
+    "final-smoke": {
+      "purpose": "diagnostic",
+      "workloadWorkers": 4,
+      "completed": 4,
+      "controls": 4,
+      "verifiedHistograms": 40,
+      "independentStreamReplays": 4,
+      "warningWorkers": 4,
+      "warnings": [
+        "Conditioning/measurement host paging counter changed: zswpin",
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ],
+      "runSha256": "739a4c4cc5f6c2fbb036139694185d13ff417fed473cf1d47e999ee7448cd0ba"
+    }
+  },
+  "resume": {
+    "passed": true,
+    "retainedFilesUnchanged": 292,
+    "newWorkloadWorkers": 0
+  },
+  "offlineReanalysisPassed": true,
+  "evidenceArchive": {
+    "path": "build/portable-validation-20261118/retained-diagnostics.zip",
+    "sha256": "3878bc61e3dda51a5e364da8db4560403a2d6eb7bd68f89425e8a47c3dc468f5"
+  },
+  "historicalDatasetSha256": {
+    "docs/mechanism/mechanism-data-20261118.json": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+    "docs/predictor/predictor-data-20261118.json": "739f320069368711d62b4882aa3fc2a354fc8e787063cc7818cae4c9d2ea36cc",
+    "docs/preprint/paper-data.json": "a733eee906a863be68e7fd09ef9e6d3b51cf148ae69f5401c4a0706912ea50b7",
+    "docs/service-followup/followup-data-20261117.json": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef"
+  },
+  "measuredJavaSourceChanged": false,
+  "review": "docs/PORTABLE_EXPERIMENT_REVIEW.md",
+  "limitations": [
+    "Linux validated only; other OS collection remains unverified/diagnostic",
+    "Short diagnostic warnings retained; no new research result",
+    "Two-seed default profiles are screens; sparse extreme tails remain flagged"
+  ]
+}

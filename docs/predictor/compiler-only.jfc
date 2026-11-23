@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="2.0" label="TailCache compiler diagnostic" description="Compilation only; not primary benchmark instrumentation" provider="TailCache">
+  <event name="jdk.Compilation"><setting name="enabled">true</setting><setting name="threshold">0 ms</setting></event>
+  <event name="jdk.CompilerPhase"><setting name="enabled">true</setting><setting name="threshold">0 ms</setting></event>
+  <event name="jdk.Deoptimization"><setting name="enabled">true</setting></event>
+  <event name="jdk.JVMInformation"><setting name="enabled">true</setting><setting name="period">beginChunk</setting></event>
+</configuration>

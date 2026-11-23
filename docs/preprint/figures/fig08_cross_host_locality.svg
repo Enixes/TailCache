@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE svg
+  PUBLIC '-//W3C//DTD SVG 1.0//EN'
+  'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'>
+<svg width="487" height="267" preserveAspectRatio="xMinYMin meet" viewBox="0 0 487 267" xmlns="http://www.w3.org/2000/svg" version="1.0" fill-rule="evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<title>...</title>
+	<desc>...</desc>
+	<clipPath id="clip">
+		<rect x="0" y="0" width="487" height="267"/>
+	</clipPath>
+	<g id="group" transform="scale(1,-1) translate(0,-267)" style="clip-path: url(#clip)">
+		<g transform="">
+			<rect x="0" y="191" width="487" height="58" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="9" y="242" style="font-family: Helvetica-Bold; font-size: 9px;fill: rgb(9%,14%,18%); stroke:none;" transform="translate(0,484) scale(1,-1)">First host / 30 s</text>
+			<text x="21" y="222" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,444) scale(1,-1)">2,048 keys</text>
+			<circle cx="419.91532141065903" cy="215.1" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="465.06203381090063" cy="221.7" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="444.6901635971086" cy="228.3" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="454.7686694593049" cy="234.9" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="21" y="201" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,402) scale(1,-1)">32,768 keys</text>
+			<circle cx="247.60682637038792" cy="194.1" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="237.77331888731754" cy="200.7" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<circle cx="228.07429285661124" cy="207.3" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="231.47924533343007" cy="213.9" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<rect x="0" y="127" width="487" height="58" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="9" y="178" style="font-family: Helvetica-Bold; font-size: 9px;fill: rgb(9%,14%,18%); stroke:none;" transform="translate(0,356) scale(1,-1)">Second host / 30 s</text>
+			<text x="21" y="158" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,316) scale(1,-1)">2,048 keys</text>
+			<circle cx="396.92947691873394" cy="157.7" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(60%,25%,12%); fill-rule: evenodd;"/>
+			<circle cx="390.46802387804985" cy="164.3" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="21" y="137" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,274) scale(1,-1)">32,768 keys</text>
+			<circle cx="165.07766710832294" cy="136.7" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<circle cx="161.0862644626872" cy="143.3" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<rect x="0" y="63" width="487" height="58" style="stroke: none; stroke-linecap: butt; stroke-width: 1; fill: rgb(95%,96%,96%); fill-rule: evenodd;"/>
+			<text x="9" y="114" style="font-family: Helvetica-Bold; font-size: 9px;fill: rgb(9%,14%,18%); stroke:none;" transform="translate(0,228) scale(1,-1)">Second host / 90 s</text>
+			<text x="21" y="94" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,188) scale(1,-1)">2,048 keys</text>
+			<circle cx="388.43936248260565" cy="87.1" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(60%,25%,12%); fill-rule: evenodd;"/>
+			<circle cx="399.0371871200369" cy="93.7" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(60%,25%,12%); fill-rule: evenodd;"/>
+			<circle cx="389.3009267417454" cy="100.3" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(60%,25%,12%); fill-rule: evenodd;"/>
+			<circle cx="388.7703377497839" cy="106.9" r="3" style="stroke: rgb(60%,25%,12%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<text x="21" y="73" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,146) scale(1,-1)">32,768 keys</text>
+			<circle cx="169.65574687463402" cy="66.1" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<circle cx="175.42245521253375" cy="72.7" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<circle cx="173.82195272279847" cy="79.3" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(100%,100%,100%); fill-rule: evenodd;"/>
+			<circle cx="164.80672396512333" cy="85.9" r="3" style="stroke: rgb(0%,37%,34%); stroke-linecap: butt; stroke-width: 1; fill: rgb(0%,37%,34%); fill-rule: evenodd;"/>
+			<path d="M 133,46 L 133,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="121.741" y="34" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,68) scale(1,-1)">0.001</text>
+			<path d="M 216.75,46 L 216.75,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="207.993" y="34" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,68) scale(1,-1)">0.01</text>
+			<path d="M 300.5,46 L 300.5,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="294.245" y="34" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,68) scale(1,-1)">0.1</text>
+			<path d="M 384.25,50 L 384.25,249 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1; stroke-dasharray: 3, 3;"/>
+			<path d="M 384.25,46 L 384.25,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="381.748" y="34" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,68) scale(1,-1)">1</text>
+			<path d="M 468,46 L 468,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="462.996" y="34" style="font-family: Helvetica; font-size: 9px;fill: rgb(28%,35%,40%); stroke:none;" transform="translate(0,68) scale(1,-1)">10</text>
+			<path d="M 133,50 L 468,50 Z" style="stroke: rgb(28%,35%,40%); stroke-linecap: butt; stroke-width: 1;"/>
+			<text x="200.71699999999998" y="12" style="font-family: Helvetica-Bold; font-size: 9px;fill: rgb(9%,14%,18%); stroke:none;" transform="translate(0,24) scale(1,-1)">Chronicle / Caffeine response p99.9 (log scale)</text>
+			<text x="133" y="255" style="font-family: Helvetica; font-size: 9px;fill: rgb(0%,37%,34%); stroke:none;" transform="translate(0,510) scale(1,-1)">Chronicle lower</text>
+			<text x="410.481" y="255" style="font-family: Helvetica; font-size: 9px;fill: rgb(60%,25%,12%); stroke:none;" transform="translate(0,510) scale(1,-1)">Caffeine lower</text>
+		</g>
+	</g>
+</svg>

@@ -1,5 +1,7 @@
 # Scope guard
 
+> **Current scope update — 15 November:** this file retains the original October engineering budget and cut list. Subsequent user-authorized work includes the exploratory response/midpoint studies, results UI, protected hosting and manuscript. The bounded collection is complete; no further campaign is planned for this v1. Use [current state](TAILCACHE_CURRENT_STATE.md), [reviewed manuscript scope](preprint/CLAIMS.md) and [documentation index](DOCUMENTATION_INDEX.md). UI/cloud exclusions and the October target below are historical, not a prohibition on the completed presentation work.
+
 Target completion: **20 October 2026**
 Total engineering/research budget: **35-40 hours**
 

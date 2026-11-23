@@ -1,5 +1,7 @@
 # TailCache: literature check and publication strategy
 
+> **Current update — 15 November:** see [verified manuscript references](preprint/LITERATURE.md), [deep review](preprint/DEEP_REVIEW_20261115.md) and [current state](TAILCACHE_CURRENT_STATE.md). The bounded midpoint/seed work is complete and the full narrative draft exists. Dates/venue advice below describe the 9 November planning snapshot; the 12 November accelerated draft target is past, and no venue submission/acceptance is claimed. The present contribution is a scoped empirical case study, not a validated universal cache-selection method.
+
 Checked **9 November 2026**, Asia/Kolkata. This is a targeted initial literature and venue review, not an exhaustive systematic review or an acceptance prediction. No author contact, registration, manuscript submission or public release was performed.
 
 ## Search scope and evidence standard

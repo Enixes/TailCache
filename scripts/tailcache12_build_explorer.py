@@ -120,10 +120,17 @@ def main():
         retained=re.search(re.escape(START)+'.*?'+re.escape(END),OUTPUT.read_text(),re.S)
         if retained:component=retained.group()
     if component is not None:rendered=attach(rendered,component)
+    from tailcache12_review_explorer import attach as attach_review
+    rendered=attach_review(rendered)
+    from tailcache12_service_explorer import attach as attach_service
+    rendered=attach_service(rendered)
     args.out.write_text(rendered)
     if args.site_out:
         args.site_out.mkdir(parents=True,exist_ok=True)
-        shutil.copyfile(args.out,args.site_out/'index.html')
+        from tailcache12_service_explorer import render_component as service_component
+        (args.site_out/'index.html').write_text(attach_service(rendered,service_component(hosted=True)))
+        shutil.copyfile(ROOT/'docs/service-followup/followup-data-20261117.json',args.site_out/'service-data.json')
+        shutil.copytree(ROOT/'docs/service-followup/figures',args.site_out/'service-figures',dirs_exist_ok=True)
         shutil.copyfile(ROOT/'docs/interactive/vercel.json',args.site_out/'vercel.json')
     print(json.dumps(dict(html=str(args.out.relative_to(ROOT)) if args.out.is_relative_to(ROOT) else str(args.out),bytes=args.out.stat().st_size,forks=len(data['forks']),primaryComparisons=22,allChannelComparisons=56,percentileConclusions=len(data['groups'])*len(PERCENTILES),sourceSha256=data['sourceSha256']),indent=2))
 

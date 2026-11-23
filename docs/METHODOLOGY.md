@@ -1,5 +1,7 @@
 # Methodology
 
+> **Current methods update — 15 November:** this document records the shared harness and earlier Task 05–12 methodology. The [reviewed manuscript methods](preprint/MANUSCRIPT.md#3-methods) specify the later focused and midpoint cohorts. Both are complete in their declared scopes; the original unconditional joint-observer protocol remains unqualified. See [current state](TAILCACHE_CURRENT_STATE.md) for present decisions.
+
 ## 1. What is being compared
 
 The primary experiment compares Caffeine and Chronicle Map through the same narrow adapter API using pre-boxed `Long` keys and fixed-size `byte[]` values. The goal is to measure observable cache-operation latency distributions under controlled synthetic workloads.
@@ -11,7 +13,7 @@ This is **not** a claim that the products have identical semantics. In particula
 - Caffeine `maximumSize` and Chronicle Map `entries` are not equivalent capacity controls.
 - Chronicle Map persisted mode is file-backed/memory-mapped; it is not equivalent to a two-JVM contention experiment and it must not be described as direct disk-I/O latency.
 
-The common adapter therefore measures **end-to-end API access cost**, not an abstract hash lookup stripped of representation costs. A future Chronicle-specific `getUsing` experiment, if added, must be reported separately rather than silently substituted into the primary comparison. Byte-array values are treated as immutable by convention.
+The common adapter therefore measures **end-to-end API access cost**, not an abstract hash lookup stripped of representation costs. The later Chronicle-specific `getUsing` sensitivity is reported separately, with a borrowed-buffer contract; its batches do not contain a contemporaneous ordinary-Chronicle arm. Byte-array values in the ordinary workload are treated as immutable by convention.
 
 Within each benchmark trial every payload has one exact configured size. Chronicle Map is therefore configured with `constantValueSizeBySample(...)`, not `averageValueSize(...)`. This matches Chronicle's documented constant-size configuration path and avoids benchmarking a variable-size layout for a fixed-size workload.
 
@@ -125,7 +127,11 @@ The every-operation channel uses preallocated HdrHistogram storage, exports ever
 
 All measurement recorders are allocated before warmup; histogram serialization runs after the final measurement window, avoiding export allocation between measured iterations. Their retained memory is common within this channel but differs from JMH SampleTime and must be included in calibration/observer-effect assessment. Worker-to-GC clock alignment is bracketed and its uncertainty retained. Compiler diagnostics retain both JMH's wider profiler envelope and a narrower iteration-worker envelope; neither proves every unprofiled fork was compilation-free.
 
-Task 12 campaign readiness still requires pressure calibration, post-GC occupancy/exposure parsing, observer-effect/JIT qualification, and the eight-cell pilot described in `docs/TAILCACHE_12_PLAN.md`.
+Those Task 12 preparation stages have since been collected, with their qualifications and limitations preserved in the [final outcome review](TAILCACHE_12_FINAL_OUTCOME_REVIEW.md). They do not make the original unconditional protocol pass. The later midpoint/seed follow-up is complete; no new run is scheduled by this document.
+
+### Current timing and inference boundaries
+
+Service timing ends before recording/bookkeeping and next-operation pacing. Delay between operations can affect gaps and later scheduled response without entering either service duration. The scheduled drain condition is cooperative and cannot preempt an in-flight operation. Ballast labels count retained array payload, not all object/container overhead. RSS is sampled residency, not PSS or an equal-total-memory budget. Keep source/seed/API/workload cohorts separate, and do not infer a payload-caused threshold movement from focused sweeps with different pressure ranges. Current validation and claim limits are in [the deep review](preprint/DEEP_REVIEW_20261115.md).
 
 ## 8. Data restrictions
 

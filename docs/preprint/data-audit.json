@@ -1,0 +1,15 @@
+{
+  "additionalSeedPairs": 6,
+  "derivedForks": 162,
+  "extremeResponseDirection": "Chronicle lower at every fresh point, including baseline",
+  "freshEndpointDirection": "Caffeine at 0; mixed at 104; Chronicle at 208",
+  "freshForks": 30,
+  "freshWarningForks": 5,
+  "fullResponseCurvesChecked": 18,
+  "histogramPercentileChecks": 72,
+  "historicalForks": 132,
+  "newBenchmarkRuns": 0,
+  "passed": true,
+  "primaryPairs": 9,
+  "rawEvidenceReaudit": false
+}

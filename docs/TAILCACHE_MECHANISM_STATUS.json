@@ -1,0 +1,114 @@
+{
+  "taskComplete": true,
+  "phase": "COMPLETE",
+  "startedUtc": "2026-11-18T06:05:49.311001+00:00",
+  "collectionDeadlineUtc": "2026-11-18T13:05:49.311001+00:00",
+  "plan": "docs/TAILCACHE_MECHANISM_PLAN.md",
+  "finishPlan": "docs/TAILCACHE_MECHANISM_FINISH_PLAN.md",
+  "authorization": "User authorized autonomous experiment-review-code-repair cycles for about8hours and ordinary-usage recovery",
+  "running": null,
+  "pending": [],
+  "maxResearchJvms": 64,
+  "oldScopesCompleteAndUnchanged": true,
+  "recovery": {
+    "active": false,
+    "requiresExplicitOrdinaryUsageAllowed": true,
+    "timer": "tailcache12-recovery.timer",
+    "thread": "01a1032c-87df-72d1-93cb-cd6f076451a0",
+    "inspectVerified": true,
+    "stoppedUtc": "2026-11-18T10:27:04.286050+00:00",
+    "inactiveVerified": true,
+    "disabledVerified": true,
+    "enabledState": "not-found"
+  },
+  "qualification": {
+    "functionalJvms": 3,
+    "qualificationControlJvms": 2,
+    "scheduleTests": 6,
+    "rawAudit": "evidence-archives/mechanism-qualification-20261118-001/raw-audit.json",
+    "passed": true
+  },
+  "updatedUtc": "2026-11-18T10:27:04.286063+00:00",
+  "execution": {
+    "toolSessionId": 66825,
+    "nativeScope": "tailcache12-mechanism-sequence-20261118-001.scope",
+    "frozenCommit": "f11a538",
+    "singleDriver": true
+  },
+  "temporaryReportingSources": [
+    "/tmp/tailcache12_mechanism_report.py",
+    "/tmp/tailcache12_mechanism_explorer.py",
+    "/tmp/tailcache12_mechanism_ui.js",
+    "/tmp/tailcache12_mechanism_figures.py",
+    "/tmp/tailcache12_mechanism_dom_qa.cjs"
+  ],
+  "selectedLogging": "async",
+  "selectedPrimeCalls": 0,
+  "collectionComplete": true,
+  "researchForks": 64,
+  "temporaryReportingSourcesInstalled": true,
+  "completionEvidence": {
+    "datasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+    "portableVerification": "docs/mechanism/portable-verification.json",
+    "rawExportReview": "docs/mechanism/final-evidence-review.json",
+    "modelReplay": "docs/mechanism/model-replay.json",
+    "focusedTests": 13,
+    "researchForks": 64,
+    "controls": 6,
+    "functionalJvms": 3
+  },
+  "deployment": {
+    "id": "dpl_6E1HAkdvRoNBDjWUP3zkk7vcqeJ3",
+    "url": "https://tailcache-results.vercel.app/#mechanism-followup",
+    "sourceCommit": "93a4e5695ef62b78b68cebe4005146875290c5ae",
+    "state": "READY",
+    "sourceFilesVerified": 33,
+    "signedOutRequestsBlocked": 66,
+    "authentication": "Vercel SSO for all deployments",
+    "realBrowserAvailable": false
+  },
+  "pullRequest": {
+    "url": "https://github.com/Enixes/TailCache/pull/10",
+    "draft": true,
+    "base": "tailcache-12-crossover"
+  },
+  "completedUtc": "2026-11-18T10:27:04.047193+00:00",
+  "researchScopeComplete": true,
+  "originalUnconditionalNoGoUnchanged": true,
+  "publication": {
+    "authorApproved": false,
+    "preprintDeposited": false,
+    "workingDraftOnly": true
+  },
+  "completed": [
+    "isolated implementation and source-matched functional/raw qualification",
+    "logging and phase-priming development with frozen decisions",
+    "update-set screen and reversed-order repetition",
+    "90-second transition repeatability",
+    "heap-headroom screen and fresh-seed confirmation",
+    "matched payload screen",
+    "independent raw/export/order/source/runtime audit",
+    "portable arithmetic, frozen-model replay and thirteen focused tests",
+    "manuscript corrections and agent-assisted systems/research reviews",
+    "scientific figures and hosted/standalone interactive QA",
+    "authenticated production deployment and draft PR update"
+  ],
+  "lastRereview": {
+    "state": "COMPLETE",
+    "baseCommit": "49524ad",
+    "plan": "docs/mechanism/REREVIEW_PLAN_20261118.md",
+    "review": "docs/mechanism/REREVIEW_20261118.md",
+    "measurementsChanged": false,
+    "newPerformanceJvms": 0,
+    "focusedTests": 31,
+    "portableNumericalFields": 3456,
+    "modelReplayPassed": true,
+    "recoveryReenabled": false,
+    "updatedUtc": "2026-11-18T16:44:02.671666+00:00",
+    "completedUtc": "2026-11-18T16:52:06.961448+00:00",
+    "sourceCommit": "93a4e5695ef62b78b68cebe4005146875290c5ae",
+    "deploymentId": "dpl_6E1HAkdvRoNBDjWUP3zkk7vcqeJ3",
+    "signedOutRequestsBlocked": 66,
+    "rawPackageAndFigureOutputsUnchanged": true
+  }
+}

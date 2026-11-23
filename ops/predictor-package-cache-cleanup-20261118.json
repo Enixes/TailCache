@@ -1,0 +1,20 @@
+{
+  "capturedUtc": "2026-11-17T20:45:38.815767+00:00",
+  "removed": [
+    {
+      "path": "/home/y/.cache/yay/iriunwebcam-bin/iriunwebcam-bin-2.9.3-2-x86_64.pkg.tar.zst",
+      "bytes": 1260423
+    },
+    {
+      "path": "/home/y/.cache/yay/iriunwebcam-bin/iriunwebcam-2.9.3.deb",
+      "bytes": 1071154
+    },
+    {
+      "path": "/home/y/.cache/yay/noctalia-git/noctalia-git-1:5.3.0.r5855.gea968f9fc-1-x86_64.pkg.tar.zst",
+      "bytes": 19289241
+    }
+  ],
+  "freeBefore": 585539584,
+  "freeAfter": 607166464,
+  "preserved": "Source clones, profiles, Codex runtimes and research evidence"
+}

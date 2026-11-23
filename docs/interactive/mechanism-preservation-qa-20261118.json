@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "path": "docs/TAILCACHE_RESULTS_EXPLORER.html",
+      "historicalContentPreservedExceptCurrentDownloads": true,
+      "sha256": "409556de7b8e15fd19f7eeee3c5f5960e7bb8b2d732205061439c56762f7f52e"
+    },
+    {
+      "path": "docs/TAILCACHE_MIDPOINT_EXPLORER.html",
+      "historicalContentPreservedExceptCurrentDownloads": true,
+      "sha256": "b8e9023ddc2b1cf856955bec4de5dbc3c4ec02c37f991bc565bc4e358819741c"
+    }
+  ],
+  "hostedHistoricalContentPreservedExceptCurrentDownloads": true,
+  "standaloneEmbedsFullMechanismData": true,
+  "hostedDatasetSha256": "1fa738b4e1344e8266f2730d162f5f428e7d6f29a99675f999a69960eaa1996d",
+  "realBrowserAvailable": false,
+  "browserFailure": "Browser access host unavailable; inventory apps=[], browsers=[]",
+  "method": "Byte equality after removing only the new component and refreshing exact current Markdown downloads"
+}

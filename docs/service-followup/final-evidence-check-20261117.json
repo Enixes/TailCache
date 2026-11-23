@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "verifiedUtc": "2026-11-17T09:10:15.481057+00:00",
+  "packageSha256": "8d6468c0b7615f0afe03841b8992cd6ea8a0e14ca2b4f00da383e4aa36222aef",
+  "cohortStudyProtocolSourceAuditBindings": 8,
+  "mechanismAuditBindings": 7,
+  "uniqueLiveRuntimeFilesVerified": 102,
+  "originalPaperDataUnchanged": true,
+  "primaryServiceP99AllCaffeineLower": true,
+  "pacedResponseP999AllChronicleLower": true,
+  "geometryResponseDirectionsOpposite": true,
+  "largerPayloadDecision": "none",
+  "warningBearingForks": 46,
+  "warningInstances": {
+    "Native CPU outside benchmark scope exceeded 10% upper bound": 17,
+    "Allocation demand lost under stall; endogenous pressure outcome retained": 18,
+    "Measured compiler activity exceeds80ms; retain as short-run evidence": 12,
+    "Measured compiler activity exceeds80ms; retain as harness sensitivity": 1
+  },
+  "limits": "Final input/runtime and selected claim reconciliation; prior raw histogram/event audits remain separately bound, not all re-executed in this pass."
+}
