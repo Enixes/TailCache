@@ -1,14 +1,15 @@
-# TailCache preprint working package
+# TailCache experiment evidence
 
-Prepared 11 November 2026; extended 18 November 2026. **Working material, not an author-approved or submitted preprint.**
+The [current evidence index](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/README.md) links the two-host
+replication, 23 November follow-up, and interactive results. The records below
+describe earlier experiment cohorts and how to regenerate their derived results.
 
 Extended 17 November with [184 new research forks across eight cohorts](../service-followup/RESULTS_20261117.md), [58 point groups](../service-followup/followup-data-20261117.md), [seven supplementary figures](../service-followup/FIGURES_20261117.md), [new claims](../service-followup/CLAIMS_20261117.md) and a [final technical review](../service-followup/FINAL_REVIEW_20261117.md). The earlier package was revised 16 November after a [systems research re-review](RE_REVIEW_20261116.md) and the previous [deep source/data and methods review](DEEP_REVIEW_20261115.md). The frozen `paper-data.json` is unchanged. The new [raw reconciliation](raw-rereview-20261116.json), [original campaign rerun](original-rereview-20261116.json) and [trace inspection](trace-review-20261116.json) supplement [portable verification](review-verification-20261115.json); initial and earlier review receipts remain dated history.
 
-The new [64-fork mechanism study](../mechanism/README.md), [all-point/model tables](../mechanism/RESULTS.md), [three figures](../mechanism/FIGURES.md) and [final review](../mechanism/REVIEW.md) add constrained-order update-set repeats, longer-window transition tests, heap headroom and matched payloads. The manuscript now discloses historical order imbalance, evacuation failures and the limited occupancy diagnostic. Original data packages remain unchanged.
+The new [64-fork mechanism study](../mechanism/README.md), [all-point/model tables](../mechanism/RESULTS.md), [three figures](../mechanism/FIGURES.md) and [final review](../mechanism/REVIEW.md) add constrained-order update-set repeats, longer-window transition tests, heap headroom and matched payloads. The experiment records retain historical order imbalance, evacuation failures, and the scope of the occupancy diagnostic. Original data packages remain unchanged.
 
-The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#mechanism-followup) includes this reviewed narrative, document downloads and the seven paper figures alongside the interactive evidence.
+The [current-state summary](../TAILCACHE_CURRENT_STATE.md) and [complete documentation index](../DOCUMENTATION_INDEX.md) guide readers through current and historical material. The [protected hosted HTML](https://tailcache-results.vercel.app/#mechanism-followup) shows the earlier mechanism results.
 
-- [Manuscript draft](MANUSCRIPT.md): methods and related work, initial results narrative and explicit remaining edits.
 - [Claim-to-evidence map](CLAIMS.md) and [machine-readable identities](claims.json).
 - [Figures and full captions](FIGURES.md), vector PDF/SVG plus PNG in `figures/`.
 - [Literature verification and novelty comparison](LITERATURE.md); [BibTeX](references.bib).
@@ -45,9 +46,9 @@ On the evidence host, reconcile all exported observations/distributions and rege
 rtk proxy python3 scripts/tailcache12_preprint_source_audit.py
 ```
 
-This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. Their off-host backup/public artifact, a independent performance replication and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup. No raw-evidence deposit or formal preprint publication is performed by these commands.
+This host-only audit requires the retained source files; portable verification and figure regeneration do not. Its receipt is `source-audit-20261115.json`. A missing raw archive on another machine does not invalidate successful portable figure regeneration, but it limits independent raw-evidence verification. The full raw archives remain git-ignored. Their off-host backup/public artifact, a independent performance replication and licensing review remain release work. A JAR-only fresh-source build/API check and portable figure reproduction for the new extension now pass; these do not replace off-host raw backup.
 
-## Paper boundary
+## Timing and workload scope
 
 In the earlier short-trace cohort, the ordinary 4 KiB scheduled-response p99.9 direction change repeats between 0 and 208 MiB; 104 MiB is mixed. Extreme-response advantages already exist at baseline. Historical saturated service and API-reuse sensitivities remain separate. The original unconditional protocol stays unqualified. Three matching paired directions are descriptive replication, not a significance test. None of this establishes a universal threshold, causal GC attribution or a production SLA.
 
@@ -65,10 +66,10 @@ Use an isolated Matplotlib environment with [the pinned render requirements](../
 
 ## Reproduce the 18 November predictor extension
 
-The [current predictor report](../predictor/RESULTS.md), [research review](../predictor/REVIEW.md) and [portable commands](../predictor/README.md) add60 separately identified research forks. The draft now includes failed boundary forecasts, fresh 0.5% disagreement, GC-conditioned model errors and naive comparisons. Earlier data packages and claim maps keep their dated scope. The new working manuscript has not been author-approved or deposited.
+The [current predictor report](../predictor/RESULTS.md), [research review](../predictor/REVIEW.md) and [portable commands](../predictor/README.md) cover 60 separately identified forks, including failed boundary forecasts, fresh 0.5% disagreement, GC-conditioned model errors and naive comparisons. Earlier data packages and claim maps keep their dated scope.
 
 ## Reproduce the 18 November mechanism extension
 
-Use the separate [portable commands](../mechanism/README.md). They verify all 64 forks/32 pairs, full tails, strict stall-rate bounds and frozen conditional models. New claims and their limits are audited in [the mechanism review](../mechanism/REVIEW.md); the older claim maps retain their dated scope. No new paper submission or author approval is implied.
+Use the separate [portable commands](../mechanism/README.md). They verify all 64 forks/32 pairs, full tails, strict stall-rate bounds and frozen conditional models. New claims and their limits are audited in [the mechanism review](../mechanism/REVIEW.md); the older claim maps retain their dated scope.
 
 The subsequent [deep mechanism re-review](../mechanism/REREVIEW_20261118.md) hardens incomplete-export checks, pins replay source identity, and distinguishes warning-inclusive replication from clean-host confirmation. Measurement data remain unchanged.

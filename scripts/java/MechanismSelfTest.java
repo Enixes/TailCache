@@ -15,6 +15,39 @@ public final class MechanismSelfTest {
     for(int i=0;i<50003;i++)check(Arrays.equals(old.executeNext(),next.executeNext()),"Full-set legacy equivalence");
     check(old.verifyContents()==next.verifyContents(),"Legacy final values");
    }
-  System.out.println("{\"passed\":true,\"pairedCases\":6,\"legacyFullSetEquivalent\":true,\"researchObservations\":0}");
+  for (var backend : new CrossoverBackend[]{CrossoverBackend.CAFFEINE, CrossoverBackend.CHRONICLE_IN_MEMORY})
+   for (int stride : new int[]{1, 8}) checkWriteTiming(backend, config, stride);
+  System.out.println("{\"passed\":true,\"pairedCases\":6,\"legacyFullSetEquivalent\":true,\"splitWriteEquivalent\":true,\"researchObservations\":0}");
+ }
+
+ private static void checkWriteTiming(CrossoverBackend backend, CrossoverConfig config, int stride) throws Exception {
+   try (var original = new MechanismWorkload(backend, config, 500, 128);
+        var instrumented = new MechanismWorkload(backend, config, 500, 128)) {
+    for (int i = 0; i < 1003; i++) check(Arrays.equals(original.executeNext(), instrumented.executeNext()), "Prefix values");
+    long writesBefore = instrumented.writes();
+    var timing = new MechanismWorkload.WriteTiming(writesBefore, stride, config.seed());
+    long samples = 0;
+    for (int i = 0; i < 20003; i++) {
+     long priorWrites = instrumented.writes();
+     timing.constructionNs = -1;
+     timing.cachePutNs = -1;
+     check(Arrays.equals(original.executeNext(), instrumented.executeNext(timing)), "Split timing value mismatch");
+     long ordinal = instrumented.writes() - writesBefore;
+     boolean sampled = instrumented.writes() > priorWrites
+         && (ordinal - 1) % stride == Math.floorMod(config.seed(), stride);
+     if (sampled) {
+      check(timing.recorded, "Selected write was not recorded");
+      check(timing.constructionNs >= 0 && timing.cachePutNs >= 0, "Missing write durations");
+      samples++;
+     } else {
+      check(timing.constructionNs == -1 && timing.cachePutNs == -1, "Unselected operation recorded a write duration");
+     }
+    }
+    long writes = instrumented.writes() - writesBefore;
+    long expected = (writes + stride - 1 - Math.floorMod(config.seed(), stride)) / stride;
+    check(samples > 0 && samples == expected && original.writes() == instrumented.writes(), "Split timing count mismatch");
+    check(original.verifyContents() == instrumented.verifyContents()
+        && original.mutationVersionDigest().equals(instrumented.mutationVersionDigest()), "Split timing mutations differ");
+   }
  }
 }

@@ -1,0 +1,56 @@
+{
+  "passed": false,
+  "failures": [
+    "Seed 62311 CAFFEINE: serviceP999 shifted by -10.5%",
+    "Seed 62311: Chronicle/Caffeine service p99.9 ratio shifted by +14.1%",
+    "Seed 62312: Chronicle/Caffeine service p99.9 ratio shifted by -9.7%"
+  ],
+  "changes": [
+    {
+      "seed": 62311,
+      "backend": "CAFFEINE",
+      "relativeChange": {
+        "operationsPerSecond": 0.028749861792144227,
+        "serviceP999": -0.10451702571230026,
+        "updateServiceP999": -0.05895732872350101
+      }
+    },
+    {
+      "seed": 62311,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "relativeChange": {
+        "operationsPerSecond": -0.03219454422351031,
+        "serviceP999": 0.021404682274247522,
+        "updateServiceP999": 0.014006828328810395
+      }
+    },
+    {
+      "seed": 62312,
+      "backend": "CAFFEINE",
+      "relativeChange": {
+        "operationsPerSecond": -0.04358641539609642,
+        "serviceP999": 0.07118493252261615,
+        "updateServiceP999": 0.05756500047970836
+      }
+    },
+    {
+      "seed": 62312,
+      "backend": "CHRONICLE_IN_MEMORY",
+      "relativeChange": {
+        "operationsPerSecond": 0.01762406025849672,
+        "serviceP999": -0.032965639660200274,
+        "updateServiceP999": -0.029433899155447807
+      }
+    }
+  ],
+  "backendRatioDrift": [
+    {
+      "seed": 62311,
+      "relativeChange": 0.14061876283768604
+    },
+    {
+      "seed": 62312,
+      "relativeChange": -0.09722931029056225
+    }
+  ]
+}

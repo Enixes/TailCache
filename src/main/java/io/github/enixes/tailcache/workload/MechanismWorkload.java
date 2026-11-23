@@ -9,6 +9,21 @@ import java.util.HexFormat;
 
 /** Ordinary access with equal-cost index generation and no retained payload/trace bank. */
 public final class MechanismWorkload implements AutoCloseable {
+    static final class WriteTiming {
+        final long firstWrite;
+        final int sampleEvery;
+        long nextWrite;
+        boolean recorded;
+        long constructionNs;
+        long cachePutNs;
+
+        WriteTiming(long writesBeforePhase, int sampleEvery, long seed) {
+            this.firstWrite = writesBeforePhase + 1 + Math.floorMod(seed, sampleEvery);
+            this.sampleEvery = sampleEvery;
+            this.nextWrite = firstWrite;
+        }
+    }
+
     private final CrossoverConfig config;
     private final CacheAdapter cache;
     private final Long[] keys;
@@ -35,11 +50,29 @@ public final class MechanismWorkload implements AutoCloseable {
         }catch(RuntimeException|Error e){cache.close();throw e;}
     }
     public byte[] executeNext() {
+        return executeNext(null);
+    }
+
+    byte[] executeNext(WriteTiming timing) {
         long position=operations++;int index=stream.keyAt(position);Long key=keys[index];
         if(stream.isReadAt(position)){byte[] value=cache.get(key);if(value==null)throw new IllegalStateException("Cache miss");return value;}
         index=index%updateHotset;key=keys[index];
-        long version=writes+1;byte[] fresh=values.create(key,version,config.payloadBytes());
-        cache.put(key,fresh);versions[index]=version;writes=version;return fresh;
+        long version = writes + 1;
+        boolean sample = timing != null && version == timing.nextWrite;
+        long constructionStart = sample ? System.nanoTime() : 0;
+        byte[] fresh = values.create(key, version, config.payloadBytes());
+        long putStart = sample ? System.nanoTime() : 0;
+        cache.put(key, fresh);
+        if (sample) {
+            long putEnd = System.nanoTime();
+            timing.constructionNs = putStart - constructionStart;
+            timing.cachePutNs = putEnd - putStart;
+            timing.nextWrite += timing.sampleEvery;
+        }
+        if (timing != null) timing.recorded = sample;
+        versions[index] = version;
+        writes = version;
+        return fresh;
     }
     public Object executeSupplyFloorNext() {
         long position=operations++;int index=stream.keyAt(position);

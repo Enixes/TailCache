@@ -1,0 +1,4445 @@
+{
+  "version": "tailcache-portable-v1",
+  "runSha256": "c0ff7d1d00808d71c97ed1bbbd7fb6f082ea360d67081a76431517a1d470027d",
+  "bundleId": "d46d12c3ae7b64f846ed9d6e6f6d1fd32034723ab4998ac3a872c6bea872713c",
+  "hostId": "5cdd6a902d1ea273e10f2b3f3d8fe8b5d4413c679203fd303097dd5ab16e8fa3",
+  "purpose": "diagnostic",
+  "collectionComplete": true,
+  "allSlotsSuccessful": true,
+  "scheduled": 4,
+  "completed": 4,
+  "failed": 0,
+  "missing": [],
+  "pairs": [
+    {
+      "cell": 1,
+      "block": 1,
+      "seed": 61901,
+      "labels": [
+        "b01-c001-CAFFEINE",
+        "b01-c001-CHRONICLE_IN_MEMORY"
+      ],
+      "usable": true,
+      "warningFree": false,
+      "ratios": {
+        "service": {
+          "50": 0.7,
+          "99": 1.4475920679886685,
+          "99.9": 1.4086707044947402,
+          "99.99": 0.8750666565094842,
+          "99.999": 0.8750666565094842
+        },
+        "response": {
+          "50": 0.7841726618705036,
+          "99": 1.4251537935748462,
+          "99.9": 1.3977450673347949,
+          "99.99": 0.8749146110056926,
+          "99.999": 0.8749146110056926
+        },
+        "gap": {
+          "50": 1.0,
+          "99": 1.0069488999220222,
+          "99.9": 1.0130436048486495,
+          "99.99": 0.9903298344161904,
+          "99.999": 0.9903298344161904
+        },
+        "read-service": {
+          "50": 0.7,
+          "99": 0.26676829268292684,
+          "99.9": 0.33535224737009883,
+          "99.99": 0.6483583453949874,
+          "99.999": 0.6483583453949874
+        },
+        "update-service": {
+          "50": 2.925869894099849,
+          "99": 2.512147716229349,
+          "99.9": 3.5818521983161835,
+          "99.99": 3.5818521983161835,
+          "99.999": 3.5818521983161835
+        }
+      },
+      "invalidReason": null
+    },
+    {
+      "cell": 1,
+      "block": 2,
+      "seed": 61902,
+      "labels": [
+        "b02-c001-CHRONICLE_IN_MEMORY",
+        "b02-c001-CAFFEINE"
+      ],
+      "usable": true,
+      "warningFree": false,
+      "ratios": {
+        "service": {
+          "50": 0.81,
+          "99": 1.1281464530892449,
+          "99.9": 1.5892591806410528,
+          "99.99": 1.3918334506688121,
+          "99.999": 1.3918334506688121
+        },
+        "response": {
+          "50": 0.9236111111111112,
+          "99": 0.7035385901365283,
+          "99.9": 0.8502987261864502,
+          "99.99": 0.9965574123215951,
+          "99.999": 0.9965574123215951
+        },
+        "gap": {
+          "50": 1.0,
+          "99": 0.9900989141680284,
+          "99.9": 0.9828704857361723,
+          "99.99": 1.0,
+          "99.999": 1.0
+        },
+        "read-service": {
+          "50": 0.81,
+          "99": 0.19796954314720813,
+          "99.9": 1.5892591806410528,
+          "99.99": 0.798048878608066,
+          "99.999": 0.798048878608066
+        },
+        "update-service": {
+          "50": 3.2278481012658227,
+          "99": 2.1893920440330246,
+          "99.9": 2.406364110589463,
+          "99.99": 2.406364110589463,
+          "99.999": 2.406364110589463
+        }
+      },
+      "invalidReason": null
+    }
+  ],
+  "summaries": [
+    {
+      "cell": 1,
+      "channel": "service",
+      "quantile": 50,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 100.0,
+          "mean": 100,
+          "minimum": 100,
+          "maximum": 100,
+          "sampleSd": 0.0,
+          "coefficientOfVariation": 0.0,
+          "medianAbsoluteDeviation": 0.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 75.5,
+          "mean": 75.5,
+          "minimum": 70,
+          "maximum": 81,
+          "sampleSd": 7.7781745930520225,
+          "coefficientOfVariation": 0.10302218004042414,
+          "medianAbsoluteDeviation": 5.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.755,
+        "geometricMeanRatio": 0.7529940238806679,
+        "minimumRatio": 0.7,
+        "maximumRatio": 0.81,
+        "logRatioSampleSd": 0.10320500135648865,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "service",
+      "quantile": 99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 1798.5,
+          "mean": 1798.5,
+          "minimum": 1412,
+          "maximum": 2185,
+          "sampleSd": 546.5935418572012,
+          "coefficientOfVariation": 0.30391634242824644,
+          "medianAbsoluteDeviation": 386.5
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 2254.5,
+          "mean": 2254.5,
+          "minimum": 2044,
+          "maximum": 2465,
+          "sampleSd": 297.6919548795365,
+          "coefficientOfVariation": 0.13204344860480663,
+          "medianAbsoluteDeviation": 210.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.2878692605389568,
+        "geometricMeanRatio": 1.2779263895160555,
+        "minimumRatio": 1.1281464530892449,
+        "maximumRatio": 1.4475920679886685,
+        "logRatioSampleSd": 0.17629979018510575,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "service",
+      "quantile": 99.9,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 3924.0,
+          "mean": 3924,
+          "minimum": 3137,
+          "maximum": 4711,
+          "sampleSd": 1112.9860735876257,
+          "coefficientOfVariation": 0.283635594696133,
+          "medianAbsoluteDeviation": 787.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 5953.0,
+          "mean": 5953,
+          "minimum": 4419,
+          "maximum": 7487,
+          "sampleSd": 2169.4036046803276,
+          "coefficientOfVariation": 0.3644219057081014,
+          "medianAbsoluteDeviation": 1534.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.4989649425678966,
+        "geometricMeanRatio": 1.4962429113009577,
+        "minimumRatio": 1.4086707044947402,
+        "maximumRatio": 1.5892591806410528,
+        "logRatioSampleSd": 0.08529227112500289,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "service",
+      "quantile": 99.99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 11535.0,
+          "mean": 11535,
+          "minimum": 9943,
+          "maximum": 13127,
+          "sampleSd": 2251.4279912979673,
+          "coefficientOfVariation": 0.19518231394000585,
+          "medianAbsoluteDeviation": 1592.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12663.0,
+          "mean": 12663,
+          "minimum": 11487,
+          "maximum": 13839,
+          "sampleSd": 1663.1151493507598,
+          "coefficientOfVariation": 0.1313365829069541,
+          "medianAbsoluteDeviation": 1176.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.133450053589148,
+        "geometricMeanRatio": 1.1036063809596317,
+        "minimumRatio": 0.8750666565094842,
+        "maximumRatio": 1.3918334506688121,
+        "logRatioSampleSd": 0.3281520813059689,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "service",
+      "quantile": 99.999,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 11535.0,
+          "mean": 11535,
+          "minimum": 9943,
+          "maximum": 13127,
+          "sampleSd": 2251.4279912979673,
+          "coefficientOfVariation": 0.19518231394000585,
+          "medianAbsoluteDeviation": 1592.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12663.0,
+          "mean": 12663,
+          "minimum": 11487,
+          "maximum": 13839,
+          "sampleSd": 1663.1151493507598,
+          "coefficientOfVariation": 0.1313365829069541,
+          "medianAbsoluteDeviation": 1176.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.133450053589148,
+        "geometricMeanRatio": 1.1036063809596317,
+        "minimumRatio": 0.8750666565094842,
+        "maximumRatio": 1.3918334506688121,
+        "logRatioSampleSd": 0.3281520813059689,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "response",
+      "quantile": 50,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 141.5,
+          "mean": 141.5,
+          "minimum": 139,
+          "maximum": 144,
+          "sampleSd": 3.5355339059327378,
+          "coefficientOfVariation": 0.024986105342280834,
+          "medianAbsoluteDeviation": 2.5
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 121.0,
+          "mean": 121,
+          "minimum": 109,
+          "maximum": 133,
+          "sampleSd": 16.97056274847714,
+          "coefficientOfVariation": 0.14025258469815818,
+          "medianAbsoluteDeviation": 12.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.8538918864908074,
+        "geometricMeanRatio": 0.8510408824099894,
+        "minimumRatio": 0.7841726618705036,
+        "maximumRatio": 0.9236111111111112,
+        "logRatioSampleSd": 0.11572642484963264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "response",
+      "quantile": 99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 2526.0,
+          "mean": 2526,
+          "minimum": 1463,
+          "maximum": 3589,
+          "sampleSd": 1503.3090168026001,
+          "coefficientOfVariation": 0.5951342109273952,
+          "medianAbsoluteDeviation": 1063.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 2305.0,
+          "mean": 2305,
+          "minimum": 2085,
+          "maximum": 2525,
+          "sampleSd": 311.1269837220809,
+          "coefficientOfVariation": 0.1349791686429852,
+          "medianAbsoluteDeviation": 220.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.0643461918556874,
+        "geometricMeanRatio": 1.001324468221651,
+        "minimumRatio": 0.7035385901365283,
+        "maximumRatio": 1.4251537935748462,
+        "logRatioSampleSd": 0.4991553619853436,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "response",
+      "quantile": 99.9,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 6032.0,
+          "mean": 6032,
+          "minimum": 3193,
+          "maximum": 8871,
+          "sampleSd": 4014.9523035772168,
+          "coefficientOfVariation": 0.6656088036434378,
+          "medianAbsoluteDeviation": 2839.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 6003.0,
+          "mean": 6003,
+          "minimum": 4463,
+          "maximum": 7543,
+          "sampleSd": 2177.8888860545662,
+          "coefficientOfVariation": 0.36280008096861005,
+          "medianAbsoluteDeviation": 1540.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.1240218967606226,
+        "geometricMeanRatio": 1.0901838607721956,
+        "minimumRatio": 0.8502987261864502,
+        "maximumRatio": 1.3977450673347949,
+        "logRatioSampleSd": 0.3514517423715097,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "response",
+      "quantile": 99.99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 13559.0,
+          "mean": 13559,
+          "minimum": 13175,
+          "maximum": 13943,
+          "sampleSd": 543.0580079512685,
+          "coefficientOfVariation": 0.040051479309039635,
+          "medianAbsoluteDeviation": 384.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12711.0,
+          "mean": 12711,
+          "minimum": 11527,
+          "maximum": 13895,
+          "sampleSd": 1674.4288578497446,
+          "coefficientOfVariation": 0.13173069450473956,
+          "medianAbsoluteDeviation": 1184.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.9357360116636438,
+        "geometricMeanRatio": 0.9337572707862509,
+        "minimumRatio": 0.8749146110056926,
+        "maximumRatio": 0.9965574123215951,
+        "logRatioSampleSd": 0.09205148448137264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "response",
+      "quantile": 99.999,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 13559.0,
+          "mean": 13559,
+          "minimum": 13175,
+          "maximum": 13943,
+          "sampleSd": 543.0580079512685,
+          "coefficientOfVariation": 0.040051479309039635,
+          "medianAbsoluteDeviation": 384.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12711.0,
+          "mean": 12711,
+          "minimum": 11527,
+          "maximum": 13895,
+          "sampleSd": 1674.4288578497446,
+          "coefficientOfVariation": 0.13173069450473956,
+          "medianAbsoluteDeviation": 1184.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.9357360116636438,
+        "geometricMeanRatio": 0.9337572707862509,
+        "minimumRatio": 0.8749146110056926,
+        "maximumRatio": 0.9965574123215951,
+        "logRatioSampleSd": 0.09205148448137264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "gap",
+      "quantile": 50,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 100031.0,
+          "mean": 100031,
+          "minimum": 100031,
+          "maximum": 100031,
+          "sampleSd": 0.0,
+          "coefficientOfVariation": 0.0,
+          "medianAbsoluteDeviation": 0.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 100031.0,
+          "mean": 100031,
+          "minimum": 100031,
+          "maximum": 100031,
+          "sampleSd": 0.0,
+          "coefficientOfVariation": 0.0,
+          "medianAbsoluteDeviation": 0.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 0,
+        "ties": 2,
+        "medianRatio": 1.0,
+        "geometricMeanRatio": 1.0,
+        "minimumRatio": 1.0,
+        "maximumRatio": 1.0,
+        "logRatioSampleSd": 0.0,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "gap",
+      "quantile": 99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 102367.0,
+          "mean": 102367,
+          "minimum": 101311,
+          "maximum": 103423,
+          "sampleSd": 1493.4095218659884,
+          "coefficientOfVariation": 0.014588778823898214,
+          "medianAbsoluteDeviation": 1056.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 102207.0,
+          "mean": 102207,
+          "minimum": 102015,
+          "maximum": 102399,
+          "sampleSd": 271.5290039756342,
+          "coefficientOfVariation": 0.0026566576063834593,
+          "medianAbsoluteDeviation": 192.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 0.9985239070450254,
+        "geometricMeanRatio": 0.998488363695584,
+        "minimumRatio": 0.9900989141680284,
+        "maximumRatio": 1.0069488999220222,
+        "logRatioSampleSd": 0.011932635619812296,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "gap",
+      "quantile": 99.9,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 105695.0,
+          "mean": 105695,
+          "minimum": 103039,
+          "maximum": 108351,
+          "sampleSd": 3756.1512216629403,
+          "coefficientOfVariation": 0.0355376434236524,
+          "medianAbsoluteDeviation": 2656.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 105439.0,
+          "mean": 105439,
+          "minimum": 104383,
+          "maximum": 106495,
+          "sampleSd": 1493.4095218659884,
+          "coefficientOfVariation": 0.014163729946850676,
+          "medianAbsoluteDeviation": 1056.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 0.9979570452924109,
+        "geometricMeanRatio": 0.9978430036681698,
+        "minimumRatio": 0.9828704857361723,
+        "maximumRatio": 1.0130436048486495,
+        "logRatioSampleSd": 0.02138092294080238,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "gap",
+      "quantile": 99.99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 113151.0,
+          "mean": 113151,
+          "minimum": 112511,
+          "maximum": 113791,
+          "sampleSd": 905.0966799187809,
+          "coefficientOfVariation": 0.007999016181198406,
+          "medianAbsoluteDeviation": 640.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 112607.0,
+          "mean": 112607,
+          "minimum": 111423,
+          "maximum": 113791,
+          "sampleSd": 1674.4288578497446,
+          "coefficientOfVariation": 0.014869669362026735,
+          "medianAbsoluteDeviation": 1184.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 0,
+        "ties": 1,
+        "medianRatio": 0.9951649172080952,
+        "geometricMeanRatio": 0.9951531713340366,
+        "minimumRatio": 0.9903298344161904,
+        "maximumRatio": 1.0,
+        "logRatioSampleSd": 0.0068711158785162854,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "gap",
+      "quantile": 99.999,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 113151.0,
+          "mean": 113151,
+          "minimum": 112511,
+          "maximum": 113791,
+          "sampleSd": 905.0966799187809,
+          "coefficientOfVariation": 0.007999016181198406,
+          "medianAbsoluteDeviation": 640.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 112607.0,
+          "mean": 112607,
+          "minimum": 111423,
+          "maximum": 113791,
+          "sampleSd": 1674.4288578497446,
+          "coefficientOfVariation": 0.014869669362026735,
+          "medianAbsoluteDeviation": 1184.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 0,
+        "ties": 1,
+        "medianRatio": 0.9951649172080952,
+        "geometricMeanRatio": 0.9951531713340366,
+        "minimumRatio": 0.9903298344161904,
+        "maximumRatio": 1.0,
+        "logRatioSampleSd": 0.0068711158785162854,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "read-service",
+      "quantile": 50,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 100.0,
+          "mean": 100,
+          "minimum": 100,
+          "maximum": 100,
+          "sampleSd": 0.0,
+          "coefficientOfVariation": 0.0,
+          "medianAbsoluteDeviation": 0.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 75.5,
+          "mean": 75.5,
+          "minimum": 70,
+          "maximum": 81,
+          "sampleSd": 7.7781745930520225,
+          "coefficientOfVariation": 0.10302218004042414,
+          "medianAbsoluteDeviation": 5.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.755,
+        "geometricMeanRatio": 0.7529940238806679,
+        "minimumRatio": 0.7,
+        "maximumRatio": 0.81,
+        "logRatioSampleSd": 0.10320500135648865,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "read-service",
+      "quantile": 99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 1542.5,
+          "mean": 1542.5,
+          "minimum": 1312,
+          "maximum": 1773,
+          "sampleSd": 325.9762261269984,
+          "coefficientOfVariation": 0.21132980624116593,
+          "medianAbsoluteDeviation": 230.5
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 350.5,
+          "mean": 350.5,
+          "minimum": 350,
+          "maximum": 351,
+          "sampleSd": 0.7071067811865476,
+          "coefficientOfVariation": 0.00201742305616704,
+          "medianAbsoluteDeviation": 0.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.23236891791506747,
+        "geometricMeanRatio": 0.2298086095615213,
+        "minimumRatio": 0.19796954314720813,
+        "maximumRatio": 0.26676829268292684,
+        "logRatioSampleSd": 0.21090680751729265,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "read-service",
+      "quantile": 99.9,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 3924.0,
+          "mean": 3924,
+          "minimum": 3137,
+          "maximum": 4711,
+          "sampleSd": 1112.9860735876257,
+          "coefficientOfVariation": 0.283635594696133,
+          "medianAbsoluteDeviation": 787.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 4269.5,
+          "mean": 4269.5,
+          "minimum": 1052,
+          "maximum": 7487,
+          "sampleSd": 4550.232136935433,
+          "coefficientOfVariation": 1.0657529305388063,
+          "medianAbsoluteDeviation": 3217.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 0.9623057140055757,
+        "geometricMeanRatio": 0.7300422165063737,
+        "minimumRatio": 0.33535224737009883,
+        "maximumRatio": 1.5892591806410528,
+        "logRatioSampleSd": 1.1001462861188485,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "read-service",
+      "quantile": 99.99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 11535.0,
+          "mean": 11535,
+          "minimum": 9943,
+          "maximum": 13127,
+          "sampleSd": 2251.4279912979673,
+          "coefficientOfVariation": 0.19518231394000585,
+          "medianAbsoluteDeviation": 1592.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 8223.0,
+          "mean": 8223,
+          "minimum": 7935,
+          "maximum": 8511,
+          "sampleSd": 407.29350596345137,
+          "coefficientOfVariation": 0.04953101130529629,
+          "medianAbsoluteDeviation": 288.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.7232036120015266,
+        "geometricMeanRatio": 0.7193202697537799,
+        "minimumRatio": 0.6483583453949874,
+        "maximumRatio": 0.798048878608066,
+        "logRatioSampleSd": 0.14688467628489646,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "read-service",
+      "quantile": 99.999,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 11535.0,
+          "mean": 11535,
+          "minimum": 9943,
+          "maximum": 13127,
+          "sampleSd": 2251.4279912979673,
+          "coefficientOfVariation": 0.19518231394000585,
+          "medianAbsoluteDeviation": 1592.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 8223.0,
+          "mean": 8223,
+          "minimum": 7935,
+          "maximum": 8511,
+          "sampleSd": 407.29350596345137,
+          "coefficientOfVariation": 0.04953101130529629,
+          "medianAbsoluteDeviation": 288.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.7232036120015266,
+        "geometricMeanRatio": 0.7193202697537799,
+        "minimumRatio": 0.6483583453949874,
+        "maximumRatio": 0.798048878608066,
+        "logRatioSampleSd": 0.14688467628489646,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "update-service",
+      "quantile": 50,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 686.0,
+          "mean": 686,
+          "minimum": 661,
+          "maximum": 711,
+          "sampleSd": 35.35533905932738,
+          "coefficientOfVariation": 0.05153839513021483,
+          "medianAbsoluteDeviation": 25.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 2114.5,
+          "mean": 2114.5,
+          "minimum": 1934,
+          "maximum": 2295,
+          "sampleSd": 255.26554800834364,
+          "coefficientOfVariation": 0.12072146985497453,
+          "medianAbsoluteDeviation": 180.5
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 3.0768589976828356,
+        "geometricMeanRatio": 3.0731520597297215,
+        "minimumRatio": 2.925869894099849,
+        "maximumRatio": 3.2278481012658227,
+        "logRatioSampleSd": 0.06945475502655218,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "update-service",
+      "quantile": 99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 3542.0,
+          "mean": 3542,
+          "minimum": 3087,
+          "maximum": 3997,
+          "sampleSd": 643.4671708797582,
+          "coefficientOfVariation": 0.18166775010721575,
+          "medianAbsoluteDeviation": 455.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 8253.0,
+          "mean": 8253,
+          "minimum": 7755,
+          "maximum": 8751,
+          "sampleSd": 704.2783540618013,
+          "coefficientOfVariation": 0.08533604193163714,
+          "medianAbsoluteDeviation": 498.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 2.3507698801311867,
+        "geometricMeanRatio": 2.345224130727865,
+        "minimumRatio": 2.1893920440330246,
+        "maximumRatio": 2.512147716229349,
+        "logRatioSampleSd": 0.09723718888200965,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "update-service",
+      "quantile": 99.9,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 4479.0,
+          "mean": 4479,
+          "minimum": 3207,
+          "maximum": 5751,
+          "sampleSd": 1798.8796513385769,
+          "coefficientOfVariation": 0.40162528496061106,
+          "medianAbsoluteDeviation": 1272.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12663.0,
+          "mean": 12663,
+          "minimum": 11487,
+          "maximum": 13839,
+          "sampleSd": 1663.1151493507598,
+          "coefficientOfVariation": 0.1313365829069541,
+          "medianAbsoluteDeviation": 1176.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 2.994108154452823,
+        "geometricMeanRatio": 2.935854318501522,
+        "minimumRatio": 2.406364110589463,
+        "maximumRatio": 3.5818521983161835,
+        "logRatioSampleSd": 0.2812609852734081,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "update-service",
+      "quantile": 99.99,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 4479.0,
+          "mean": 4479,
+          "minimum": 3207,
+          "maximum": 5751,
+          "sampleSd": 1798.8796513385769,
+          "coefficientOfVariation": 0.40162528496061106,
+          "medianAbsoluteDeviation": 1272.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12663.0,
+          "mean": 12663,
+          "minimum": 11487,
+          "maximum": 13839,
+          "sampleSd": 1663.1151493507598,
+          "coefficientOfVariation": 0.1313365829069541,
+          "medianAbsoluteDeviation": 1176.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 2.994108154452823,
+        "geometricMeanRatio": 2.935854318501522,
+        "minimumRatio": 2.406364110589463,
+        "maximumRatio": 3.5818521983161835,
+        "logRatioSampleSd": 0.2812609852734081,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    },
+    {
+      "cell": 1,
+      "channel": "update-service",
+      "quantile": 99.999,
+      "backendForkVariationNs": {
+        "CAFFEINE": {
+          "n": 2,
+          "median": 4479.0,
+          "mean": 4479,
+          "minimum": 3207,
+          "maximum": 5751,
+          "sampleSd": 1798.8796513385769,
+          "coefficientOfVariation": 0.40162528496061106,
+          "medianAbsoluteDeviation": 1272.0
+        },
+        "CHRONICLE_IN_MEMORY": {
+          "n": 2,
+          "median": 12663.0,
+          "mean": 12663,
+          "minimum": 11487,
+          "maximum": 13839,
+          "sampleSd": 1663.1151493507598,
+          "coefficientOfVariation": 0.1313365829069541,
+          "medianAbsoluteDeviation": 1176.0
+        }
+      },
+      "allUsablePairs": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 2.994108154452823,
+        "geometricMeanRatio": 2.935854318501522,
+        "minimumRatio": 2.406364110589463,
+        "maximumRatio": 3.5818521983161835,
+        "logRatioSampleSd": 0.2812609852734081,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "warningFreePairs": {
+        "n": 0
+      }
+    }
+  ],
+  "observations": [
+    {
+      "spec": {
+        "label": "b01-c001-CAFFEINE",
+        "block": 1,
+        "cell": 1,
+        "seed": 61901,
+        "backend": "CAFFEINE",
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "exitCode": 0,
+      "status": "COMPLETE",
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ],
+      "startedUtc": "2026-11-20T03:28:58.527321+00:00",
+      "host": {
+        "warnings": [
+          "Measured compiler activity exceeds frozen ceiling; not app pause time"
+        ],
+        "lifetimeDiagnostics": [
+          "External power sensor unavailable"
+        ],
+        "protectedWindow": "conditioning start through measurement end; overlapping 1Hz brackets",
+        "outsideCpuMaxUpperFraction": 0.006177176930465493,
+        "outsideCpuMissingIntervals": 0,
+        "outsideCpuUnattributedIntervals": 0,
+        "outsideCpuUnattributedMaxUpperFraction": null,
+        "sensorAttribution": "Host-wide; not causal attribution to worker"
+      },
+      "windows": [
+        {
+          "phase": "WARMUP",
+          "startNs": "31985566061836",
+          "endNs": "31987065961907",
+          "offeredEndNs": "31987066061836",
+          "operations": "15000",
+          "scheduled": "15000",
+          "writes": "766",
+          "workerAllocatedBytes": "248640",
+          "compilerMs": "198",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "2",
+          "stallEvents": "7001",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "CONDITIONING",
+          "startNs": "31987074625045",
+          "endNs": "31987174525173",
+          "offeredEndNs": "31987174625045",
+          "operations": "1000",
+          "scheduled": "1000",
+          "writes": "46",
+          "workerAllocatedBytes": "13344",
+          "compilerMs": "46",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "475",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "MEASUREMENT",
+          "startNs": "31987175468470",
+          "endNs": "31987475369725",
+          "offeredEndNs": "31987475468470",
+          "operations": "3000",
+          "scheduled": "3000",
+          "writes": "145",
+          "workerAllocatedBytes": "40272",
+          "compilerMs": "259",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "1420",
+          "unexportedStallEvents": "0"
+        }
+      ],
+      "integrity": {
+        "contentChecksum": "509",
+        "applicationChecksum": "0",
+        "operations": "19000",
+        "writes": "957",
+        "consumed": "-6912",
+        "mutationVersionSha256": "c83c999456acefb5424ccc24498cf7da9049b65423181253c715f89ccc92f96a",
+        "residentCount": "64"
+      },
+      "configuration": {
+        "backend": "CAFFEINE",
+        "config": "CrossoverConfig[residentEntries=64, payloadBytes=256, seed=61901, applicationLiveBytes=0, applicationObjectBytes=4096, churnBytesPerSecond=0, churnRingSlots=128]",
+        "backendConfig": "maximumSize=80,executor=ForkJoinPool.commonPool(default),policy=BOUNDED_DEFAULT,implementation=com.github.benmanes.caffeine.cache.SSMS,frequencySketchSlots=128",
+        "traceOperations": "0",
+        "traceArrayPayloadBytes": "0",
+        "streamVersion": "indexed-splitmix-v1",
+        "streamIdentity": "indexed-splitmix-v1:seed=61901:residents=64:writeBps=500:updateHotset=64",
+        "updateHotset": "64",
+        "streamPhaseReset": "false",
+        "streamWrap": "false",
+        "traceSha256": "72c3ef81b40961390fc9e71d7fe6a5a4c59c6f22a6f30130254fc752617c2fed",
+        "valueGenerator": "xorshift-key-version-v1",
+        "options": "{--write-bps=500, --churn-mib-sec=0, --qps=10000, --inject-stall-ms=0, --seed=61901, --reuse=false, --prime-calls=0, --residents=64, --payload=256, --update-hotset=64, --measure-ms=300, --conditioning-ms=100, --supply-floor=false, --live-mib=0, --warmup-ms=1500, --observer-handshake=true, --out=<repo>/results/second-host-pressure-write-02/preflight/smoke/slots/b01-c001-CAFFEINE/worker, --backend=CAFFEINE, --floor=false}",
+        "jvmArgs": "[-Dchronicle.analytics.disable=true, --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED, --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED, --add-exports=java.base/jdk.internal.util=ALL-UNNAMED, --add-exports=java.base/sun.nio.ch=ALL-UNNAMED, --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED, --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED, -XX:+UseG1GC, -XX:ActiveProcessorCount=12, -Xms512m, -Xmx512m, -XX:AsyncLogBufferSize=2097152, -Xlog:gc*,safepoint:file=gc.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:gc+age=trace:file=age.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:async]",
+        "maxHeapBytes": "536870912",
+        "primeCalls": "0",
+        "eventThresholdNs": "100000",
+        "eventLimit": "10000",
+        "jdk": "21.0.13+9-LTS",
+        "pacing": "fixed-arrival-spin-no-skips",
+        "continuousChurn": "true",
+        "lightweightLifecycleTrials": "3",
+        "readContract": "ordinary-get"
+      },
+      "stallExport": {
+        "total": 1420,
+        "exported": 1420,
+        "omitted": 0
+      },
+      "latency": {
+        "service": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 1412,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 3137,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13127,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13127,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13127,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 139,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 1463,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 3193,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13175,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13175,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13175,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 101311,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 103039,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 112511,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 112511,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 112511,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 672,
+              "upperCount": 2216,
+              "lowerProbability": 0.224,
+              "upperProbability": 0.7386666666666667
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 2855,
+          "percentiles": {
+            "50": {
+              "ns": 100,
+              "expectedBeyondQuantile": 1427.5,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 1312,
+              "expectedBeyondQuantile": 28.550000000000026,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 3137,
+              "expectedBeyondQuantile": 2.8549999999996856,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13127,
+              "expectedBeyondQuantile": 0.2855000000002855,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13127,
+              "expectedBeyondQuantile": 0.028550000000187037,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13127,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 145,
+          "percentiles": {
+            "50": {
+              "ns": 661,
+              "expectedBeyondQuantile": 72.5,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 3087,
+              "expectedBeyondQuantile": 1.4500000000000013,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": 3207,
+              "expectedBeyondQuantile": 0.14499999999998403,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 3207,
+              "expectedBeyondQuantile": 0.014500000000014501,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 3207,
+              "expectedBeyondQuantile": 0.0014500000000094992,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 3207,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        }
+      },
+      "gc": {
+        "measurementSeconds": 0.299901255,
+        "operations": 3000,
+        "pauseCount": 0,
+        "pauseTotalWholeMs": 0.0,
+        "evacuationFailureCount": 0,
+        "pauseOverlapMs": 0.0,
+        "pauseMaxWholeMs": 0.0,
+        "pauseExposureFraction": 0.0,
+        "pausesPerSecond": 0.0,
+        "pausesPerMillionOperations": 0.0,
+        "safepointOverlapMs": 0.0,
+        "completedConcurrentCycles": 0,
+        "postGcUsedHeapMedianFraction": null,
+        "postGcUsedHeapMinFraction": null,
+        "postGcUsedHeapMaxFraction": null,
+        "oldRegionsMedianHeapFraction": null,
+        "maxHumongousRegionsAfter": null,
+        "limits": "Post-collection used heap and old-region capacity are not an exact live-set census. Safepoint and GC totals overlap and must not be added."
+      },
+      "operationsPerSecond": 10003.292583753944,
+      "workerAllocatedBytes": 40272,
+      "workerAllocatedBytesPerOperation": 13.424,
+      "freshWritePayloadBytes": 37120,
+      "compilerMs": 259,
+      "achievedChurnBytesPerSecond": 0.0,
+      "peakObservedRssKiB": 98908,
+      "observerHandoffComplete": true,
+      "rawSha256": {
+        "age.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "command.json": "20774a5ffb2ccb6c89c5f8bcc3a4149cca1f71cc800b0e6e772114ff410c8423",
+        "gc.log": "91b7d79e1766c1b53e40e80269955d216245a1aa638ea75e7ff5b396d2397ff8",
+        "hdr-endpoints.csv": "1bcc1a7031a9128d9d201b2e54daaae4d5a21837790295f57fbfaa176c436fe8",
+        "hdr-verification.json": "a666b79da6fd01c737cd226c8d29914cdc96fb6b56ce84ba8307cc647560a109",
+        "host.json": "87fdcf57b8af1c7a412f3f0f8855f4beade5e10d70c5275f66b5245a9a6b4528",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stream-audit-input.csv": "cd680592b8d41abbc4dc7433464425d18e75937fac45996ce49d2f9644acef5d",
+        "stream-audit.csv": "84fabe9c7c023f9acb718ab6cc20561f9782edf33cc0bbae3b62ee0785bfef3c",
+        "stream-verification.json": "6335a3e5aa6f84678011e582790e0bcdc0d04109acddeb6584ba29841f0c0427",
+        "worker/completion.txt": "15b03336ede9c616576e591dbc1af8096415b1c04f00707b55360668526f1dd0",
+        "worker/configuration.txt": "3898bd3a191185e68e819ed89bff739ef476a488ce51493b39b6141ca032c19f",
+        "worker/gap-bins.csv": "58572fa5f4c3c377152e7a376ae4196835b44d8a1800eb2876dd181709100c7e",
+        "worker/gap-summary.csv": "572f5774708f279de45f83d3cd914a8123d33cf8ce97b6942638d4a5f5f739eb",
+        "worker/gap.hdr": "91824ca3e3040e4b66dabe982768dc72a1f8762c80eefd736c14b3c6a4145047",
+        "worker/integrity.txt": "a39ee6a5cd1bddf83d2e90dbd32e59d5f1aa11ab599a7217f69b8ff1ef3a9dfe",
+        "worker/observer-ack.json": "883e6d0747fdb9aa88e41d0b481661d3b074a803de48a30ef337306aadd5d88b",
+        "worker/observer-ready": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "worker/phase.txt": "894981ff0205d540b0d3ce075782cc12e0d5fb559f98c625e2ffec22540120e8",
+        "worker/read-service-bins.csv": "67fe3faa893afa1089d11da96bc10145c6d7b912afe03ffd99194f19c745363e",
+        "worker/read-service-summary.csv": "1911aee57372338781d768b7bb436186a5b5cd7820752daa3c4a8c218a2869ed",
+        "worker/read-service.hdr": "454e8ac614eb557cb0475d5e56a1e7e506102ac94aee2282009b7754c029b9dd",
+        "worker/response-bins.csv": "c8d3498704b5a194b82ea38119986e72126409400c9172be515d459733122066",
+        "worker/response-summary.csv": "e221394b193d6cf130ed207d2cd374ef7416b90d5556402c60e295784a2cf908",
+        "worker/response.hdr": "d741489df7b6a1770508a3c329fa823416a5cd0e5f1e24feaa7d9f7e513d0381",
+        "worker/service-bins.csv": "902443553f4931a44f93fe4f2e795a6a3f19acecaf5c19fc7904ad2c93a3db1b",
+        "worker/service-summary.csv": "c365e73cdf3d7b6e19cdd00cd75d3cf2bd6267f2691cfa143ae5c7a5612eaa34",
+        "worker/service.hdr": "a0662d9dd68687f201e8c1a6941701671b4f6ad3754a62b356f3f0c47730ca36",
+        "worker/stalls.csv": "d9b8975b49626a351fbde3d3659e34006aab33421c65911e39730d65df9b49ff",
+        "worker/stream-CONDITIONING.txt": "c4cb46058d091840afcb2b2db8045205d000736418cba1b4071bbe3f1c954f57",
+        "worker/stream-MEASUREMENT.txt": "ff60d5f045544b8db6046e02d85577bcbfb2ba6a09c92b0cd6edb2a0983223c5",
+        "worker/stream-WARMUP.txt": "48a784b6ce8e04cf9eb48a735238eeb4ecd9272111edfa6e02fe9bc27e2e1881",
+        "worker/update-service-bins.csv": "fc474a5dbe6b96f68f9a29e96c596db02b38a6988d7790943f2ed664bd3ac2c0",
+        "worker/update-service-summary.csv": "a4aa8c30bf960ef934874fa6ca0246dd3a43b605c2c85228e97082d66b36e5c8",
+        "worker/update-service.hdr": "a0c6aaafe107b6ba68fa2dce62b2200ffc86305f827284670ade09204d4fe931",
+        "worker/windows.csv": "55d14927b6636916f5afbcda9ba7301f0423ccc38cc96608af5a8f03fc6fc7c1",
+        "worker-process.json": "21728e183c91cbb7f732f5e9e7f79af2a3a1957af6aa7012d7ca3062bda7a292"
+      }
+    },
+    {
+      "spec": {
+        "label": "b01-c001-CHRONICLE_IN_MEMORY",
+        "block": 1,
+        "cell": 1,
+        "seed": 61901,
+        "backend": "CHRONICLE_IN_MEMORY",
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "exitCode": 0,
+      "status": "COMPLETE",
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ],
+      "startedUtc": "2026-11-20T03:29:01.993025+00:00",
+      "host": {
+        "warnings": [
+          "Measured compiler activity exceeds frozen ceiling; not app pause time"
+        ],
+        "lifetimeDiagnostics": [
+          "External power sensor unavailable"
+        ],
+        "protectedWindow": "conditioning start through measurement end; overlapping 1Hz brackets",
+        "outsideCpuMaxUpperFraction": 0.006552826988461626,
+        "outsideCpuMissingIntervals": 0,
+        "outsideCpuUnattributedIntervals": 0,
+        "outsideCpuUnattributedMaxUpperFraction": null,
+        "sensorAttribution": "Host-wide; not causal attribution to worker"
+      },
+      "windows": [
+        {
+          "phase": "WARMUP",
+          "startNs": "31989641270402",
+          "endNs": "31991141170492",
+          "offeredEndNs": "31991141270402",
+          "operations": "15000",
+          "scheduled": "15000",
+          "writes": "766",
+          "workerAllocatedBytes": "4293152",
+          "compilerMs": "443",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "2",
+          "stallEvents": "6987",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "CONDITIONING",
+          "startNs": "31991144132265",
+          "endNs": "31991244032433",
+          "offeredEndNs": "31991244132265",
+          "operations": "1000",
+          "scheduled": "1000",
+          "writes": "46",
+          "workerAllocatedBytes": "282400",
+          "compilerMs": "15",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "467",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "MEASUREMENT",
+          "startNs": "31991244435968",
+          "endNs": "31991544336091",
+          "offeredEndNs": "31991544435968",
+          "operations": "3000",
+          "scheduled": "3000",
+          "writes": "145",
+          "workerAllocatedBytes": "846992",
+          "compilerMs": "386",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "1393",
+          "unexportedStallEvents": "0"
+        }
+      ],
+      "integrity": {
+        "contentChecksum": "509",
+        "applicationChecksum": "0",
+        "operations": "19000",
+        "writes": "957",
+        "consumed": "-6912",
+        "mutationVersionSha256": "c83c999456acefb5424ccc24498cf7da9049b65423181253c715f89ccc92f96a",
+        "residentCount": "64"
+      },
+      "configuration": {
+        "backend": "CHRONICLE_IN_MEMORY",
+        "config": "CrossoverConfig[residentEntries=64, payloadBytes=256, seed=61901, applicationLiveBytes=0, applicationObjectBytes=4096, churnBytesPerSecond=0, churnRingSlots=128]",
+        "backendConfig": "entries=128,valueSizeBytes=256,valueSizing=constant,maxBloatFactor=1.0,allowSegmentTiering=true,entryChecksums=false,putReturnsNull=true,entryStorage=off-heap,storageMode=IN_MEMORY,persisted=false",
+        "traceOperations": "0",
+        "traceArrayPayloadBytes": "0",
+        "streamVersion": "indexed-splitmix-v1",
+        "streamIdentity": "indexed-splitmix-v1:seed=61901:residents=64:writeBps=500:updateHotset=64",
+        "updateHotset": "64",
+        "streamPhaseReset": "false",
+        "streamWrap": "false",
+        "traceSha256": "72c3ef81b40961390fc9e71d7fe6a5a4c59c6f22a6f30130254fc752617c2fed",
+        "valueGenerator": "xorshift-key-version-v1",
+        "options": "{--write-bps=500, --churn-mib-sec=0, --qps=10000, --inject-stall-ms=0, --seed=61901, --reuse=false, --prime-calls=0, --residents=64, --payload=256, --update-hotset=64, --measure-ms=300, --conditioning-ms=100, --supply-floor=false, --live-mib=0, --warmup-ms=1500, --observer-handshake=true, --out=<repo>/results/second-host-pressure-write-02/preflight/smoke/slots/b01-c001-CHRONICLE_IN_MEMORY/worker, --backend=CHRONICLE_IN_MEMORY, --floor=false}",
+        "jvmArgs": "[-Dchronicle.analytics.disable=true, --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED, --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED, --add-exports=java.base/jdk.internal.util=ALL-UNNAMED, --add-exports=java.base/sun.nio.ch=ALL-UNNAMED, --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED, --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED, -XX:+UseG1GC, -XX:ActiveProcessorCount=12, -Xms512m, -Xmx512m, -XX:AsyncLogBufferSize=2097152, -Xlog:gc*,safepoint:file=gc.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:gc+age=trace:file=age.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:async]",
+        "maxHeapBytes": "536870912",
+        "primeCalls": "0",
+        "eventThresholdNs": "100000",
+        "eventLimit": "10000",
+        "jdk": "21.0.13+9-LTS",
+        "pacing": "fixed-arrival-spin-no-skips",
+        "continuousChurn": "true",
+        "lightweightLifecycleTrials": "3",
+        "readContract": "ordinary-get"
+      },
+      "stallExport": {
+        "total": 1393,
+        "exported": 1393,
+        "omitted": 0
+      },
+      "latency": {
+        "service": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 70,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 2044,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 4419,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 11487,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 11487,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 11487,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 109,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 2085,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 4463,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 11527,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 11527,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 11527,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 102015,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 104383,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 111423,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 111423,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 111423,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 479,
+              "upperCount": 2467,
+              "lowerProbability": 0.15966666666666668,
+              "upperProbability": 0.8223333333333334
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 2855,
+          "percentiles": {
+            "50": {
+              "ns": 70,
+              "expectedBeyondQuantile": 1427.5,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 350,
+              "expectedBeyondQuantile": 28.550000000000026,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 1052,
+              "expectedBeyondQuantile": 2.8549999999996856,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 8511,
+              "expectedBeyondQuantile": 0.2855000000002855,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 8511,
+              "expectedBeyondQuantile": 0.028550000000187037,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 8511,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 145,
+          "percentiles": {
+            "50": {
+              "ns": 1934,
+              "expectedBeyondQuantile": 72.5,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 7755,
+              "expectedBeyondQuantile": 1.4500000000000013,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": 11487,
+              "expectedBeyondQuantile": 0.14499999999998403,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 11487,
+              "expectedBeyondQuantile": 0.014500000000014501,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 11487,
+              "expectedBeyondQuantile": 0.0014500000000094992,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 11487,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        }
+      },
+      "gc": {
+        "measurementSeconds": 0.299900123,
+        "operations": 3000,
+        "pauseCount": 0,
+        "pauseTotalWholeMs": 0.0,
+        "evacuationFailureCount": 0,
+        "pauseOverlapMs": 0.0,
+        "pauseMaxWholeMs": 0.0,
+        "pauseExposureFraction": 0.0,
+        "pausesPerSecond": 0.0,
+        "pausesPerMillionOperations": 0.0,
+        "safepointOverlapMs": 0.0,
+        "completedConcurrentCycles": 0,
+        "postGcUsedHeapMedianFraction": null,
+        "postGcUsedHeapMinFraction": null,
+        "postGcUsedHeapMaxFraction": null,
+        "oldRegionsMedianHeapFraction": null,
+        "maxHumongousRegionsAfter": null,
+        "limits": "Post-collection used heap and old-region capacity are not an exact live-set census. Safepoint and GC totals overlap and must not be added."
+      },
+      "operationsPerSecond": 10003.33034208192,
+      "workerAllocatedBytes": 846992,
+      "workerAllocatedBytesPerOperation": 282.3306666666667,
+      "freshWritePayloadBytes": 37120,
+      "compilerMs": 386,
+      "achievedChurnBytesPerSecond": 0.0,
+      "peakObservedRssKiB": 199908,
+      "observerHandoffComplete": true,
+      "rawSha256": {
+        "age.log": "db0c4a7dea2e6f9197710730744379dfd32485cdafd0a6b279a63f896710c953",
+        "command.json": "785c4dda53023d350a2692078686e132df2a8e6614fbe74611d177a8aeb8c582",
+        "gc.log": "b665e520edfd5ba5d31246956b27ef4e74a6dbb589fecb4aa84ec421e870660b",
+        "hdr-endpoints.csv": "da74637c21efa9b3acfe55cbdf2b043af31bb7d2b08312853a9a38fa9d2965eb",
+        "hdr-verification.json": "63619005697899364cf641011d0145ff3f119dd2b5a8df42980184c1f78eb495",
+        "host.json": "38d0f249eac4d5e90a861b02c3466d9db6343a0fb50f809ab5f7fb270a93b429",
+        "stderr.txt": "2c58b87a0350a39bb1c3b5f4891defeeb9a785e84aa11a466dc9ddb21253bf58",
+        "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stream-audit-input.csv": "ba309a78336b9c23421cc1181d68a52e7eb435dce932b6cd199ceba0cd7018f1",
+        "stream-audit.csv": "b47b1fea4b52d35021b0d4f4b3afa60b3d528408b36feb32009ed67a60ba7c41",
+        "stream-verification.json": "e9452ca2471e9bb16deb4ae4102f3c1989146a2cb4538c5274505a04f22e9c98",
+        "worker/completion.txt": "15b03336ede9c616576e591dbc1af8096415b1c04f00707b55360668526f1dd0",
+        "worker/configuration.txt": "fb5d35bbc3ccdeb25058285b25f74351785b9c72b50bc9c08fad002d135ee2b9",
+        "worker/gap-bins.csv": "91ba1b72d0deb5f49d51bf39cd95bb3a67fd18c149daf78ca89471e9cf147d60",
+        "worker/gap-summary.csv": "b93d1f5a7f2f421b4d5de517eceffe5c57f190be9496d9d2b28fe0694e5d2a06",
+        "worker/gap.hdr": "6a7734b4fcaff39cff03728d7628a257cffa3eee31b82c20020886ce6ce31dd2",
+        "worker/integrity.txt": "a39ee6a5cd1bddf83d2e90dbd32e59d5f1aa11ab599a7217f69b8ff1ef3a9dfe",
+        "worker/observer-ack.json": "5be0202ac4c10c1b56b32fa07614a96f081ace9850b796559fb3c8952678ba6c",
+        "worker/observer-ready": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "worker/phase.txt": "894981ff0205d540b0d3ce075782cc12e0d5fb559f98c625e2ffec22540120e8",
+        "worker/read-service-bins.csv": "95e9dcdd6d701ea45fdc645d2e297fe65b6a6f993add75cb818142caf886aeea",
+        "worker/read-service-summary.csv": "7fad703b7d12e28c7df12d47e4948ed1c8b3ba722a7baa1d63d3c7dbc66be001",
+        "worker/read-service.hdr": "f93dd2cd1a9b638fed70e01137745819cf0689567eae378ef29881281dcd4fec",
+        "worker/response-bins.csv": "d195001286fe381dbcb4ca384e72b8ee0b5cc0836d3bc08fa09d7905a886db7c",
+        "worker/response-summary.csv": "758322de1f1f51fe70c5dd0a59c314068ea94203cea762d068085178bd7a75d2",
+        "worker/response.hdr": "27fd07ac3e492b2de56fb85aa4732bedb1c5c1498d72fe170cfb691a79ad4b9c",
+        "worker/service-bins.csv": "a180db7b44ba4ecb9501ad9e3a26e83e7748555f80a58839dce5850f51cd10ad",
+        "worker/service-summary.csv": "d5028fb723156eef8f96454a3915e6d9e770de3187a7ee42b69a1d84fcc38ef4",
+        "worker/service.hdr": "e80dad67fdffcee006099843610131a658360724f87e2f9d2d3b6ee9c611c820",
+        "worker/stalls.csv": "fcd4f44479e0d436c0c8fa33388e63c15f0f79f7601af43ab7e7fbe3d799c0e1",
+        "worker/stream-CONDITIONING.txt": "c4cb46058d091840afcb2b2db8045205d000736418cba1b4071bbe3f1c954f57",
+        "worker/stream-MEASUREMENT.txt": "ff60d5f045544b8db6046e02d85577bcbfb2ba6a09c92b0cd6edb2a0983223c5",
+        "worker/stream-WARMUP.txt": "48a784b6ce8e04cf9eb48a735238eeb4ecd9272111edfa6e02fe9bc27e2e1881",
+        "worker/update-service-bins.csv": "4792acb9fcacf620c8a91db9ddfec6df502f7ddd3cbaaf1d2066af78df83054d",
+        "worker/update-service-summary.csv": "f78978030452a8a748cf8e8111e45068b87802ba9564a00eb9bee63d8d2692f2",
+        "worker/update-service.hdr": "429baa6ddb5a114326211de134d1c38a1d7785665a5f95cb0b16b032fd5522ab",
+        "worker/windows.csv": "1eae7684c1969a1eff62d87a365e01f3639520b6ecd1fad98bc9ea845aaf5fee",
+        "worker-process.json": "2303c0ac36a50884e1f7491b3ef728dbfeea421b605184ba50099424702937a7"
+      }
+    },
+    {
+      "spec": {
+        "label": "b02-c001-CHRONICLE_IN_MEMORY",
+        "block": 2,
+        "cell": 1,
+        "seed": 61902,
+        "backend": "CHRONICLE_IN_MEMORY",
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "exitCode": 0,
+      "status": "COMPLETE",
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ],
+      "startedUtc": "2026-11-20T03:29:05.456096+00:00",
+      "host": {
+        "warnings": [
+          "Measured compiler activity exceeds frozen ceiling; not app pause time"
+        ],
+        "lifetimeDiagnostics": [
+          "External power sensor unavailable"
+        ],
+        "protectedWindow": "conditioning start through measurement end; overlapping 1Hz brackets",
+        "outsideCpuMaxUpperFraction": 0.0046680931247071985,
+        "outsideCpuMissingIntervals": 0,
+        "outsideCpuUnattributedIntervals": 0,
+        "outsideCpuUnattributedMaxUpperFraction": null,
+        "sensorAttribution": "Host-wide; not causal attribution to worker"
+      },
+      "windows": [
+        {
+          "phase": "WARMUP",
+          "startNs": "31993108580725",
+          "endNs": "31994608480895",
+          "offeredEndNs": "31994608580725",
+          "operations": "15000",
+          "scheduled": "15000",
+          "writes": "785",
+          "workerAllocatedBytes": "4296960",
+          "compilerMs": "513",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "3",
+          "stallEvents": "7130",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "CONDITIONING",
+          "startNs": "31994611966381",
+          "endNs": "31994711866489",
+          "offeredEndNs": "31994711966381",
+          "operations": "1000",
+          "scheduled": "1000",
+          "writes": "57",
+          "workerAllocatedBytes": "284688",
+          "compilerMs": "15",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "459",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "MEASUREMENT",
+          "startNs": "31994712241349",
+          "endNs": "31995012141472",
+          "offeredEndNs": "31995012241349",
+          "operations": "3000",
+          "scheduled": "3000",
+          "writes": "166",
+          "workerAllocatedBytes": "851360",
+          "compilerMs": "90",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "1415",
+          "unexportedStallEvents": "0"
+        }
+      ],
+      "integrity": {
+        "contentChecksum": "244",
+        "applicationChecksum": "0",
+        "operations": "19000",
+        "writes": "1008",
+        "consumed": "-10520",
+        "mutationVersionSha256": "9cf1be1efe560447d1ec749439fff8add09226c0f90ca682edcd909bc04494d6",
+        "residentCount": "64"
+      },
+      "configuration": {
+        "backend": "CHRONICLE_IN_MEMORY",
+        "config": "CrossoverConfig[residentEntries=64, payloadBytes=256, seed=61902, applicationLiveBytes=0, applicationObjectBytes=4096, churnBytesPerSecond=0, churnRingSlots=128]",
+        "backendConfig": "entries=128,valueSizeBytes=256,valueSizing=constant,maxBloatFactor=1.0,allowSegmentTiering=true,entryChecksums=false,putReturnsNull=true,entryStorage=off-heap,storageMode=IN_MEMORY,persisted=false",
+        "traceOperations": "0",
+        "traceArrayPayloadBytes": "0",
+        "streamVersion": "indexed-splitmix-v1",
+        "streamIdentity": "indexed-splitmix-v1:seed=61902:residents=64:writeBps=500:updateHotset=64",
+        "updateHotset": "64",
+        "streamPhaseReset": "false",
+        "streamWrap": "false",
+        "traceSha256": "ad9650c48bf97df08370203cc914f1990849646fea2780ad8405376e5b38ba15",
+        "valueGenerator": "xorshift-key-version-v1",
+        "options": "{--write-bps=500, --churn-mib-sec=0, --qps=10000, --inject-stall-ms=0, --seed=61902, --reuse=false, --prime-calls=0, --residents=64, --payload=256, --update-hotset=64, --measure-ms=300, --conditioning-ms=100, --supply-floor=false, --live-mib=0, --warmup-ms=1500, --observer-handshake=true, --out=<repo>/results/second-host-pressure-write-02/preflight/smoke/slots/b02-c001-CHRONICLE_IN_MEMORY/worker, --backend=CHRONICLE_IN_MEMORY, --floor=false}",
+        "jvmArgs": "[-Dchronicle.analytics.disable=true, --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED, --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED, --add-exports=java.base/jdk.internal.util=ALL-UNNAMED, --add-exports=java.base/sun.nio.ch=ALL-UNNAMED, --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED, --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED, -XX:+UseG1GC, -XX:ActiveProcessorCount=12, -Xms512m, -Xmx512m, -XX:AsyncLogBufferSize=2097152, -Xlog:gc*,safepoint:file=gc.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:gc+age=trace:file=age.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:async]",
+        "maxHeapBytes": "536870912",
+        "primeCalls": "0",
+        "eventThresholdNs": "100000",
+        "eventLimit": "10000",
+        "jdk": "21.0.13+9-LTS",
+        "pacing": "fixed-arrival-spin-no-skips",
+        "continuousChurn": "true",
+        "lightweightLifecycleTrials": "3",
+        "readContract": "ordinary-get"
+      },
+      "stallExport": {
+        "total": 1415,
+        "exported": 1415,
+        "omitted": 0
+      },
+      "latency": {
+        "service": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 81,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 2465,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 7487,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13839,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13839,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13839,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 133,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 2525,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 7543,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13895,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13895,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13895,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 102399,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 106495,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 113791,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 113791,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 113791,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 489,
+              "upperCount": 2418,
+              "lowerProbability": 0.163,
+              "upperProbability": 0.806
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 2834,
+          "percentiles": {
+            "50": {
+              "ns": 81,
+              "expectedBeyondQuantile": 1417.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 351,
+              "expectedBeyondQuantile": 28.340000000000025,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 7487,
+              "expectedBeyondQuantile": 2.833999999999688,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 7935,
+              "expectedBeyondQuantile": 0.2834000000002834,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 7935,
+              "expectedBeyondQuantile": 0.02834000000018566,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 7935,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 166,
+          "percentiles": {
+            "50": {
+              "ns": 2295,
+              "expectedBeyondQuantile": 83.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 8751,
+              "expectedBeyondQuantile": 1.6600000000000015,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": 13839,
+              "expectedBeyondQuantile": 0.16599999999998172,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13839,
+              "expectedBeyondQuantile": 0.0166000000000166,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13839,
+              "expectedBeyondQuantile": 0.001660000000010875,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13839,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        }
+      },
+      "gc": {
+        "measurementSeconds": 0.299900123,
+        "operations": 3000,
+        "pauseCount": 0,
+        "pauseTotalWholeMs": 0.0,
+        "evacuationFailureCount": 0,
+        "pauseOverlapMs": 0.0,
+        "pauseMaxWholeMs": 0.0,
+        "pauseExposureFraction": 0.0,
+        "pausesPerSecond": 0.0,
+        "pausesPerMillionOperations": 0.0,
+        "safepointOverlapMs": 0.0,
+        "completedConcurrentCycles": 0,
+        "postGcUsedHeapMedianFraction": null,
+        "postGcUsedHeapMinFraction": null,
+        "postGcUsedHeapMaxFraction": null,
+        "oldRegionsMedianHeapFraction": null,
+        "maxHumongousRegionsAfter": null,
+        "limits": "Post-collection used heap and old-region capacity are not an exact live-set census. Safepoint and GC totals overlap and must not be added."
+      },
+      "operationsPerSecond": 10003.33034208192,
+      "workerAllocatedBytes": 851360,
+      "workerAllocatedBytesPerOperation": 283.7866666666667,
+      "freshWritePayloadBytes": 42496,
+      "compilerMs": 90,
+      "achievedChurnBytesPerSecond": 0.0,
+      "peakObservedRssKiB": 207556,
+      "observerHandoffComplete": true,
+      "rawSha256": {
+        "age.log": "dda8f94ae67cdbcc238c45c8b1a069e772ca6aca0b6cdbee10f3f0134da7a8a5",
+        "command.json": "1cc779556e174754226ad81a3dc001969354c4b2e19a7ce2735157d28242450c",
+        "gc.log": "ad9e2b1a5db7e4acc813611ad0f230251a4bed5e9d13c128f2af1734d2d02ea2",
+        "hdr-endpoints.csv": "9b1182e749a91d2b2a0e16421083d595afecfe24d6d8706e045153c03909003f",
+        "hdr-verification.json": "ba075bfa16ebf11b60ba7ff8d6da72d6a42f548b4f2453cc129a2f91ffa4547c",
+        "host.json": "5e957baaf998848578779c8381096386526c36ae18e7862fead91240640cf81e",
+        "stderr.txt": "2c58b87a0350a39bb1c3b5f4891defeeb9a785e84aa11a466dc9ddb21253bf58",
+        "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stream-audit-input.csv": "cfa0b93aef8c6be1891616aac48c43385497a974dfdf3961a42211e446d3da32",
+        "stream-audit.csv": "1a0a318888ab58d96c719526a8d60f257b28cd9699d0bb390948945e6d2673d3",
+        "stream-verification.json": "2fa1d60bc087cd097af7efe2ebfcfe2ce286f930f9ecc2faf7a6ee8e84f33386",
+        "worker/completion.txt": "15b03336ede9c616576e591dbc1af8096415b1c04f00707b55360668526f1dd0",
+        "worker/configuration.txt": "c162004ebb4a161a0e956eb9b4cf447001fedab939b9ba74040c3d97cf10585e",
+        "worker/gap-bins.csv": "eded89acb7a8adaa0100e63bab90fd6d0db25129535014df3567ff7c0367c354",
+        "worker/gap-summary.csv": "1673ffbca47a03845b9b408b0d92c4c85aebd4d1f95bb6e120eb916a1355a433",
+        "worker/gap.hdr": "b6734ede85e67856005634a679ec494a706b493589e39e77fb7b1c205b63befa",
+        "worker/integrity.txt": "dff1399027b70506d0ece99c45e46c7e8676d2a6ebe8f5b885114d586c871323",
+        "worker/observer-ack.json": "6a7854162bc50c53da59098bc83bc94248418f10a872e2a3044dad952542a18a",
+        "worker/observer-ready": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "worker/phase.txt": "894981ff0205d540b0d3ce075782cc12e0d5fb559f98c625e2ffec22540120e8",
+        "worker/read-service-bins.csv": "3dcdad4e5eb1db393c0721c7e917b0b124503c4c1b0839553bce4519122336a5",
+        "worker/read-service-summary.csv": "cdca8243ea7b44c0731965246ace44e7869729a8f076690fb4c286345fb77b29",
+        "worker/read-service.hdr": "7434f90378ff6269dfb75611e9eca0602e2a982de755621d8a4eefb48fc2e990",
+        "worker/response-bins.csv": "f39e0514f8e5fda957dc55a203bfcfc614ff6683aa51353675998392f0ecb339",
+        "worker/response-summary.csv": "9a6c36887cf9304f11ae4da8eb1685b08f494892bebfd412cea7224101f10bb1",
+        "worker/response.hdr": "db3d3c875a31107e73f1305a9fca11b6daf1f9841af91e201ce04e60d46ad67d",
+        "worker/service-bins.csv": "5ec1e81f1750c13ecdcb4b8afe32710a09a7bfc997f05efbf169c44f8be8d564",
+        "worker/service-summary.csv": "9900dd185af4120b4e3f214cba29867a110c56848464656970894efe6b01f37c",
+        "worker/service.hdr": "fa549fbc942750de66c380edab9672afe8c62638b1f38c6b40d517cd599a2cbc",
+        "worker/stalls.csv": "9d20ca51e545fa7007d58f968c31adbb708ab3fdd8e7584de4984a8f146c52c3",
+        "worker/stream-CONDITIONING.txt": "c4cb46058d091840afcb2b2db8045205d000736418cba1b4071bbe3f1c954f57",
+        "worker/stream-MEASUREMENT.txt": "ff60d5f045544b8db6046e02d85577bcbfb2ba6a09c92b0cd6edb2a0983223c5",
+        "worker/stream-WARMUP.txt": "48a784b6ce8e04cf9eb48a735238eeb4ecd9272111edfa6e02fe9bc27e2e1881",
+        "worker/update-service-bins.csv": "841613bebf061ef024478f3f17d3e9f2f4ebc01bbcb61d52284509a355f9570b",
+        "worker/update-service-summary.csv": "a3bf08922cb1c2467fd4747b6de544c0e9385126f51ab970e1468f374c8ab72f",
+        "worker/update-service.hdr": "0b23db8ba81969c1e4b5e9f07f86db3b37a1b0b59cec89ef2a4ea83f2c3df46b",
+        "worker/windows.csv": "ceffdcc6af0e9ce03512e620fa2af893a8b336353526e3200f33b0911ab8272f",
+        "worker-process.json": "a9555024d8dca34af34c58a6ab3ddccb748c84c77c4cae916c8c5277cf3a22f8"
+      }
+    },
+    {
+      "spec": {
+        "label": "b02-c001-CAFFEINE",
+        "block": 2,
+        "cell": 1,
+        "seed": 61902,
+        "backend": "CAFFEINE",
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "exitCode": 0,
+      "status": "COMPLETE",
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ],
+      "startedUtc": "2026-11-20T03:29:08.931412+00:00",
+      "host": {
+        "warnings": [
+          "Measured compiler activity exceeds frozen ceiling; not app pause time"
+        ],
+        "lifetimeDiagnostics": [
+          "External power sensor unavailable"
+        ],
+        "protectedWindow": "conditioning start through measurement end; overlapping 1Hz brackets",
+        "outsideCpuMaxUpperFraction": 0.006045544490841805,
+        "outsideCpuMissingIntervals": 0,
+        "outsideCpuUnattributedIntervals": 0,
+        "outsideCpuUnattributedMaxUpperFraction": null,
+        "sensorAttribution": "Host-wide; not causal attribution to worker"
+      },
+      "windows": [
+        {
+          "phase": "WARMUP",
+          "startNs": "31995971416995",
+          "endNs": "31997471317115",
+          "offeredEndNs": "31997471416995",
+          "operations": "15000",
+          "scheduled": "15000",
+          "writes": "785",
+          "workerAllocatedBytes": "253808",
+          "compilerMs": "297",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "2",
+          "stallEvents": "6955",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "CONDITIONING",
+          "startNs": "31997479809790",
+          "endNs": "31997579711000",
+          "offeredEndNs": "31997579809790",
+          "operations": "1000",
+          "scheduled": "1000",
+          "writes": "57",
+          "workerAllocatedBytes": "16336",
+          "compilerMs": "50",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "449",
+          "unexportedStallEvents": "0"
+        },
+        {
+          "phase": "MEASUREMENT",
+          "startNs": "31997580601708",
+          "endNs": "31997880501831",
+          "offeredEndNs": "31997880601708",
+          "operations": "3000",
+          "scheduled": "3000",
+          "writes": "166",
+          "workerAllocatedBytes": "45984",
+          "compilerMs": "129",
+          "churnPayloadBytes": "0",
+          "churnJvmAllocatedBytes": "0",
+          "churnDroppedBytes": "0",
+          "maxBacklog": "1",
+          "stallEvents": "1352",
+          "unexportedStallEvents": "0"
+        }
+      ],
+      "integrity": {
+        "contentChecksum": "244",
+        "applicationChecksum": "0",
+        "operations": "19000",
+        "writes": "1008",
+        "consumed": "-10520",
+        "mutationVersionSha256": "9cf1be1efe560447d1ec749439fff8add09226c0f90ca682edcd909bc04494d6",
+        "residentCount": "64"
+      },
+      "configuration": {
+        "backend": "CAFFEINE",
+        "config": "CrossoverConfig[residentEntries=64, payloadBytes=256, seed=61902, applicationLiveBytes=0, applicationObjectBytes=4096, churnBytesPerSecond=0, churnRingSlots=128]",
+        "backendConfig": "maximumSize=80,executor=ForkJoinPool.commonPool(default),policy=BOUNDED_DEFAULT,implementation=com.github.benmanes.caffeine.cache.SSMS,frequencySketchSlots=128",
+        "traceOperations": "0",
+        "traceArrayPayloadBytes": "0",
+        "streamVersion": "indexed-splitmix-v1",
+        "streamIdentity": "indexed-splitmix-v1:seed=61902:residents=64:writeBps=500:updateHotset=64",
+        "updateHotset": "64",
+        "streamPhaseReset": "false",
+        "streamWrap": "false",
+        "traceSha256": "ad9650c48bf97df08370203cc914f1990849646fea2780ad8405376e5b38ba15",
+        "valueGenerator": "xorshift-key-version-v1",
+        "options": "{--write-bps=500, --churn-mib-sec=0, --qps=10000, --inject-stall-ms=0, --seed=61902, --reuse=false, --prime-calls=0, --residents=64, --payload=256, --update-hotset=64, --measure-ms=300, --conditioning-ms=100, --supply-floor=false, --live-mib=0, --warmup-ms=1500, --observer-handshake=true, --out=<repo>/results/second-host-pressure-write-02/preflight/smoke/slots/b02-c001-CAFFEINE/worker, --backend=CAFFEINE, --floor=false}",
+        "jvmArgs": "[-Dchronicle.analytics.disable=true, --add-exports=java.base/jdk.internal.misc=ALL-UNNAMED, --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED, --add-exports=java.base/jdk.internal.util=ALL-UNNAMED, --add-exports=java.base/sun.nio.ch=ALL-UNNAMED, --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED, --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.reflect=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=jdk.compiler/com.sun.tools.javac=ALL-UNNAMED, -XX:+UseG1GC, -XX:ActiveProcessorCount=12, -Xms512m, -Xmx512m, -XX:AsyncLogBufferSize=2097152, -Xlog:gc*,safepoint:file=gc.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:gc+age=trace:file=age.log:uptimemillis,timenanos,level,tags:filecount=0, -Xlog:async]",
+        "maxHeapBytes": "536870912",
+        "primeCalls": "0",
+        "eventThresholdNs": "100000",
+        "eventLimit": "10000",
+        "jdk": "21.0.13+9-LTS",
+        "pacing": "fixed-arrival-spin-no-skips",
+        "continuousChurn": "true",
+        "lightweightLifecycleTrials": "3",
+        "readContract": "ordinary-get"
+      },
+      "stallExport": {
+        "total": 1352,
+        "exported": 1352,
+        "omitted": 0
+      },
+      "latency": {
+        "service": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 2185,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 4711,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 9943,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 9943,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 9943,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 144,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 3589,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 8871,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 13943,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 13943,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 13943,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 3000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 1500.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 103423,
+              "expectedBeyondQuantile": 30.00000000000003,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 108351,
+              "expectedBeyondQuantile": 2.9999999999996696,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 113791,
+              "expectedBeyondQuantile": 0.3000000000003,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 113791,
+              "expectedBeyondQuantile": 0.030000000000196536,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 113791,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 804,
+              "upperCount": 2012,
+              "lowerProbability": 0.268,
+              "upperProbability": 0.6706666666666666
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 2834,
+          "percentiles": {
+            "50": {
+              "ns": 100,
+              "expectedBeyondQuantile": 1417.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 1773,
+              "expectedBeyondQuantile": 28.340000000000025,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 4711,
+              "expectedBeyondQuantile": 2.833999999999688,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 9943,
+              "expectedBeyondQuantile": 0.2834000000002834,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 9943,
+              "expectedBeyondQuantile": 0.02834000000018566,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 9943,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 166,
+          "percentiles": {
+            "50": {
+              "ns": 711,
+              "expectedBeyondQuantile": 83.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 3997,
+              "expectedBeyondQuantile": 1.6600000000000015,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": 5751,
+              "expectedBeyondQuantile": 0.16599999999998172,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 5751,
+              "expectedBeyondQuantile": 0.0166000000000166,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 5751,
+              "expectedBeyondQuantile": 0.001660000000010875,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 5751,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        }
+      },
+      "gc": {
+        "measurementSeconds": 0.299900123,
+        "operations": 3000,
+        "pauseCount": 0,
+        "pauseTotalWholeMs": 0.0,
+        "evacuationFailureCount": 0,
+        "pauseOverlapMs": 0.0,
+        "pauseMaxWholeMs": 0.0,
+        "pauseExposureFraction": 0.0,
+        "pausesPerSecond": 0.0,
+        "pausesPerMillionOperations": 0.0,
+        "safepointOverlapMs": 0.0,
+        "completedConcurrentCycles": 0,
+        "postGcUsedHeapMedianFraction": null,
+        "postGcUsedHeapMinFraction": null,
+        "postGcUsedHeapMaxFraction": null,
+        "oldRegionsMedianHeapFraction": null,
+        "maxHumongousRegionsAfter": null,
+        "limits": "Post-collection used heap and old-region capacity are not an exact live-set census. Safepoint and GC totals overlap and must not be added."
+      },
+      "operationsPerSecond": 10003.33034208192,
+      "workerAllocatedBytes": 45984,
+      "workerAllocatedBytesPerOperation": 15.328,
+      "freshWritePayloadBytes": 42496,
+      "compilerMs": 129,
+      "achievedChurnBytesPerSecond": 0.0,
+      "peakObservedRssKiB": 101908,
+      "observerHandoffComplete": true,
+      "rawSha256": {
+        "age.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "command.json": "d88e24b07ec708a71ac2d952d4fb52dda7428c8a194ef7124aa5bcf07ad54848",
+        "gc.log": "8bfb8dd55abbad20d1095c889036b7723595ab4597202436590f7745b5c5a804",
+        "hdr-endpoints.csv": "89e10251cd5afee01ae3767dfd78000969640efb60a1a2ca9d4becdf99280682",
+        "hdr-verification.json": "096ce8703ffc0391f464e0ac8e67ede4e1ae1fe738b0f6f1bf608a72c0e3ac17",
+        "host.json": "99ef0935a5f77206749024bb37a5207b31518b9741b12909209170605153bd3b",
+        "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stream-audit-input.csv": "3e84ba49d522df792cafc3d151abb7703aef8bfdb551ab3a596856d865be0de6",
+        "stream-audit.csv": "c9b2adcb76e69e1bbf2051e18a8baad51062c65f7b35074c3e9465d92d2232ca",
+        "stream-verification.json": "96c0b7d05e32ed97e5b1bc783d1947681486ab9e825214557ed676bc829284c1",
+        "worker/completion.txt": "15b03336ede9c616576e591dbc1af8096415b1c04f00707b55360668526f1dd0",
+        "worker/configuration.txt": "1fb912d53fd52bf31af83e96798cab513bbc05457ebd293699380ee493dae65c",
+        "worker/gap-bins.csv": "828c4dd2a47cc2e5c0e553b45df8be88f960ffb354eb1a89929f682f0be27a4e",
+        "worker/gap-summary.csv": "cbae37fe7a9cbd32deee46e3af0efcdd26d57763df1e819a15fa19c82bc35b10",
+        "worker/gap.hdr": "8f0b4e6330b698921562e5f72b0a23760c11cb6e79dd9fea0348c1701c0fa907",
+        "worker/integrity.txt": "dff1399027b70506d0ece99c45e46c7e8676d2a6ebe8f5b885114d586c871323",
+        "worker/observer-ack.json": "1e1db494bfaef42ee061ada3fd912fb3284c7b8649617f08c9e3f6db88286bef",
+        "worker/observer-ready": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "worker/phase.txt": "894981ff0205d540b0d3ce075782cc12e0d5fb559f98c625e2ffec22540120e8",
+        "worker/read-service-bins.csv": "82979aa353f780c2a64e9f83d2e7c0dbf392a29bd2b69f0a315496597ed58496",
+        "worker/read-service-summary.csv": "a75ddfc5a54114350ee02831671e85c7e1001b184704db74d209bb3bdc06408b",
+        "worker/read-service.hdr": "b59e0a8b83decb09fddfddffdcb265066f83f988d50a110da53a755624b9cd6e",
+        "worker/response-bins.csv": "fcb016672bf824a692b077d48be3cf6c5cabd64f58259588c32011f222828fee",
+        "worker/response-summary.csv": "c42acf42bd59b9fe2d185127e1f37af688f0b068f5f535d58a807c8aa1eee93c",
+        "worker/response.hdr": "a91145b85269481489d2d1085edf2fa098e5a886425fd3c64d4f268d77789f1b",
+        "worker/service-bins.csv": "c843375b8bce0a847184f71c89d9231edf7cf9f63b5a668f78ece3b0fbc59d8d",
+        "worker/service-summary.csv": "0db3191ee76b186cf1414fd60fb407c8b82559fc0ee26c0195c0b312aef533cf",
+        "worker/service.hdr": "08689c4623915728a5daa28c646bc3e0a9bebb2562e07261ccf2fde4dc10676f",
+        "worker/stalls.csv": "f453fa2f01d59e2ad48fdaeaef3ef78e2e4b6335bbd748036dc2676f5d959525",
+        "worker/stream-CONDITIONING.txt": "c4cb46058d091840afcb2b2db8045205d000736418cba1b4071bbe3f1c954f57",
+        "worker/stream-MEASUREMENT.txt": "ff60d5f045544b8db6046e02d85577bcbfb2ba6a09c92b0cd6edb2a0983223c5",
+        "worker/stream-WARMUP.txt": "48a784b6ce8e04cf9eb48a735238eeb4ecd9272111edfa6e02fe9bc27e2e1881",
+        "worker/update-service-bins.csv": "e034c6010aeefb6cb4c91c13d3a2510cd315e88fe51a1695a3b1c4c9b0f8d277",
+        "worker/update-service-summary.csv": "25e7b8d2c4ed339fdf4cb87b027aa77a0f99884a9a43bf0081e13508ec6c5463",
+        "worker/update-service.hdr": "3d2acec27a408ad72c96f5db8f8ac17944fc98f7a57fc9327408d243fd2e0d79",
+        "worker/windows.csv": "71fa3b00256b6fdc4666a75a51dd21785a298cf70a3b342917fc41523534c988",
+        "worker-process.json": "b4ef139274c87745830d401105df1914fa4b758be0d597598808d235ad1ac108"
+      }
+    }
+  ],
+  "retryReview": null,
+  "pointConclusions": [
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "service",
+      "quantile": 50,
+      "completePairDirectionsFavor": "CHRONICLE_IN_MEMORY",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 100.0,
+        "CHRONICLE_IN_MEMORY": 75.5
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.755,
+        "geometricMeanRatio": 0.7529940238806679,
+        "minimumRatio": 0.7,
+        "maximumRatio": 0.81,
+        "logRatioSampleSd": 0.10320500135648865,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "service",
+      "quantile": 99,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 1798.5,
+        "CHRONICLE_IN_MEMORY": 2254.5
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.2878692605389568,
+        "geometricMeanRatio": 1.2779263895160555,
+        "minimumRatio": 1.1281464530892449,
+        "maximumRatio": 1.4475920679886685,
+        "logRatioSampleSd": 0.17629979018510575,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "service",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "CAFFEINE",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 3924.0,
+        "CHRONICLE_IN_MEMORY": 5953.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 0,
+        "caffeineWins": 2,
+        "ties": 0,
+        "medianRatio": 1.4989649425678966,
+        "geometricMeanRatio": 1.4962429113009577,
+        "minimumRatio": 1.4086707044947402,
+        "maximumRatio": 1.5892591806410528,
+        "logRatioSampleSd": 0.08529227112500289,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "service",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 11535.0,
+        "CHRONICLE_IN_MEMORY": 12663.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.133450053589148,
+        "geometricMeanRatio": 1.1036063809596317,
+        "minimumRatio": 0.8750666565094842,
+        "maximumRatio": 1.3918334506688121,
+        "logRatioSampleSd": 0.3281520813059689,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "Mixed, missing or failed pairs; no resolved direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "service",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 11535.0,
+        "CHRONICLE_IN_MEMORY": 12663.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.133450053589148,
+        "geometricMeanRatio": 1.1036063809596317,
+        "minimumRatio": 0.8750666565094842,
+        "maximumRatio": 1.3918334506688121,
+        "logRatioSampleSd": 0.3281520813059689,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "Mixed, missing or failed pairs; no resolved direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "response",
+      "quantile": 50,
+      "completePairDirectionsFavor": "CHRONICLE_IN_MEMORY",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 141.5,
+        "CHRONICLE_IN_MEMORY": 121.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.8538918864908074,
+        "geometricMeanRatio": 0.8510408824099894,
+        "minimumRatio": 0.7841726618705036,
+        "maximumRatio": 0.9236111111111112,
+        "logRatioSampleSd": 0.11572642484963264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": false,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "response",
+      "quantile": 99,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 2526.0,
+        "CHRONICLE_IN_MEMORY": 2305.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.0643461918556874,
+        "geometricMeanRatio": 1.001324468221651,
+        "minimumRatio": 0.7035385901365283,
+        "maximumRatio": 1.4251537935748462,
+        "logRatioSampleSd": 0.4991553619853436,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": false,
+      "conclusion": "Mixed, missing or failed pairs; no resolved direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "response",
+      "quantile": 99.9,
+      "completePairDirectionsFavor": "UNRESOLVED",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 6032.0,
+        "CHRONICLE_IN_MEMORY": 6003.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 1,
+        "caffeineWins": 1,
+        "ties": 0,
+        "medianRatio": 1.1240218967606226,
+        "geometricMeanRatio": 1.0901838607721956,
+        "minimumRatio": 0.8502987261864502,
+        "maximumRatio": 1.3977450673347949,
+        "logRatioSampleSd": 0.3514517423715097,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 1,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "Mixed, missing or failed pairs; no resolved direction",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "response",
+      "quantile": 99.99,
+      "completePairDirectionsFavor": "CHRONICLE_IN_MEMORY",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 13559.0,
+        "CHRONICLE_IN_MEMORY": 12711.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.9357360116636438,
+        "geometricMeanRatio": 0.9337572707862509,
+        "minimumRatio": 0.8749146110056926,
+        "maximumRatio": 0.9965574123215951,
+        "logRatioSampleSd": 0.09205148448137264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    },
+    {
+      "cell": 1,
+      "inputs": {
+        "payloadBytes": 256,
+        "liveMiB": 0,
+        "writeBps": 500,
+        "updateHotset": 64,
+        "qps": 10000
+      },
+      "channel": "response",
+      "quantile": 99.999,
+      "completePairDirectionsFavor": "CHRONICLE_IN_MEMORY",
+      "medianForkQuantileNs": {
+        "CAFFEINE": 13559.0,
+        "CHRONICLE_IN_MEMORY": 12711.0
+      },
+      "pairedSummary": {
+        "n": 2,
+        "chronicleWins": 2,
+        "caffeineWins": 0,
+        "ties": 0,
+        "medianRatio": 0.9357360116636438,
+        "geometricMeanRatio": 0.9337572707862509,
+        "minimumRatio": 0.8749146110056926,
+        "maximumRatio": 0.9965574123215951,
+        "logRatioSampleSd": 0.09205148448137264,
+        "exploratoryPairedBootstrap95": null,
+        "unadjustedTwoSidedSignP": 0.5,
+        "uncertainty": "Independent seed pairs; descriptive range; bootstrap only for n>=4; no multiple-testing correction"
+      },
+      "cleanPairs": 0,
+      "tailSupportWarning": true,
+      "conclusion": "All planned seed pairs agree",
+      "limit": "Descriptive finite-window result; not a significance test or universal threshold"
+    }
+  ],
+  "contrasts": [],
+  "timingControls": [
+    {
+      "label": "CAFFEINE-0",
+      "latency": {
+        "service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 21,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 30,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 250,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 250,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 250,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 57,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 75,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 79,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 3429,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 71615,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 71615,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 103423,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 171647,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 171647,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 7,
+              "upperCount": 9993,
+              "lowerProbability": 0.0007,
+              "upperProbability": 0.9993
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 21,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 30,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 250,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 250,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 250,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 0,
+          "percentiles": {
+            "50": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": null,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            }
+          }
+        }
+      },
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ]
+    },
+    {
+      "label": "CAFFEINE-20",
+      "latency": {
+        "service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 30,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 71,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 12615,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20103167,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20103167,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "response": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 58,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 10125311,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 19120127,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 20004863,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20103167,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20103167,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 203,
+              "upperCount": 203,
+              "lowerProbability": 0.0203,
+              "upperProbability": 0.0203
+            },
+            "1000000": {
+              "lowerCount": 192,
+              "upperCount": 192,
+              "lowerProbability": 0.0192,
+              "upperProbability": 0.0192
+            },
+            "10000000": {
+              "lowerCount": 102,
+              "upperCount": 102,
+              "lowerProbability": 0.0102,
+              "upperProbability": 0.0102
+            }
+          }
+        },
+        "gap": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100095,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 306687,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20201471,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20201471,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 16,
+              "upperCount": 9782,
+              "lowerProbability": 0.0016,
+              "upperProbability": 0.9782
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "read-service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 30,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 71,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 12615,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20103167,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20103167,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "update-service": {
+          "count": 0,
+          "percentiles": {
+            "50": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": null,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            }
+          }
+        }
+      },
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ]
+    },
+    {
+      "label": "CHRONICLE_IN_MEMORY-0",
+      "latency": {
+        "service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 21,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 21,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 60,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 250,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 250,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "response": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 57,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 69,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 78,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 8863,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 87295,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 87295,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "gap": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 108863,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 187263,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 187263,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 3,
+              "upperCount": 9994,
+              "lowerProbability": 0.0003,
+              "upperProbability": 0.9994
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "read-service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 21,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 21,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 60,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 250,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 250,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": 0.0,
+              "upperProbability": 0.0
+            }
+          }
+        },
+        "update-service": {
+          "count": 0,
+          "percentiles": {
+            "50": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": null,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            }
+          }
+        }
+      },
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ]
+    },
+    {
+      "label": "CHRONICLE_IN_MEMORY-20",
+      "latency": {
+        "service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 90,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 11031,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20086783,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20086783,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "response": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 70,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 10149887,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 19103743,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 20004863,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20086783,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20086783,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 202,
+              "upperCount": 202,
+              "lowerProbability": 0.0202,
+              "upperProbability": 0.0202
+            },
+            "1000000": {
+              "lowerCount": 192,
+              "upperCount": 192,
+              "lowerProbability": 0.0192,
+              "upperProbability": 0.0192
+            },
+            "10000000": {
+              "lowerCount": 102,
+              "upperCount": 102,
+              "lowerProbability": 0.0102,
+              "upperProbability": 0.0102
+            }
+          }
+        },
+        "gap": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 100031,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 100095,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100159,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 257535,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20201471,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20201471,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 170,
+              "upperCount": 9609,
+              "lowerProbability": 0.017,
+              "upperProbability": 0.9609
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "read-service": {
+          "count": 10000,
+          "percentiles": {
+            "50": {
+              "ns": 20,
+              "expectedBeyondQuantile": 5000.0,
+              "tailSupportWarning": false
+            },
+            "99": {
+              "ns": 90,
+              "expectedBeyondQuantile": 100.00000000000009,
+              "tailSupportWarning": false
+            },
+            "99.9": {
+              "ns": 100,
+              "expectedBeyondQuantile": 9.999999999998899,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": 11031,
+              "expectedBeyondQuantile": 1.000000000001,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": 20086783,
+              "expectedBeyondQuantile": 0.10000000000065512,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": 20086783,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "1000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            },
+            "10000000": {
+              "lowerCount": 1,
+              "upperCount": 1,
+              "lowerProbability": 0.0001,
+              "upperProbability": 0.0001
+            }
+          }
+        },
+        "update-service": {
+          "count": 0,
+          "percentiles": {
+            "50": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.9": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.99": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            },
+            "99.999": {
+              "ns": null,
+              "expectedBeyondQuantile": 0.0,
+              "tailSupportWarning": true
+            }
+          },
+          "maxUpperEquivalentNs": null,
+          "exceedance": {
+            "100000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "1000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            },
+            "10000000": {
+              "lowerCount": 0,
+              "upperCount": 0,
+              "lowerProbability": null,
+              "upperProbability": null
+            }
+          }
+        }
+      },
+      "warnings": [
+        "Measured compiler activity exceeds frozen ceiling; not app pause time"
+      ]
+    }
+  ],
+  "researchQuestionMap": {
+    "RQ1": "Inspect liveMiB contrasts in service p99/p99.9 for each payload and pacing mode",
+    "RQ2": "Compare payloadBytes contrasts and pressure brackets at otherwise matched inputs",
+    "mechanism": "Inspect writeBps and updateHotset contrasts in scheduled response; separate from service"
+  },
+  "claims": "Per-cell paired backend comparison only; no automatic universal crossover claim. Failure/quality/tail support remain explicit.",
+  "packaging": {
+    "format": "tailcache-portable-compact-v1",
+    "sourceRelativePath": "results/second-host-pressure-write-02/preflight/suite-analysis-l5kt09qj/smoke/results.json",
+    "sourceResultsSha256": "48270cca7a5b0830e1086e68a266529c171a2ed988cd3390e5f013985f539138",
+    "omittedRawEventArrays": {
+      "gc.pauses": 0,
+      "gc.occupancySamples": 0
+    },
+    "pathSanitization": "Absolute local checkout paths rewritten to <repo>/; raw file hashes and metrics unchanged."
+  }
+}

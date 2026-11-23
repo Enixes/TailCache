@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "manifestSha256": "980729a1cb516b0dc0dd25e8e2f5c9038b91abfdba9b83c3cbc00b52cc579d91",
+  "phases": {
+    "smoke": {
+      "passed": true,
+      "scheduled": 4,
+      "completed": 4,
+      "failed": 0,
+      "usablePairs": 2,
+      "plannedPairs": 2,
+      "warningFreePairs": 0,
+      "report": "smoke/RESULTS.md",
+      "pointConclusions": "smoke/point-conclusions.json",
+      "resultsSha256": "75476a8d7ce7e9ebaf06cee76b2343120780a5bab1af371a44880aafa11c1ae3"
+    },
+    "research": {
+      "passed": true,
+      "scheduled": 32,
+      "completed": 32,
+      "failed": 0,
+      "usablePairs": 16,
+      "plannedPairs": 16,
+      "warningFreePairs": 13,
+      "report": "research/RESULTS.md",
+      "pointConclusions": "research/point-conclusions.json",
+      "resultsSha256": "55905de4041825f523522208be6e87dbd8549dfbf6cff25c0eae1a35e7d521ed"
+    }
+  },
+  "researchViews": {
+    "locality-arrival-rate": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  }
+}
