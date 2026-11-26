@@ -2,7 +2,8 @@
 
 Use the [experiment status](TAILCACHE_CURRENT_STATE.md) for the answers and
 workload limits. The [claim map](preprint/CLAIMS.md) links each comparison to
-its underlying measurements.
+its underlying measurements. The manuscript is distributed through Zenodo;
+this repository retains the research artifact and data explorer.
 
 - [20 November results](second-host-20261120/) and [archive](second-host-20261120/archive/)
 - [23 November results](nov23-popos-followup/) and [archive](nov23-popos-followup/archive/)
@@ -36,6 +37,14 @@ python3 scripts/render_tailcache_preprint_reader.py
 Use the [portable collection guide](PORTABLE_EXPERIMENT.md) to run a fresh workload.
 
 ## Historical records
+
+The earlier focused and midpoint reports identify local `evidence-archives/`
+files that are excluded from Git. Their full raw collections are not included in
+the default checkout; selected derived observations are available in
+[`preprint/paper-data.json`](preprint/paper-data.json). The offline verification
+commands above cover the November 20 and 23 committed raw archives, not the
+entire historical campaign. Do not treat a local-only path as a downloadable
+public artifact.
 
 - Original campaign [protocol](TAILCACHE_12_PLAN.md), [runbook](TAILCACHE_12_RUNBOOK.md),
   and [final acceptance](TAILCACHE_12_FINAL_ACCEPTANCE.json).

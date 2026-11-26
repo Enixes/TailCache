@@ -1,5 +1,9 @@
 # Frozen exploratory research claims — 8 November 2026
 
+Historical snapshot: the subsequent [10 November midpoint comparison](TAILCACHE_MIDPOINT_RESULTS.md)
+and [current experiment status](TAILCACHE_CURRENT_STATE.md) supersede the earlier
+open midpoint question while preserving this dated evidence.
+
 Scope: the retained 132 workload forks, ordinary get as primary, 512 MiB G1 heap, one worker, 32,768 resident entries and matched application ballast/allocation demand. These claims describe this tested workload and hardware. All warning-bearing forks remain visible. This version includes the requested post hoc p99.99, p99.999 and full-tail analyses; it does not rewrite the original endpoints.
 
 ## Claims that the data support

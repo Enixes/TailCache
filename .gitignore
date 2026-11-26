@@ -12,3 +12,7 @@ __pycache__/
 *.pyc
 results/
 evidence-archives/
+
+# The manuscript is distributed through Zenodo; retain evidence and figure sources.
+/docs/preprint/MANUSCRIPT*.md
+/output/pdf/tailcache-preprint*.pdf

@@ -1,8 +1,13 @@
 # Fresh midpoint and seed replication: results and researcher review
 
+> Historical evidence note (26 November 2026): paths under `evidence-archives/`
+> identify local collection artifacts excluded from Git, rather than downloadable
+> files in this checkout. See the [evidence index](EXPERIMENT_EVIDENCE.md) and
+> [retained derived observations](preprint/paper-data.json) for public evidence.
+
 Run recorded **10 November 2026**. Collection: **19:20–19:46 Asia/Kolkata**, approximately 26 minutes. **30 workload JVMs plus nine controls**, no replacement forks. All workload JVMs completed with verified values and 1,500,000 scheduled responses apiece; no OOM or censored arrivals. No additional adaptive point was collected.
 
-[Interactive follow-up](TAILCACHE_MIDPOINT_EXPLORER.html) · [Integrated explorer](TAILCACHE_RESULTS_EXPLORER.html#midpoint-followup) · [Audited dataset](../evidence-archives/midpoint-results-20261110-001/study.json) · [All 108 percentile conclusions](../evidence-archives/midpoint-results-20261110-001/conclusions.csv) · [Threshold counts](../evidence-archives/midpoint-results-20261110-001/stall-rates.csv) · [Audit](../evidence-archives/midpoint-results-20261110-001/audit.json)
+[Interactive follow-up](TAILCACHE_MIDPOINT_EXPLORER.html) · [Integrated explorer](TAILCACHE_RESULTS_EXPLORER.html#midpoint-followup) · Audited dataset (`evidence-archives/midpoint-results-20261110-001/study.json`) · All 108 percentile conclusions (`evidence-archives/midpoint-results-20261110-001/conclusions.csv`) · Threshold counts (`evidence-archives/midpoint-results-20261110-001/stall-rates.csv`) · Audit (`evidence-archives/midpoint-results-20261110-001/audit.json`)
 
 ## Main answer
 

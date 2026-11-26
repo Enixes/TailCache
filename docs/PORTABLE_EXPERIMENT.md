@@ -99,6 +99,11 @@ from the checkout. The standalone ZIP can run the same suite with
 
 ## Split write timing on the Pop!_OS host
 
+**Recorded outcome (23 November):** both the every-write and one-in-eight
+split-timing pilots failed the predeclared equivalence gate. Their research
+phases did not advance. The commands below document the frozen suite for
+reproduction; see the [retained findings](nov23-popos-followup/README.md#split-write-timing-qualification).
+
 Use the Ryzen 7 5800X Pop!_OS host from the saturated matrix, with the original
 Temurin 21.0.13+9 JDK, G1 settings, and native Linux monitoring. Use Python 3.10
 or later. Run directly on the quiet host with stable power and cooling. The
@@ -195,17 +200,16 @@ quantile. Report sample counts and clock limits alongside split percentiles.
 ```
 
 The sampled suite uses fresh seeds and the same eight-JVM pilot and overhead
-limits. Allow 65–75 minutes if the pilot advances to all 16 research forks. If
-the sampled pilot fails, stop split timing and record the failed qualification
-in the paper's methods discussion. Resolved sampled results apply to the
-split endpoint at p99/p99.9 for these workloads.
+limits. Allow 65–75 minutes if the pilot advances to all 16 research forks. The sampled pilot also failed on 23 November. Record both retained decisions
+and treat component timing as diagnostic. A future split-timing study requires
+a separate protocol and original-timer A/A repeatability checks.
 
 ## Optional follow-up under heavier reads and writes
 
-Test whether the 4 KiB scheduled-response p99.9 locality reversal persists
-when read demand or write demand increases. Use the same Pop!_OS host and
-runtime. Run the split-write experiment first and review its results before
-scheduling this independent follow-up.
+The 23 November locality follow-up tested whether the 4 KiB scheduled-response
+p99.9 locality reversal persists as read or write demand increases. It completed
+all 32 research JVMs after the split-write pilot review. The commands below
+reproduce that separate comparison; see the [reported outcomes](nov23-popos-followup/README.md#scheduled-response-under-heavier-loads).
 
 ```sh
 ./gradlew -q tailCacheReproductionPlan -PtailcacheSuite=locality-arrival-rate

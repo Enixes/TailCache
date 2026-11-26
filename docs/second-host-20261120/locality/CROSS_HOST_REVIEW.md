@@ -58,4 +58,4 @@ for comparison without pooling the two hosts.
 - [All measurement results](research/RESULTS.md)
 - [Machine-readable paired results](research/results-compact.json)
 - [Frozen host, JVM and provenance manifest](../MANIFEST.json)
-- [Original mechanism results](../../mechanism/RESULTS.md)
+- [Original mechanism results](https://github.com/Enixes/TailCache/blob/d0841fe3af5df8a251ff740a52d0e813cad1dce5/docs/mechanism/RESULTS.md)
