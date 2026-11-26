@@ -1,5 +1,10 @@
 # TailCache experiment evidence
 
+The manuscript is distributed through Zenodo. This directory retains experiment
+claims, figures, evidence and reproduction tools. The manuscript sources and the
+rendered paper are intentionally excluded from the checkout; historical renderer
+scripts require a separately maintained local manuscript input.
+
 The evidence links the two-host update-locality comparison, the pressure and
 write-rate runs, and the 23 November Pop!_OS follow-up. See the
 [experiment status](../TAILCACHE_CURRENT_STATE.md) for the latest answers and
