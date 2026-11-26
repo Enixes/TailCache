@@ -5,6 +5,11 @@ TailCache is a Java 21 benchmark experiment comparing tail latency in Caffeine
 workloads and records per-fork latency distributions, allocation, and garbage
 collection. It also supports separate diagnostics for file-backed Chronicle Map.
 
+The research manuscript is distributed through Zenodo. This repository is the
+companion research artifact: benchmark code, workload definitions, experimental
+results, verification tools, and supporting documentation. The interactive
+results are a data explorer, not a copy of the manuscript.
+
 ## Experiment questions and results
 
 | Question | Result under the tested settings |
@@ -17,7 +22,16 @@ Service latency measures the time to perform a benchmark operation, including
 fresh value construction on writes. Scheduled response measures from the intended
 arrival through completion, including time spent waiting for the worker. At 10%
 and 20% writes in the follow-up, Chronicle led with the full write set and the
-concentrated pairs were mixed.
+concentrated pairs were mixed. A separate four-seed sweep on the second host
+bracketed a response p99.9 reversal between 1.25% and 1.5% writes; earlier
+intermediate cells were mixed. These are workload-specific observations.
+
+The saturated matrix retained all 48 first-pass pairs (36 warning-free, 37 in
+the clean sensitivity view after one bounded retry); some high-pressure 4 KiB
+cells had endogenous churn drops. Lower retained Java heap does not imply lower
+process RSS, and ordinary Chronicle reads allocate materialized values. Both
+split-write timing pilots failed their predeclared qualification gate, so
+component-level `put()` costs remain unresolved. See the [claim-to-evidence map](docs/preprint/CLAIMS.md).
 
 [Second-host results](docs/second-host-20261120/) ·
 [Pop!_OS follow-up](docs/nov23-popos-followup/) ·

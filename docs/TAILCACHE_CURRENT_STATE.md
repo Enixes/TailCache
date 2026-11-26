@@ -1,6 +1,6 @@
 # TailCache experiment status
 
-**Updated 23 November 2026.** The experiment compares Caffeine and ordinary
+**Last experimental follow-up: 23 November 2026. Documentation reviewed 26 November 2026.** The experiment compares Caffeine and ordinary
 in-memory Chronicle Map under controlled Java 21 workloads. Start with the
 [experiment questions](../README.md#experiment-questions-and-results), then use
 [the evidence index](EXPERIMENT_EVIDENCE.md) or [interactive results](../output/html/tailcache-preprint-reader.html).
@@ -19,6 +19,19 @@ arrivals/s with 10% and 20% writes, Chronicle led both full-key pairs. The
 concentrated-write pairs split at both write fractions. Both split-write timing
 pilots failed the 5% ratio-shift gate, so their component measurements remain
 qualification diagnostics.
+
+The [second-host write-rate sweep](second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md)
+found unanimous response p99.9 directions on opposite sides of the 1.25–1.5%
+write bracket (four warning-free pairs at each endpoint); 0.75% and 1% were
+mixed. The [48-pair saturated matrix](second-host-20261120/pressure-write-02/CAMPAIGN_REVIEW.md#saturated-write-pressure)
+had 36 warning-free first-pass pairs and 37 in the clean sensitivity view.
+Some high-pressure 4 KiB cells had endogenous churn drops. Lower Java heap
+retention and lower process RSS are distinct outcomes, and ordinary Chronicle
+reads retain their materialization cost. Extreme-tail observations, unresolved
+stalls and failed timing qualifications remain attached to their original cohorts.
+
+The manuscript is distributed through Zenodo; GitHub retains the reproducible
+experiment artifact and evidence, including the [claim map](preprint/CLAIMS.md).
 
 [20 November results and archive](second-host-20261120/) ·
 [23 November archive](nov23-popos-followup/archive/) ·
