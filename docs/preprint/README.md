@@ -1,5 +1,10 @@
 # TailCache experiment evidence
 
+The manuscript is distributed through Zenodo. This directory retains experiment
+claims, figures, evidence and reproduction tools. The manuscript sources and the
+rendered paper are intentionally excluded from the checkout; historical renderer
+scripts require a separately maintained local manuscript input.
+
 The [current evidence index](https://github.com/Enixes/TailCache/blob/codex/tailcache-preprint/docs/preprint/README.md) links the two-host
 replication, 23 November follow-up, and interactive results. The records below
 describe earlier experiment cohorts and how to regenerate their derived results.
