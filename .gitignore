@@ -12,3 +12,7 @@ __pycache__/
 *.pyc
 results/
 evidence-archives/
+
+# Keep the manuscript with the Zenodo deposit, outside version control.
+/docs/preprint/MANUSCRIPT*.md
+/output/pdf/tailcache-preprint*.pdf
